@@ -17,22 +17,33 @@
             - `Invoke-RestMethod -Uri https://get.scoop.sh | Invoke-Expression`
     2) Taper cette commande : `scoop install symfony-cli`
 
-- Comment démarrer l'API en local ?
+- Comment démarrer l'API en local la première fois ?
     1) Démarrer Apache et MySQL depuis XAMPP
-    2) Ouvrir votre php.ini (sur XAMPP dans le bouton Config d'apache) et décommenter la ligne ;extension=sodium (uniquement la première fois)
+    2) Ouvrir votre php.ini (sur XAMPP dans le bouton Config d'apache) et décommenter la ligne ;extension=sodium
     3) Se rendre dans le dossier [CaretakerServicesApi](./CaretakerServicesApi) dans votre terminal.
-    4) Taper la commande `composer install` (uniquement la première fois)
+    4) Taper la commande `composer install`
     5) Taper la commande `symfony server:start`
     6) Se rendre sur [https://127.0.0.1:8000/api](https://127.0.0.1:8000/api)
     7) Créer la base de données en faisant :  
             - `php bin/console doctrine:database:create`  
             - `php bin/console make:migration`  
-            - `php bin/console doctrine:migrations:migrate`  
+            - `php bin/console doctrine:migrations:migrate`  --> Si erreur = supprimer tous les fichiers (à part le .gitignore) dans le dossier migrations et recommencer à la make:migration  
+            - `php bin/console doctrine:fixtures:load`
+
+- Comment démarrer l'API en local les autres fois ?
+    1) Démarrer Apache et MySQL depuis XAMPP
+    3) Se rendre dans le dossier [CaretakerServicesApi](./CaretakerServicesApi) dans votre terminal.
+    4) Taper la commande `composer install` (uniquement si de nouveau composer require ont été fait)
+    5) Taper la commande `symfony server:start`
+    6) Se rendre sur [https://127.0.0.1:8000/api](https://127.0.0.1:8000/api)
+    7) Créer la base de données en faisant (uniquement si de nouvelles tables/colonnes ont été ajoutés) :  
+            - `php bin/console make:migration`  
+            - `php bin/console doctrine:migrations:migrate`  --> Si erreur = supprimer tous les fichiers (à part le .gitignore) dans le dossier migrations et recommencer à la make:migration  
             - `php bin/console doctrine:fixtures:load`
 
 - Comment démarrer l'appli Web en local ?
     1) Démarrer Apache et MySQL depuis XAMPP
     2) Se rendre dans le dossier [CaretakerServicesWeb](./CaretakerServicesWeb) dans un autre terminal.
-    4) Taper la commande `composer install` (uniquement la première fois)
+    4) Taper la commande `composer install` (uniquement ;a première fois ou si de nouveau composer require ont été fait)
     3) Taper la commande `symfony server:start --port=8001`
     4) Se rendre sur [https://127.0.0.1:8001](https://127.0.0.1:8001)
