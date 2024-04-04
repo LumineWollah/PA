@@ -18,11 +18,13 @@
     2) Taper cette commande : `scoop install symfony-cli`
 
 - Comment démarrer l'API en local ?
-    1) Se rendre dans le dossier [CaretakerServicesApi](./CaretakerServicesApi) dans votre terminal.
-    2) Taper la commande `symfony server:start`
-    3) Se rendre sur [https://127.0.0.1:8000/api](https://127.0.0.1:8000/api)
+    1) Démarrer Apache et MySQL depuis XAMPP
+    2) Se rendre dans le dossier [CaretakerServicesApi](./CaretakerServicesApi) dans votre terminal.
+    3) Taper la commande `symfony server:start`
+    4) Se rendre sur [https://127.0.0.1:8000/api](https://127.0.0.1:8000/api)
 
 - Comment démarrer l'appli Web en local ?
-    1) Se rendre dans le dossier [CaretakerServicesWeb](./CaretakerServicesWeb) dans un autre terminal.
-    2) Taper la commande `symfony server:start --port=8001`
-    3) Se rendre sur [https://127.0.0.1:8001](https://127.0.0.1:8001)
+    1) Démarrer Apache et MySQL depuis XAMPP
+    2) Se rendre dans le dossier [CaretakerServicesWeb](./CaretakerServicesWeb) dans un autre terminal.
+    3) Taper la commande `symfony server:start --port=8001`
+    4) Se rendre sur [https://127.0.0.1:8001](https://127.0.0.1:8001)
