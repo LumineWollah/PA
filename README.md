@@ -11,6 +11,12 @@
             - `php -r "unlink('composer-setup.php');"`  
             - Inshallah ça marche correctement
 
+- Installer symfony CLI (Windows) (Pour Linux aller voir ici : [Lien pour Linux](https://symfony.com/download))
+    1) Aller sur un PowerShell est faire ces commandes :  
+            - `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser`  
+            - `Invoke-RestMethod -Uri https://get.scoop.sh | Invoke-Expression`
+    2) Taper cette commande : `scoop install symfony-cli`
+
 - Comment démarrer l'API en local ?
     1) Se rendre dans le dossier [CaretakerServicesApi](./CaretakerServicesApi) dans votre terminal.
     2) Taper la commande `symfony server:start`
