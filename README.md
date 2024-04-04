@@ -25,7 +25,9 @@
     5) Taper la commande `symfony server:start`
     6) Se rendre sur [https://127.0.0.1:8000/api](https://127.0.0.1:8000/api)
     7) Créer la base de données en faisant :  
+            - `php bin/console doctrine:database:create`
             - `php bin/console make:migration`  
+            - `php bin/console doctrine:migrations:migrate`
             - `php bin/console doctrine:fixtures:load`
 
 - Comment démarrer l'appli Web en local ?
