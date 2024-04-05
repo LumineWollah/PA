@@ -3,10 +3,51 @@
 {% block title %}Liste des intervenants{% endblock %}
 
 {% block body %}
+<script>
+    $(document).ready( function () {
+        $('#crudList').DataTable( {
+            paging: false,
+            scrollY: 400,
+            buttons: true,
+            layout: {
+                topStart: {
+                    search: {
+                        placeholder: "Rechercher...",
+                        search: ""
+                    }
+                },
+                topEnd: 'buttons',
+            },
+            language: {
+                search:"",
+            },
+            buttons: [
+                'pdf'
+            ],
+        } );
+    } );
+</script>
     <div class="col-10 p-0">
         <div class="p-3">
             <h1>Liste des intervenants</h1>
-            <table class="table table-striped">
+            <h4>Non validés:</h4>
+            <div class="container">
+                <div class="row row-cols-auto">
+                {% for provider in providers %}
+                    <div class="col">
+                        <p>{{ provider.firstname }} {{ provider.lastname }}</p>
+                        <p>Inscrit le : {{ provider.dateInscription | date('d/m/Y H:i:s') }}</p>
+                        <p>Email : {{ provider.email }}</p>
+                        <p>Téléphone : {{ provider.telNumber }}</p>
+                        <p>Voir plus</p>
+                        <button>Valider</button>
+                        <button>Refuser</button>
+                    </div>
+                {% endfor %}
+                </div>
+              </div> 
+            <h4>Validés:</h4>
+            <table id="crudList" class="table table-striped">
                 <thead>
                     <tr>
                         <th scope="col">Prénom</th>
@@ -14,6 +55,7 @@
                         <th scope="col">Email</th>
                         <th scope="col">Téléphone</th>
                         <th scope="col">Inscrit le</th>
+                        <th scope="col">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -24,6 +66,8 @@
                             <td>{{ provider.email }}</td>
                             <td>{{ provider.telNumber }}</td>
                             <td>{{ provider.dateInscription | date('d/m/Y H:i:s') }}</td>
+                            <td>
+                                <a href="{{ path('providerDelete', {'id': provider.id}) }}" class="btn btn-danger">Supprimer</a>
                         </tr>
                     {% endfor %}
                 </tbody>
