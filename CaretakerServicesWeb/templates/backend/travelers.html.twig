@@ -17,13 +17,13 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for traveller in travellers %}
+                    {% for traveler in travelers %}
                         <tr>
-                            <td>{{ traveller.firstname }}</td>
-                            <td>{{ traveller.lastname }}</td>
-                            <td>{{ traveller.email }}</td>
-                            <td>{{ traveller.telNumber }}</td>
-                            <td>{{ traveller.dateInscription | date('d/m/Y H:i:s') }}</td>
+                            <td>{{ traveler.firstname }}</td>
+                            <td>{{ traveler.lastname }}</td>
+                            <td>{{ traveler.email }}</td>
+                            <td>{{ traveler.telNumber }}</td>
+                            <td>{{ traveler.dateInscription | date('d/m/Y H:i:s') }}</td>
                         </tr>
                     {% endfor %}
                 </tbody>
