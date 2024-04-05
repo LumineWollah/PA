@@ -20,6 +20,8 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
 
+    Symfony\Component\HttpFoundation\Session\SessionInterface: '@session'
+
     # App\Service\ApiHttpClient:
     #     arguments:
     #         $bearerToken: '%session.token%'
