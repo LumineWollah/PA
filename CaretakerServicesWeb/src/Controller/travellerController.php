@@ -25,7 +25,7 @@ class travellerController extends AbstractController
         $response = $client->request('GET', 'cs_users', [
             'query' => [
                 'page' => 1,
-                'roles' => 'ROLE_traveller'
+                'roles' => 'ROLE_TRAVELLER'
             ]
         ]);
         
