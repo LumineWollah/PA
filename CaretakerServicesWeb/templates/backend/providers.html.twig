@@ -1,11 +1,11 @@
 {% extends 'backend/base.html.twig' %}
 
-{% block title %}Liste des utilisateurs{% endblock %}
+{% block title %}Liste des intervenants{% endblock %}
 
 {% block body %}
     <div class="col-10 p-0">
         <div class="p-3">
-            <h1>Liste des utilisateurs</h1>
+            <h1>Liste des intervenants</h1>
             <table class="table table-striped">
                 <thead>
                     <tr>
@@ -17,13 +17,13 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for user in users %}
+                    {% for provider in providers %}
                         <tr>
-                            <td>{{ user.firstname }}</td>
-                            <td>{{ user.lastname }}</td>
-                            <td>{{ user.email }}</td>
-                            <td>{{ user.telNumber }}</td>
-                            <td>{{ user.dateInscription | date('d/m/Y H:i:s') }}</td>
+                            <td>{{ provider.firstname }}</td>
+                            <td>{{ provider.lastname }}</td>
+                            <td>{{ provider.email }}</td>
+                            <td>{{ provider.telNumber }}</td>
+                            <td>{{ provider.dateInscription | date('d/m/Y H:i:s') }}</td>
                         </tr>
                     {% endfor %}
                 </tbody>
