@@ -47,3 +47,17 @@
     4) Taper la commande `composer install` (uniquement la première fois ou si de nouveau composer require ont été fait)
     3) Taper la commande `symfony server:start --port=8001`
     4) Se rendre sur [https://127.0.0.1:8001](https://127.0.0.1:8001)
+
+- Fonctionnement du Github :
+    1) Ne pas push sur le main !
+    2) A chaque nouvelle feature, correction de bug, ajout de doc, ... : créer une nouvelle branche avec cette archi de nom :  
+            - **feature** -> to add, rework or remove a feature  
+            - **bugfix** -> to fix a bug  
+            - **hotfix** -> to change code with a temporary solution and/or without following the usual process  
+            - **test** -> to experiment outside of a problem  
+            - **docs** -> to add docs  
+            - **misc** -> to add things other than code  
+            - Puis une très courte description de l'action effectuée / ou le nom de la nouvelle fonctionnalité  
+            - *Ex : feature/add-login-page*
+    3) Une fois que vous avez push votre branche + qu'elle est fini (que vous n'avez plus rien à y ajouter) vous pouvez faire une pull request vers la branche de dev  
+    4) Si vous voulez implémenter votre fonctionnalité en prod, faire une pull request de la branche de dev vers celle de prod (main) et me mettre comme reviewers et ne pas la merge tant que je ne l'ai pas validé aussi.
