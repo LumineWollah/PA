@@ -30,6 +30,25 @@ class AppFixtures extends Fixture
         $user->setPassword($this->userPasswordHasher->hashPassword($user, "Test1234!"));
         $user->setRoles(['ROLE_LESSOR']);
         $manager->persist($user);
+
+        $user = new CSUser();
+        $user->setEmail("mathis.vareilles@yahoo.com");
+        $user->setFirstname("Mathis");
+        $user->setLastname("Vareilles");
+        $user->setTelNumber("0606060606");
+        $user->setPassword($this->userPasswordHasher->hashPassword($user, "Test1234!"));
+        $user->setRoles(['ROLE_PROVIDER']);
+        $manager->persist($user);
+
+        
+        $user = new CSUser();
+        $user->setEmail("test@yahoo.com");
+        $user->setFirstname("test");
+        $user->setLastname("test");
+        $user->setTelNumber("0606060606");
+        $user->setPassword($this->userPasswordHasher->hashPassword($user, "Test1234!"));
+        $user->setRoles(['ROLE_PROVIDER']);
+        $manager->persist($user);
         
         // Création d'un user admin
         $userAdmin = new CSUser();

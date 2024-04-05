@@ -1,11 +1,11 @@
 {% extends 'backend/base.html.twig' %}
 
-{% block title %}Liste des bailleurs{% endblock %}
+{% block title %}Liste des voyageurs{% endblock %}
 
 {% block body %}
     <div class="col-10 p-0">
         <div class="p-3">
-            <h1>Liste des bailleurs</h1>
+            <h1>Liste des voyageurs</h1>
             <table class="table table-striped">
                 <thead>
                     <tr>
@@ -17,13 +17,13 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for lessor in lessors %}
+                    {% for traveller in travellers %}
                         <tr>
-                            <td>{{ lessor.firstname }}</td>
-                            <td>{{ lessor.lastname }}</td>
-                            <td>{{ lessor.email }}</td>
-                            <td>{{ lessor.telNumber }}</td>
-                            <td>{{ lessor.dateInscription | date('d/m/Y H:i:s') }}</td>
+                            <td>{{ traveller.firstname }}</td>
+                            <td>{{ traveller.lastname }}</td>
+                            <td>{{ traveller.email }}</td>
+                            <td>{{ traveller.telNumber }}</td>
+                            <td>{{ traveller.dateInscription | date('d/m/Y H:i:s') }}</td>
                         </tr>
                     {% endfor %}
                 </tbody>

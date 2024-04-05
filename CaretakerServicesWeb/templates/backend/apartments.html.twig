@@ -1,0 +1,33 @@
+{% extends 'backend/base.html.twig' %}
+
+{% block title %}Liste des appartements{% endblock %}
+
+{% block body %}
+    <div class="col-10 p-0">
+        <div class="p-3">
+            <h1>Liste des appartements</h1>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">Nom</th>
+                        <th scope="col">Numéro</th>
+                        <th scope="col">Maison</th>
+                        <th scope="col">Prix</th>
+                        <th scope="col">Actif</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for apartment in apartments %}
+                        <tr>
+                            <td>{{ apartment.name }}</td>
+                            <td>{{ apartment.apart_number }}</td>
+                            <td>{{ apartment.is_house }}</td>
+                            <td>{{ apartment.price }}</td>
+                            <td>{{ apartment.active }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
