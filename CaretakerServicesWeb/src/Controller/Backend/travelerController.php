@@ -38,4 +38,21 @@ class travelerController extends AbstractController
             'travelers' => $travelersList['hydra:member']
         ]);
     }
+
+    #[Route('/admin-panel/traveler/delete', name: 'travelerDelete')]
+    public function travelerDelete(Request $request)
+    {
+        $client = $this->apiHttpClient->getClient($request->getSession()->get('token'));
+
+        $id = $request->query->get('id');
+
+        $response = $client->request('DELETE', 'cs_users/'.$id, [
+            'query' => [
+                'id' => $id
+            ]
+        ]);
+        
+        return $this->redirectToRoute('travelerList');
+        
+    }
 }
