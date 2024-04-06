@@ -34,10 +34,8 @@ class providerController extends AbstractController
         ]);
         
         $providersList = $response->toArray();
-
-        // echo "<pre>";
-        // print_r($providersList);
-        // echo "</pre>";
+        
+        $request->getSession()->remove('provider');
 
         return $this->render('backend/providers.html.twig', [
             'providers' => $providersList['hydra:member']
@@ -61,78 +59,56 @@ class providerController extends AbstractController
         
     }
 
-    // #[Route('/admin-panel/provider/edit', name: 'providerEdit')]
-    // public function providerEdit(Request $request)
-    // {
-    //     $client = $this->apiHttpClient->getClient($request->getSession()->get('token'));
-
-    //     $id = $request->query->get('id');
-
-    //     $response = $client->request('GET', 'cs_users/'.$id, [
-
-    //     ]);
-        
-    //     $providerEditing = $response->toArray();
-
-    //     // echo "<pre>";
-    //     // print_r($providersList);
-    //     // echo "</pre>";
-
-    //     return $this->render('backend/editProvider.html.twig', [
-    //         'provider' => $providerEditing
-    //     ]);
-        
-    // }
-
     #[Route('/admin-panel/provider/edit', name: 'providerEdit')]
     public function providerEdit(Request $request)
     {
         $providerData = $request->request->get('provider');
         echo($providerData);
         $provider = json_decode($providerData, true);
-        echo "<pre>";
-print_r($provider);
-echo "</pre>";
-        $form = $this->createFormBuilder()
 
+        $storedProvider = $request->getSession()->get('provider');
+
+        if (!$storedProvider) {
+            $request->getSession()->set('provider', $provider);
+            $storedProvider = $provider;
+        }
+
+        $form = $this->createFormBuilder()
         ->add("email", EmailType::class, [
             "attr"=>[
-                "placeholder"=>$provider["email"],
+                "placeholder"=>$storedProvider["email"],
             ],
-            "empty_data"=>$provider["email"],
+            "empty_data"=>$storedProvider["email"],
             "required"=>false,
         ])
         ->add("firstname", TextType::class, [
             "attr"=>[
-                "placeholder"=>$provider["firstname"],
+                "placeholder"=>$storedProvider["firstname"],
             ], 
-            "empty_data"=>$provider["firstname"],
+            "empty_data"=>$storedProvider["firstname"],
             "required"=>false,
         ])
         ->add("lastname", TextType::class, [
             "attr"=>[
-                "placeholder"=>$provider["lastname"],
+                "placeholder"=>$storedProvider["lastname"],
             ],
             "required"=>false,
-            "empty_data"=>$provider["lastname"],
+            "empty_data"=>$storedProvider["lastname"],
         ])
         ->add("telNumber", TextType::class, [
             "attr"=>[
-                "placeholder"=>$provider["telNumber"],
+                "placeholder"=>$storedProvider["telNumber"],
             ],
             "required"=>false,
-            "empty_data"=>$provider["telNumber"],
+            "empty_data"=>$storedProvider["telNumber"],
         ])
         ->getForm()->handleRequest($request);
-    
             if ($form->isSubmitted() && $form->isValid()){
                 $data = $form->getData();
                 
                 $client = $this->apiHttpClient->getClient($request->getSession()->get('token'), 'application/merge-patch+json');
-                                
-                $id = $request->query->get('id');
 
-                $response = $client->request('PATCH', 'cs_users/'.$id, [
+                $response = $client->request('PATCH', 'cs_users/'.$storedProvider['id'], [
                     'json' => $data,
                 ]);
 
