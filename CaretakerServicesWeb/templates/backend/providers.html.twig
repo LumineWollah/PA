@@ -68,6 +68,7 @@
                             <td>{{ provider.dateInscription | date('d/m/Y H:i:s') }}</td>
                             <td>
                                 <a href="{{ path('providerDelete', {'id': provider.id}) }}" class="btn btn-danger">Supprimer</a>
+                                <a href="{{ path('providerEdit', {'id': provider.id}) }}" class="btn btn-info">Edit</a>
                         </tr>
                     {% endfor %}
                 </tbody>

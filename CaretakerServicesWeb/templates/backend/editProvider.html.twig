@@ -1,0 +1,82 @@
+{% extends 'backend/base.html.twig' %}
+
+{% block title %}Modifier un intervenant{% endblock %}
+
+{% block body %}
+    <div class="col-10 p-0">
+        <div class="p-3">
+            <h1>Modifier un intervenant</h1>
+            {{form_start(form)}}
+                <div class="inputDiv" style="position: relative;">
+                    {{form_widget(form.email)}}
+                </div>
+                <div class="inputDiv" style="position: relative;">
+                    {{form_widget(form.firstname)}}
+                </div>
+                <div class="inputDiv" style="position: relative;">
+                    {{form_widget(form.lastname)}}
+                </div>
+                <div class="inputDiv" style="position: relative;">
+                    {{form_widget(form.telNumber)}}
+                </div>
+                <div class="inputDiv" style="position: relative;">
+                    {{form_widget(form.roles)}}
+                </div>
+                <button type="submit" class="btn">Modifier</button>
+            {{form_end(form)}}
+        </div>
+    </div>
+{% endblock %}
+
+{# {
+  "email": "string",
+  "firstname": "string",
+  "lastname": "string",
+  "password": "string",
+  "lastConnection": "2024-04-06T18:10:17.605Z",
+  "dateInscription": "2024-04-06T18:10:17.605Z",
+  "profilePict": "string",
+  "roles": [
+    "string"
+  ],
+  "telNumber": "string",
+  "documents": [
+    {
+      "name": "string",
+      "type": "string",
+      "url": "string",
+      "date_creation": "2024-04-06T18:10:17.605Z",
+      "owner": "https://example.com/",
+      "dateCreation": "string"
+    }
+  ],
+  "admin": "string"
+} #}
+
+{# <form method="post" action="{{ path('providerPatch', {'id': provider.id}) }}" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="firstname">Prénom</label>
+                    <input type="text" class="form-control" id="firstname" name="firstname" value="{{ provider.firstname }}" required>
+                    <label for="lastname">Nom</label>
+                    <input type="text" class="form-control" id="lastname" name="lastname" value="{{ provider.lastname }}" required>
+                    <label for="email">Email</label>
+                    <input type="text" class="form-control" id="email" name="email" value="{{ provider.email }}" required>
+                    <label for="telNumber">Téléphone</label>
+                    <input type="text" class="form-control" id="telNumber" name="telNumber" value="{{ provider.telNumber }}" required>
+                    <label for="roles">Rôles</label>
+                    <select class="form-control" id="roles" name="roles" required>
+                        <option value=" " {% if provider.roles[0] == ' ' %}selected{% endif %}>Aucun</option>
+                        <option value="ROLE_TRAVELER" {% if provider.roles[0] == 'ROLE_TRAVELER' %}selected{% endif %}>Voyageur</option>
+                        <option value="ROLE_LESSOR" {% if provider.roles[0] == 'ROLE_LESSOR' %}selected{% endif %}>Bailleur</option>
+                        <option value="ROLE_PROVIDER" {% if provider.roles[0] == 'ROLE_PROVIDER' %}selected{% endif %}>Intervenant</option>
+                        <option value="ROLE_ADMIN" {% if provider.roles[0] == 'ROLE_ADMIN' %}selected{% endif %}>Administrateur</option>
+                    </select>
+
+                    <input type="hidden" name="password" value="{{ provider.password }}">
+                    <input type="hidden" name="lastConnection" value="{{ provider.lastConnection }}">
+                    <input type="hidden" name="dateInscription" value="{{ provider.dateInscription }}">
+                    <input type="hidden" name="profilePict" value="{{ provider.profilePict }}">
+                    <input type="hidden" name="documents" value="{{ provider.documents }}">
+                    <input type="hidden" name="admin" value="{{ provider.admin }}">
+                <button type="submit" class="btn btn-primary">Modifier</button>
+            </form> #}
