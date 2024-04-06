@@ -68,7 +68,11 @@
                             <td>{{ provider.dateInscription | date('d/m/Y H:i:s') }}</td>
                             <td>
                                 <a href="{{ path('providerDelete', {'id': provider.id}) }}" class="btn btn-danger">Supprimer</a>
-                                <a href="{{ path('providerEdit', {'id': provider.id}) }}" class="btn btn-info">Edit</a>
+                                <form action="{{ path('providerEdit') }}" method="post" style="display: inline;">
+                                    <input type="hidden" name="provider" value="{{ provider|json_encode }}">
+                                    <button type="submit" class="btn btn-info">Edit</button>
+                                </form>
+                            </td>
                         </tr>
                     {% endfor %}
                 </tbody>

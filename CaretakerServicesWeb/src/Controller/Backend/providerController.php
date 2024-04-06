@@ -87,47 +87,41 @@ class providerController extends AbstractController
     #[Route('/admin-panel/provider/edit', name: 'providerEdit')]
     public function providerEdit(Request $request)
     {
-        $client = $this->apiHttpClient->getClient($request->getSession()->get('token'));
-
-        $id = $request->query->get('id');
-
-        $response = $client->request('GET', 'cs_users/'.$id, [
-            'query' => [
-                'id' => $id
-            ]
-        ]);
-
-        $provider = $response->toArray();
-
+        $providerData = $request->request->get('provider');
+        echo($providerData);
+        $provider = json_decode($providerData, true);
+        echo "<pre>";
+print_r($provider);
+echo "</pre>";
         $form = $this->createFormBuilder()
 
         ->add("email", EmailType::class, [
             "attr"=>[
-                "placeholder"=>$provider['email'],
+                "placeholder"=>$provider["email"],
             ],
-            "empty_data"=>$provider['email'],
+            "empty_data"=>$provider["email"],
             "required"=>false,
         ])
         ->add("firstname", TextType::class, [
             "attr"=>[
-                "placeholder"=>$provider['firstname'],
+                "placeholder"=>$provider["firstname"],
             ], 
-            "empty_data"=>$provider['firstname'],
+            "empty_data"=>$provider["firstname"],
             "required"=>false,
         ])
         ->add("lastname", TextType::class, [
             "attr"=>[
-                "placeholder"=>$provider['lastname'],
+                "placeholder"=>$provider["lastname"],
             ],
             "required"=>false,
-            "empty_data"=>$provider['lastname'],
+            "empty_data"=>$provider["lastname"],
         ])
         ->add("telNumber", TextType::class, [
             "attr"=>[
-                "placeholder"=>$provider['telNumber'],
+                "placeholder"=>$provider["telNumber"],
             ],
             "required"=>false,
-            "empty_data"=>$provider['telNumber'],
+            "empty_data"=>$provider["telNumber"],
         ])
         ->getForm()->handleRequest($request);
     
