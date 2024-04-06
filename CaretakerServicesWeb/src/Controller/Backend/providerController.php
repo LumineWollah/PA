@@ -39,17 +39,20 @@ class providerController extends AbstractController
         ]);
     }
 
-#[Route('/admin-panel/provider/delete', name: 'providerDelete')]
-public function providerDelete(Request $request)
-{
-    $client = $this->apiHttpClient->getClient($request->getSession()->get('token'));
+    #[Route('/admin-panel/provider/delete', name: 'providerDelete')]
+    public function providerDelete(Request $request)
+    {
+        $client = $this->apiHttpClient->getClient($request->getSession()->get('token'));
 
-    $id = $request->query->get('id');
+        $id = $request->query->get('id');
 
-    $response = $client->request('DELETE', 'cs_users', [
-        'query' => [
-            'id' => $id
-        ]
-    ]);
-}
+        $response = $client->request('DELETE', 'cs_users/'.$id, [
+            'query' => [
+                'id' => $id
+            ]
+        ]);
+        
+        return $this->redirectToRoute('providerList');
+        
+    }
 }
