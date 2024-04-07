@@ -80,7 +80,7 @@ class loginController extends AbstractController
 
             $request->getSession()->set('token', $response['token']);
 
-            return $this->redirectToRoute('lessorList');
+            return $this->redirectToRoute('providerList');
         }      
 
         return $this->render('frontend/login.html.twig', [

@@ -32,22 +32,22 @@
         <div class="row mainRow">
             <div class="col-2 p-0">
                 <div class="d-flex flex-column p-3 sticky-top sideBar">
-                    <ul class="nav nav-pills flex-column mb-auto">
+                    <ul class="nav nav-pills flex-column mb-auto navUl">
                         <li class="nav-item">
-                            <a href="#" class="nav-link active" aria-current="page">
+                            <a href="#" class="nav-link {% block activeDash %}{% endblock %}" aria-current="page">
                                 Dashboard
                             </a>
                         </li>
                         <li>
-                            <button class="btn btn-toggle border-0 gestionBtn collapsed" data-bs-toggle="collapse" data-bs-target="#dashboard-collapse" aria-expanded="false">
+                            <button class="btn btn-toggle border-0 gestionBtn collapsed {% block activeGest %}{% endblock %}" data-bs-toggle="collapse" data-bs-target="#dashboard-collapse" aria-expanded="false">
                                 Gestion
                             </button>
                             <div class="collapse menuGestion" id="dashboard-collapse" >
                                 <ul class="btn-toggle-nav list-unstyled fw-normal small gestionUl">
-                                    <li><a href={{ path('lessorList') }} class="d-inline-flex text-decoration-none rounded mb-1">Bailleurs</a></li>
-                                    <li><a href={{ path('providerList') }} class="d-inline-flex text-decoration-none rounded mb-1">Prestataires</a></li>
-                                    <li><a href={{ path('travelerList') }} class="d-inline-flex text-decoration-none rounded mb-1">Voyageurs</a></li>
-                                    <li><a href={{ path('documentList') }} class="d-inline-flex text-decoration-none rounded mb-1">Documents</a></li>
+                                    <li><a href={{ path('lessorList') }} class="d-inline-flex text-decoration-none rounded mb-1 {% block activeLess %}{% endblock %}">Bailleurs</a></li>
+                                    <li><a href={{ path('providerList') }} class="d-inline-flex text-decoration-none rounded mb-1 {% block activeProv %}{% endblock %}">Prestataires</a></li>
+                                    <li><a href={{ path('travelerList') }} class="d-inline-flex text-decoration-none rounded mb-1 {% block activeTrav %}{% endblock %}">Voyageurs</a></li>
+                                    <li><a href={{ path('documentList') }} class="d-inline-flex text-decoration-none rounded mb-1 {% block activeDocu %}{% endblock %}">Documents</a></li>
                                 </ul>
                             </div>
                         </li>

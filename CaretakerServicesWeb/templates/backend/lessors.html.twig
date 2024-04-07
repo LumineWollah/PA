@@ -1,5 +1,8 @@
 {% extends 'backend/base.html.twig' %}
 
+{% block activeGest %}active{% endblock %}
+{% block activeLess %}active{% endblock %}
+
 {% block stylesheets %}<link rel="stylesheet" href={{ asset('styles/crud.css') }}>{% endblock %}
 
 {% block title %}Liste des bailleurs{% endblock %}
