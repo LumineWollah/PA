@@ -1,7 +1,9 @@
 {% extends 'backend/base.html.twig' %}
 
+{% block stylesheets %}<link rel="stylesheet" href={{ asset('styles/crud.css') }}>{% endblock %}
+
 {% block activeGest %}active{% endblock %}
-{% block activeTrav %}active{% endblock %}
+{% block activeProv %}active{% endblock %}
 
 {% block title %}Liste des voyageurs{% endblock %}
 
@@ -59,20 +61,20 @@
                 <tbody>
                     {% for traveler in travelers %}
                         <tr>
-                            <td>{{ traveler.firstname }}</td>
-                            <td>{{ traveler.lastname }}</td>
+                            <td>{{ traveler.firstname|capitalize }}</td>
+                            <td>{{ traveler.lastname|upper }}</td>
                             <td>{{ traveler.email }}</td>
                             <td>{{ traveler.telNumber }}</td>
                             <td>{{ traveler.dateInscription | date('d/m/Y H:i:s') }}</td>
-                            <td>
-                                <a href="{{ path('travelerDelete', {'id': traveler.id}) }}" class="btn" style="background-color: #EE3939;"><img style="width:20px;height:20px;" src="https://cdn-icons-png.freepik.com/512/1345/1345874.png"></a>
+                            <td class="action">
+                                <a href="{{ path('travelerDelete', {'id': traveler.id}) }}" class="btn" style="background-color: #EE3939;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/bin.png') }}></div></a>
                                 <form action="{{ path('travelerEdit') }}" method="post" style="display: inline;">
                                     <input type="hidden" name="traveler" value="{{ traveler|json_encode }}">
-                                    <button type="submit" class="btn" style="background-color: #18A0FB;"><img style="width:20px;height:20px;" src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/64/Edit_icon_%28the_Noun_Project_30184%29.svg/2048px-Edit_icon_%28the_Noun_Project_30184%29.svg.png"></button>
+                                    <button type="submit" class="btn" style="background-color: #18A0FB;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/pen.png') }}></div></button>
                                 </form>
                                 <form action="{{ path('travelerShow') }}" method="post" style="display: inline;">
                                     <input type="hidden" name="traveler" value="{{ traveler|json_encode }}">
-                                    <button type="submit" class="btn" style="background-color: #A594F9;"><img style="width:20px;height:17px;" src="https://static-00.iconduck.com/assets.00/show-icon-512x410-5ofq0plr.png"></button>
+                                    <button type="submit" class="btn" style="background-color: #A594F9;"><div class="btnImage"><img style="height:17px;" src={{ asset('icons/crud/chart.png') }}></div></button>
                                 </form>
                             </td>
                         </tr>

@@ -1,9 +1,9 @@
 {% extends 'backend/base.html.twig' %}
 
-{% block activeGest %}active{% endblock %}
-{% block activeLess %}active{% endblock %}
-
 {% block stylesheets %}<link rel="stylesheet" href={{ asset('styles/crud.css') }}>{% endblock %}
+
+{% block activeGest %}active{% endblock %}
+{% block activeProv %}active{% endblock %}
 
 {% block title %}Liste des bailleurs{% endblock %}
 
@@ -47,21 +47,24 @@
     <div class="col-10 p-0">
         <div class="p-3">
             <h1>Liste des bailleurs</h1>
-            <h4>Non validés:</h4>
+            <h4 class="mt-4">Non validés:</h4>
             <div class="container m-0 mb-4">
                 <div class="row">
                 {% for lessor in unverifiedLessors %}
                     <div class="col-3 p-0 me-4">
                         <div class="noValidateCard">
                             <img src={%if 'profilePict' in lessor %}{{ lessor.profilePict }}{% else %}{{ asset('icons/profile_pict_default.png') }}{% endif %}>
-                            <p>{{ lessor.firstname }} {{ lessor.lastname }}</p>
-                            <p>Inscrit le : {{ lessor.dateInscription | date('d/m/Y H:i:s') }}</p>
-                            <p>Email : {{ lessor.email }}</p>
-                            <p>Téléphone : {{ lessor.telNumber }}</p>
-                            <p>Voir plus</p>
+                            <p class="name">{{ lessor.firstname|capitalize }} {{ lessor.lastname|capitalize }}</p>
+                            <p class="otherData inscription"><b>Inscrit le :</b> {{ lessor.dateInscription|date('d/m/Y H:i:s') }}</p>
+                            <p class="otherData"><b>Email :</b> {{ lessor.email }}</p>
+                            <p class="otherData"><b>Téléphone :</b> {{ lessor.telNumber }}</p>
+                            <form action="{{ path('lessorShow') }}" method="post" style="display: inline;">
+                                <input type="hidden" name="lessor" value="{{ lessor|json_encode }}">
+                                <button type="submit" class="seeMore" style="background-color: #A594F9;">Voir plus</button>
+                            </form>
                             <div class="validateBtns">
-                                <a href="{{ path('lessorAccept', {'id': lessor.id}) }}" class="btn btn-info">Valider</a>
-                                <a href="{{ path('lessorDelete', {'id': lessor.id}) }}" class="btn btn-danger">Refuser</a>
+                                <a href="{{ path('lessorAccept', {'id': lessor.id}) }}" class="validateBtn validBtn">Valider</a>
+                                <a href="{{ path('lessorDelete', {'id': lessor.id}) }}" class="validateBtn refuseBtn">Refuser</a>
                             </div>
                         </div>
                     </div>
@@ -83,20 +86,20 @@
                 <tbody>
                     {% for lessor in verifiedLessors %}
                         <tr>
-                            <td>{{ lessor.firstname }}</td>
-                            <td>{{ lessor.lastname }}</td>
+                            <td>{{ lessor.firstname|capitalize }}</td>
+                            <td>{{ lessor.lastname|upper }}</td>
                             <td>{{ lessor.email }}</td>
                             <td>{{ lessor.telNumber }}</td>
                             <td>{{ lessor.dateInscription | date('d/m/Y H:i:s') }}</td>
-                            <td>
-                                <a href="{{ path('lessorDelete', {'id': lessor.id}) }}" class="btn" style="background-color: #EE3939;"><img style="width:20px;height:20px;" src="https://cdn-icons-png.freepik.com/512/1345/1345874.png"></a>
+                            <td class="action">
+                                <a href="{{ path('lessorDelete', {'id': lessor.id}) }}" class="btn" style="background-color: #EE3939;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/bin.png') }}></div></a>
                                 <form action="{{ path('lessorEdit') }}" method="post" style="display: inline;">
                                     <input type="hidden" name="lessor" value="{{ lessor|json_encode }}">
-                                    <button type="submit" class="btn" style="background-color: #18A0FB;"><img style="width:20px;height:20px;" src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/64/Edit_icon_%28the_Noun_Project_30184%29.svg/2048px-Edit_icon_%28the_Noun_Project_30184%29.svg.png"></button>
+                                    <button type="submit" class="btn" style="background-color: #18A0FB;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/pen.png') }}></div></button>
                                 </form>
                                 <form action="{{ path('lessorShow') }}" method="post" style="display: inline;">
                                     <input type="hidden" name="lessor" value="{{ lessor|json_encode }}">
-                                    <button type="submit" class="btn" style="background-color: #A594F9;"><img style="width:20px;height:17px;" src="https://static-00.iconduck.com/assets.00/show-icon-512x410-5ofq0plr.png"></button>
+                                    <button type="submit" class="btn" style="background-color: #A594F9;"><div class="btnImage"><img style="height:17px;" src={{ asset('icons/crud/chart.png') }}></div></button>
                                 </form>
                             </td>
                         </tr>

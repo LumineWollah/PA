@@ -29,6 +29,11 @@ tr a, tr button{
     height: 40px;
 }
 
+.owner{
+    width: auto !important;
+    padding: 5px !important;
+}
+
 .btnImage {
     display: flex;
     justify-content: center;

@@ -1,5 +1,10 @@
 {% extends 'backend/base.html.twig' %}
 
+{% block stylesheets %}<link rel="stylesheet" href={{ asset('styles/crud.css') }}>{% endblock %}
+
+{% block activeGest %}active{% endblock %}
+{% block activeProv %}active{% endblock %}
+
 {% block title %}Liste des documents{% endblock %}
 
 {% block body %}
@@ -55,7 +60,7 @@
                             <td>
                                 <form action="{{ path('travelerShow') }}" method="post" style="display: inline;">
                                     <input type="hidden" name="traveler" value="{{ document.owner|json_encode }}">
-                                    <button type="submit" class="btn btn-light" style="height:40px"><p> {{ document.owner.firstname ~ " " ~ document.owner.lastname }} </p></button>
+                                    <button type="submit" class="btn btn-light owner" style="height:40px"><p> {{ document.owner.firstname ~ " " ~ document.owner.lastname }} </p></button>
                                 </form>
                             </td>
                             <td>{{ document.type }}</td>
