@@ -15,4 +15,95 @@
 
 .noValidateCard img {
     width: 20%;
+    margin-bottom: 5px;
+}
+
+tr {
+    vertical-align: middle;
+}
+
+tr a, tr button{
+    padding: 0 !important;
+    
+    width: 40px;
+    height: 40px;
+}
+
+.btnImage {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+}
+
+h1, h4, th {
+    font-family: 'Roboto Condensed';
+    font-weight: bold;
+}
+
+th {
+    font-size: 18px;
+}
+
+tr {
+    font-family: 'Quicksand';
+    font-weight: 400;
+}
+
+.name {
+    font-family: 'Antonio';
+    font-weight: 400;
+    font-size: 24px;
+    margin-bottom: 5px;
+}
+
+.otherData {
+    font-family: 'Quicksand';
+    margin: 0;
+    font-size: 16px;
+    max-width: 85%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.inscription {
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+.seeMore {
+    color: #292929;
+    font-size: 13px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.noValidateCard button {
+    background-color: transparent !important;
+    border: none;
+    outline: none;
+}
+
+.validateBtn {
+    text-decoration: none;
+    width: 40%;
+    height: 4vh;
+    font-family: 'Roboto Condensed';
+    font-weight: 700;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.validBtn {
+    background-color: #A594F9;
+    color: white;
+}
+
+.refuseBtn {
+    border: #A594F9 2px solid;
+    color: #A594F9;
 }

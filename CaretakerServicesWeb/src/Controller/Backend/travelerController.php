@@ -36,6 +36,7 @@ class travelerController extends AbstractController
         $unverifiedTravelers = array();
 
         foreach ($travelersList['hydra:member'] as $traveler) {
+            $traveler['telNumber'] = implode(".", str_split($traveler['telNumber'], 2));
             $traveler['isVerified'] == 1 ? $verifiedTravelers[] = $traveler : $unverifiedTravelers[] = $traveler;
         }
 

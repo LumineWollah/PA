@@ -36,6 +36,7 @@ class lessorController extends AbstractController
         $unverifiedLessors = array();
 
         foreach ($lessorsList['hydra:member'] as $lessor) {
+            $lessor['telNumber'] = implode(".", str_split($lessor['telNumber'], 2));
             $lessor['isVerified'] == 1 ? $verifiedLessors[] = $lessor : $unverifiedLessors[] = $lessor;
         }
 

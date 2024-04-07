@@ -12,7 +12,7 @@
                     <p><strong>Nom :</strong> {{ document.name }}</p>
                     <p><strong>Propriétaire :</strong> {{ document.owner.firstname ~ " " ~ document.owner.lastname }}</p>
                     <p><strong>Type :</strong> {{ document.type }}</p>
-                    <p><strong>Créé le :</strong> {{ document.dateCreation }}</p>
+                    <p><strong>Créé le :</strong> {{ document.dateCreation|date('d/m/Y H:i:s') }}</p>
                 </div>
             </div>
         </div>

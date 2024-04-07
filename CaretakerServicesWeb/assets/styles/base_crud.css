@@ -17,6 +17,15 @@ nav{
     border-radius: 10px;
     background-color: #3D2F44;
     top:6rem;
+    font-family: 'Roboto Condensed';
+    font-weight: 500;
+    font-size: 22px;
+}
+
+.sideBar button {
+    font-family: 'Roboto Condensed';
+    font-weight: 500;
+    font-size: 22px;
 }
 
 .menuGestion {
@@ -40,10 +49,23 @@ html::-webkit-scrollbar {
 
 .gestionUl a {
     color: white;
+    font-size: 17px;
 }
 
 .gestionBtn {
     color: white;
     padding-left: 16px;
     padding-right: 16px;
+}
+
+.navUl a {
+    color: white;
+}
+
+.navUl a:hover, .sideBar button:hover{
+    color: #A594F9;
+}
+
+.active {
+    color: #A594F9 !important;
 }

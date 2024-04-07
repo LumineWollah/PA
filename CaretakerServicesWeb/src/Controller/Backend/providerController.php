@@ -37,6 +37,7 @@ class providerController extends AbstractController
         $unverifiedProviders = array();
 
         foreach ($providersList['hydra:member'] as $provider) {
+            $provider['telNumber'] = implode(".", str_split($provider['telNumber'], 2));
             $provider['isVerified'] == 1 ? $verifiedProviders[] = $provider : $unverifiedProviders[] = $provider;
         }
 

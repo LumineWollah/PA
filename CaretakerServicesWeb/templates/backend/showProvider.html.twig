@@ -13,8 +13,8 @@
                     <p><strong>Prénom :</strong> {{ provider.firstname }}</p>
                     <p><strong>Email :</strong> {{ provider.email }}</p>
                     <p><strong>Numéro de téléphone :</strong> {{ provider.telNumber }}</p>
-                    <p><strong>Dernière connexion :</strong> {{ provider.lastConnection }}</p>
-                    <p><strong>Inscrit le :</strong> {{ provider.dateInscription }}</p>
+                    <p><strong>Dernière connexion :</strong> {{ provider.lastConnection|date('d/m/Y H:i:s') }}</p>
+                    <p><strong>Inscrit le :</strong> {{ provider.dateInscription|date('d/m/Y H:i:s') }}</p>
                     <p><strong>Rôles :</strong> 
                     {% for role in provider.roles %}
                         {{ role }}
