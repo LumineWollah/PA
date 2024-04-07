@@ -1,0 +1,26 @@
+{% extends 'backend/base.html.twig' %}
+
+{% block title %}Modifier un document{% endblock %}
+
+{% block body %}
+    <div class="col-10 p-0">
+        <div class="p-3">
+            <h1>Modifier un document</h1>
+            {{form_start(form)}}
+                <div class="inputDiv" style="position: relative;">
+                    {{form_widget(form.name)}}
+                </div>
+                <div class="inputDiv" style="position: relative;">
+                    {{form_widget(form.owner.id)}}
+                </div>
+                <div class="inputDiv" style="position: relative;">
+                    {{form_widget(form.type)}}
+                </div>
+                <div class="inputDiv" style="position: relative;">
+                    {{form_widget(form.url)}}
+                </div>
+                <button type="submit" class="btn">Modifier</button>
+            {{form_end(form)}}
+        </div>
+    </div>
+{% endblock %}

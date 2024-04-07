@@ -1,0 +1,81 @@
+{% extends 'backend/base.html.twig' %}
+
+{% block title %}Liste des documents{% endblock %}
+
+{% block body %}
+<script>
+    $(document).ready( function () {
+        $('#crudList').DataTable( {
+            buttons: true,
+            pageLength: 10,
+            layout: {
+                topStart: {
+                    search: {
+                        placeholder: "Rechercher...",
+                        search: ""
+                    }
+                },
+                topEnd: 'buttons',
+                bottomStart: 'paging',
+                bottomEnd: 'info',
+            },
+            language: {
+                search: "",
+                info: "Affichage des entrées _START_ à _END_ sur _TOTAL_ au total",
+            },
+            buttons: [
+                'pdf'
+            ],
+            columnDefs: [
+                {
+                    targets: -1,
+                    orderable: false,
+                }   
+            ]
+        } );
+    } );
+</script>
+    <div class="col-10 p-0">
+        <div class="p-3">
+            <h1>Liste des documents</h1>
+            <table id="crudList" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">Nom</th>
+                        <th scope="col">Propriétaire</th>
+                        <th scope="col">Type</th>
+                        <th scope="col">Créé le</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for document in documents %}
+                        <tr>
+                            <td>{{ document.name }}</td>
+                            <td>
+                                <form action="{{ path('travelerShow') }}" method="post" style="display: inline;">
+                                    <input type="hidden" name="traveler" value="{{ document.owner|json_encode }}">
+                                    <button type="submit" class="btn" style="background-color: #18A0FB;"><p> {{ document.owner.firstname ~ " " ~ document.owner.lastname }} </p></button>
+                                </form>
+                            </td>
+                            <td>{{ document.type }}</td>
+                            <td>{{ document.dateCreation }}</td>
+                            <td>
+                                <a href="{{ path('documentDelete', {'id': document.id}) }}" class="btn" style="background-color: #EE3939;"><img style="width:20px;height:20px;" src="https://cdn-icons-png.freepik.com/512/1345/1345874.png"></a>
+                                <form action="{{ path('documentEdit') }}" method="post" style="display: inline;">
+                                    <input type="hidden" name="document" value="{{ document|json_encode }}">
+                                    <button type="submit" class="btn" style="background-color: #18A0FB;"><img style="width:20px;height:20px;" src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/64/Edit_icon_%28the_Noun_Project_30184%29.svg/2048px-Edit_icon_%28the_Noun_Project_30184%29.svg.png"></button>
+                                </form>
+                                <form action="{{ path('documentShow') }}" method="post" style="display: inline;">
+                                    <input type="hidden" name="document" value="{{ document|json_encode }}">
+                                    <button type="submit" class="btn" style="background-color: #A594F9;"><img style="width:20px;height:17px;" src="https://static-00.iconduck.com/assets.00/show-icon-512x410-5ofq0plr.png"></button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
+
