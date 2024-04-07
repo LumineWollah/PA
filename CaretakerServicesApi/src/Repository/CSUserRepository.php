@@ -2,7 +2,7 @@
 
 namespace App\Repository;
 
-use App\Entity\CSUser;
+use App\Entity\CsUser;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
@@ -10,18 +10,18 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
 
 /**
- * @extends ServiceEntityRepository<CSUser>
+ * @extends ServiceEntityRepository<CsUser>
  *
- * @method CSUser|null find($id, $lockMode = null, $lockVersion = null)
- * @method CSUser|null findOneBy(array $criteria, array $orderBy = null)
- * @method CSUser[]    findAll()
- * @method CSUser[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method CsUser|null find($id, $lockMode = null, $lockVersion = null)
+ * @method CsUser|null findOneBy(array $criteria, array $orderBy = null)
+ * @method CsUser[]    findAll()
+ * @method CsUser[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class CSUserRepository extends ServiceEntityRepository implements PasswordUpgraderInterface
+class CsUserRepository extends ServiceEntityRepository implements PasswordUpgraderInterface
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, CSUser::class);
+        parent::__construct($registry, CsUser::class);
     }
 
     /**
@@ -29,7 +29,7 @@ class CSUserRepository extends ServiceEntityRepository implements PasswordUpgrad
      */
     public function upgradePassword(PasswordAuthenticatedUserInterface $user, string $newHashedPassword): void
     {
-        if (!$user instanceof CSUser) {
+        if (!$user instanceof CsUser) {
             throw new UnsupportedUserException(sprintf('Instances of "%s" are not supported.', $user::class));
         }
 
@@ -39,7 +39,7 @@ class CSUserRepository extends ServiceEntityRepository implements PasswordUpgrad
     }
 
 //    /**
-//     * @return CSUser[] Returns an array of CSUser objects
+//     * @return CsUser[] Returns an array of CsUser objects
 //     */
 //    public function findByExampleField($value): array
 //    {
@@ -53,7 +53,7 @@ class CSUserRepository extends ServiceEntityRepository implements PasswordUpgrad
 //        ;
 //    }
 
-//    public function findOneBySomeField($value): ?CSUser
+//    public function findOneBySomeField($value): ?CsUser
 //    {
 //        return $this->createQueryBuilder('c')
 //            ->andWhere('c.exampleField = :val')

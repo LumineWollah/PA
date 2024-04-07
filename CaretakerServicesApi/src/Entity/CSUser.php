@@ -4,8 +4,8 @@ namespace App\Entity;
 
 use DateTime;
 
-use App\Controller\CSUserController;
-use App\Repository\CSUserRepository;
+use App\Controller\CsUserController;
+use App\Repository\CsUserRepository;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -29,7 +29,7 @@ use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
     new Get(
         name: 'me', 
         uriTemplate: '/cs_users/me', 
-        controller: CSUserController::class
+        controller: CsUserController::class
     )
 ])]
 #[ApiResource(security: "is_granted('ROLE_USER')", normalizationContext: ['groups' => ['getUsers']])]
@@ -38,29 +38,29 @@ use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 #[GetCollection(security: "is_granted('ROLE_ADMIN')")]
 #[Delete(security: "is_granted('ROLE_ADMIN')")]
 #[Post(security: "is_granted('ROLE_ADMIN')")]
-#[ORM\Entity(repositoryClass: CSUserRepository::class)]
+#[ORM\Entity(repositoryClass: CsUserRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
 #[ApiFilter(SearchFilter::class, properties: ['roles' => 'partial'])]
-class CSUser implements UserInterface, PasswordAuthenticatedUserInterface
+class CsUser implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(["getUsers", "getDocuments"])]
+    #[Groups(["getUsers", "getDocuments", "getApartments"])]
     private ?int $id = null;
 
     #[ORM\Column(length: 180)]
-    #[Groups(["getUsers", "getDocuments"])]
+    #[Groups(["getUsers", "getDocuments", "getApartments"])]
     private ?string $email = null;
 
     #[ORM\Column(length: 150)]
-    #[Groups(["getUsers", "getDocuments"])]
+    #[Groups(["getUsers", "getDocuments", "getApartments"])]
     #[Assert\NotBlank(message: "Le prénom est obligaoire")]
     #[Assert\Length(min: 3, max: 150, minMessage: "Le prénom doit faire au moins {{ limit }} caractères", maxMessage: "Le prénom ne peut pas faire plus de {{ limit }} caractères")]
     private ?string $firstname = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(["getUsers", "getDocuments"])]
+    #[Groups(["getUsers", "getDocuments", "getApartments"])]
     private ?string $lastname = null;
 
     /**
@@ -70,46 +70,51 @@ class CSUser implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[ORM\Column]
-    #[Groups(["getUsers", "getDocuments"])]
+    #[Groups(["getUsers", "getDocuments", "getApartments"])]
     private ?DateTime $lastConnection = null;
 
     #[ORM\Column]
-    #[Groups(["getUsers", "getDocuments"])]
+    #[Groups(["getUsers", "getDocuments", "getApartments"])]
     private ?DateTime $dateInscription = null;
 
     #[ORM\Column(length: 500, nullable: true)]
-    #[Groups(["getUsers", "getDocuments"])]
+    #[Groups(["getUsers", "getDocuments", "getApartments"])]
     private ?string $profilePict = null;
 
     #[ORM\Column(type: 'json')]
-    #[Groups(["getUsers", "getDocuments"])]
+    #[Groups(["getUsers", "getDocuments", "getApartments"])]
     private $roles = [];
 
     #[ORM\Column(length: 10)]
-    #[Groups(["getUsers", "getDocuments"])]
+    #[Groups(["getUsers", "getDocuments", "getApartments"])]
     private ?string $telNumber = null;
 
     #[ORM\Column]
-    #[Groups(["getUsers", "getDocuments"])]
+    #[Groups(["getUsers", "getDocuments", "getApartments"])]
     private ?bool $isVerified = false;
 
     #[ORM\Column]
-    #[Groups(["getUsers", "getDocuments"])]
+    #[Groups(["getUsers", "getDocuments", "getApartments"])]
     private ?bool $professional = false;
 
     #[ORM\Column(nullable: true)]
-    #[Groups(["getUsers", "getDocuments"])]
+    #[Groups(["getUsers", "getDocuments", "getApartments"])]
     private ?int $subscription = null;
 
-    #[ORM\OneToMany(targetEntity: CSDocument::class, mappedBy: 'owner')]
+    #[ORM\OneToMany(targetEntity: CsDocument::class, mappedBy: 'owner', orphanRemoval: true)]
     #[Groups(["getUsers"])]
     private Collection $documents;
+
+    #[ORM\OneToMany(targetEntity: CsApartment::class, mappedBy: 'owner', orphanRemoval: true)]
+    #[Groups(["getUsers"])]
+    private Collection $apartments;
 
     public function __construct()
     {
         $this->dateInscription = new DateTime();
         $this->lastConnection = new DateTime();
         $this->documents = new ArrayCollection();
+        $this->apartments = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -322,14 +327,14 @@ class CSUser implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @return Collection<int, CSDocument>
+     * @return Collection<int, CsDocument>
      */
     public function getDocuments(): Collection
     {
         return $this->documents;
     }
 
-    public function addDocument(CSDocument $document): static
+    public function addDocument(CsDocument $document): static
     {
         if (!$this->documents->contains($document)) {
             $this->documents->add($document);
@@ -339,7 +344,7 @@ class CSUser implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function removeDocument(CSDocument $document): static
+    public function removeDocument(CsDocument $document): static
     {
         if ($this->documents->removeElement($document)) {
             // set the owning side to null (unless already changed)
@@ -407,6 +412,36 @@ class CSUser implements UserInterface, PasswordAuthenticatedUserInterface
     public function setSubscription($subscription)
     {
         $this->subscription = $subscription;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, CsApartment>
+     */
+    public function getApartments(): Collection
+    {
+        return $this->apartments;
+    }
+
+    public function addApartment(CsApartment $apartment): static
+    {
+        if (!$this->apartments->contains($apartment)) {
+            $this->apartments->add($apartment);
+            $apartment->setOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function removeApartment(CsApartment $apartment): static
+    {
+        if ($this->apartments->removeElement($apartment)) {
+            // set the owning side to null (unless already changed)
+            if ($apartment->getOwner() === $this) {
+                $apartment->setOwner(null);
+            }
+        }
 
         return $this;
     }

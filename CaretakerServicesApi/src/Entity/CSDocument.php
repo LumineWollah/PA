@@ -4,7 +4,7 @@ namespace App\Entity;
 
 use DateTime;
 
-use App\Repository\CSDocumentRepository;
+use App\Repository\CsDocumentRepository;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -27,8 +27,8 @@ use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 #[Delete(security: "is_granted('ROLE_ADMIN')")]
 #[Post()]
 #[ApiFilter(SearchFilter::class, properties: ['type' => 'exact'])]
-#[ORM\Entity(repositoryClass: CSDocumentRepository::class)]
-class CSDocument
+#[ORM\Entity(repositoryClass: CsDocumentRepository::class)]
+class CsDocument
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -59,7 +59,7 @@ class CSDocument
     #[ORM\ManyToOne(inversedBy: 'documents')]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(["getDocuments"])]
-    private ?CSUser $owner = null;
+    private ?CsUser $owner = null;
 
     public function __construct()
     {
@@ -119,12 +119,12 @@ class CSDocument
     }
 
     #[Groups(["getDocuments"])]
-    public function getOwner(): ?CSUser
+    public function getOwner(): ?CsUser
     {
         return $this->owner;
     }
 
-    public function setOwner(?CSUser $owner): static
+    public function setOwner(?CsUser $owner): static
     {
         $this->owner = $owner;
 
