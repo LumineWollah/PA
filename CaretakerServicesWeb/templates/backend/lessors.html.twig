@@ -3,6 +3,8 @@
 {% block activeGest %}active{% endblock %}
 {% block activeLess %}active{% endblock %}
 
+{% block stylesheets %}<link rel="stylesheet" href={{ asset('styles/crud.css') }}>{% endblock %}
+
 {% block title %}Liste des bailleurs{% endblock %}
 
 {% block body %}
@@ -46,17 +48,22 @@
         <div class="p-3">
             <h1>Liste des bailleurs</h1>
             <h4>Non validés:</h4>
-            <div class="container">
-                <div class="row row-cols-auto">
-                {% for lessor in lessors %}
-                    <div class="col">
-                        <p>{{ lessor.firstname }} {{ lessor.lastname }}</p>
-                        <p>Inscrit le : {{ lessor.dateInscription | date('d/m/Y H:i:s') }}</p>
-                        <p>Email : {{ lessor.email }}</p>
-                        <p>Téléphone : {{ lessor.telNumber }}</p>
-                        <p>Voir plus</p>
-                        <button>Valider</button>
-                        <button>Refuser</button>
+            <div class="container m-0 mb-4">
+                <div class="row">
+                {% for lessor in unverifiedLessors %}
+                    <div class="col-3 p-0 me-4">
+                        <div class="noValidateCard">
+                            <img src={%if 'profilePict' in lessor %}{{ lessor.profilePict }}{% else %}{{ asset('icons/profile_pict_default.png') }}{% endif %}>
+                            <p>{{ lessor.firstname }} {{ lessor.lastname }}</p>
+                            <p>Inscrit le : {{ lessor.dateInscription | date('d/m/Y H:i:s') }}</p>
+                            <p>Email : {{ lessor.email }}</p>
+                            <p>Téléphone : {{ lessor.telNumber }}</p>
+                            <p>Voir plus</p>
+                            <div class="validateBtns">
+                                <a href="{{ path('lessorAccept', {'id': lessor.id}) }}" class="btn btn-info">Valider</a>
+                                <a href="{{ path('lessorDelete', {'id': lessor.id}) }}" class="btn btn-danger">Refuser</a>
+                            </div>
+                        </div>
                     </div>
                 {% endfor %}
                 </div>
@@ -74,7 +81,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for lessor in lessors %}
+                    {% for lessor in verifiedLessors %}
                         <tr>
                             <td>{{ lessor.firstname }}</td>
                             <td>{{ lessor.lastname }}</td>

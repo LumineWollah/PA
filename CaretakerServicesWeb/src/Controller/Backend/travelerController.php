@@ -42,11 +42,9 @@ class travelerController extends AbstractController
 
         $request->getSession()->remove('traveler');
 
-        // return;
-
         return $this->render('backend/travelers.html.twig', [
-            'verifiedTravelers' => $verifiedTravelers,
-            'unverifiedTravelers' => $unverifiedTravelers
+            'travelers' => $travelersList['hydra:member']
+
         ]);
     }
 
@@ -147,25 +145,4 @@ class travelerController extends AbstractController
         ]);
     }
 
-    #[Route('/admin-panel/traveler/accept', name: 'travelerAccept')]
-    public function travelerAccept(Request $request)
-    {
-        $client = $this->apiHttpClient->getClient($request->getSession()->get('token'), 'application/merge-patch+json');
-
-        $id = $request->query->get('id');
-
-        $response = $client->request('PATCH', 'cs_users/'.$id, [
-            'json' => [
-                'isVerified'=>true
-            ],
-        ]);
-        
-        return $this->redirectToRoute('travelerList');
-        
-    }
-
-    // #[Route('/admin-panel/traveler/refuse', name: 'travelerRefuse')]
-    // public function travelerRefuse(Request $request)
-    // {        
-    // }
 }

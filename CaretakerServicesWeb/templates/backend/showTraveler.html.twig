@@ -20,6 +20,8 @@
                         {{ role }}
                     {% endfor %}
                     </p>
+                    {%if 'documents' in traveler and traveler.documents != null %}
+
                     <div class"container"><strong>Documents :</strong>
                         <ul>
                             {% for document in traveler.documents %}
@@ -27,6 +29,7 @@
                             {% endfor %}
                         </ul>
                     </div>
+                    {% endif %}
                 <div class="col-6">
                     <p><strong>Photo :</strong></p>
                     <img src="{{ asset('profiles/') }}" alt="{{ traveler.firstname }}" class="img-fluid">
