@@ -55,7 +55,7 @@
                             <td>
                                 <form action="{{ path('travelerShow') }}" method="post" style="display: inline;">
                                     <input type="hidden" name="traveler" value="{{ document.owner|json_encode }}">
-                                    <button type="submit" class="btn btn-light" style="background-color: #18A0FB;"><p> {{ document.owner.firstname ~ " " ~ document.owner.lastname }} </p></button>
+                                    <button type="submit" class="btn btn-light" style="height:40px"><p> {{ document.owner.firstname ~ " " ~ document.owner.lastname }} </p></button>
                                 </form>
                             </td>
                             <td>{{ document.type }}</td>
