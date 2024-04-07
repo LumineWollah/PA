@@ -1,0 +1,49 @@
+nav{
+    background-color: #3D2F44; 
+    height: 8vh; 
+    width: 100vw;
+    position: fixed !important;
+    top: 0;
+}
+
+.mainRow {
+    margin: 17px; 
+    margin-top: calc(8vh + 17px);
+}
+
+.sideBar {
+    width: 100%;
+    height: calc(92vh - 65px);
+    border-radius: 10px;
+    background-color: #3D2F44;
+    top:6rem;
+}
+
+.menuGestion {
+    padding-left: 30px;
+}
+
+hr {
+    color: white;
+    width: 90%;
+}
+
+html {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    overflow-y: scroll;
+}
+
+html::-webkit-scrollbar {
+    display: none;
+}
+
+.gestionUl a {
+    color: white;
+}
+
+.gestionBtn {
+    color: white;
+    padding-left: 16px;
+    padding-right: 16px;
+}

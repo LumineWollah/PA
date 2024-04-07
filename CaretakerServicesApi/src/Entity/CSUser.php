@@ -70,35 +70,35 @@ class CSUser implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[ORM\Column]
-    #[Groups(["getUsers"])]
+    #[Groups(["getUsers", "getDocuments"])]
     private ?DateTime $lastConnection = null;
 
     #[ORM\Column]
-    #[Groups(["getUsers"])]
+    #[Groups(["getUsers", "getDocuments"])]
     private ?DateTime $dateInscription = null;
 
     #[ORM\Column(length: 500, nullable: true)]
-    #[Groups(["getUsers"])]
+    #[Groups(["getUsers", "getDocuments"])]
     private ?string $profilePict = null;
 
     #[ORM\Column(type: 'json')]
-    #[Groups(["getUsers"])]
+    #[Groups(["getUsers", "getDocuments"])]
     private $roles = [];
 
     #[ORM\Column(length: 10)]
-    #[Groups(["getUsers"])]
+    #[Groups(["getUsers", "getDocuments"])]
     private ?string $telNumber = null;
 
     #[ORM\Column]
-    #[Groups(["getUsers"])]
+    #[Groups(["getUsers", "getDocuments"])]
     private ?bool $isVerified = false;
 
     #[ORM\Column]
-    #[Groups(["getUsers"])]
+    #[Groups(["getUsers", "getDocuments"])]
     private ?bool $professional = false;
 
     #[ORM\Column(nullable: true)]
-    #[Groups(["getUsers"])]
+    #[Groups(["getUsers", "getDocuments"])]
     private ?int $subscription = null;
 
     #[ORM\OneToMany(targetEntity: CSDocument::class, mappedBy: 'owner')]
