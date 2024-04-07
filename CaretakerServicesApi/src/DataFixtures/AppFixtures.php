@@ -47,7 +47,7 @@ class AppFixtures extends Fixture
         $user->setLastname("test");
         $user->setTelNumber("0606060606");
         $user->setPassword($this->userPasswordHasher->hashPassword($user, "Test1234!"));
-        $user->setRoles(['ROLE_PROVIDER']);
+        $user->setRoles(['ROLE_PROVIDER', 'ROLE_TRAVELER', 'ROLE_LESSOR']);
         $manager->persist($user);
         
         // Création d'un user admin
