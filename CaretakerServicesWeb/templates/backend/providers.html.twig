@@ -33,15 +33,15 @@
             <h4>Non validés:</h4>
             <div class="container">
                 <div class="row row-cols-auto">
-                {% for provider in providers %}
+                {% for provider in unverifiedProviders %}
                     <div class="col">
                         <p>{{ provider.firstname }} {{ provider.lastname }}</p>
                         <p>Inscrit le : {{ provider.dateInscription | date('d/m/Y H:i:s') }}</p>
                         <p>Email : {{ provider.email }}</p>
                         <p>Téléphone : {{ provider.telNumber }}</p>
                         <p>Voir plus</p>
-                        <button>Valider</button>
-                        <button>Refuser</button>
+                        <a href="{{ path('providerAccept', {'id': provider.id}) }}" class="btn btn-info">Valider</a>
+                        <a href="{{ path('providerDelete', {'id': provider.id}) }}" class="btn btn-danger">Refuser</a>
                     </div>
                 {% endfor %}
                 </div>
@@ -59,7 +59,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for provider in providers %}
+                    {% for provider in verifiedProviders %}
                         <tr>
                             <td>{{ provider.firstname }}</td>
                             <td>{{ provider.lastname }}</td>

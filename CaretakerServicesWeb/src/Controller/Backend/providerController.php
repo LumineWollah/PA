@@ -32,11 +32,19 @@ class providerController extends AbstractController
         ]);
         
         $providersList = $response->toArray();
-        
+
+        $verifiedProviders = array();
+        $unverifiedProviders = array();
+
+        foreach ($providersList['hydra:member'] as $provider) {
+            $provider['isVerified'] == 1 ? $verifiedProviders[] = $provider : $unverifiedProviders[] = $provider;
+        }
+
         $request->getSession()->remove('provider');
 
         return $this->render('backend/providers.html.twig', [
-            'providers' => $providersList['hydra:member']
+            'verifiedProviders' => $verifiedProviders,
+            'unverifiedProviders' => $unverifiedProviders
         ]);
     }
 
@@ -136,5 +144,27 @@ class providerController extends AbstractController
             'provider'=>$storedProvider
         ]);
     }
+
+    #[Route('/admin-panel/provider/accept', name: 'providerAccept')]
+    public function providerAccept(Request $request)
+    {
+        $client = $this->apiHttpClient->getClient($request->getSession()->get('token'), 'application/merge-patch+json');
+
+        $id = $request->query->get('id');
+
+        $response = $client->request('PATCH', 'cs_users/'.$id, [
+            'json' => [
+                'isVerified'=>true
+            ],
+        ]);
+        
+        return $this->redirectToRoute('providerList');
+        
+    }
+
+    // #[Route('/admin-panel/provider/refuse', name: 'providerRefuse')]
+    // public function providerRefuse(Request $request)
+    // {        
+    // }
 
 }

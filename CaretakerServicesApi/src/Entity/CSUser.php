@@ -87,9 +87,17 @@ class CSUser implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(["getUsers"])]
     private ?string $telNumber = null;
 
-    // #[ORM\Column]
-    // #[Groups(["getUsers"])]
-    // private ?bool $admin = false;
+    #[ORM\Column]
+    #[Groups(["getUsers"])]
+    private ?bool $isVerified = false;
+
+    #[ORM\Column]
+    #[Groups(["getUsers"])]
+    private ?bool $professional = false;
+
+    #[ORM\Column(nullable: true)]
+    #[Groups(["getUsers"])]
+    private ?int $subscription = null;
 
     #[ORM\OneToMany(targetEntity: CSDocument::class, mappedBy: 'owner')]
     #[Groups(["getUsers"])]
@@ -337,6 +345,66 @@ class CSUser implements UserInterface, PasswordAuthenticatedUserInterface
                 $document->setOwner(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * Get the value of isVerified
+     */ 
+    public function getisVerified()
+    {
+        return $this->isVerified;
+    }
+
+    /**
+     * Set the value of isVerified
+     *
+     * @return  self
+     */ 
+    public function setisVerified($isVerified)
+    {
+        $this->isVerified = $isVerified;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of professional
+     */ 
+    public function getProfessional()
+    {
+        return $this->professional;
+    }
+
+    /**
+     * Set the value of professional
+     *
+     * @return  self
+     */ 
+    public function setProfessional($professional)
+    {
+        $this->professional = $professional;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of subscription
+     */ 
+    public function getSubscription()
+    {
+        return $this->subscription;
+    }
+
+    /**
+     * Set the value of subscription
+     *
+     * @return  self
+     */ 
+    public function setSubscription($subscription)
+    {
+        $this->subscription = $subscription;
 
         return $this;
     }
