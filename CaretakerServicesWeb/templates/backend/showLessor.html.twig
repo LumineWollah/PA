@@ -1,0 +1,36 @@
+{% extends 'backend/base.html.twig' %}
+
+{% block title %}Afficher un bailleur{% endblock %}
+
+{% block body %}
+    <div class="col-10 p-0">
+        <div class="p-3">
+            <h1>Afficher un bailleur</h1>
+            <div class="row">
+                <div class="col-6">
+                    <p><strong>Id :</strong> {{ lessor.id }}</p>
+                    <p><strong>Nom :</strong> {{ lessor.lastname }}</p>
+                    <p><strong>Prénom :</strong> {{ lessor.firstname }}</p>
+                    <p><strong>Email :</strong> {{ lessor.email }}</p>
+                    <p><strong>Numéro de téléphone :</strong> {{ lessor.telNumber }}</p>
+                    <p><strong>Dernière connexion :</strong> {{ lessor.lastConnection }}</p>
+                    <p><strong>Inscrit le :</strong> {{ lessor.dateInscription }}</p>
+                    <p><strong>Rôles :</strong> 
+                    {% for role in lessor.roles %}
+                        {{ role }}
+                    {% endfor %}
+                    </p>
+                    <div class"container"><strong>Documents :</strong>
+                        <ul>
+                            {% for document in lessor.documents %}
+                                <li>{{ document.name }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                <div class="col-6">
+                    <p><strong>Photo :</strong></p>
+                    <img src="{{ asset('profiles/') }}" alt="{{ lessor.firstname }}" class="img-fluid">
+                </div>
+        </div>
+    </div>
+{% endblock %}
