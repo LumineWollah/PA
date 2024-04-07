@@ -2,11 +2,31 @@
 
 namespace App\Entity;
 
-use App\Repository\CSDocumentRepository;
-use Doctrine\ORM\Mapping as ORM;
 use DateTime;
+
+use App\Repository\CSDocumentRepository;
+
+use Doctrine\ORM\Mapping as ORM;
+
 use Symfony\Component\Serializer\Annotation\Groups;
 
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+
+#[ApiResource(security: "is_granted('ROLE_USER')", normalizationContext: ['groups' => ['getDocuments']])]
+#[Get(security: "is_granted('ROLE_ADMIN') or object.getOwner() == user")]
+#[Patch(security: "is_granted('ROLE_ADMIN') or object.getOwner() == user")]
+#[GetCollection(security: "is_granted('ROLE_ADMIN')")]
+#[Delete(security: "is_granted('ROLE_ADMIN')")]
+#[Post()]
+#[ApiFilter(SearchFilter::class, properties: ['type' => 'exact'])]
 #[ORM\Entity(repositoryClass: CSDocumentRepository::class)]
 class CSDocument
 {
@@ -30,7 +50,11 @@ class CSDocument
 
     #[ORM\Column]
     #[Groups(["getUsers", "getDocuments"])]
-    private ?DateTime $date_creation = null;
+    private ?DateTime $dateCreation = null;
+
+    #[ORM\Column]
+    #[Groups(["getUsers", "getDocuments"])]
+    private ?bool $visibility = true;
 
     #[ORM\ManyToOne(inversedBy: 'documents')]
     #[ORM\JoinColumn(nullable: false)]
@@ -39,7 +63,7 @@ class CSDocument
 
     public function __construct()
     {
-        $this->date_creation = new DateTime();
+        $this->dateCreation = new DateTime();
     }
 
     public function getId(): ?int
@@ -85,15 +109,16 @@ class CSDocument
 
     public function getDateCreation()
     {
-        return $this->date_creation;
+        return $this->dateCreation;
     }
 
-    public function setDateCreation($date_creation)
+    public function setDateCreation($dateCreation)
     {
-        $this->date_creation = $date_creation;
+        $this->dateCreation = $dateCreation;
         return $this;
     }
 
+    #[Groups(["getDocuments"])]
     public function getOwner(): ?CSUser
     {
         return $this->owner;
@@ -102,6 +127,26 @@ class CSDocument
     public function setOwner(?CSUser $owner): static
     {
         $this->owner = $owner;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of visibility
+     */ 
+    public function getVisibility()
+    {
+        return $this->visibility;
+    }
+
+    /**
+     * Set the value of visibility
+     *
+     * @return  self
+     */ 
+    public function setVisibility($visibility)
+    {
+        $this->visibility = $visibility;
 
         return $this;
     }
