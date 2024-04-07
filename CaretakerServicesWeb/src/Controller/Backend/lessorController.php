@@ -32,10 +32,20 @@ class lessorController extends AbstractController
         
         $lessorsList = $response->toArray();
 
+        $verifiedLessors = array();
+        $unverifiedLessors = array();
+
+        foreach ($lessorsList['hydra:member'] as $lessor) {
+            $lessor['isVerified'] == 1 ? $verifiedLessors[] = $lessor : $unverifiedLessors[] = $lessor;
+        }
+
         $request->getSession()->remove('lessor');
 
+        // return;
+
         return $this->render('backend/lessors.html.twig', [
-            'lessors' => $lessorsList['hydra:member']
+            'verifiedLessors' => $verifiedLessors,
+            'unverifiedLessors' => $unverifiedLessors
         ]);
     }
     
@@ -135,5 +145,27 @@ class lessorController extends AbstractController
             'lessor'=>$storedLessor
         ]);
     }
+
+    #[Route('/admin-panel/lessor/accept', name: 'lessorAccept')]
+    public function lessorAccept(Request $request)
+    {
+        $client = $this->apiHttpClient->getClient($request->getSession()->get('token'), 'application/merge-patch+json');
+
+        $id = $request->query->get('id');
+
+        $response = $client->request('PATCH', 'cs_users/'.$id, [
+            'json' => [
+                'isVerified'=>true
+            ],
+        ]);
+        
+        return $this->redirectToRoute('lessorList');
+        
+    }
+
+    // #[Route('/admin-panel/lessor/refuse', name: 'lessorRefuse')]
+    // public function lessorRefuse(Request $request)
+    // {        
+    // }
 
 }
