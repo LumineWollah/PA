@@ -7,9 +7,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use App\Service\ApiHttpClient;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
-use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Validator\Constraints\NotBlank;
 
 
 class providerController extends AbstractController
@@ -63,7 +61,6 @@ class providerController extends AbstractController
     public function providerEdit(Request $request)
     {
         $providerData = $request->request->get('provider');
-        echo($providerData);
         $provider = json_decode($providerData, true);
 
         $storedProvider = $request->getSession()->get('provider');
@@ -121,4 +118,23 @@ class providerController extends AbstractController
                 'errorMessage'=>null
             ]);
     }
+
+    #[Route('/admin-panel/provider/show', name: 'providerShow')]
+    public function providerShow(Request $request)
+    {
+        $providerData = $request->request->get('provider');
+        $provider = json_decode($providerData, true);
+
+        $storedProvider = $request->getSession()->get('provider');
+
+        if (!$storedProvider) {
+            $request->getSession()->set('provider', $provider);
+            $storedProvider = $provider;
+        }
+        
+        return $this->render('backend/showProvider.html.twig', [
+            'provider'=>$storedProvider
+        ]);
+    }
+
 }
