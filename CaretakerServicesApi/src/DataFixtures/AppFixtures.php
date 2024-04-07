@@ -28,6 +28,8 @@ class AppFixtures extends Fixture
         $user->setLastname("Test");
         $user->setTelNumber("0606060606");
         $user->setPassword($this->userPasswordHasher->hashPassword($user, "Test1234!"));
+        $user->setProfessional(false);
+        $user->setisVerified(false);
         $user->setRoles(['ROLE_LESSOR']);
         $manager->persist($user);
 
@@ -37,6 +39,8 @@ class AppFixtures extends Fixture
         $user->setLastname("Vareilles");
         $user->setTelNumber("0606060606");
         $user->setPassword($this->userPasswordHasher->hashPassword($user, "Test1234!"));
+        $user->setProfessional(false);
+        $user->setisVerified(false);
         $user->setRoles(['ROLE_PROVIDER']);
         $manager->persist($user);
 
@@ -47,7 +51,9 @@ class AppFixtures extends Fixture
         $user->setLastname("test");
         $user->setTelNumber("0606060606");
         $user->setPassword($this->userPasswordHasher->hashPassword($user, "Test1234!"));
-        $user->setRoles(['ROLE_PROVIDER']);
+        $user->setProfessional(false);
+        $user->setisVerified(true);
+        $user->setRoles(['ROLE_PROVIDER', 'ROLE_TRAVELER', 'ROLE_LESSOR']);
         $manager->persist($user);
         
         // Création d'un user admin
@@ -57,6 +63,8 @@ class AppFixtures extends Fixture
         $userAdmin->setLastname("Goudier");
         $userAdmin->setTelNumber("0637774127");
         $userAdmin->setPassword($this->userPasswordHasher->hashPassword($userAdmin, "Test1234!"));
+        $userAdmin->setProfessional(false);
+        $userAdmin->setisVerified(true);
         $userAdmin->setAdmin(true);
         $manager->persist($userAdmin);
 

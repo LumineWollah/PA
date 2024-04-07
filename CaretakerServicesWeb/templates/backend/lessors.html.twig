@@ -3,10 +3,51 @@
 {% block title %}Liste des bailleurs{% endblock %}
 
 {% block body %}
+<script>
+    $(document).ready( function () {
+        $('#crudList').DataTable( {
+            paging: false,
+            scrollY: 400,
+            buttons: true,
+            layout: {
+                topStart: {
+                    search: {
+                        placeholder: "Rechercher...",
+                        search: ""
+                    }
+                },
+                topEnd: 'buttons',
+            },
+            language: {
+                search:"",
+            },
+            buttons: [
+                'pdf'
+            ],
+        } );
+    } );
+</script>
     <div class="col-10 p-0">
         <div class="p-3">
             <h1>Liste des bailleurs</h1>
-            <table class="table table-striped">
+            <h4>Non validés:</h4>
+            <div class="container">
+                <div class="row row-cols-auto">
+                {% for lessor in lessors %}
+                    <div class="col">
+                        <p>{{ lessor.firstname }} {{ lessor.lastname }}</p>
+                        <p>Inscrit le : {{ lessor.dateInscription | date('d/m/Y H:i:s') }}</p>
+                        <p>Email : {{ lessor.email }}</p>
+                        <p>Téléphone : {{ lessor.telNumber }}</p>
+                        <p>Voir plus</p>
+                        <button>Valider</button>
+                        <button>Refuser</button>
+                    </div>
+                {% endfor %}
+                </div>
+              </div> 
+            <h4>Validés:</h4>
+            <table id="crudList" class="table table-striped">
                 <thead>
                     <tr>
                         <th scope="col">Prénom</th>
@@ -14,6 +55,7 @@
                         <th scope="col">Email</th>
                         <th scope="col">Téléphone</th>
                         <th scope="col">Inscrit le</th>
+                        <th scope="col">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -24,6 +66,17 @@
                             <td>{{ lessor.email }}</td>
                             <td>{{ lessor.telNumber }}</td>
                             <td>{{ lessor.dateInscription | date('d/m/Y H:i:s') }}</td>
+                            <td>
+                                <a href="{{ path('lessorDelete', {'id': lessor.id}) }}" class="btn btn-danger">Supprimer</a>
+                                <form action="{{ path('lessorEdit') }}" method="post" style="display: inline;">
+                                    <input type="hidden" name="lessor" value="{{ lessor|json_encode }}">
+                                    <button type="submit" class="btn btn-info">Edit</button>
+                                </form>
+                                <form action="{{ path('lessorShow') }}" method="post" style="display: inline;">
+                                    <input type="hidden" name="lessor" value="{{ lessor|json_encode }}">
+                                    <button type="submit" class="btn btn-info">Show</button>
+                                </form>
+                            </td>
                         </tr>
                     {% endfor %}
                 </tbody>

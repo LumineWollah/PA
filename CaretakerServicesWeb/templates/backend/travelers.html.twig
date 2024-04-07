@@ -3,10 +3,34 @@
 {% block title %}Liste des voyageurs{% endblock %}
 
 {% block body %}
+<script>
+    $(document).ready( function () {
+        $('#crudList').DataTable( {
+            paging: false,
+            scrollY: 400,
+            buttons: true,
+            layout: {
+                topStart: {
+                    search: {
+                        placeholder: "Rechercher...",
+                        search: ""
+                    }
+                },
+                topEnd: 'buttons',
+            },
+            language: {
+                search:"",
+            },
+            buttons: [
+                'pdf'
+            ],
+        } );
+    } );
+</script>
     <div class="col-10 p-0">
         <div class="p-3">
             <h1>Liste des voyageurs</h1>
-            <table class="table table-striped">
+            <table id="crudList" class="table table-striped">
                 <thead>
                     <tr>
                         <th scope="col">Prénom</th>
@@ -14,6 +38,7 @@
                         <th scope="col">Email</th>
                         <th scope="col">Téléphone</th>
                         <th scope="col">Inscrit le</th>
+                        <th scope="col">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -24,6 +49,17 @@
                             <td>{{ traveler.email }}</td>
                             <td>{{ traveler.telNumber }}</td>
                             <td>{{ traveler.dateInscription | date('d/m/Y H:i:s') }}</td>
+                            <td>
+                                <a href="{{ path('travelerDelete', {'id': traveler.id}) }}" class="btn btn-danger">Supprimer</a>
+                                <form action="{{ path('travelerEdit') }}" method="post" style="display: inline;">
+                                    <input type="hidden" name="traveler" value="{{ traveler|json_encode }}">
+                                    <button type="submit" class="btn btn-info">Edit</button>
+                                </form>
+                                <form action="{{ path('travelerShow') }}" method="post" style="display: inline;">
+                                    <input type="hidden" name="traveler" value="{{ traveler|json_encode }}">
+                                    <button type="submit" class="btn btn-info">Show</button>
+                                </form>
+                            </td>
                         </tr>
                     {% endfor %}
                 </tbody>
@@ -31,3 +67,4 @@
         </div>
     </div>
 {% endblock %}
+
