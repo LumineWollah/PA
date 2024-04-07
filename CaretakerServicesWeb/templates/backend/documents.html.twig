@@ -66,10 +66,8 @@
                                     <input type="hidden" name="document" value="{{ document|json_encode }}">
                                     <button type="submit" class="btn" style="background-color: #18A0FB;"><img style="width:20px;height:20px;" src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/64/Edit_icon_%28the_Noun_Project_30184%29.svg/2048px-Edit_icon_%28the_Noun_Project_30184%29.svg.png"></button>
                                 </form>
-                                <form action="{{ path('documentShow') }}" method="post" style="display: inline;">
-                                    <input type="hidden" name="document" value="{{ document|json_encode }}">
-                                    <button type="submit" class="btn" style="background-color: #A594F9;"><img style="width:20px;height:17px;" src="https://static-00.iconduck.com/assets.00/show-icon-512x410-5ofq0plr.png"></button>
-                                </form>
+                                {# <a href={{ document.url }} taget="blank_" class="btn" style="background-color: #A594F9;"><img style="width:20px;height:20px;" src="https://static-00.iconduck.com/assets.00/show-icon-512x410-5ofq0plr.png"></a> #}
+                                <a href="https://thumb.canalplus.pro/http/unsafe/1920x1080/smart/creativemedia-image.canalplus.pro/content/0001/40/97e6a76d9788e3e0eea6fddbd68b4fb8b8d5cdda.jpeg" taget="blank_" class="btn" style="background-color: #A594F9;"><img style="width:20px;height:20px;" src="https://static-00.iconduck.com/assets.00/show-icon-512x410-5ofq0plr.png"></a>
                             </td>
                         </tr>
                     {% endfor %}

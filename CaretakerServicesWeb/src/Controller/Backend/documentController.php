@@ -118,23 +118,4 @@ class documentController extends AbstractController
                 'errorMessage'=>null
             ]);
     }
-
-    #[Route('/admin-panel/document/show', name: 'documentShow')]
-    public function documentShow(Request $request)
-    {
-        $documentData = $request->request->get('document');
-        $document = json_decode($documentData, true);
-
-        $storedDocument = $request->getSession()->get('document');
-
-        if (!$storedDocument) {
-            $request->getSession()->set('document', $document);
-            $storedDocument = $document;
-        }
-        
-        return $this->render('backend/showDocument.html.twig', [
-            'document'=>$storedDocument
-        ]);
-    }
-
 }
