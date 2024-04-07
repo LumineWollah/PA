@@ -44,7 +44,6 @@ class AppFixtures extends Fixture
         $user->setRoles(['ROLE_PROVIDER']);
         $manager->persist($user);
 
-        
         $user = new CSUser();
         $user->setEmail("test@yahoo.com");
         $user->setFirstname("test");
@@ -73,6 +72,13 @@ class AppFixtures extends Fixture
         $document->setType("FACTURE");
         $document->setUrl("test.s3");
         $document->setOwner($userAdmin);
+        $manager->persist($document);
+
+        $document = new CSDocument();
+        $document->setName("Devis jean-pierre");
+        $document->setType("DEVIS");
+        $document->setUrl("test2.s3");
+        $document->setOwner($user);
         $manager->persist($document);
 
         $manager->flush();
