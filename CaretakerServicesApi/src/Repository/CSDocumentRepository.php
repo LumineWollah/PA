@@ -2,27 +2,27 @@
 
 namespace App\Repository;
 
-use App\Entity\CSDocument;
+use App\Entity\CsDocument;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<CSDocument>
+ * @extends ServiceEntityRepository<CsDocument>
  *
  * @method Document|null find($id, $lockMode = null, $lockVersion = null)
  * @method Document|null findOneBy(array $criteria, array $orderBy = null)
  * @method Document[]    findAll()
  * @method Document[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class CSDocumentRepository extends ServiceEntityRepository
+class CsDocumentRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, CSDocument::class);
+        parent::__construct($registry, CsDocument::class);
     }
 
 //    /**
-//     * @return CSDocument[] Returns an array of CSDocument objects
+//     * @return CsDocument[] Returns an array of CsDocument objects
 //     */
 //    public function findByExampleField($value): array
 //    {
@@ -36,7 +36,7 @@ class CSDocumentRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-//    public function findOneBySomeField($value): ?CSDocument
+//    public function findOneBySomeField($value): ?CsDocument
 //    {
 //        return $this->createQueryBuilder('d')
 //            ->andWhere('d.exampleField = :val')

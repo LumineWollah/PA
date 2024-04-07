@@ -2,9 +2,9 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\CSDocument;
-use App\Entity\CSLessor;
-use App\Entity\CSUser;
+use App\Entity\CsApartment;
+use App\Entity\CsDocument;
+use App\Entity\CsUser;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -22,7 +22,7 @@ class AppFixtures extends Fixture
     public function load(ObjectManager $manager): void
     {
         // Création d'un user "normal"
-        $user = new CSUser();
+        $user = new CsUser();
         $user->setEmail("test@gmail.com");
         $user->setFirstname("Test");
         $user->setLastname("Test");
@@ -33,7 +33,19 @@ class AppFixtures extends Fixture
         $user->setRoles(['ROLE_LESSOR']);
         $manager->persist($user);
 
-        $user = new CSUser();
+        $apartment = new CsApartment();
+        $apartment->setName("Mon super appart");
+        $apartment->setDescription("Test de description");
+        $apartment->setBedrooms(4);
+        $apartment->setTravelersMax(8);
+        $apartment->setArea(825.25);
+        $apartment->setIsFullhouse(true);
+        $apartment->setIsHouse(true);
+        $apartment->setPrice(421);
+        $apartment->setOwner($user);
+        $manager->persist($apartment);
+
+        $user = new CsUser();
         $user->setEmail("mathis.vareilles@yahoo.com");
         $user->setFirstname("Mathis");
         $user->setLastname("Vareilles");
@@ -44,7 +56,7 @@ class AppFixtures extends Fixture
         $user->setRoles(['ROLE_PROVIDER']);
         $manager->persist($user);
         
-        $user = new CSUser();
+        $user = new CsUser();
         $user->setEmail("test@yahoo.com");
         $user->setFirstname("test");
         $user->setLastname("test");
@@ -53,109 +65,9 @@ class AppFixtures extends Fixture
         $user->setProfessional(false);
         $user->setisVerified(true);
         $user->setRoles(['ROLE_PROVIDER', 'ROLE_TRAVELER', 'ROLE_LESSOR']);
-        $manager->persist($user);
-                
-        $user = new CSUser();
-        $user->setEmail("test1@yahoo.com");
-        $user->setFirstname("test");
-        $user->setLastname("test");
-        $user->setTelNumber("0606060606");
-        $user->setPassword($this->userPasswordHasher->hashPassword($user, "Test1234!"));
-        $user->setProfessional(false);
-        $user->setisVerified(false);
-        $user->setRoles(['ROLE_PROVIDER', 'ROLE_TRAVELER', 'ROLE_LESSOR']);
-        $manager->persist($user);
-                
-        $user = new CSUser();
-        $user->setEmail("test2@yahoo.com");
-        $user->setFirstname("test");
-        $user->setLastname("test");
-        $user->setTelNumber("0606060606");
-        $user->setPassword($this->userPasswordHasher->hashPassword($user, "Test1234!"));
-        $user->setProfessional(false);
-        $user->setisVerified(false);
-        $user->setRoles(['ROLE_PROVIDER', 'ROLE_TRAVELER', 'ROLE_LESSOR']);
-        $manager->persist($user);
-                
-        $user = new CSUser();
-        $user->setEmail("test3@yahoo.com");
-        $user->setFirstname("test");
-        $user->setLastname("test");
-        $user->setTelNumber("0606060606");
-        $user->setPassword($this->userPasswordHasher->hashPassword($user, "Test1234!"));
-        $user->setProfessional(false);
-        $user->setisVerified(false);
-        $user->setRoles(['ROLE_PROVIDER', 'ROLE_TRAVELER', 'ROLE_LESSOR']);
-        $manager->persist($user);
-                
-        $user = new CSUser();
-        $user->setEmail("test4@yahoo.com");
-        $user->setFirstname("test");
-        $user->setLastname("test");
-        $user->setTelNumber("0606060606");
-        $user->setPassword($this->userPasswordHasher->hashPassword($user, "Test1234!"));
-        $user->setProfessional(false);
-        $user->setisVerified(false);
-        $user->setRoles(['ROLE_PROVIDER', 'ROLE_TRAVELER', 'ROLE_LESSOR']);
-        $manager->persist($user);
-                
-        $user = new CSUser();
-        $user->setEmail("test5@yahoo.com");
-        $user->setFirstname("test");
-        $user->setLastname("test");
-        $user->setTelNumber("0606060606");
-        $user->setPassword($this->userPasswordHasher->hashPassword($user, "Test1234!"));
-        $user->setProfessional(false);
-        $user->setisVerified(false);
-        $user->setRoles(['ROLE_PROVIDER', 'ROLE_TRAVELER', 'ROLE_LESSOR']);
-        $manager->persist($user);
-                
-        $user = new CSUser();
-        $user->setEmail("test6@yahoo.com");
-        $user->setFirstname("test");
-        $user->setLastname("test");
-        $user->setTelNumber("0606060606");
-        $user->setPassword($this->userPasswordHasher->hashPassword($user, "Test1234!"));
-        $user->setProfessional(false);
-        $user->setisVerified(false);
-        $user->setRoles(['ROLE_PROVIDER', 'ROLE_TRAVELER', 'ROLE_LESSOR']);
-        $manager->persist($user);
-                
-        $user = new CSUser();
-        $user->setEmail("test7@yahoo.com");
-        $user->setFirstname("test");
-        $user->setLastname("test");
-        $user->setTelNumber("0606060606");
-        $user->setPassword($this->userPasswordHasher->hashPassword($user, "Test1234!"));
-        $user->setProfessional(false);
-        $user->setisVerified(false);
-        $user->setRoles(['ROLE_PROVIDER', 'ROLE_TRAVELER', 'ROLE_LESSOR']);
-        $manager->persist($user);
-                
-        $user = new CSUser();
-        $user->setEmail("test8@yahoo.com");
-        $user->setFirstname("test");
-        $user->setLastname("test");
-        $user->setTelNumber("0606060606");
-        $user->setPassword($this->userPasswordHasher->hashPassword($user, "Test1234!"));
-        $user->setProfessional(false);
-        $user->setisVerified(false);
-        $user->setRoles(['ROLE_PROVIDER', 'ROLE_TRAVELER', 'ROLE_LESSOR']);
-        $manager->persist($user);
-                
-        $user = new CSUser();
-        $user->setEmail("test9@yahoo.com");
-        $user->setFirstname("test");
-        $user->setLastname("test");
-        $user->setTelNumber("0606060606");
-        $user->setPassword($this->userPasswordHasher->hashPassword($user, "Test1234!"));
-        $user->setProfessional(false);
-        $user->setisVerified(false);
-        $user->setRoles(['ROLE_PROVIDER', 'ROLE_TRAVELER', 'ROLE_LESSOR']);
-        $manager->persist($user);
+        $manager->persist($user);            
         
-        // Création d'un user admin
-        $userAdmin = new CSUser();
+        $userAdmin = new CsUser();
         $userAdmin->setEmail("leopold.goudier@gmail.com");
         $userAdmin->setFirstname("Léopold");
         $userAdmin->setLastname("Goudier");
@@ -166,14 +78,14 @@ class AppFixtures extends Fixture
         $userAdmin->setAdmin(true);
         $manager->persist($userAdmin);
 
-        $document = new CSDocument();
+        $document = new CsDocument();
         $document->setName("Facture Francis");
         $document->setType("FACTURE");
         $document->setUrl("test.s3");
         $document->setOwner($userAdmin);
         $manager->persist($document);
 
-        $document = new CSDocument();
+        $document = new CsDocument();
         $document->setName("Devis jean-pierre");
         $document->setType("DEVIS");
         $document->setUrl("test2.s3");
