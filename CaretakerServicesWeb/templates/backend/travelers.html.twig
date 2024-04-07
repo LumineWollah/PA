@@ -51,6 +51,15 @@
                             <td>{{ traveler.dateInscription | date('d/m/Y H:i:s') }}</td>
                             <td>
                                 <a href="{{ path('travelerDelete', {'id': traveler.id}) }}" class="btn btn-danger">Supprimer</a>
+                                <form action="{{ path('travelerEdit') }}" method="post" style="display: inline;">
+                                    <input type="hidden" name="traveler" value="{{ traveler|json_encode }}">
+                                    <button type="submit" class="btn btn-info">Edit</button>
+                                </form>
+                                <form action="{{ path('travelerShow') }}" method="post" style="display: inline;">
+                                    <input type="hidden" name="traveler" value="{{ traveler|json_encode }}">
+                                    <button type="submit" class="btn btn-info">Show</button>
+                                </form>
+                            </td>
                         </tr>
                     {% endfor %}
                 </tbody>
