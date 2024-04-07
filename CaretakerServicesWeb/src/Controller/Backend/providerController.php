@@ -40,7 +40,13 @@ class providerController extends AbstractController
             $provider['isVerified'] == 1 ? $verifiedProviders[] = $provider : $unverifiedProviders[] = $provider;
         }
 
+        // echo "<pre>";
+        // print_r($providersList);
+        // echo "</pre>";
+
         $request->getSession()->remove('provider');
+
+        // return;
 
         return $this->render('backend/providers.html.twig', [
             'verifiedProviders' => $verifiedProviders,

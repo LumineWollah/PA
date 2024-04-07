@@ -1,5 +1,7 @@
 {% extends 'backend/base.html.twig' %}
 
+{% block stylesheets %}<link rel="stylesheet" href={{ asset('styles/crud.css') }}>{% endblock %}
+
 {% block title %}Liste des intervenants{% endblock %}
 
 {% block body %}
@@ -30,18 +32,23 @@
     <div class="col-10 p-0">
         <div class="p-3">
             <h1>Liste des intervenants</h1>
-            <h4>Non validés:</h4>
-            <div class="container">
-                <div class="row row-cols-auto">
+            <h4 class="mt-4">Non validés:</h4>
+            <div class="container m-0 mb-4">
+                <div class="row">
                 {% for provider in unverifiedProviders %}
-                    <div class="col">
-                        <p>{{ provider.firstname }} {{ provider.lastname }}</p>
-                        <p>Inscrit le : {{ provider.dateInscription | date('d/m/Y H:i:s') }}</p>
-                        <p>Email : {{ provider.email }}</p>
-                        <p>Téléphone : {{ provider.telNumber }}</p>
-                        <p>Voir plus</p>
-                        <a href="{{ path('providerAccept', {'id': provider.id}) }}" class="btn btn-info">Valider</a>
-                        <a href="{{ path('providerDelete', {'id': provider.id}) }}" class="btn btn-danger">Refuser</a>
+                    <div class="col-3 p-0 me-4">
+                        <div class="noValidateCard">
+                            <img src={%if 'profilePict' in provider %}{{ provider.profilePict }}{% else %}{{ asset('icons/profile_pict_default.png') }}{% endif %}>
+                            <p>{{ provider.firstname }} {{ provider.lastname }}</p>
+                            <p>Inscrit le : {{ provider.dateInscription | date('d/m/Y H:i:s') }}</p>
+                            <p>Email : {{ provider.email }}</p>
+                            <p>Téléphone : {{ provider.telNumber }}</p>
+                            <p>Voir plus</p>
+                            <div class="validateBtns">
+                                <a href="{{ path('providerAccept', {'id': provider.id}) }}" class="btn btn-info">Valider</a>
+                                <a href="{{ path('providerDelete', {'id': provider.id}) }}" class="btn btn-danger">Refuser</a>
+                            </div>
+                        </div>
                     </div>
                 {% endfor %}
                 </div>
