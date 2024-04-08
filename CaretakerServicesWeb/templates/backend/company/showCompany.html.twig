@@ -1,0 +1,38 @@
+{% extends 'backend/base.html.twig' %}
+
+{% block title %}Afficher une entreprise{% endblock %}
+
+{% block body %}
+    <div class="col-10 p-0">
+        <div class="p-3">
+            <h1>Afficher une entreprise</h1>
+            <div class="row">
+                <div class="col-6">
+                    <p><strong>Id :</strong> {{ company.id }}</p>
+                    <p><strong>Nom :</strong> {{ company.companyName }}</p>
+                    <p><strong>Numéro de Siret :</strong> {{ company.siretNumber }}</p>
+                    <p><strong>Email :</strong> {{ company.companyEmail }}</p>
+                    <p><strong>Numéro de téléphone :</strong> {{ company.companyPhone }}</p>
+                    <p><strong>Adresse :</strong> {{ company.address }}</p>
+                    <p><strong>Code postal :</strong> {{ company.postalCode }}</p>
+                    <p><strong>Ville :</strong> {{ company.city }}</p>
+                    <p><strong>Pays :</strong> {{ company.country }}</p>
+                    </p>
+                    {% if company['users'] is defined and company['users'] is not empty %}
+                        <div class"container"><strong>Employés :</strong>
+                            <ul>
+                                {% for user in company.users %}
+                                    <form action="{{ path('userShow') }}" method="post" style="display: inline;">
+                                        <input type="hidden" name="user" value="{{ user|json_encode }}">
+                                        <button type="submit" class="container" style="background-color: #A594F9;">
+                                            <div class="container">
+                                            <p><strong>Nom:</strong> {{ user.firstname|capitalize }} {{user.lastname|upper }} </p>
+                                        </button>
+                                    </form>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+        </div>
+    </div>
+{% endblock %}
