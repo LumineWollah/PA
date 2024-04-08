@@ -57,25 +57,6 @@ class travelerController extends AbstractController
         ]);
     }
 
-    #[Route('/admin-panel/traveler/delete', name: 'travelerDelete')]
-    public function travelerDelete(Request $request)
-    {
-        if (!$this->checkUserRole($request)) {return $this->redirectToRoute('login');}
-
-        $client = $this->apiHttpClient->getClient($request->getSession()->get('token'));
-
-        $id = $request->query->get('id');
-
-        $response = $client->request('DELETE', 'cs_users/'.$id, [
-            'query' => [
-                'id' => $id
-            ]
-        ]);
-        
-        return $this->redirectToRoute('travelerList');
-        
-    }
-
     #[Route('/admin-panel/traveler/edit', name: 'travelerEdit')]
     public function travelerEdit(Request $request)
     {
