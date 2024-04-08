@@ -44,7 +44,7 @@ class AppFixtures extends Fixture
         $apartment->setIsHouse(true);
         $apartment->setPrice(421);
         $apartment->setOwner($user);
-        $apartment->setAdress("71, avenue d'Italie");
+        $apartment->setAddress("71, avenue d'Italie");
         $apartment->setPostalCode("75013");
         $apartment->setCity("Paris");
         $apartment->setCountry("France");
@@ -55,7 +55,7 @@ class AppFixtures extends Fixture
         $company->setCompanyEmail("lesglands@gmail.com");
         $company->setCompanyPhone("0606060606");
         $company->setSiretNumber("01022033304444");
-        $company->setAdress("71, avenue d'Italie");
+        $company->setAddress("71, avenue d'Italie");
         $company->setPostalCode("75013");
         $company->setCity("Paris");
         $company->setCountry("France");

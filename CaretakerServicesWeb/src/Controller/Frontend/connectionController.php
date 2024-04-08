@@ -206,7 +206,7 @@ class connectionController extends AbstractController
                 new Length(exactly:10)
             ]
         ])
-        ->add("adress", TextType::class, [
+        ->add("address", TextType::class, [
             "attr"=>[
                 "placeholder"=>"Adresse de l'entreprise"
             ],
