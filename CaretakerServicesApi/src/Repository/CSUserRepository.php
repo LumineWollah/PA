@@ -63,10 +63,15 @@ class CsUserRepository extends ServiceEntityRepository implements PasswordUpgrad
 //        ;
 //    }
 
-    public function findAllWithPagination($offset, $limit) {
-        $qb = $this->createQueryBuilder('b')
-            ->setFirstResult(($offset - 1) * $limit)
-            ->setMaxResults($limit);
-        return $qb->getQuery()->getResult();
+    public function userExistsByEmail(string $email): bool
+    {
+        $qb = $this->createQueryBuilder('u');
+        $qb->select('COUNT(u.id)');
+        $qb->andWhere('u.email = :email');
+        $qb->setParameter('email', $email);
+        
+        $count = $qb->getQuery()->getSingleScalarResult();
+        
+        return $count > 0;
     }
 }

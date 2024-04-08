@@ -3,7 +3,7 @@
 {% block stylesheets %}<link rel="stylesheet" href={{ asset('styles/crud.css') }}>{% endblock %}
 
 {% block activeGest %}active{% endblock %}
-{% block activeProv %}active{% endblock %}
+{% block activeLess %}active{% endblock %}
 
 {% block title %}Liste des bailleurs{% endblock %}
 
@@ -90,7 +90,7 @@
                             <td>{{ lessor.lastname|upper }}</td>
                             <td>{{ lessor.email }}</td>
                             <td>{{ lessor.telNumber }}</td>
-                            <td>{{ lessor.dateInscription | date('d/m/Y H:i:s') }}</td>
+                            <td>{{ lessor.dateInscription|date('d/m/Y H:i:s') }}</td>
                             <td class="action">
                                 <a href="{{ path('lessorDelete', {'id': lessor.id}) }}" class="btn" style="background-color: #EE3939;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/bin.png') }}></div></a>
                                 <form action="{{ path('lessorEdit') }}" method="post" style="display: inline;">
@@ -99,7 +99,7 @@
                                 </form>
                                 <form action="{{ path('lessorShow') }}" method="post" style="display: inline;">
                                     <input type="hidden" name="lessor" value="{{ lessor|json_encode }}">
-                                    <button type="submit" class="btn" style="background-color: #A594F9;"><div class="btnImage"><img style="height:17px;" src={{ asset('icons/crud/chart.png') }}></div></button>
+                                    <button type="submit" class="btn" style="background-color: #A594F9;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/chart.png') }}></div></button>
                                 </form>
                             </td>
                         </tr>

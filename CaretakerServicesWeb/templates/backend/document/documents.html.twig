@@ -3,7 +3,7 @@
 {% block stylesheets %}<link rel="stylesheet" href={{ asset('styles/crud.css') }}>{% endblock %}
 
 {% block activeGest %}active{% endblock %}
-{% block activeProv %}active{% endblock %}
+{% block activeDocu %}active{% endblock %}
 
 {% block title %}Liste des documents{% endblock %}
 
@@ -64,15 +64,14 @@
                                 </form>
                             </td>
                             <td>{{ document.type }}</td>
-                            <td>{{ document.dateCreation }}</td>
-                            <td>
-                                <a href="{{ path('documentDelete', {'id': document.id}) }}" class="btn" style="background-color: #EE3939;"><img style="width:20px;height:20px;" src="https://cdn-icons-png.freepik.com/512/1345/1345874.png"></a>
+                            <td>{{ document.dateCreation|date('d/m/Y H:i:s') }}</td>
+                            <td class="action">
+                                <a href="{{ path('documentDelete', {'id': document.id}) }}" class="btn" style="background-color: #EE3939;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/bin.png') }}></div></a>                                
                                 <form action="{{ path('documentEdit') }}" method="post" style="display: inline;">
                                     <input type="hidden" name="document" value="{{ document|json_encode }}">
-                                    <button type="submit" class="btn" style="background-color: #18A0FB;"><img style="width:20px;height:20px;" src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/64/Edit_icon_%28the_Noun_Project_30184%29.svg/2048px-Edit_icon_%28the_Noun_Project_30184%29.svg.png"></button>
+                                    <button type="submit" class="btn" style="background-color: #18A0FB;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/pen.png') }}></div></button>
                                 </form>
-                                {# <a href={{ document.url }} target="blank_" class="btn" style="background-color: #A594F9;"><img style="width:20px;height:20px;" src="https://static-00.iconduck.com/assets.00/show-icon-512x410-5ofq0plr.png"></a> #}
-                                <a href="https://thumb.canalplus.pro/http/unsafe/1920x1080/smart/creativemedia-image.canalplus.pro/content/0001/40/97e6a76d9788e3e0eea6fddbd68b4fb8b8d5cdda.jpeg" target="blank_" class="btn" style="background-color: #A594F9;"><img style="width:20px;height:20px;" src="https://static-00.iconduck.com/assets.00/show-icon-512x410-5ofq0plr.png"></a>
+                                <a href={{ document.url }} target="blank_" class="btn" style="background-color: #A594F9;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/eye.png') }}></div></a>
                             </td>
                         </tr>
                     {% endfor %}

@@ -21,6 +21,11 @@ class lessorController extends AbstractController
     #[Route('/admin-panel/lessor/list', name: 'lessorList')]
     public function lessorList(Request $request)
     {
+        $roles = $request->getSession()->get('roles');
+        if ($roles == null || !in_array('ROLE_ADMIN', $roles)){
+            return $this->redirectToRoute('login');
+        }
+        
         $client = $this->apiHttpClient->getClient($request->getSession()->get('token'));
 
         $response = $client->request('GET', 'cs_users', [
@@ -44,7 +49,7 @@ class lessorController extends AbstractController
 
         // return;
 
-        return $this->render('backend/lessors.html.twig', [
+        return $this->render('backend/lessor/lessors.html.twig', [
             'verifiedLessors' => $verifiedLessors,
             'unverifiedLessors' => $unverifiedLessors
         ]);
@@ -53,6 +58,11 @@ class lessorController extends AbstractController
     #[Route('/admin-panel/lessor/delete', name: 'lessorDelete')]
     public function lessorDelete(Request $request)
     {
+        $roles = $request->getSession()->get('roles');
+        if ($roles == null || !in_array('ROLE_ADMIN', $roles)){
+            return $this->redirectToRoute('login');
+        }
+
         $client = $this->apiHttpClient->getClient($request->getSession()->get('token'));
 
         $id = $request->query->get('id');
@@ -70,6 +80,11 @@ class lessorController extends AbstractController
     #[Route('/admin-panel/lessor/edit', name: 'lessorEdit')]
     public function lessorEdit(Request $request)
     {
+        $roles = $request->getSession()->get('roles');
+        if ($roles == null || !in_array('ROLE_ADMIN', $roles)){
+            return $this->redirectToRoute('login');
+        }
+
         $lessorData = $request->request->get('lessor');
         $lessor = json_decode($lessorData, true);
 
@@ -123,7 +138,7 @@ class lessorController extends AbstractController
     
                 return $this->redirectToRoute('lessorList');
             }      
-            return $this->render('backend/editLessor.html.twig', [
+            return $this->render('backend/lessor/editLessor.html.twig', [
                 'form'=>$form,
                 'errorMessage'=>null
             ]);
@@ -132,6 +147,11 @@ class lessorController extends AbstractController
     #[Route('/admin-panel/lessor/show', name: 'lessorShow')]
     public function lessorShow(Request $request)
     {
+        $roles = $request->getSession()->get('roles');
+        if ($roles == null || !in_array('ROLE_ADMIN', $roles)){
+            return $this->redirectToRoute('login');
+        }
+
         $lessorData = $request->request->get('lessor');
         $lessor = json_decode($lessorData, true);
 
@@ -142,7 +162,7 @@ class lessorController extends AbstractController
             $storedLessor = $lessor;
         }
         
-        return $this->render('backend/showLessor.html.twig', [
+        return $this->render('backend/lessor/showLessor.html.twig', [
             'lessor'=>$storedLessor
         ]);
     }
@@ -150,6 +170,11 @@ class lessorController extends AbstractController
     #[Route('/admin-panel/lessor/accept', name: 'lessorAccept')]
     public function lessorAccept(Request $request)
     {
+        $roles = $request->getSession()->get('roles');
+        if ($roles == null || !in_array('ROLE_ADMIN', $roles)){
+            return $this->redirectToRoute('login');
+        }
+
         $client = $this->apiHttpClient->getClient($request->getSession()->get('token'), 'application/merge-patch+json');
 
         $id = $request->query->get('id');

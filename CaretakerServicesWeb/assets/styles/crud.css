@@ -1,7 +1,8 @@
 .noValidateCard {
     border: 1px black solid;
     border-radius: 20px;
-    padding: 20px;
+    padding-top: 20px;
+    padding-bottom: 20px;
     display: flex;
     flex-direction: column;
     align-items: center;

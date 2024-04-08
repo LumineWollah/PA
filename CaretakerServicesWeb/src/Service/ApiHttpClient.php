@@ -27,8 +27,8 @@ class ApiHttpClient
         return HttpClient::create([
             'base_uri' => 'http://127.0.0.1:8000/api/',
             'headers' => [
-                'Accept' => 'application/json',
-                'Content-Type' => 'application/json'
+                'Accept' => 'application/ld+json',
+                'Content-Type' => 'application/ld+json'
             ]
         ]);
     }

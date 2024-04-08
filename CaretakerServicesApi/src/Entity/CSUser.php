@@ -24,43 +24,42 @@ use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasher;
 
-#[ApiResource(security: "is_granted('ROLE_USER')", operations: [
+#[ApiResource(operations: [
     new Get(
         name: 'me', 
         uriTemplate: '/cs_users/me', 
         controller: CsUserController::class
-    )
-])]
-#[ApiResource(security: "is_granted('ROLE_USER')", normalizationContext: ['groups' => ['getUsers']])]
-#[Get(security: "is_granted('ROLE_ADMIN')")]
-#[Patch(security: "is_granted('ROLE_ADMIN') or object.owner == user")]
-#[GetCollection(security: "is_granted('ROLE_ADMIN')")]
+    )], normalizationContext: ['groups' => ['getUsers']])]
+#[Get(security: "is_granted('ROLE_ADMIN') or object.getOwner() == user")]
+#[Patch(security: "is_granted('ROLE_ADMIN') or object.getOwner() == user")]
+#[GetCollection()]
 #[Delete(security: "is_granted('ROLE_ADMIN')")]
-#[Post(security: "is_granted('ROLE_ADMIN')")]
+#[Post()]
 #[ORM\Entity(repositoryClass: CsUserRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
-#[ApiFilter(SearchFilter::class, properties: ['roles' => 'partial'])]
+#[ApiFilter(SearchFilter::class, properties: ['roles' => 'partial', 'email' => 'exact'])]
 class CsUser implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(["getUsers", "getDocuments", "getApartments"])]
+    #[Groups(["getUsers", "getDocuments", "getApartments", "getCompanies"])]
     private ?int $id = null;
 
     #[ORM\Column(length: 180)]
-    #[Groups(["getUsers", "getDocuments", "getApartments"])]
+    #[Groups(["getUsers", "getDocuments", "getApartments", "getCompanies"])]
     private ?string $email = null;
 
     #[ORM\Column(length: 150)]
-    #[Groups(["getUsers", "getDocuments", "getApartments"])]
+    #[Groups(["getUsers", "getDocuments", "getApartments", "getCompanies"])]
     #[Assert\NotBlank(message: "Le prénom est obligaoire")]
     #[Assert\Length(min: 3, max: 150, minMessage: "Le prénom doit faire au moins {{ limit }} caractères", maxMessage: "Le prénom ne peut pas faire plus de {{ limit }} caractères")]
     private ?string $firstname = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(["getUsers", "getDocuments", "getApartments"])]
+    #[Groups(["getUsers", "getDocuments", "getApartments", "getCompanies"])]
     private ?string $lastname = null;
 
     /**
@@ -70,35 +69,35 @@ class CsUser implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[ORM\Column]
-    #[Groups(["getUsers", "getDocuments", "getApartments"])]
+    #[Groups(["getUsers", "getDocuments", "getApartments", "getCompanies"])]
     private ?DateTime $lastConnection = null;
 
     #[ORM\Column]
-    #[Groups(["getUsers", "getDocuments", "getApartments"])]
+    #[Groups(["getUsers", "getDocuments", "getApartments", "getCompanies"])]
     private ?DateTime $dateInscription = null;
 
     #[ORM\Column(length: 500, nullable: true)]
-    #[Groups(["getUsers", "getDocuments", "getApartments"])]
+    #[Groups(["getUsers", "getDocuments", "getApartments", "getCompanies"])]
     private ?string $profilePict = null;
 
     #[ORM\Column(type: 'json')]
-    #[Groups(["getUsers", "getDocuments", "getApartments"])]
+    #[Groups(["getUsers", "getDocuments", "getApartments", "getCompanies"])]
     private $roles = [];
 
     #[ORM\Column(length: 10)]
-    #[Groups(["getUsers", "getDocuments", "getApartments"])]
+    #[Groups(["getUsers", "getDocuments", "getApartments", "getCompanies"])]
     private ?string $telNumber = null;
 
     #[ORM\Column]
-    #[Groups(["getUsers", "getDocuments", "getApartments"])]
+    #[Groups(["getUsers", "getDocuments", "getApartments", "getCompanies"])]
     private ?bool $isVerified = false;
 
     #[ORM\Column]
-    #[Groups(["getUsers", "getDocuments", "getApartments"])]
+    #[Groups(["getUsers", "getDocuments", "getApartments", "getCompanies"])]
     private ?bool $professional = false;
 
     #[ORM\Column(nullable: true)]
-    #[Groups(["getUsers", "getDocuments", "getApartments"])]
+    #[Groups(["getUsers", "getDocuments", "getApartments", "getCompanies"])]
     private ?int $subscription = null;
 
     #[ORM\OneToMany(targetEntity: CsDocument::class, mappedBy: 'owner', orphanRemoval: true)]
@@ -108,6 +107,10 @@ class CsUser implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: CsApartment::class, mappedBy: 'owner', orphanRemoval: true)]
     #[Groups(["getUsers"])]
     private Collection $apartments;
+
+    #[ORM\ManyToOne(inversedBy: 'users')]
+    #[Groups(["getUsers"])]
+    private ?CsCompany $company = null;
 
     public function __construct()
     {
@@ -442,6 +445,18 @@ class CsUser implements UserInterface, PasswordAuthenticatedUserInterface
                 $apartment->setOwner(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getCompany(): ?CsCompany
+    {
+        return $this->company;
+    }
+
+    public function setCompany(?CsCompany $company): static
+    {
+        $this->company = $company;
 
         return $this;
     }

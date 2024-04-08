@@ -26,7 +26,7 @@ use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 #[GetCollection()]
 #[Delete(security: "is_granted('ROLE_ADMIN') or object.getOwner() == user")]
 #[Post(security: "is_granted('ROLE_LESSOR')")]
-#[ApiFilter(SearchFilter::class, properties: ['type' => 'exact'])]
+// #[ApiFilter(SearchFilter::class, properties: ['type' => 'exact'])]
 #[ORM\Entity(repositoryClass: CsApartmentRepository::class)]
 class CsApartment
 {
@@ -82,6 +82,22 @@ class CsApartment
     #[ORM\Column]
     #[Groups(["getUsers", "getApartments"])]
     private ?bool $active = true;
+
+    #[ORM\Column(length: 255)]
+    #[Groups(["getUsers", "getApartments"])]
+    private ?string $adress = null;
+
+    #[ORM\Column(length: 255)]
+    #[Groups(["getUsers", "getApartments"])]
+    private ?string $city = null;
+
+    #[ORM\Column(length: 5)]
+    #[Groups(["getUsers", "getApartments"])]
+    private ?string $postalCode = null;
+
+    #[ORM\Column(length: 255)]
+    #[Groups(["getUsers", "getApartments"])]
+    private ?string $country = null;
 
     #[ORM\ManyToOne(inversedBy: 'apartments')]
     #[ORM\JoinColumn(nullable: false)]
@@ -250,6 +266,54 @@ class CsApartment
     public function setDateCreation($dateCreation)
     {
         $this->dateCreation = $dateCreation;
+
+        return $this;
+    }
+
+    public function getAdress()
+    {
+        return $this->adress;
+    }
+
+    public function setAdress($adress)
+    {
+        $this->adress = $adress;
+
+        return $this;
+    }
+
+    public function getCity()
+    {
+        return $this->city;
+    }
+
+    public function setCity($city)
+    {
+        $this->city = $city;
+
+        return $this;
+    }
+
+    public function getPostalCode()
+    {
+        return $this->postalCode;
+    }
+
+    public function setPostalCode($postalCode)
+    {
+        $this->postalCode = $postalCode;
+
+        return $this;
+    }
+
+    public function getCountry()
+    {
+        return $this->country;
+    }
+
+    public function setCountry($country)
+    {
+        $this->country = $country;
 
         return $this;
     }

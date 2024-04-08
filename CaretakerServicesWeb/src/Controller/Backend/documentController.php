@@ -21,6 +21,11 @@ class documentController extends AbstractController
     #[Route('/admin-panel/document/list', name: 'documentList')]
     public function documentList(Request $request)
     {
+        $roles = $request->getSession()->get('roles');
+        if ($roles == null || !in_array('ROLE_ADMIN', $roles)){
+            return $this->redirectToRoute('login');
+        }
+        
         $client = $this->apiHttpClient->getClient($request->getSession()->get('token'));
 
         $response = $client->request('GET', 'cs_documents', [
@@ -35,7 +40,7 @@ class documentController extends AbstractController
 
         
 
-        return $this->render('backend/documents.html.twig', [
+        return $this->render('backend/document/documents.html.twig', [
             'documents' => $documentsList['hydra:member']
         ]);
     }
@@ -43,6 +48,11 @@ class documentController extends AbstractController
     #[Route('/admin-panel/document/delete', name: 'documentDelete')]
     public function documentDelete(Request $request)
     {
+        $roles = $request->getSession()->get('roles');
+        if ($roles == null || !in_array('ROLE_ADMIN', $roles)){
+            return $this->redirectToRoute('login');
+        }
+
         $client = $this->apiHttpClient->getClient($request->getSession()->get('token'));
 
         $id = $request->query->get('id');
@@ -60,6 +70,11 @@ class documentController extends AbstractController
     #[Route('/admin-panel/document/edit', name: 'documentEdit')]
     public function documentEdit(Request $request)
     {
+        $roles = $request->getSession()->get('roles');
+        if ($roles == null || !in_array('ROLE_ADMIN', $roles)){
+            return $this->redirectToRoute('login');
+        }
+
         $documentData = $request->request->get('document');
         $document = json_decode($documentData, true);
 
@@ -113,7 +128,7 @@ class documentController extends AbstractController
     
                 return $this->redirectToRoute('documentList');
             }      
-            return $this->render('backend/editDocument.html.twig', [
+            return $this->render('backend/document/editDocument.html.twig', [
                 'form'=>$form,
                 'errorMessage'=>null
             ]);

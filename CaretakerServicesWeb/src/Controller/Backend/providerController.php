@@ -8,7 +8,7 @@ use App\Service\ApiHttpClient;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class providerController extends AbstractController
 {
@@ -22,6 +22,11 @@ class providerController extends AbstractController
     #[Route('/admin-panel/provider/list', name: 'providerList')]
     public function providerList(Request $request)
     {
+        $roles = $request->getSession()->get('roles');
+        if ($roles == null || !in_array('ROLE_ADMIN', $roles)){
+            return $this->redirectToRoute('login');
+        }
+        
         $client = $this->apiHttpClient->getClient($request->getSession()->get('token'));
 
         $response = $client->request('GET', 'cs_users', [
@@ -49,7 +54,7 @@ class providerController extends AbstractController
 
         // return;
 
-        return $this->render('backend/providers.html.twig', [
+        return $this->render('backend/provider/providers.html.twig', [
             'verifiedProviders' => $verifiedProviders,
             'unverifiedProviders' => $unverifiedProviders
         ]);
@@ -58,6 +63,11 @@ class providerController extends AbstractController
     #[Route('/admin-panel/provider/delete', name: 'providerDelete')]
     public function providerDelete(Request $request)
     {
+        $roles = $request->getSession()->get('roles');
+        if ($roles == null || !in_array('ROLE_ADMIN', $roles)){
+            return $this->redirectToRoute('login');
+        }
+
         $client = $this->apiHttpClient->getClient($request->getSession()->get('token'));
 
         $id = $request->query->get('id');
@@ -75,6 +85,11 @@ class providerController extends AbstractController
     #[Route('/admin-panel/provider/edit', name: 'providerEdit')]
     public function providerEdit(Request $request)
     {
+        $roles = $request->getSession()->get('roles');
+        if ($roles == null || !in_array('ROLE_ADMIN', $roles)){
+            return $this->redirectToRoute('login');
+        }
+
         $providerData = $request->request->get('provider');
         $provider = json_decode($providerData, true);
 
@@ -128,7 +143,7 @@ class providerController extends AbstractController
     
                 return $this->redirectToRoute('providerList');
             }      
-            return $this->render('backend/editProvider.html.twig', [
+            return $this->render('backend/provider/editProvider.html.twig', [
                 'form'=>$form,
                 'errorMessage'=>null
             ]);
@@ -137,6 +152,11 @@ class providerController extends AbstractController
     #[Route('/admin-panel/provider/show', name: 'providerShow')]
     public function providerShow(Request $request)
     {
+        $roles = $request->getSession()->get('roles');
+        if ($roles == null || !in_array('ROLE_ADMIN', $roles)){
+            return $this->redirectToRoute('login');
+        }
+
         $providerData = $request->request->get('provider');
         $provider = json_decode($providerData, true);
 
@@ -147,7 +167,7 @@ class providerController extends AbstractController
             $storedProvider = $provider;
         }
         
-        return $this->render('backend/showProvider.html.twig', [
+        return $this->render('backend/provider/showProvider.html.twig', [
             'provider'=>$storedProvider
         ]);
     }
@@ -155,6 +175,11 @@ class providerController extends AbstractController
     #[Route('/admin-panel/provider/accept', name: 'providerAccept')]
     public function providerAccept(Request $request)
     {
+        $roles = $request->getSession()->get('roles');
+        if ($roles == null || !in_array('ROLE_ADMIN', $roles)){
+            return $this->redirectToRoute('login');
+        }
+        
         $client = $this->apiHttpClient->getClient($request->getSession()->get('token'), 'application/merge-patch+json');
 
         $id = $request->query->get('id');

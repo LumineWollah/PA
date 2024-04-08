@@ -3,6 +3,7 @@
 namespace App\DataFixtures;
 
 use App\Entity\CsApartment;
+use App\Entity\CsCompany;
 use App\Entity\CsDocument;
 use App\Entity\CsUser;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -43,7 +44,22 @@ class AppFixtures extends Fixture
         $apartment->setIsHouse(true);
         $apartment->setPrice(421);
         $apartment->setOwner($user);
+        $apartment->setAdress("71, avenue d'Italie");
+        $apartment->setPostalCode("75013");
+        $apartment->setCity("Paris");
+        $apartment->setCountry("France");
         $manager->persist($apartment);
+
+        $company = new CsCompany();
+        $company->setCompanyName("Boite de glands");
+        $company->setCompanyEmail("lesglands@gmail.com");
+        $company->setCompanyPhone("0606060606");
+        $company->setSiretNumber("01022033304444");
+        $company->setAdress("71, avenue d'Italie");
+        $company->setPostalCode("75013");
+        $company->setCity("Paris");
+        $company->setCountry("France");
+        $manager->persist($company);
 
         $user = new CsUser();
         $user->setEmail("mathis.vareilles@yahoo.com");
@@ -51,9 +67,10 @@ class AppFixtures extends Fixture
         $user->setLastname("Vareilles");
         $user->setTelNumber("0606060606");
         $user->setPassword($this->userPasswordHasher->hashPassword($user, "Test1234!"));
-        $user->setProfessional(false);
+        $user->setProfessional(true);
         $user->setisVerified(false);
         $user->setRoles(['ROLE_PROVIDER']);
+        $user->setCompany($company);
         $manager->persist($user);
         
         $user = new CsUser();

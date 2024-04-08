@@ -20,15 +20,14 @@
                         {{ role }}
                     {% endfor %}
                     </p>
-                    {%if 'documents' in traveler and traveler.documents != null %}
-
-                    <div class"container"><strong>Documents :</strong>
-                        <ul>
-                            {% for document in traveler.documents %}
-                                <li>{{ document.name }}</li>
-                            {% endfor %}
-                        </ul>
-                    </div>
+                    {% if traveler['documents'] is defined and traveler['documents'] is not empty %}
+                        <div class"container"><strong>Documents :</strong>
+                            <ul>
+                                {% for document in traveler.documents %}
+                                    <li><a href={{ document.url }} target="blank_" class="btn" style="background-color: #A594F9;">{{ document.name }}</a></li>
+                                {% endfor %}
+                            </ul>
+                        </div>
                     {% endif %}
                 <div class="col-6">
                     <p><strong>Photo :</strong></p>

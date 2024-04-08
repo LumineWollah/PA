@@ -2,6 +2,7 @@
 
 namespace App\Controller\Backend;
 
+use App\Security\CustomAccessManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Service\ApiHttpClient;
@@ -21,6 +22,11 @@ class travelerController extends AbstractController
     #[Route('/admin-panel/traveler/list', name: 'travelerList')]
     public function travelerList(Request $request)
     {
+        $roles = $request->getSession()->get('roles');
+        if ($roles == null || !in_array('ROLE_ADMIN', $roles)){
+            return $this->redirectToRoute('login');
+        }
+
         $client = $this->apiHttpClient->getClient($request->getSession()->get('token'));
 
         $response = $client->request('GET', 'cs_users', [
@@ -42,7 +48,7 @@ class travelerController extends AbstractController
 
         $request->getSession()->remove('traveler');
 
-        return $this->render('backend/travelers.html.twig', [
+        return $this->render('backend/traveler/travelers.html.twig', [
             'travelers' => $travelersList['hydra:member']
 
         ]);
@@ -51,6 +57,11 @@ class travelerController extends AbstractController
     #[Route('/admin-panel/traveler/delete', name: 'travelerDelete')]
     public function travelerDelete(Request $request)
     {
+        $roles = $request->getSession()->get('roles');
+        if ($roles == null || !in_array('ROLE_ADMIN', $roles)){
+            return $this->redirectToRoute('login');
+        }
+
         $client = $this->apiHttpClient->getClient($request->getSession()->get('token'));
 
         $id = $request->query->get('id');
@@ -68,6 +79,11 @@ class travelerController extends AbstractController
     #[Route('/admin-panel/traveler/edit', name: 'travelerEdit')]
     public function travelerEdit(Request $request)
     {
+        $roles = $request->getSession()->get('roles');
+        if ($roles == null || !in_array('ROLE_ADMIN', $roles)){
+            return $this->redirectToRoute('login');
+        }
+
         $travelerData = $request->request->get('traveler');
         $traveler = json_decode($travelerData, true);
 
@@ -121,7 +137,7 @@ class travelerController extends AbstractController
     
                 return $this->redirectToRoute('travelerList');
             }      
-            return $this->render('backend/editTraveler.html.twig', [
+            return $this->render('backend/traveler/editTraveler.html.twig', [
                 'form'=>$form,
                 'errorMessage'=>null
             ]);
@@ -130,6 +146,11 @@ class travelerController extends AbstractController
     #[Route('/admin-panel/traveler/show', name: 'travelerShow')]
     public function travelerShow(Request $request)
     {
+        $roles = $request->getSession()->get('roles');
+        if ($roles == null || !in_array('ROLE_ADMIN', $roles)){
+            return $this->redirectToRoute('login');
+        }
+
         $travelerData = $request->request->get('traveler');
         $traveler = json_decode($travelerData, true);
 
@@ -140,7 +161,7 @@ class travelerController extends AbstractController
             $storedTraveler = $traveler;
         }
         
-        return $this->render('backend/showTraveler.html.twig', [
+        return $this->render('backend/traveler/showTraveler.html.twig', [
             'traveler'=>$storedTraveler
         ]);
     }
