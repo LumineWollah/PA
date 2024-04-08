@@ -19,13 +19,16 @@ class travelerController extends AbstractController
         $this->apiHttpClient = $apiHttpClient;
     }
 
+    private function checkUserRole(Request $request): bool
+    {
+        $roles = $request->getSession()->get('roles');
+        return $roles !== null && in_array('ROLE_ADMIN', $roles);
+    }
+
     #[Route('/admin-panel/traveler/list', name: 'travelerList')]
     public function travelerList(Request $request)
     {
-        $roles = $request->getSession()->get('roles');
-        if ($roles == null || !in_array('ROLE_ADMIN', $roles)){
-            return $this->redirectToRoute('login');
-        }
+        if (!$this->checkUserRole($request)) {return $this->redirectToRoute('login');}
 
         $client = $this->apiHttpClient->getClient($request->getSession()->get('token'));
 
@@ -57,10 +60,7 @@ class travelerController extends AbstractController
     #[Route('/admin-panel/traveler/delete', name: 'travelerDelete')]
     public function travelerDelete(Request $request)
     {
-        $roles = $request->getSession()->get('roles');
-        if ($roles == null || !in_array('ROLE_ADMIN', $roles)){
-            return $this->redirectToRoute('login');
-        }
+        if (!$this->checkUserRole($request)) {return $this->redirectToRoute('login');}
 
         $client = $this->apiHttpClient->getClient($request->getSession()->get('token'));
 
@@ -79,10 +79,7 @@ class travelerController extends AbstractController
     #[Route('/admin-panel/traveler/edit', name: 'travelerEdit')]
     public function travelerEdit(Request $request)
     {
-        $roles = $request->getSession()->get('roles');
-        if ($roles == null || !in_array('ROLE_ADMIN', $roles)){
-            return $this->redirectToRoute('login');
-        }
+        if (!$this->checkUserRole($request)) {return $this->redirectToRoute('login');}
 
         $travelerData = $request->request->get('traveler');
         $traveler = json_decode($travelerData, true);
@@ -146,10 +143,7 @@ class travelerController extends AbstractController
     #[Route('/admin-panel/traveler/show', name: 'travelerShow')]
     public function travelerShow(Request $request)
     {
-        $roles = $request->getSession()->get('roles');
-        if ($roles == null || !in_array('ROLE_ADMIN', $roles)){
-            return $this->redirectToRoute('login');
-        }
+        if (!$this->checkUserRole($request)) {return $this->redirectToRoute('login');}
 
         $travelerData = $request->request->get('traveler');
         $traveler = json_decode($travelerData, true);

@@ -18,14 +18,17 @@ class documentController extends AbstractController
         $this->apiHttpClient = $apiHttpClient;
     }
 
+    private function checkUserRole(Request $request): bool
+    {
+        $roles = $request->getSession()->get('roles');
+        return $roles !== null && in_array('ROLE_ADMIN', $roles);
+    }
+
     #[Route('/admin-panel/document/list', name: 'documentList')]
     public function documentList(Request $request)
     {
-        $roles = $request->getSession()->get('roles');
-        if ($roles == null || !in_array('ROLE_ADMIN', $roles)){
-            return $this->redirectToRoute('login');
-        }
-        
+        if (!$this->checkUserRole($request)) {return $this->redirectToRoute('login');}
+
         $client = $this->apiHttpClient->getClient($request->getSession()->get('token'));
 
         $response = $client->request('GET', 'cs_documents', [
@@ -38,8 +41,6 @@ class documentController extends AbstractController
 
         $request->getSession()->remove('document');
 
-        
-
         return $this->render('backend/document/documents.html.twig', [
             'documents' => $documentsList['hydra:member']
         ]);
@@ -48,10 +49,7 @@ class documentController extends AbstractController
     #[Route('/admin-panel/document/delete', name: 'documentDelete')]
     public function documentDelete(Request $request)
     {
-        $roles = $request->getSession()->get('roles');
-        if ($roles == null || !in_array('ROLE_ADMIN', $roles)){
-            return $this->redirectToRoute('login');
-        }
+        if (!$this->checkUserRole($request)) {return $this->redirectToRoute('login');}
 
         $client = $this->apiHttpClient->getClient($request->getSession()->get('token'));
 
@@ -70,10 +68,7 @@ class documentController extends AbstractController
     #[Route('/admin-panel/document/edit', name: 'documentEdit')]
     public function documentEdit(Request $request)
     {
-        $roles = $request->getSession()->get('roles');
-        if ($roles == null || !in_array('ROLE_ADMIN', $roles)){
-            return $this->redirectToRoute('login');
-        }
+        if (!$this->checkUserRole($request)) {return $this->redirectToRoute('login');}
 
         $documentData = $request->request->get('document');
         $document = json_decode($documentData, true);
