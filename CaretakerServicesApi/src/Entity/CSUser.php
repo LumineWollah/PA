@@ -108,7 +108,7 @@ class CsUser implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(["getUsers"])]
     private Collection $apartments;
 
-    #[ORM\ManyToOne(inversedBy: 'users')]
+    #[ORM\ManyToOne(targetEntity: CsCompany::class, inversedBy: 'users')]
     #[Groups(["getUsers"])]
     private ?CsCompany $company = null;
 

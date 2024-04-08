@@ -18,12 +18,18 @@ use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use App\Controller\CsCompanyController;
 
-#[ApiResource(normalizationContext: ['groups' => ['getCompanies']])]
+#[ApiResource(operations: [
+    new Delete(
+        name: 'delete', 
+        uriTemplate: '/cs_companies/{id}', 
+        controller: CsCompanyController::class
+    )], normalizationContext: ['groups' => ['getCompanies']])]
 #[Get()]
 #[Patch(security: "is_granted('ROLE_ADMIN') or user in object.getUsers().toArray()")]
-#[GetCollection(security: "is_granted('ROLE_ADMIN')")]
-#[Delete(security: "is_granted('ROLE_ADMIN') or user in object.getUsers().toArray()")]
+#[GetCollection()]
+// #[Delete(security: "is_granted('ROLE_ADMIN') or user in object.getUsers().toArray()")]
 #[Post()]
 // #[ApiFilter(SearchFilter::class, properties: ['type' => 'exact'])]
 #[ORM\Entity(repositoryClass: CsCompanyRepository::class)]
