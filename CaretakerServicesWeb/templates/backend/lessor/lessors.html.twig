@@ -64,7 +64,7 @@
                             </form>
                             <div class="validateBtns">
                                 <a href="{{ path('lessorAccept', {'id': lessor.id}) }}" class="validateBtn validBtn">Valider</a>
-                                <a href="{{ path('lessorDelete', {'id': lessor.id}) }}" class="validateBtn refuseBtn">Refuser</a>
+                                <a href="{{ path('userDelete', {'id': lessor.id}) }}" class="validateBtn refuseBtn">Refuser</a>
                             </div>
                         </div>
                     </div>
@@ -97,8 +97,8 @@
                                     <input type="hidden" name="lessor" value="{{ lessor|json_encode }}">
                                     <button type="submit" class="btn" style="background-color: #18A0FB;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/pen.png') }}></div></button>
                                 </form>
-                                <form action="{{ path('lessorShow') }}" method="post" style="display: inline;">
-                                    <input type="hidden" name="lessor" value="{{ lessor|json_encode }}">
+                                <form action="{{ path('userShow') }}" method="post" style="display: inline;">
+                                    <input type="hidden" name="user" value="{{ lessor|json_encode }}">
                                     <button type="submit" class="btn" style="background-color: #A594F9;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/chart.png') }}></div></button>
                                 </form>
                             </td>
