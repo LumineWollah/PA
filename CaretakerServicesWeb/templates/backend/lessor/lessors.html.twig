@@ -53,7 +53,7 @@
                 {% for lessor in unverifiedLessors %}
                     <div class="col-3 p-0 me-4">
                         <div class="noValidateCard">
-                            <img src={%if 'profilePict' in lessor %}{{ lessor.profilePict }}{% else %}{{ asset('icons/profile_pict_default.png') }}{% endif %}>
+                            <img src={% if lessor['profilePict'] is defined and lessor['profilePict'] is not empty %}{{ lessor.profilePict }}{% else %}{{asset('icons/profile_pict_default.png')}}{% endif %}>                            
                             <p class="name">{{ lessor.firstname|capitalize }} {{ lessor.lastname|capitalize }}</p>
                             <p class="otherData inscription"><b>Inscrit le :</b> {{ lessor.dateInscription|date('d/m/Y H:i:s') }}</p>
                             <p class="otherData"><b>Email :</b> {{ lessor.email }}</p>
@@ -92,7 +92,7 @@
                             <td>{{ lessor.telNumber }}</td>
                             <td>{{ lessor.dateInscription|date('d/m/Y H:i:s') }}</td>
                             <td class="action">
-                                <a href="{{ path('lessorDelete', {'id': lessor.id}) }}" class="btn" style="background-color: #EE3939;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/bin.png') }}></div></a>
+                                <a href="{{ path('userDelete', {'id': lessor.id, 'origin':'lessorList' }) }}" class="btn" style="background-color: #EE3939;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/bin.png') }}></div></a>
                                 <form action="{{ path('lessorEdit') }}" method="post" style="display: inline;">
                                     <input type="hidden" name="lessor" value="{{ lessor|json_encode }}">
                                     <button type="submit" class="btn" style="background-color: #18A0FB;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/pen.png') }}></div></button>
