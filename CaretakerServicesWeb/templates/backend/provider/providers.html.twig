@@ -53,7 +53,7 @@
                 {% for provider in unverifiedProviders %}
                     <div class="col-3 p-0 me-4">
                         <div class="noValidateCard">
-                            <img src={%if 'profilePict' in provider %}{{ provider.profilePict }}{% else %}{{ asset('icons/profile_pict_default.png') }}{% endif %}>
+                            <img src={% if provider['profilePict'] is defined and provider['profilePict'] is not empty %}{{ provider.profilePict }}{% else %}{{asset('icons/profile_pict_default.png')}}{% endif %}>                            
                             <p class="name">{{ provider.firstname|capitalize }} {{ provider.lastname|capitalize }}</p>
                             <p class="otherData inscription"><b>Inscrit le :</b> {{ provider.dateInscription|date('d/m/Y H:i:s') }}</p>
                             <p class="otherData"><b>Email :</b> {{ provider.email }}</p>
@@ -64,7 +64,7 @@
                             </form>
                             <div class="validateBtns">
                                 <a href="{{ path('providerAccept', {'id': provider.id}) }}" class="validateBtn validBtn">Valider</a>
-                                <a href="{{ path('providerDelete', {'id': provider.id}) }}" class="validateBtn refuseBtn">Refuser</a>
+                                <a href="{{ path('userDelete', {'id': provider.id}) }}" class="validateBtn refuseBtn">Refuser</a>
                             </div>
                         </div>
                     </div>
@@ -92,13 +92,13 @@
                             <td>{{ provider.telNumber }}</td>
                             <td>{{ provider.dateInscription | date('d/m/Y H:i:s') }}</td>
                             <td class="action">
-                                <a href="{{ path('providerDelete', {'id': provider.id}) }}" class="btn" style="background-color: #EE3939;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/bin.png') }}></div></a>
+                                <a href="{{ path('userDelete', {'id': provider.id, 'origin':'providerList' }) }}" class="btn" style="background-color: #EE3939;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/bin.png') }}></div></a>
                                 <form action="{{ path('providerEdit') }}" method="post" style="display: inline;">
                                     <input type="hidden" name="provider" value="{{ provider|json_encode }}">
                                     <button type="submit" class="btn" style="background-color: #18A0FB;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/pen.png') }}></div></button>
                                 </form>
-                                <form action="{{ path('providerShow') }}" method="post" style="display: inline;">
-                                    <input type="hidden" name="provider" value="{{ provider|json_encode }}">
+                                <form action="{{ path('userShow') }}" method="post" style="display: inline;">
+                                    <input type="hidden" name="user" value="{{ provider|json_encode }}">
                                     <button type="submit" class="btn" style="background-color: #A594F9;"><div class="btnImage"><img style="height:17px;" src={{ asset('icons/crud/chart.png') }}></div></button>
                                 </form>
                             </td>

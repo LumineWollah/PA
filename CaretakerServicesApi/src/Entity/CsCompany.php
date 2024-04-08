@@ -59,7 +59,7 @@ class CsCompany
 
     #[ORM\Column(length: 255)]
     #[Groups(["getUsers", "getCompanies"])]
-    private ?string $adress = null;
+    private ?string $address = null;
 
     #[ORM\Column(length: 255)]
     #[Groups(["getUsers", "getCompanies"])]
@@ -135,14 +135,14 @@ class CsCompany
         return $this;
     }
 
-    public function getAdress()
+    public function getAddress()
     {
-        return $this->adress;
+        return $this->address;
     }
 
-    public function setAdress($adress)
+    public function setAddress($address)
     {
-        $this->adress = $adress;
+        $this->address = $address;
 
         return $this;
     }

@@ -8,7 +8,6 @@ use App\Service\ApiHttpClient;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class providerController extends AbstractController
 {
@@ -62,25 +61,6 @@ class providerController extends AbstractController
             'verifiedProviders' => $verifiedProviders,
             'unverifiedProviders' => $unverifiedProviders
         ]);
-    }
-
-    #[Route('/admin-panel/provider/delete', name: 'providerDelete')]
-    public function providerDelete(Request $request)
-    {
-        if (!$this->checkUserRole($request)) {return $this->redirectToRoute('login');}
-
-        $client = $this->apiHttpClient->getClient($request->getSession()->get('token'));
-
-        $id = $request->query->get('id');
-
-        $response = $client->request('DELETE', 'cs_users/'.$id, [
-            'query' => [
-                'id' => $id
-            ]
-        ]);
-        
-        return $this->redirectToRoute('providerList');
-        
     }
 
     #[Route('/admin-panel/provider/edit', name: 'providerEdit')]

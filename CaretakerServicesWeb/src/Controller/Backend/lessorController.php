@@ -58,25 +58,6 @@ class lessorController extends AbstractController
         ]);
     }
     
-    #[Route('/admin-panel/lessor/delete', name: 'lessorDelete')]
-    public function lessorDelete(Request $request)
-    {
-        if (!$this->checkUserRole($request)) {return $this->redirectToRoute('login');}
-
-        $client = $this->apiHttpClient->getClient($request->getSession()->get('token'));
-
-        $id = $request->query->get('id');
-
-        $response = $client->request('DELETE', 'cs_users/'.$id, [
-            'query' => [
-                'id' => $id
-            ]
-        ]);
-        
-        return $this->redirectToRoute('lessorList');
-        
-    }
-
     #[Route('/admin-panel/lessor/edit', name: 'lessorEdit')]
     public function lessorEdit(Request $request)
     {

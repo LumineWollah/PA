@@ -5,7 +5,7 @@
 {% block activeGest %}active{% endblock %}
 {% block activeTrav %}active{% endblock %}
 
-{% block title %}Liste des voyageurs{% endblock %}
+{% block title %}Liste des entreprises{% endblock %}
 
 {% block body %}
 <script>
@@ -33,7 +33,7 @@
             ],
             columnDefs: [
                 {
-                    targets: 3,
+                    targets: 2,
                     className: 'dt-body-left dt-head-left'
                 },
                 {
@@ -46,34 +46,32 @@
 </script>
     <div class="col-10 p-0">
         <div class="p-3">
-            <h1>Liste des voyageurs</h1>
+            <h1>Liste des entreprises</h1>
             <table id="crudList" class="table table-striped">
                 <thead>
                     <tr>
-                        <th scope="col">Prénom</th>
                         <th scope="col">Nom</th>
                         <th scope="col">Email</th>
                         <th scope="col">Téléphone</th>
-                        <th scope="col">Inscrit le</th>
+                        <th scope="col">Ville</th>
                         <th scope="col">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for traveler in travelers %}
+                    {% for company in companies %}
                         <tr>
-                            <td>{{ traveler.firstname|capitalize }}</td>
-                            <td>{{ traveler.lastname|upper }}</td>
-                            <td>{{ traveler.email }}</td>
-                            <td>{{ traveler.telNumber }}</td>
-                            <td>{{ traveler.dateInscription | date('d/m/Y H:i:s') }}</td>
+                            <td>{{ company.companyName|capitalize }}</td>
+                            <td>{{ company.companyEmail }}</td>
+                            <td>{{ company.companyPhone }}</td>
+                            <td>{{ company.city }}</td>
                             <td class="action">
-                                <a href="{{ path('userDelete', {'id': traveler.id, 'origin': 'travelerList'}) }}" class="btn" style="background-color: #EE3939;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/bin.png') }}></div></a>
-                                <form action="{{ path('travelerEdit') }}" method="post" style="display: inline;">
-                                    <input type="hidden" name="traveler" value="{{ traveler|json_encode }}">
+                                <a href="{{ path('companyDelete', {'id': company.id}) }}" class="btn" style="background-color: #EE3939;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/bin.png') }}></div></a>
+                                <form action="{{ path('companyEdit') }}" method="post" style="display: inline;">
+                                    <input type="hidden" name="company" value="{{ company|json_encode }}">
                                     <button type="submit" class="btn" style="background-color: #18A0FB;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/pen.png') }}></div></button>
                                 </form>
-                                <form action="{{ path('userShow') }}" method="post" style="display: inline;">
-                                    <input type="hidden" name="user" value="{{ traveler|json_encode }}">
+                                <form action="{{ path('companyShow') }}" method="post" style="display: inline;">
+                                    <input type="hidden" name="company" value="{{ company|json_encode }}">
                                     <button type="submit" class="btn" style="background-color: #A594F9;"><div class="btnImage"><img style="height:17px;" src={{ asset('icons/crud/chart.png') }}></div></button>
                                 </form>
                             </td>
