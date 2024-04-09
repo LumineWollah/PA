@@ -38,16 +38,6 @@ class travelerController extends AbstractController
                 'roles' => 'ROLE_TRAVELER'
             ]
         ]);
-        
-        $travelersList = $response->toArray();
-
-        $verifiedTravelers = array();
-        $unverifiedTravelers = array();
-
-        foreach ($travelersList['hydra:member'] as $traveler) {
-            $traveler['telNumber'] = implode(".", str_split($traveler['telNumber'], 2));
-            $traveler['isVerified'] == 1 ? $verifiedTravelers[] = $traveler : $unverifiedTravelers[] = $traveler;
-        }
 
         $request->getSession()->remove('traveler');
 
