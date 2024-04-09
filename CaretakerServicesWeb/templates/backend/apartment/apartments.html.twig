@@ -47,12 +47,11 @@
     <div class="col-10 p-0">
         <div class="p-3">
             <h1>Liste des appartements</h1>
-            <h4 class="mt-4">Non validés:</h4>
             <div class="container m-0 mb-4">
                 <div class="row">
-                {% for apartment in unverifiedApartments %}
+                {% for apartment in apartments %}
                     <div class="col-3 p-0 me-4">
-                        <div class="noValidateCard">
+                        <div class="container">
                             <p class="name">{{ apartment.name|capitalize }}</p>
                             <p class="otherData inscription"><b>Créé le :</b> {{ apartment.dateCreation|date('d/m/Y H:i:s') }}</p>
                             <p class="otherData"><b>Description :</b> {{ apartment.description }}</p>
@@ -68,49 +67,11 @@
                                 <input type="hidden" name="apartment" value="{{ apartment|json_encode }}">
                                 <button type="submit" class="seeMore" style="background-color: #A594F9;">Voir plus</button>
                             </form>
-                            <div class="validateBtns">
-                                <a href="{{ path('apartmentAccept', {'id': apartment.id}) }}" class="validateBtn validBtn">Valider</a>
-                                <a href="{{ path('apartmentDelete', {'id': apartment.id}) }}" class="validateBtn refuseBtn">Refuser</a>
-                            </div>
                         </div>
                     </div>
                 {% endfor %}
                 </div>
-              </div> 
-            <h4>Validés:</h4>
-            <table id="crudList" class="table table-striped">
-                <thead>
-                    <tr>
-                        <th scope="col">Prénom</th>
-                        <th scope="col">Nom</th>
-                        <th scope="col">Email</th>
-                        <th scope="col">Téléphone</th>
-                        <th scope="col">Inscrit le</th>
-                        <th scope="col">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for apartment in verifiedApartments %}
-                        <tr>
-                            <td>{{ apartment.name|capitalize }}</td>
-                            <td>{{ apartment.description }}</td>
-                            <td>{{ apartment.telNumber }}</td>
-                            <td>{{ apartment.dateInscription | date('d/m/Y H:i:s') }}</td>
-                            <td class="action">
-                                <a href="{{ path('apartmentDelete', {'id': apartment.id}) }}" class="btn" style="background-color: #EE3939;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/bin.png') }}></div></a>
-                                <form action="{{ path('apartmentEdit') }}" method="post" style="display: inline;">
-                                    <input type="hidden" name="apartment" value="{{ apartment|json_encode }}">
-                                    <button type="submit" class="btn" style="background-color: #18A0FB;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/pen.png') }}></div></button>
-                                </form>
-                                <form action="{{ path('apartmentShow') }}" method="post" style="display: inline;">
-                                    <input type="hidden" name="apartment" value="{{ apartment|json_encode }}">
-                                    <button type="submit" class="btn" style="background-color: #A594F9;"><div class="btnImage"><img style="height:17px;" src={{ asset('icons/crud/chart.png') }}></div></button>
-                                </form>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+              </div>
         </div>
     </div>
 {% endblock %}
