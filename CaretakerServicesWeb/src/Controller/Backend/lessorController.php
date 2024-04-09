@@ -49,7 +49,7 @@ class lessorController extends AbstractController
             $lessor['isVerified'] == 1 ? $verifiedLessors[] = $lessor : $unverifiedLessors[] = $lessor;
         }
 
-        $request->getSession()->remove('lessor');
+        $request->getSession()->remove('user');
 
         // return;
 
