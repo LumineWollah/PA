@@ -8,6 +8,7 @@ use App\Service\ApiHttpClient;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class lessorController extends AbstractController
 {
@@ -20,16 +21,16 @@ class lessorController extends AbstractController
 
     private function checkUserRole(Request $request): bool
     {
-        $roles = $request->getSession()->get('roles');
-        return $roles !== null && in_array('ROLE_ADMIN', $roles);
+        $role = $request->cookies->get('roles');
+        return $role !== null && $role == 'ROLE_ADMIN';
     }
 
     #[Route('/admin-panel/lessor/list', name: 'lessorList')]
     public function lessorList(Request $request)
     {
-        if (!$this->checkUserRole($request)) {return $this->redirectToRoute('login');}
+        if (!$this->checkUserRole($request)) {return $this->redirectToRoute('login');}       
 
-        $client = $this->apiHttpClient->getClient($request->getSession()->get('token'));
+        $client = $this->apiHttpClient->getClient($request->cookies->get('token'));
 
         $response = $client->request('GET', 'cs_users', [
             'query' => [
@@ -106,7 +107,7 @@ class lessorController extends AbstractController
             if ($form->isSubmitted() && $form->isValid()){
                 $data = $form->getData();
                 
-                $client = $this->apiHttpClient->getClient($request->getSession()->get('token'), 'application/merge-patch+json');
+                $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/merge-patch+json');
 
                 $response = $client->request('PATCH', 'cs_users/'.$storedLessor['id'], [
                     'json' => $data,
@@ -147,7 +148,7 @@ class lessorController extends AbstractController
     {
         if (!$this->checkUserRole($request)) {return $this->redirectToRoute('login');}
 
-        $client = $this->apiHttpClient->getClient($request->getSession()->get('token'), 'application/merge-patch+json');
+        $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/merge-patch+json');
 
         $id = $request->query->get('id');
 

@@ -22,7 +22,7 @@ class apartmentController extends AbstractController
     #[Route('/admin-panel/apartment/list', name: 'apartmentList')]
     public function apartmentList(Request $request)
     {
-        $client = $this->apiHttpClient->getClient($request->getSession()->get('token'));
+        $client = $this->apiHttpClient->getClient($request->cookies->get('token'));
 
         $response = $client->request('GET', 'cs_apartments', [
             'query' => [
@@ -53,7 +53,7 @@ class apartmentController extends AbstractController
     #[Route('/admin-panel/apartment/delete', name: 'apartmentDelete')]
     public function apartmentDelete(Request $request)
     {
-        $client = $this->apiHttpClient->getClient($request->getSession()->get('token'));
+        $client = $this->apiHttpClient->getClient($request->cookies->get('token'));
 
         $id = $request->query->get('id');
 
@@ -120,7 +120,7 @@ class apartmentController extends AbstractController
             if ($form->isSubmitted() && $form->isValid()){
                 $data = $form->getData();
                 
-                $client = $this->apiHttpClient->getClient($request->getSession()->get('token'), 'application/merge-patch+json');
+                $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/merge-patch+json');
 
                 $response = $client->request('PATCH', 'cs_users/'.$storedApartment['id'], [
                     'json' => $data,

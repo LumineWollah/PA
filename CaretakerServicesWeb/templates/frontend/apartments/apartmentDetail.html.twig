@@ -1,0 +1,104 @@
+{% extends 'frontend/base.html.twig' %}
+
+{% block stylesheets %}<link rel="stylesheet" href={{ asset('styles/frontend/apartments/apartmentDetail.css') }}>{% endblock %}
+
+{% block activeApar %}active{% endblock %}
+
+{% block body %}
+<div class="container-fluid pageContent">
+    <div class="row">
+        <div class="mainImg p-0">
+            <img src="https://tinyurl.com/mr2umuh3">
+        </div>
+    </div>
+    <div class="mainInfos">
+        <div class="row">
+            <div class="col-7">
+                <h1>Superbe appartement à Paris</h1>
+                <p class="apartDesc"><b>Description : </b>Offrez-vous l'expérience parisienne ultime dans notre appartement de luxe. Avec une vue imprenable et des détails architecturaux époustouflants, chaque élément de cet espace est conçu pour une aventure inoubliable. Détendez-vous dans le salon et profitez d'un panorama majestueux sur la Tour Eiffel et la Seine...</p>
+                <div class="modal fade" id="exampleModalLive" tabindex="-1" aria-labelledby="exampleModalLiveLabel" style="display: none;" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-scrollable .modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="exampleModalLiveLabel">Description</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p>Offrez-vous l'expérience parisienne ultime dans notre appartement de luxe. Avec une vue imprenable et des détails architecturaux époustouflants, chaque élément de cet espace est conçu pour une aventure inoubliable. Détendez-vous dans le salon et profitez d'un panorama majestueux sur la Tour Eiffel et la Seine. Il y a également des Doritos à volonté s'il y a petite pipe au propriétaire.</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" class="btn readMoreBtn" data-bs-toggle="modal" data-bs-target="#exampleModalLive">
+                    LIRE PLUS
+                </button>
+            </div>
+            <div class="col-5 caractColumn align-items-center">
+                <div class="caract">
+                    <h4>Caractéristiques</h4>
+                    <ul>
+                        <li>Type de bien : <b>Appartement</b></li>
+                        <li>Type de location : <b>Logement entier</b></li>
+                        <li>Nombre de chambre : <b>2 chambres</b></li>
+                        <li>Nombre de voyageur : <b>4 voyageurs</b></li>
+                        <li>Surface : <b>15 m²</b></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-2 lessorTinyProfile">
+                <img src={{ asset('icons/profile_pict_default.png') }}>
+                <div class="textName">
+                    <p><b>Hôte :</b> Francis Lalanne</p>
+                    <p class="inscription">Inscrit depuis 6 ans</p>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div class="row reservation">
+            <h2>Réservation</h2>
+            <div class="row">
+                <div class="col-6">
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div class="row photosCaroussel justify-content-center">
+            <h2>Autres photos</h2>
+            <div id="carouselExampleIndicators" class="carousel slide">
+                <div class="carousel-indicators">
+                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                </div>
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <img src="https://tinyurl.com/mr2umuh3" class="d-block w-100 carouselImg" alt="...">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="https://tinyurl.com/mr2umuh3" class="d-block w-100 carouselImg" alt="...">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="https://tinyurl.com/mr2umuh3" class="d-block w-100 carouselImg" alt="...">
+                    </div>
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+                    <img src={{ asset('icons/arrow_left.png') }} class="arrow left">
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+                    <img src={{ asset('icons/arrow_right.png') }} class="arrow right">
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+        </div>
+        <div class="row localisation justify-content-center">
+        
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -21,8 +21,8 @@ class travelerController extends AbstractController
 
     private function checkUserRole(Request $request): bool
     {
-        $roles = $request->getSession()->get('roles');
-        return $roles !== null && in_array('ROLE_ADMIN', $roles);
+        $role = $request->cookies->get('roles');
+        return $role !== null && $role == 'ROLE_ADMIN';
     }
 
     #[Route('/admin-panel/traveler/list', name: 'travelerList')]
@@ -30,7 +30,7 @@ class travelerController extends AbstractController
     {
         if (!$this->checkUserRole($request)) {return $this->redirectToRoute('login');}
 
-        $client = $this->apiHttpClient->getClient($request->getSession()->get('token'));
+        $client = $this->apiHttpClient->getClient($request->cookies->get('token'));
 
         $response = $client->request('GET', 'cs_users', [
             'query' => [
@@ -95,7 +95,7 @@ class travelerController extends AbstractController
             if ($form->isSubmitted() && $form->isValid()){
                 $data = $form->getData();
                 
-                $client = $this->apiHttpClient->getClient($request->getSession()->get('token'), 'application/merge-patch+json');
+                $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/merge-patch+json');
 
                 $response = $client->request('PATCH', 'cs_users/'.$storedTraveler['id'], [
                     'json' => $data,
