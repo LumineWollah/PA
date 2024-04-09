@@ -32,21 +32,10 @@ class apartmentController extends AbstractController
         
         $apartmentsList = $response->toArray();
 
-        $verifiedApartments = array();
-        $unverifiedApartments = array();
-
-        foreach ($apartmentsList['hydra:member'] as $apartment) {
-            $apartment['telNumber'] = implode(".", str_split($apartment['telNumber'], 2));
-            $apartment['isVerified'] == 1 ? $verifiedApartments[] = $apartment : $unverifiedApartments[] = $apartment;
-        }
-
         $request->getSession()->remove('apartment');
 
-        // return;
-
-        return $this->render('backend/apartments.html.twig', [
-            'verifiedApartments' => $verifiedApartments,
-            'unverifiedApartments' => $unverifiedApartments
+        return $this->render('backend/apartment/apartments.html.twig', [
+            'apartments' => $apartmentsList['hydra:member']
         ]);
     }
     
@@ -122,7 +111,7 @@ class apartmentController extends AbstractController
                 
                 $client = $this->apiHttpClient->getClient($request->getSession()->get('token'), 'application/merge-patch+json');
 
-                $response = $client->request('PATCH', 'cs_users/'.$storedApartment['id'], [
+                $response = $client->request('PATCH', 'cs_apartments/'.$storedApartment['id'], [
                     'json' => $data,
                 ]);
 
@@ -130,7 +119,7 @@ class apartmentController extends AbstractController
     
                 return $this->redirectToRoute('apartmentList');
             }      
-            return $this->render('backend/editApartment.html.twig', [
+            return $this->render('backend/apartment/editApartment.html.twig', [
                 'form'=>$form,
                 'errorMessage'=>null
             ]);
