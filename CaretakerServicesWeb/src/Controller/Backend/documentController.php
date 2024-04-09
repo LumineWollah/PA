@@ -40,6 +40,7 @@ class documentController extends AbstractController
         $documentsList = $response->toArray();
 
         $request->getSession()->remove('document');
+        $request->getSession()->remove('user');
 
         return $this->render('backend/document/documents.html.twig', [
             'documents' => $documentsList['hydra:member']
@@ -60,7 +61,7 @@ class documentController extends AbstractController
                 'id' => $id
             ]
         ]);
-        
+
         return $this->redirectToRoute('documentList');
         
     }
@@ -115,7 +116,7 @@ class documentController extends AbstractController
                 
                 $client = $this->apiHttpClient->getClient($request->getSession()->get('token'), 'application/merge-patch+json');
 
-                $response = $client->request('PATCH', 'cs_users/'.$storedDocument['id'], [
+                $response = $client->request('PATCH', 'cs_documents/'.$storedDocument['id'], [
                     'json' => $data,
                 ]);
 
