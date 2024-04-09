@@ -15,6 +15,15 @@
                     <p><strong>Numéro de téléphone :</strong> {{ user.telNumber }}</p>
                     <p><strong>Dernière connexion :</strong> {{ user.lastConnection|date('d/m/Y H:i:s') }}</p>
                     <p><strong>Inscrit le :</strong> {{ user.dateInscription|date('d/m/Y H:i:s') }}</p>
+                    {% if user['company'] is defined and user['company'] is not empty %}
+                        <p><strong>Entreprise :</strong></p>
+                        <form action="{{ path('companyShow') }}" method="post" style="display: inline;">
+                            <input type="hidden" name="company" value="{{ user.company|json_encode }}">
+                            <button type="submit" class="container" style="background-color: #A594F9;">
+                                <p>{{ user.company.companyName }}</p>
+                            </button>
+                        </form>
+                    {% endif %}
                     <p><strong>Rôles :</strong> 
                     {% for role in user.roles %}
                         {{ role }}
