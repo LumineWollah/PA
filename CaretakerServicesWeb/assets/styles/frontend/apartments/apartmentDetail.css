@@ -1,0 +1,146 @@
+.pageContent {
+    position: absolute;
+    top: 8vh;
+}
+
+.mainImg {
+    width: 100vw;
+    height: 55vh;
+}
+
+.mainImg img {
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+}
+
+.mainInfos {
+    
+    padding: 2%;
+}
+
+h1 {
+    font-family: 'Roboto Condensed';
+    font-weight: 800;
+    font-size: 2.7vw;
+}
+
+.apartSheet {
+    width: 55%;
+}
+
+.apartDesc {
+    font-family: 'Quicksand';
+    font-weight: 400;
+    font-size: 1.1vw;
+}
+
+.readMoreBtn {
+    background-color: #A594F9;
+    color: white;
+    font-family: 'Quicksand';
+    font-weight: 700;
+}
+
+.caract {
+    background-color: #3D2F44;
+    width: 70%;
+    color: white;
+    display: flex;
+    padding: 15px;
+    height: fit-content;
+}
+
+.caractColumn {
+    display: flex;
+    justify-content: center;
+}
+
+.caractColumn h4 {
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    transform: rotate(180deg);
+    font-family: 'Antonio';
+    font-weight: 700;
+    margin: 0;
+}
+
+.caractColumn ul {
+    line-height: 30px;
+    margin: 0;
+    margin-left: 7%;
+
+}
+
+.caractColumn li {
+    font-family: 'Quicksand';
+    font-weight: 400;
+    text-wrap: nowrap;
+    font-size: 1vw;
+}
+
+.lessorTinyProfile {
+    margin-top: 3vh;
+    margin-bottom: 2vh;
+    display: flex;
+    align-items: center;
+    font-family: 'Quicksand';
+}
+
+.lessorTinyProfile img {
+    width: 2.5vw;
+    height: 2.5vw;
+    margin-right: 15px;
+}
+
+.textName {
+    display: flex;
+    flex-direction: column;
+}
+
+.textName p {
+    margin: 0;
+}
+
+.inscription {
+    font-size: 0.7vw;
+}
+
+h2 {
+    font-family: 'Antonio';
+    font-size: 2vw;
+    color: #A594F9;
+}
+
+.reservation {
+    height: 40vh;
+}
+
+.carousel {
+    height: 50vh;
+    width: 50vw;
+    margin-top: 2vh;
+}
+
+.carouselImg {
+    height: 50vh;
+    object-fit: cover;
+}
+
+.carousel-control-next, .carousel-control-prev {
+    opacity: 1 !important;
+}
+
+.arrow {
+    height: 6vh;
+}
+
+.left {
+    position: absolute !important;
+    left: -5vw;
+}
+
+.right {
+    position: absolute !important;
+    right: -5vw;
+}
