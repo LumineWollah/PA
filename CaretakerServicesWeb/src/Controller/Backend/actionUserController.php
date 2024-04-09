@@ -21,8 +21,8 @@ class actionUserController extends AbstractController
 
     private function checkUserRole(Request $request): bool
     {
-        $roles = $request->getSession()->get('roles');
-        return $roles !== null && in_array('ROLE_ADMIN', $roles);
+        $role = $request->cookies->get('roles');
+        return $role !== null && $role == 'ROLE_ADMIN';
     }
 
     #[Route('/admin-panel/user/delete', name: 'userDelete')]
@@ -30,7 +30,7 @@ class actionUserController extends AbstractController
     {
         if (!$this->checkUserRole($request)) {return $this->redirectToRoute('login');}
 
-        $client = $this->apiHttpClient->getClient($request->getSession()->get('token'));
+        $client = $this->apiHttpClient->getClient($request->cookies->get('token'));
 
         $id = $request->query->get('id');
         $origin = $request->query->get('origin');

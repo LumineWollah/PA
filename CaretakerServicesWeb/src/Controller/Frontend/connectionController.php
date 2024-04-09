@@ -11,6 +11,7 @@ use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RadioType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -82,9 +83,17 @@ class connectionController extends AbstractController
             }
 
             $response = json_decode($response->getContent(), true);
+            
+            unset($response['roles'][array_search('ROLE_USER', $response['roles'])]);
 
-            $request->getSession()->set('token', $response['token']);
-            $request->getSession()->set('roles', $response['roles']);
+            $responseCookie = new Response();
+
+            $cookie = Cookie::create('token', $response['token'], 0, '/', null, true, true);
+            $responseCookie->headers->setCookie($cookie);
+            $cookie = Cookie::create('roles', $response['roles'][0], 0, '/', null, true, true);
+            $responseCookie->headers->setCookie($cookie);
+            
+            $responseCookie->send();
 
             return $this->redirectToRoute('providerList');
         }      
