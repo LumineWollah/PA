@@ -53,7 +53,7 @@ class providerController extends AbstractController
         // print_r($providersList);
         // echo "</pre>";
 
-        $request->getSession()->remove('provider');
+        $request->getSession()->remove('user');
 
         // return;
 

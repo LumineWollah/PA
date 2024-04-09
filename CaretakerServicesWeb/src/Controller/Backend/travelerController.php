@@ -39,7 +39,9 @@ class travelerController extends AbstractController
             ]
         ]);
 
-        $request->getSession()->remove('traveler');
+        $travelersList = $response->toArray();
+
+        $request->getSession()->remove('user');
 
         return $this->render('backend/traveler/travelers.html.twig', [
             'travelers' => $travelersList['hydra:member']
