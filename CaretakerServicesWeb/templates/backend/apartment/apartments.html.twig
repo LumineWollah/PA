@@ -3,7 +3,7 @@
 {% block stylesheets %}<link rel="stylesheet" href={{ asset('styles/crud.css') }}>{% endblock %}
 
 {% block activeGest %}active{% endblock %}
-{% block activeApar %}active{% endblock %}
+{% block activeTrav %}active{% endblock %}
 
 {% block title %}Liste des appartements{% endblock %}
 
@@ -33,13 +33,17 @@
             ],
             columnDefs: [
                 {
-                    targets: 3,
+                    targets: 4,
                     className: 'dt-body-left dt-head-left'
                 },
                 {
                     targets: -1,
                     orderable: false,
-                }   
+                },
+                {
+                    targets: 0,
+                    orderable: false,
+                }      
             ]
         } );
     } );
@@ -47,31 +51,47 @@
     <div class="col-10 p-0">
         <div class="p-3">
             <h1>Liste des appartements</h1>
-            <div class="container m-0 mb-4">
-                <div class="row">
-                {% for apartment in apartments %}
-                    <div class="col-3 p-0 me-4">
-                        <div class="container">
-                            <p class="name">{{ apartment.name|capitalize }}</p>
-                            <p class="otherData inscription"><b>Créé le :</b> {{ apartment.dateCreation|date('d/m/Y H:i:s') }}</p>
-                            <p class="otherData"><b>Description :</b> {{ apartment.description }}</p>
-                            <p class="otherData"><b>Chambres :</b> {{ apartment.bedrooms }}</p>
-                            <p class="otherData"><b>Voyageurs max :</b> {{ apartment.travelersMax }}</p>
-                            <p class="otherData"><b>Superficie :</b> {{ apartment.area }}</p>
-                            <p class="otherData"><b>Prix :</b> {{ apartment.price }}€</p>
-                            <p class="otherData"><b>Adresse :</b> {{ apartment.address }}</p>
-                            <p class="otherData"><b>Code postal :</b> {{ apartment.postalCode }}</p>
-                            <p class="otherData"><b>Ville :</b> {{ apartment.city }}</p>
-                            <p class="otherData"><b>Pays :</b> {{ apartment.country }}</p>
-                            <form action="{{ path('apartmentShow') }}" method="post" style="display: inline;">
-                                <input type="hidden" name="apartment" value="{{ apartment|json_encode }}">
-                                <button type="submit" class="seeMore" style="background-color: #A594F9;">Voir plus</button>
-                            </form>
-                        </div>
-                    </div>
-                {% endfor %}
-                </div>
-              </div>
+            <table id="crudList" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col"></th>
+                        <th scope="col">Nom</th>
+                        <th scope="col">Propriétaire</th>
+                        <th scope="col">Ville</th>
+                        <th scope="col">Prix</th>
+                        <th scope="col">Date d'ajout</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for apartment in apartments %}
+                        <tr>
+                            <td></td>
+                            <td>{{ apartment.name|capitalize }}</td>
+                            <td>
+                                <form action="{{ path('userShow') }}" method="post" style="display: inline;">
+                                    <input type="hidden" name="user" value="{{ apartment.owner|json_encode }}">
+                                    <button type="submit" class="btn btn-light owner" style="height:40px"><p> {{ apartment.owner.firstname ~ " " ~ apartment.owner.lastname|capitalize }} </p></button>
+                                </form>
+                            </td>
+                            <td>{{ apartment.city }}</td>
+                            <td>{{ apartment.price }} €</td>
+                            <td>{{ apartment.dateCreation | date('d/m/Y H:i:s') }}</td>
+                            <td class="action">
+                                <a href="{{ path('apartmentDelete', {'id': apartment.id }) }}" class="btn" style="background-color: #EE3939;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/bin.png') }}></div></a
+                                <form action="{{ path('apartmentEdit') }}" method="post" style="display: inline;">
+                                    <input type="hidden" name="apartment" value="{{ apartment|json_encode }}">
+                                    <button type="submit" class="btn" style="background-color: #18A0FB;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/pen.png') }}></div></button>
+                                </form>
+                                <form action="{{ path('apartmentShow') }}" method="post" style="display: inline;">
+                                    <input type="hidden" name="apartment" value="{{ apartment|json_encode }}">
+                                    <button type="submit" class="btn" style="background-color: #A594F9;"><div class="btnImage"><img style="height:17px;" src={{ asset('icons/crud/chart.png') }}></div></button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
 {% endblock %}
