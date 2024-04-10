@@ -8,6 +8,7 @@
             <h1>Afficher un utilisateur</h1>
             <div class="row">
                 <div class="col-6">
+                    <img src={% if user['profilePict'] is defined and user['profilePict'] is not empty %}{{ user.profilePict }}{% else %}{{asset('icons/profile_pict_default.png')}}{% endif %} style="width:30%;"> 
                     <p><strong>Id :</strong> {{ user.id }}</p>
                     <p><strong>Nom :</strong> {{ user.lastname }}</p>
                     <p><strong>Prénom :</strong> {{ user.firstname }}</p>
@@ -38,10 +39,7 @@
                             </ul>
                         </div>
                     {% endif %}
-                <div class="col-6">
-                    <p><strong>Photo :</strong></p>
-                    <img src="{{ asset('profiles/') }}" alt="{{ user.firstname }}" class="img-fluid">
-                </div>
+                
                 
         </div>
     </div>
