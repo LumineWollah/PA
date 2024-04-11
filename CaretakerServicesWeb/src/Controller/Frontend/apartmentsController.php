@@ -67,7 +67,7 @@ class apartmentsController extends AbstractController
         // return;
 
         return $this->render('frontend/apartments/apartmentList.html.twig', [
-            'apartments'=>$aps
+            'aps'=>$aps['hydra:member']
         ]);
         
     }

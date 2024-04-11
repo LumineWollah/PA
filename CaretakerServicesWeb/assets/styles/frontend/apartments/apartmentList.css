@@ -62,3 +62,7 @@ h1 {
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+
+.apsRow {
+    margin-bottom: 2%;
+}
