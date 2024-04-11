@@ -124,4 +124,24 @@ class apartmentController extends AbstractController
                 'errorMessage'=>null
             ]);
     }
+
+    #[Route('/admin-panel/apartment/show', name: 'apartmentShow')]
+    public function apartmentShow(Request $request)
+    {
+        if (!$this->checkUserRole($request)) {return $this->redirectToRoute('login');}
+
+        $apartmentData = $request->request->get('apartment');
+        $apartment = json_decode($apartmentData, true);
+
+        $storedApartment = $request->getSession()->get('apartment');
+
+        if (!$storedApartment) {
+            $request->getSession()->set('apartment', $apartment);
+            $storedApartment = $apartment;
+        }
+        
+        return $this->render('backend/apartment/showApartment.html.twig', [
+            'apartment'=>$storedApartment
+        ]);
+    }
 }
