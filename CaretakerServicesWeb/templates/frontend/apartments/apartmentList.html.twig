@@ -7,33 +7,22 @@
 {% block body %}
 <div class="container-fluid pageContent">
     <h1>Nos <span class="h1span">logements</span> à louer</h1>
-    <div class="row justify-content-between apsRow">
-        <div class="col-2 apartContainer">
-            <a href="#">
-                <div class="imgContainer">
-                    <img src="https://tinyurl.com/mr2umuh3">
-                </div>
-                <p class="apartName"><b>Mon super appartement de foufou des deglingos du glands</b></p>
-                <p class="apartInfos"><span class="medium">Paris, France • 150€</span><span class="light"> / nuit</span></b></p>
-            </a>
+    {% for i in range(0, (((aps|length)/5)|round(0, 'ceil'))-1) %}
+        <div class="row justify-content-between apsRow">
+            {% for j in range(i*5, (i*5)+4) %}
+                {% if j < aps|length %}
+                    <div class="col-2 apartContainer">
+                        <a href={{ path('apartmentDetail', {'id': aps[j].id}) }}>
+                            <div class="imgContainer">
+                                <img src={{ aps[j].mainPict }}>
+                            </div>
+                            <p class="apartName"><b>Mon super appartement de foufou des deglingos du glands</b></p>
+                            <p class="apartInfos"><span class="medium">Paris, France • 150€</span><span class="light"> / nuit</span></b></p>
+                        </a>
+                    </div>
+                {% endif %}
+            {% endfor %}
         </div>
-        <div class="col-2 apartContainer">
-            <div class="imgContainer">
-                <img src="https://tinyurl.com/2w8fnhrs">
-            </div>
-        </div>
-        <div class="col-2 apartContainer">
-            <div class="imgContainer">
-                <img src="https://tinyurl.com/mr2umuh3">
-            </div>        </div>
-        <div class="col-2 apartContainer">
-            <div class="imgContainer">
-                <img src="https://tinyurl.com/mr2umuh3">
-            </div>        </div>
-        <div class="col-2 apartContainer">
-            <div class="imgContainer">
-                <img src="https://tinyurl.com/mr2umuh3">
-            </div>        </div>
-    </div>
+    {% endfor %}
 </div>
 {% endblock %}

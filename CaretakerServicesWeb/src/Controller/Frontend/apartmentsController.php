@@ -21,7 +21,7 @@ use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Constraints\Email;
 
-class apartmentController extends AbstractController
+class apartmentsController extends AbstractController
 {
     private $apiHttpClient;
 
@@ -48,7 +48,7 @@ class apartmentController extends AbstractController
         ]);
     }
 
-    #[Route('/apartment', name: 'apartmentList')]
+    #[Route('/apartment', name: 'apartmentsList')]
     public function apartmentList(Request $request)
     {
         $client = $this->apiHttpClient->getClientWithoutBearer();
@@ -67,7 +67,7 @@ class apartmentController extends AbstractController
         // return;
 
         return $this->render('frontend/apartments/apartmentList.html.twig', [
-            'apartments'=>$aps
+            'aps'=>$aps['hydra:member']
         ]);
         
     }
