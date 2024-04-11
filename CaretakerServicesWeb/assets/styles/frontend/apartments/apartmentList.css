@@ -23,16 +23,13 @@ h1 {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    transition: transform 0.3s ease;
 }
 
-.apartContainer a {
+.apartContainer {
     text-decoration: none;
     color: black;
     font-family: 'Quicksand';
-}
-
-.apartContainer p {
-    margin: 0;
 }
 
 .medium {
@@ -44,8 +41,11 @@ h1 {
 } 
 
 .apartName {
-    font-size: 1.1vw;
-    margin-top: 10px;
+    font-size: 1.3vw;
+    font-family: 'Roboto Condensed';
+    font-weight: 300;
+    margin-top: 2%;
+    margin-bottom: 0;
 }
 
 .apartName {
@@ -54,15 +54,44 @@ h1 {
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
-    max-height: 30vh;
 }
 
 .apartInfos {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    margin-top: 2%;
+    margin-bottom: 0;
+    font-size: 1vw;
 }
 
 .apsRow {
     margin-bottom: 2%;
+    height: 40vh;
+}
+
+.apartContainer {
+    padding: 5px;
+    margin: 0.5%;
+    overflow: hidden;
+    width: 24%;
+    height: 40vh;
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 12px 28px 0px, rgba(0, 0, 0, 0.1) 0px 2px 4px 0px, rgba(255, 255, 255, 0.05) 0px 0px 0px 1px inset;
+}
+
+.apartNumbers {
+    margin-top: 2%;
+    height: 8%;
+    display: flex;
+    align-items: center;
+    font-size: 0.9vw;
+}
+
+.apartNumbers img {
+    height: 80%;
+    margin-right: 2%;
+}
+
+.apartContainer:hover .imgContainer img {
+    transform: scale(1.1);
 }
