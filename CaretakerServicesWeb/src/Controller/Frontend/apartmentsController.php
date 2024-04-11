@@ -30,7 +30,7 @@ class apartmentsController extends AbstractController
         $this->apiHttpClient = $apiHttpClient;
     }
 
-    #[Route('/apartment/{id}', name: 'apartmentDetail')]
+    #[Route('/apartment/{id}', name: 'apartmentsDetail')]
     public function apartmentDetail(int $id, Request $request)
     {
         $client = $this->apiHttpClient->getClientWithoutBearer();
