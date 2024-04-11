@@ -18,10 +18,18 @@ class apartmentController extends AbstractController
     {
         $this->apiHttpClient = $apiHttpClient;
     }
+    
+    private function checkUserRole(Request $request): bool
+    {
+        $role = $request->cookies->get('roles');
+        return $role !== null && $role == 'ROLE_ADMIN';
+    }
 
     #[Route('/admin-panel/apartment/list', name: 'apartmentList')]
     public function apartmentList(Request $request)
     {
+        if (!$this->checkUserRole($request)) {return $this->redirectToRoute('login');}
+
         $client = $this->apiHttpClient->getClient($request->cookies->get('token'));
 
         $response = $client->request('GET', 'cs_apartments', [
@@ -42,6 +50,8 @@ class apartmentController extends AbstractController
     #[Route('/admin-panel/apartment/delete', name: 'apartmentDelete')]
     public function apartmentDelete(Request $request)
     {
+        if (!$this->checkUserRole($request)) {return $this->redirectToRoute('login');}
+
         $client = $this->apiHttpClient->getClient($request->cookies->get('token'));
 
         $id = $request->query->get('id');
@@ -59,6 +69,8 @@ class apartmentController extends AbstractController
     #[Route('/admin-panel/apartment/edit', name: 'apartmentEdit')]
     public function apartmentEdit(Request $request)
     {
+        if (!$this->checkUserRole($request)) {return $this->redirectToRoute('login');}
+
         $apartmentData = $request->request->get('apartment');
         $apartment = json_decode($apartmentData, true);
 
@@ -91,12 +103,12 @@ class apartmentController extends AbstractController
             "required"=>false,
             "empty_data"=>$storedApartment["bedrooms"],
         ])
-        ->add("travelers_max", IntegerType::class, [
+        ->add("travelersMax", IntegerType::class, [
             "attr"=>[
-                "placeholder"=>$storedApartment["travelers_max"],
+                "placeholder"=>$storedApartment["travelersMax"],
             ],
             "required"=>false,
-            "empty_data"=>$storedApartment["travelers_max"],
+            "empty_data"=>$storedApartment["travelersMax"],
         ])
         ->add("price", IntegerType::class, [
             "attr"=>[

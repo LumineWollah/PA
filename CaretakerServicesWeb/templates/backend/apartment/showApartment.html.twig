@@ -1,5 +1,7 @@
 {% extends 'backend/base.html.twig' %}
 
+{% block stylesheets %}<link rel="stylesheet" href={{ asset('styles/show.css') }}>{% endblock %}
+
 {% block title %}Afficher un appartement{% endblock %}
 
 {% block body %}
@@ -15,15 +17,27 @@
                     <p><strong>Voyageurs max :</strong> {{ apartment.travelersMax }}</p>
                     <p><strong>Créé le :</strong> {{ apartment.dateCreation|date('d/m/Y H:i:s') }}</p>
                     <p><strong>Superficie :</strong> {{ apartment.area }}</p>
-                    <p><strong>Numéro d'appartement :</strong> {{ apartment.apartNumber }}</p>
+                    {% if apartment.isHouse == true %}
+                        <p><strong>Type :</strong> Maison</p>
+                    {% else %}
+                        <p><strong>Type :</strong> Appartement</p>
+                        <p><strong>Numéro :</strong> {{ apartment.apartNumber }}</p>
+                    {% endif %}
                     <p><strong>Adresse :</strong> {{ apartment.address }}</p>
                     <p><strong>Code postal :</strong> {{ apartment.postalCode }}</p>
                     <p><strong>Ville :</strong> {{ apartment.city }}</p>
                     <p><strong>Pays :</strong> {{ apartment.country }}</p>
                     <p><strong>Prix :</strong> {{ apartment.price }}€</p>
+                        <p><strong>Photos :</strong></p>
+                        <a href="{{ apartment.mainPict }}" target="_blank">
+                        <img src={{ apartment.mainPict }} alt="{{ apartment.name }}" class="img-fluid images">
+                        </a>
                     <div class="col-6">
-                        <p><strong>Photo :</strong></p>
-                        <img src="https://thumb.canalplus.pro/http/unsafe/1920x1080/smart/creativemedia-image.canalplus.pro/content/0001/40/97e6a76d9788e3e0eea6fddbd68b4fb8b8d5cdda.jpeg" alt="{{ apartment.name }}" class="img-fluid">
+                        {% for picture in apartment.pictures %}
+                        <a href="{{ picture }}" target="_blank">
+                            <img src={{ picture }} class="img-fluid images">
+                        </a>
+                        {% endfor %}
                     </div>
              </div>
         </div>
