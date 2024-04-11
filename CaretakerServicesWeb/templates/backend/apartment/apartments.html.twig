@@ -66,7 +66,7 @@
                 <tbody>
                     {% for apartment in apartments %}
                         <tr>
-                            <td><img class="mainPict" src={{apartment.mainPict}}></td>
+                            <td class="mainPict"><img src={{apartment.mainPict}}></td>
                             <td>{{ apartment.name|capitalize }}</td>
                             <td>
                                 <form action="{{ path('userShow') }}" method="post" style="display: inline;">

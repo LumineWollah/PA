@@ -115,5 +115,12 @@ tr {
 }
 
 .mainPict {
-    width: 90%;
+    height:12vh;
+    width:10%;
+}
+
+.mainPict img {
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
 }
