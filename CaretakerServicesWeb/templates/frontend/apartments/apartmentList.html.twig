@@ -12,7 +12,7 @@
             {% for j in range(i*5, (i*5)+4) %}
                 {% if j < aps|length %}
                     <div class="col-2 apartContainer">
-                        <a href={{ path('apartmentDetail', {'id': aps[j].id}) }}>
+                        <a href={{ path('apartmentsDetail', {'id': aps[j].id}) }}>
                             <div class="imgContainer">
                                 <img src={{ aps[j].mainPict }}>
                             </div>
