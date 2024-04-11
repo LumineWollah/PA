@@ -5,6 +5,8 @@ namespace App\Entity;
 use DateTime;
 
 use App\Repository\CsApartmentRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -25,7 +27,7 @@ use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 #[Patch(security: "is_granted('ROLE_ADMIN') or object.getOwner() == user")]
 #[GetCollection()]
 #[Delete(security: "is_granted('ROLE_ADMIN') or object.getOwner() == user")]
-#[Post(security: "is_granted('ROLE_LESSOR')")]
+#[Post(security: "is_granted('ROLE_LESSOR') or is_granted('ROLE_ADMIN')")]
 // #[ApiFilter(SearchFilter::class, properties: ['type' => 'exact'])]
 #[ORM\Entity(repositoryClass: CsApartmentRepository::class)]
 class CsApartment
@@ -33,6 +35,7 @@ class CsApartment
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(["getUsers", "getApartments"])]
     private ?int $id = null;
 
     #[ORM\Column(length: 50)]
@@ -103,6 +106,14 @@ class CsApartment
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(["getApartments"])]
     private ?CsUser $owner = null;
+
+    #[ORM\Column(length: 255)]
+    #[Groups(["getUsers", "getApartments"])]
+    private ?String $mainPict;
+
+    #[ORM\Column(nullable: true)]
+    #[Groups(["getUsers", "getApartments"])]
+    private ?array $pictures = null;
 
     public function __construct()
     {
@@ -314,6 +325,30 @@ class CsApartment
     public function setCountry($country)
     {
         $this->country = $country;
+
+        return $this;
+    }
+
+    public function getMainPict(): ?string
+    {
+        return $this->mainPict;
+    }
+
+    public function setMainPict(string $mainPict): static
+    {
+        $this->mainPict = $mainPict;
+
+        return $this;
+    }
+
+    public function getPictures(): ?array
+    {
+        return $this->pictures;
+    }
+
+    public function setPictures(?array $pictures): static
+    {
+        $this->pictures = $pictures;
 
         return $this;
     }

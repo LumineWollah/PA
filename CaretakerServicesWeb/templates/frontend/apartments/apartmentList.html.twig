@@ -1,0 +1,39 @@
+{% extends 'frontend/base.html.twig' %}
+
+{% block stylesheets %}<link rel="stylesheet" href={{ asset('styles/frontend/apartments/apartmentList.css') }}>{% endblock %}
+
+{% block activeApar %}active{% endblock %}
+
+{% block body %}
+<div class="container-fluid pageContent">
+    <h1>Nos <span class="h1span">logements</span> à louer</h1>
+    <div class="row justify-content-between apsRow">
+        <div class="col-2 apartContainer">
+            <a href="#">
+                <div class="imgContainer">
+                    <img src="https://tinyurl.com/mr2umuh3">
+                </div>
+                <p class="apartName"><b>Mon super appartement de foufou des deglingos du glands</b></p>
+                <p class="apartInfos"><span class="medium">Paris, France • 150€</span><span class="light"> / nuit</span></b></p>
+            </a>
+        </div>
+        <div class="col-2 apartContainer">
+            <div class="imgContainer">
+                <img src="https://tinyurl.com/2w8fnhrs">
+            </div>
+        </div>
+        <div class="col-2 apartContainer">
+            <div class="imgContainer">
+                <img src="https://tinyurl.com/mr2umuh3">
+            </div>        </div>
+        <div class="col-2 apartContainer">
+            <div class="imgContainer">
+                <img src="https://tinyurl.com/mr2umuh3">
+            </div>        </div>
+        <div class="col-2 apartContainer">
+            <div class="imgContainer">
+                <img src="https://tinyurl.com/mr2umuh3">
+            </div>        </div>
+    </div>
+</div>
+{% endblock %}
