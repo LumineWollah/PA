@@ -3,6 +3,7 @@
 namespace App\DataFixtures;
 
 use App\Entity\CsApartment;
+use App\Entity\CsApartmentPicture;
 use App\Entity\CsCompany;
 use App\Entity\CsDocument;
 use App\Entity\CsUser;
@@ -48,6 +49,8 @@ class AppFixtures extends Fixture
         $apartment->setPostalCode("75013");
         $apartment->setCity("Paris");
         $apartment->setCountry("France");
+        $apartment->setMainPict("https://tinyurl.com/mr2umuh3");
+        $apartment->setPictures(["https://tinyurl.com/2w8fnhrs", "https://tinyurl.com/4bck47tz"]);
         $manager->persist($apartment);
 
         $company = new CsCompany();

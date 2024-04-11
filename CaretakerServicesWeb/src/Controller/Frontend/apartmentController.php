@@ -30,13 +30,45 @@ class apartmentController extends AbstractController
         $this->apiHttpClient = $apiHttpClient;
     }
 
-    #[Route('/apartment/{id}', name: 'apartmentShow')]
-    public function apartmentShow(int $id, Request $request)
+    #[Route('/apartment/{id}', name: 'apartmentDetail')]
+    public function apartmentDetail(int $id, Request $request)
     {
         $client = $this->apiHttpClient->getClientWithoutBearer();
 
-        $response = $client->request('GET', 'cs_apartments/'.$id);
+        $responseApart = $client->request('GET', 'cs_apartments/'.$id);
         
-        return $this->render('frontend/apartments/apartmentDetail.html.twig');
+        if ($responseApart->getStatusCode() == 404) {
+            echo "PAS TROUVÉ";
+        }
+
+        $ap = $responseApart->toArray();
+
+        return $this->render('frontend/apartments/apartmentDetail.html.twig', [
+            'apartment'=>$ap
+        ]);
+    }
+
+    #[Route('/apartment', name: 'apartmentList')]
+    public function apartmentList(Request $request)
+    {
+        $client = $this->apiHttpClient->getClientWithoutBearer();
+
+        $responseAparts = $client->request('GET', 'cs_apartments');
+        
+        if ($responseAparts->getStatusCode() == 404) {
+            echo "PAS TROUVÉ";
+        }
+
+        $aps = $responseAparts->toArray();
+
+        // echo "<pre>";
+        // print_r($aps);
+        // echo "</pre>";
+        // return;
+
+        return $this->render('frontend/apartments/apartmentList.html.twig', [
+            'apartments'=>$aps
+        ]);
+        
     }
 }
