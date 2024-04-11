@@ -94,7 +94,7 @@ class AppFixtures extends Fixture
         $userAdmin = new CsUser();
         $userAdmin->setEmail("leopold.goudier@gmail.com");
         $userAdmin->setFirstname("Léopold");
-        $userAdmin->setLastname("Goudier");
+        $userAdmin->setLastname("Legland");
         $userAdmin->setTelNumber("0637774127");
         $userAdmin->setPassword($this->userPasswordHasher->hashPassword($userAdmin, "Test1234!"));
         $userAdmin->setProfessional(false);

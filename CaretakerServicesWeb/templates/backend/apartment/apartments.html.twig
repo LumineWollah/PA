@@ -5,7 +5,7 @@
 {% block activeGest %}active{% endblock %}
 {% block activeTrav %}active{% endblock %}
 
-{% block title %}Liste des appartements{% endblock %}
+{% block title %}Liste des logements{% endblock %}
 
 {% block body %}
 <script>
@@ -50,7 +50,7 @@
 </script>
     <div class="col-10 p-0">
         <div class="p-3">
-            <h1>Liste des appartements</h1>
+            <h1>Liste des logements</h1>
             <table id="crudList" class="table table-striped">
                 <thead>
                     <tr>
@@ -78,7 +78,7 @@
                             <td>{{ apartment.price }} €</td>
                             <td>{{ apartment.dateCreation | date('d/m/Y H:i:s') }}</td>
                             <td class="action">
-                                <a href="{{ path('apartmentDelete', {'id': apartment.id }) }}" class="btn" style="background-color: #EE3939;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/bin.png') }}></div></a
+                                <a href="{{ path('apartmentDelete', {'id': apartment.id }) }}" class="btn" style="background-color: #EE3939;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/bin.png') }}></div></a>
                                 <form action="{{ path('apartmentEdit') }}" method="post" style="display: inline;">
                                     <input type="hidden" name="apartment" value="{{ apartment|json_encode }}">
                                     <button type="submit" class="btn" style="background-color: #18A0FB;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/pen.png') }}></div></button>

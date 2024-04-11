@@ -103,12 +103,12 @@ class apartmentController extends AbstractController
             "required"=>false,
             "empty_data"=>$storedApartment["bedrooms"],
         ])
-        ->add("travelers_max", IntegerType::class, [
+        ->add("travelersMax", IntegerType::class, [
             "attr"=>[
-                "placeholder"=>$storedApartment["travelers_max"],
+                "placeholder"=>$storedApartment["travelersMax"],
             ],
             "required"=>false,
-            "empty_data"=>$storedApartment["travelers_max"],
+            "empty_data"=>$storedApartment["travelersMax"],
         ])
         ->add("price", IntegerType::class, [
             "attr"=>[
