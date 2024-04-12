@@ -7,19 +7,21 @@
 {% block body %}
 <div class="container-fluid pageContent">
     <h1>Nos <span class="h1span">logements</span> à louer</h1>
-    {% for i in range(0, (((aps|length)/5)|round(0, 'ceil'))-1) %}
-        <div class="row justify-content-between apsRow">
-            {% for j in range(i*5, (i*5)+4) %}
+    {% for i in range(0, (((aps|length)/4)|round(0, 'ceil'))-1) %}
+        <div class="row apsRow">
+            {% for j in range(i*4, (i*4)+3) %}
                 {% if j < aps|length %}
-                    <div class="col-2 apartContainer">
-                        <a href={{ path('apartmentsDetail', {'id': aps[j].id}) }}>
-                            <div class="imgContainer">
-                                <img src={{ aps[j].mainPict }}>
-                            </div>
-                            <p class="apartName"><b>Mon super appartement de foufou des deglingos du glands</b></p>
-                            <p class="apartInfos"><span class="medium">Paris, France • 150€</span><span class="light"> / nuit</span></b></p>
-                        </a>
-                    </div>
+                    <a class="col-3 apartContainer" href={{ path('apartmentsDetail', {'id': aps[j].id}) }}>               
+                        <div class="imgContainer">
+                            <img src={{ aps[j].mainPict }}>
+                        </div>
+                        <p class="apartName"><b>Mon super appartement de foufou des deglingos du glands</b></p>
+                        <p class="apartInfos"><span class="medium">Paris, France • 150€</span><span class="light"> / nuit</span></b></p>
+                        <div class="apartNumbers">
+                            <img src={{ asset('icons/bed.png') }}> {{ aps[j].bedrooms }} chambres
+                            <img style="margin-left: 2%;" src={{ asset('icons/travelers.png') }}> {{ aps[j].travelersMax }} voyageurs max.
+                        </div>
+                    </a>
                 {% endif %}
             {% endfor %}
         </div>

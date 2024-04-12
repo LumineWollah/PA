@@ -5,6 +5,7 @@ namespace App\Entity;
 use DateTime;
 
 use App\Repository\CsApartmentRepository;
+use App\Controller\CsApartmentController;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 
@@ -22,7 +23,38 @@ use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 
-#[ApiResource(normalizationContext: ['groups' => ['getApartments']])]
+#[ApiResource(operations: [
+    new Post(
+        name: 'check_availability', 
+        uriTemplate: '/check_availability', 
+        controller: CsApartmentController::class,
+        deserialize: false,
+            openapiContext: [
+                'summary' => 'Check availability of apartments for a given date range',
+                'requestBody' => [
+                    'description' => 'Check availability of apartments for a given date range',
+                    'content' => [
+                        'application/json' => [
+                            'schema' => [
+                                'type' => 'object',
+                                'properties' => [
+                                    'starting_date' => [
+                                        'type' => 'string',
+                                        'format' => 'date',
+                                        'example' => 'YYYY-MM-DD',
+                                    ],
+                                    'ending_date' => [
+                                        'type' => 'string',
+                                        'format' => 'date',
+                                        'example' => 'YYYY-MM-DD',
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ]
+    )], normalizationContext: ['groups' => ['getApartments']])]
 #[Get()]
 #[Patch(security: "is_granted('ROLE_ADMIN') or object.getOwner() == user")]
 #[GetCollection()]
@@ -36,7 +68,7 @@ class CsApartment
     #[ORM\GeneratedValue]
     #[ORM\Column]
     #[Groups(["getUsers", "getApartments"])]
-    private ?int $id = null;
+    public ?int $id = null;
 
     #[ORM\Column(length: 50)]
     #[Groups(["getUsers", "getApartments"])]
@@ -115,9 +147,14 @@ class CsApartment
     #[Groups(["getUsers", "getApartments"])]
     private ?array $pictures = null;
 
+    #[ORM\OneToMany(targetEntity: CsReservation::class, mappedBy: 'apartment')]
+    #[Groups(["getApartments"])]
+    private Collection $reservations;
+
     public function __construct()
     {
         $this->dateCreation = new DateTime();
+        $this->reservations = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -349,6 +386,36 @@ class CsApartment
     public function setPictures(?array $pictures): static
     {
         $this->pictures = $pictures;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, CsReservation>
+     */
+    public function getOccupancyDates(): Collection
+    {
+        return $this->reservations;
+    }
+
+    public function addReservation(CsReservation $reservation): static
+    {
+        if (!$this->reservations->contains($reservation)) {
+            $this->reservations->add($reservation);
+            $reservation->setApartment($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReservation(CsReservation $reservation): static
+    {
+        if ($this->reservations->removeElement($reservation)) {
+            // set the owning side to null (unless already changed)
+            if ($reservation->getApartment() === $this) {
+                $reservation->setApartment(null);
+            }
+        }
 
         return $this;
     }
