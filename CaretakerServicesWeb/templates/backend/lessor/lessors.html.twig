@@ -58,8 +58,8 @@
                             <p class="otherData inscription"><b>Inscrit le :</b> {{ lessor.dateInscription|date('d/m/Y H:i:s') }}</p>
                             <p class="otherData"><b>Email :</b> {{ lessor.email }}</p>
                             <p class="otherData"><b>Téléphone :</b> {{ lessor.telNumber }}</p>
-                            <form action="{{ path('lessorShow') }}" method="post" style="display: inline;">
-                                <input type="hidden" name="lessor" value="{{ lessor|json_encode }}">
+                            <form action="{{ path('userShow') }}" method="post" style="display: inline;">
+                                <input type="hidden" name="user" value="{{ lessor|json_encode }}">
                                 <button type="submit" class="seeMore" style="background-color: #A594F9;">Voir plus</button>
                             </form>
                             <div class="validateBtns">

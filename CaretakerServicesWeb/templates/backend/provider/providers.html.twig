@@ -58,8 +58,8 @@
                             <p class="otherData inscription"><b>Inscrit le :</b> {{ provider.dateInscription|date('d/m/Y H:i:s') }}</p>
                             <p class="otherData"><b>Email :</b> {{ provider.email }}</p>
                             <p class="otherData"><b>Téléphone :</b> {{ provider.telNumber }}</p>
-                            <form action="{{ path('providerShow') }}" method="post" style="display: inline;">
-                                <input type="hidden" name="provider" value="{{ provider|json_encode }}">
+                            <form action="{{ path('userShow') }}" method="post" style="display: inline;">
+                                <input type="hidden" name="user" value="{{ provider|json_encode }}">
                                 <button type="submit" class="seeMore" style="background-color: #A594F9;">Voir plus</button>
                             </form>
                             <div class="validateBtns">
