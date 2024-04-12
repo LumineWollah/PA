@@ -112,12 +112,16 @@ class CsUser implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(["getUsers"])]
     private ?CsCompany $company = null;
 
+    #[ORM\OneToMany(targetEntity: CsReservation::class, mappedBy: 'user')]
+    private Collection $reservations;
+
     public function __construct()
     {
         $this->dateInscription = new DateTime();
         $this->lastConnection = new DateTime();
         $this->documents = new ArrayCollection();
         $this->apartments = new ArrayCollection();
+        $this->reservations = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -457,6 +461,36 @@ class CsUser implements UserInterface, PasswordAuthenticatedUserInterface
     public function setCompany(?CsCompany $company): static
     {
         $this->company = $company;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, CsReservation>
+     */
+    public function getOccupancyDates(): Collection
+    {
+        return $this->reservations;
+    }
+
+    public function addOccupancyDate(CsReservation $reservations): static
+    {
+        if (!$this->reservations->contains($reservations)) {
+            $this->reservations->add($reservations);
+            $reservations->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeOccupancyDate(CsReservation $reservation): static
+    {
+        if ($this->reservations->removeElement($reservation)) {
+            // set the owning side to null (unless already changed)
+            if ($reservation->getUser() === $this) {
+                $reservation->setUser(null);
+            }
+        }
 
         return $this;
     }

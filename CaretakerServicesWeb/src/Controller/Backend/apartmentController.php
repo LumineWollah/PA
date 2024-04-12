@@ -81,19 +81,25 @@ class apartmentController extends AbstractController
             $storedApartment = $apartment;
         }
 
-        $form = $this->createFormBuilder()
+        $defaults = [
+            'name' => $storedApartment['name'],
+            'description' => $storedApartment['description'],
+            'bedrooms' => $storedApartment['bedrooms'],
+            'travelersMax' => $storedApartment['travelersMax'],
+            'price' => $storedApartment['price'],
+        ];
+
+        $form = $this->createFormBuilder($defaults)
         ->add("name", TextType::class, [
             "attr"=>[
                 "placeholder"=>$storedApartment["name"],
             ],
-            "empty_data"=>$storedApartment["name"],
             "required"=>false,
         ])
         ->add("description", TextType::class, [
             "attr"=>[
                 "placeholder"=>$storedApartment["description"],
             ], 
-            "empty_data"=>$storedApartment["description"],
             "required"=>false,
         ])
         ->add("bedrooms", IntegerType::class, [
@@ -101,40 +107,37 @@ class apartmentController extends AbstractController
                 "placeholder"=>$storedApartment["bedrooms"],
             ],
             "required"=>false,
-            "empty_data"=>$storedApartment["bedrooms"],
         ])
         ->add("travelersMax", IntegerType::class, [
             "attr"=>[
                 "placeholder"=>$storedApartment["travelersMax"],
             ],
             "required"=>false,
-            "empty_data"=>$storedApartment["travelersMax"],
         ])
         ->add("price", IntegerType::class, [
             "attr"=>[
                 "placeholder"=>$storedApartment["price"],
             ],
             "required"=>false,
-            "empty_data"=>$storedApartment["price"],
         ])
         ->getForm()->handleRequest($request);
-            if ($form->isSubmitted() && $form->isValid()){
-                $data = $form->getData();
-                
-                $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/merge-patch+json');
+        if ($form->isSubmitted() && $form->isValid()){
+            $data = $form->getData();
 
-                $response = $client->request('PATCH', 'cs_apartments/'.$storedApartment['id'], [
-                    'json' => $data,
-                ]);
+            $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/merge-patch+json');
 
-                $response = json_decode($response->getContent(), true);
-    
-                return $this->redirectToRoute('apartmentList');
-            }      
-            return $this->render('backend/apartment/editApartment.html.twig', [
-                'form'=>$form,
-                'errorMessage'=>null
+            $response = $client->request('PATCH', 'cs_apartments/'.$storedApartment['id'], [
+                'json' => $data,
             ]);
+
+            $response = json_decode($response->getContent(), true);
+
+            return $this->redirectToRoute('apartmentList');
+        }      
+        return $this->render('backend/apartment/editApartment.html.twig', [
+            'form'=>$form,
+            'errorMessage'=>null
+        ]);
     }
 
     #[Route('/admin-panel/apartment/show', name: 'apartmentShow')]

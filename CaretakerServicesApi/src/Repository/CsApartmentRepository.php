@@ -45,4 +45,13 @@ class CsApartmentRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+    public function findAvailableApartments(array $idsToExclude)
+    {
+        return $this->createQueryBuilder('e')
+            ->andWhere('e.id NOT IN (:ids)')
+            ->setParameter('ids', $idsToExclude)
+            ->getQuery()
+            ->getResult();
+    }
 }
