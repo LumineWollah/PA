@@ -42,6 +42,7 @@ class travelerController extends AbstractController
         $travelersList = $response->toArray();
 
         $request->getSession()->remove('user');
+        $request->getSession()->remove('traveler');
 
         return $this->render('backend/traveler/travelers.html.twig', [
             'travelers' => $travelersList['hydra:member']
@@ -64,34 +65,49 @@ class travelerController extends AbstractController
             $storedTraveler = $traveler;
         }
 
-        $form = $this->createFormBuilder()
+        $defaults = [
+            'email' => $storedTraveler['email'],
+            'firstname' => $storedTraveler['firstname'],
+            'lastname' => $storedTraveler['lastname'],
+            'telNumber' => $storedTraveler['telNumber'],
+        ];
+
+        $form = $this->createFormBuilder($defaults)
         ->add("email", EmailType::class, [
             "attr"=>[
-                "placeholder"=>$storedTraveler["email"],
+                "placeholder"=>"E-mail",
             ],
-            "empty_data"=>$storedTraveler["email"],
             "required"=>false,
         ])
         ->add("firstname", TextType::class, [
             "attr"=>[
-                "placeholder"=>$storedTraveler["firstname"],
+                "placeholder"=>"Prénom",
             ], 
-            "empty_data"=>$storedTraveler["firstname"],
             "required"=>false,
         ])
         ->add("lastname", TextType::class, [
             "attr"=>[
-                "placeholder"=>$storedTraveler["lastname"],
+                "placeholder"=>"Nom",
             ],
             "required"=>false,
-            "empty_data"=>$storedTraveler["lastname"],
         ])
         ->add("telNumber", TextType::class, [
             "attr"=>[
-                "placeholder"=>$storedTraveler["telNumber"],
+                "placeholder"=>"Numéro de Téléphone",
+            ],
+            "constraints"=>[
+                new Length([
+                    'min' => 10,
+                    'minMessage' => 'Le numéro de téléphone doit contenir au moins {{ limit }} chiffres',
+                    'max' => 10,
+                    'maxMessage' => 'Le numéro de téléphone doit contenir au plus {{ limit }} chiffres',
+                ]),
+                new Regex([
+                    'pattern' => '/^[0-9]+$/',
+                    'message' => 'Le numéro de téléphone doit contenir uniquement des chiffres',
+                ]),
             ],
             "required"=>false,
-            "empty_data"=>$storedTraveler["telNumber"],
         ])
         ->getForm()->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()){

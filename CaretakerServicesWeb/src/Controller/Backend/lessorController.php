@@ -45,11 +45,12 @@ class lessorController extends AbstractController
         $unverifiedLessors = array();
 
         foreach ($lessorsList['hydra:member'] as $lessor) {
-            $lessor['telNumber'] = implode(".", str_split($lessor['telNumber'], 2));
+            //$lessor['telNumber'] = implode(".", str_split($lessor['telNumber'], 2));
             $lessor['isVerified'] == 1 ? $verifiedLessors[] = $lessor : $unverifiedLessors[] = $lessor;
         }
 
         $request->getSession()->remove('user');
+        $request->getSession()->remove('lessor');
 
         // return;
 
@@ -74,34 +75,49 @@ class lessorController extends AbstractController
             $storedLessor = $lessor;
         }
 
-        $form = $this->createFormBuilder()
+        $defaults = [
+            'email' => $storedLessor['email'],
+            'firstname' => $storedLessor['firstname'],
+            'lastname' => $storedLessor['lastname'],
+            'telNumber' => $storedLessor['telNumber'],
+        ];
+
+        $form = $this->createFormBuilder($defaults)
         ->add("email", EmailType::class, [
             "attr"=>[
-                "placeholder"=>$storedLessor["email"],
+                "placeholder"=>"E-mail",
             ],
-            "empty_data"=>$storedLessor["email"],
             "required"=>false,
         ])
         ->add("firstname", TextType::class, [
             "attr"=>[
-                "placeholder"=>$storedLessor["firstname"],
+                "placeholder"=>"Prénom",
             ], 
-            "empty_data"=>$storedLessor["firstname"],
             "required"=>false,
         ])
         ->add("lastname", TextType::class, [
             "attr"=>[
-                "placeholder"=>$storedLessor["lastname"],
+                "placeholder"=>"Nom",
             ],
             "required"=>false,
-            "empty_data"=>$storedLessor["lastname"],
         ])
         ->add("telNumber", TextType::class, [
             "attr"=>[
-                "placeholder"=>$storedLessor["telNumber"],
+                "placeholder"=>"Numéro de Téléphone",
+            ],
+            "constraints"=>[
+                new Length([
+                    'min' => 10,
+                    'minMessage' => 'Le numéro de téléphone doit contenir au moins {{ limit }} chiffres',
+                    'max' => 10,
+                    'maxMessage' => 'Le numéro de téléphone doit contenir au plus {{ limit }} chiffres',
+                ]),
+                new Regex([
+                    'pattern' => '/^[0-9]+$/',
+                    'message' => 'Le numéro de téléphone doit contenir uniquement des chiffres',
+                ]),
             ],
             "required"=>false,
-            "empty_data"=>$storedLessor["telNumber"],
         ])
         ->getForm()->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()){

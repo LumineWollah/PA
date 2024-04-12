@@ -8,6 +8,7 @@ use App\Service\ApiHttpClient;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 
 class documentController extends AbstractController
 {
@@ -80,47 +81,52 @@ class documentController extends AbstractController
             $request->getSession()->set('document', $document);
             $storedDocument = $document;
         }
+        
+        $defaults = [
+            'name' => $storedDocument['name'],
+            'type' => $storedDocument['type'],
+            'url' => $storedDocument['url'],
+            'owner' => $storedDocument['owner']['id'],
+        ];
 
-        $form = $this->createFormBuilder()
+        $form = $this->createFormBuilder($defaults)
         ->add("name", TextType::class, [
             "attr"=>[
-                "placeholder"=>$storedDocument["name"],
+                "placeholder"=>"Name",
             ],
-            "empty_data"=>$storedDocument["name"],
             "required"=>false,
         ])
         ->add("type", TextType::class, [
             "attr"=>[
-                "placeholder"=>$storedDocument["type"],
+                "placeholder"=>"Type",
             ], 
-            "empty_data"=>$storedDocument["type"],
             "required"=>false,
         ])
         ->add("url", TextType::class, [
             "attr"=>[
-                "placeholder"=>$storedDocument["url"],
+                "placeholder"=>"URL",
             ],
             "required"=>false,
-            "empty_data"=>$storedDocument["url"],
         ])
-        ->add("owner", TextType::class, [
+        ->add("owner", IntegerType::class, [
             "attr"=>[
-                "placeholder"=>$storedDocument["owner"]["id"],
+                "placeholder"=>"Owner ID",
             ],
             "required"=>false,
-            "empty_data"=>$storedDocument["owner"]["id"],
         ])
         ->getForm()->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()){
                 $data = $form->getData();
                 
+                $data['owner'] = 'api/cs_users/'.$data['owner'];
+
                 $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/merge-patch+json');
 
                 $response = $client->request('PATCH', 'cs_documents/'.$storedDocument['id'], [
                     'json' => $data,
                 ]);
 
-                $response = json_decode($response->getContent(), true);
+                //$response = json_decode($response->getContent(), true);
     
                 return $this->redirectToRoute('documentList');
             }      

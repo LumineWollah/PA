@@ -45,7 +45,7 @@ class providerController extends AbstractController
         $unverifiedProviders = array();
 
         foreach ($providersList['hydra:member'] as $provider) {
-            $provider['telNumber'] = implode(".", str_split($provider['telNumber'], 2));
+            //$provider['telNumber'] = implode(".", str_split($provider['telNumber'], 2));
             $provider['isVerified'] == 1 ? $verifiedProviders[] = $provider : $unverifiedProviders[] = $provider;
         }
 
@@ -54,6 +54,7 @@ class providerController extends AbstractController
         // echo "</pre>";
 
         $request->getSession()->remove('user');
+        $request->getSession()->remove('provider');
 
         // return;
 
@@ -78,34 +79,49 @@ class providerController extends AbstractController
             $storedProvider = $provider;
         }
 
-        $form = $this->createFormBuilder()
+        $defaults = [
+            'email' => $storedProvider['email'],
+            'firstname' => $storedProvider['firstname'],
+            'lastname' => $storedProvider['lastname'],
+            'telNumber' => $storedProvider['telNumber'],
+        ];
+
+        $form = $this->createFormBuilder($defaults)
         ->add("email", EmailType::class, [
             "attr"=>[
-                "placeholder"=>$storedProvider["email"],
+                "placeholder"=>"E-mail",
             ],
-            "empty_data"=>$storedProvider["email"],
             "required"=>false,
         ])
         ->add("firstname", TextType::class, [
             "attr"=>[
-                "placeholder"=>$storedProvider["firstname"],
+                "placeholder"=>"Prénom",
             ], 
-            "empty_data"=>$storedProvider["firstname"],
             "required"=>false,
         ])
         ->add("lastname", TextType::class, [
             "attr"=>[
-                "placeholder"=>$storedProvider["lastname"],
+                "placeholder"=>"Nom",
             ],
             "required"=>false,
-            "empty_data"=>$storedProvider["lastname"],
         ])
         ->add("telNumber", TextType::class, [
             "attr"=>[
-                "placeholder"=>$storedProvider["telNumber"],
+                "placeholder"=>"Numéro de Télephone",
+            ],
+            "constraints"=>[
+                new Length([
+                    'min' => 10,
+                    'minMessage' => 'Le numéro de téléphone doit contenir au moins {{ limit }} chiffres',
+                    'max' => 10,
+                    'maxMessage' => 'Le numéro de téléphone doit contenir au plus {{ limit }} chiffres',
+                ]),
+                new Regex([
+                    'pattern' => '/^[0-9]+$/',
+                    'message' => 'Le numéro de téléphone doit contenir uniquement des chiffres',
+                ]),
             ],
             "required"=>false,
-            "empty_data"=>$storedProvider["telNumber"],
         ])
         ->getForm()->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()){

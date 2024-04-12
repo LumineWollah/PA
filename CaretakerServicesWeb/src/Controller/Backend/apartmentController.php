@@ -92,31 +92,31 @@ class apartmentController extends AbstractController
         $form = $this->createFormBuilder($defaults)
         ->add("name", TextType::class, [
             "attr"=>[
-                "placeholder"=>$storedApartment["name"],
+                "placeholder"=>"Name",
             ],
             "required"=>false,
         ])
         ->add("description", TextType::class, [
             "attr"=>[
-                "placeholder"=>$storedApartment["description"],
+                "placeholder"=>"Description",
             ], 
             "required"=>false,
         ])
         ->add("bedrooms", IntegerType::class, [
             "attr"=>[
-                "placeholder"=>$storedApartment["bedrooms"],
+                "placeholder"=>"Chambres",
             ],
             "required"=>false,
         ])
         ->add("travelersMax", IntegerType::class, [
             "attr"=>[
-                "placeholder"=>$storedApartment["travelersMax"],
+                "placeholder"=>"Nombre maximum de voyageurs",
             ],
             "required"=>false,
         ])
         ->add("price", IntegerType::class, [
             "attr"=>[
-                "placeholder"=>$storedApartment["price"],
+                "placeholder"=>"Prix",
             ],
             "required"=>false,
         ])

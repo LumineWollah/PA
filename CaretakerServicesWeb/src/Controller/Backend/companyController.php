@@ -84,21 +84,18 @@ class companyController extends AbstractController
             "attr"=>[
                 "placeholder"=>$storedCompany["companyName"],
             ], 
-            "empty_data"=>$storedCompany["companyName"],
             "required"=>false,
         ])
         ->add("siretNumber", TextType::class, [
             "attr"=>[
                 "placeholder"=>$storedCompany["siretNumber"],
             ], 
-            "empty_data"=>$storedCompany["siretNumber"],
             "required"=>false,
         ])
         ->add("companyEmail", EmailType::class, [
             "attr"=>[
                 "placeholder"=>$storedCompany["companyEmail"],
             ],
-            "empty_data"=>$storedCompany["companyEmail"],
             "required"=>false,
         ])
         ->add("companyPhone", TextType::class, [
@@ -106,34 +103,29 @@ class companyController extends AbstractController
                 "placeholder"=>$storedCompany["companyPhone"],
             ],
             "required"=>false,
-            "empty_data"=>$storedCompany["companyPhone"],
         ])
         ->add("address", TextType::class, [
             "attr"=>[
                 "placeholder"=>$storedCompany["address"],
             ], 
-            "empty_data"=>$storedCompany["address"],
             "required"=>false,
         ])
         ->add("city", TextType::class, [
             "attr"=>[
                 "placeholder"=>$storedCompany["city"],
             ], 
-            "empty_data"=>$storedCompany["city"],
             "required"=>false,
         ])
         ->add("postalCode", TextType::class, [
             "attr"=>[
                 "placeholder"=>$storedCompany["postalCode"],
             ], 
-            "empty_data"=>$storedCompany["postalCode"],
             "required"=>false,
         ])
         ->add("country", TextType::class, [
             "attr"=>[
                 "placeholder"=>$storedCompany["country"],
             ], 
-            "empty_data"=>$storedCompany["country"],
             "required"=>false,
         ])
         ->getForm()->handleRequest($request);
