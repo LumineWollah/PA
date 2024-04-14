@@ -75,12 +75,8 @@ class documentController extends AbstractController
         $documentData = $request->request->get('document');
         $document = json_decode($documentData, true);
 
-        $storedDocument = $request->getSession()->get('document');
-
-        if (!$storedDocument) {
-            $request->getSession()->set('document', $document);
-            $storedDocument = $document;
-        }
+        $request->getSession()->set('document', $document);
+        $storedDocument = $document;
         
         $defaults = [
             'name' => $storedDocument['name'],

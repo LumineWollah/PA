@@ -72,12 +72,8 @@ class companyController extends AbstractController
         $companyData = $request->request->get('company');
         $company = json_decode($companyData, true);
 
-        $storedCompany = $request->getSession()->get('company');
-
-        if (!$storedCompany) {
-            $request->getSession()->set('company', $company);
-            $storedCompany = $company;
-        }
+        $request->getSession()->set('company', $company);
+        $storedCompany = $company;
 
         $form = $this->createFormBuilder()
         ->add("companyName", TextType::class, [
@@ -156,12 +152,8 @@ class companyController extends AbstractController
         $companyData = $request->request->get('company');
         $company = json_decode($companyData, true);
 
-        $storedCompany = $request->getSession()->get('company');
-
-        if (!$storedCompany) {
-            $request->getSession()->set('company', $company);
-            $storedCompany = $company;
-        }
+        $request->getSession()->set('company', $company);
+        $storedCompany = $company;
         
         return $this->render('backend/company/showCompany.html.twig', [
             'company'=>$storedCompany

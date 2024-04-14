@@ -8,6 +8,8 @@ use App\Service\ApiHttpClient;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\Regex;
 
 class providerController extends AbstractController
 {
@@ -72,12 +74,8 @@ class providerController extends AbstractController
         $providerData = $request->request->get('provider');
         $provider = json_decode($providerData, true);
 
-        $storedProvider = $request->getSession()->get('provider');
-
-        if (!$storedProvider) {
-            $request->getSession()->set('provider', $provider);
-            $storedProvider = $provider;
-        }
+        $request->getSession()->set('provider', $provider);
+        $storedProvider = $provider;
 
         $defaults = [
             'email' => $storedProvider['email'],
@@ -143,26 +141,6 @@ class providerController extends AbstractController
             ]);
     }
 
-    #[Route('/admin-panel/provider/show', name: 'providerShow')]
-    public function providerShow(Request $request)
-    {
-        if (!$this->checkUserRole($request)) {return $this->redirectToRoute('login');}
-
-        $providerData = $request->request->get('provider');
-        $provider = json_decode($providerData, true);
-
-        $storedProvider = $request->getSession()->get('provider');
-
-        if (!$storedProvider) {
-            $request->getSession()->set('provider', $provider);
-            $storedProvider = $provider;
-        }
-        
-        return $this->render('backend/provider/showProvider.html.twig', [
-            'provider'=>$storedProvider
-        ]);
-    }
-
     #[Route('/admin-panel/provider/accept', name: 'providerAccept')]
     public function providerAccept(Request $request)
     {
@@ -179,12 +157,5 @@ class providerController extends AbstractController
         ]);
         
         return $this->redirectToRoute('providerList');
-        
     }
-
-    // #[Route('/admin-panel/provider/refuse', name: 'providerRefuse')]
-    // public function providerRefuse(Request $request)
-    // {        
-    // }
-
 }

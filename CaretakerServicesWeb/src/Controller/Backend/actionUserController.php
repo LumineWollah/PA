@@ -52,12 +52,8 @@ class actionUserController extends AbstractController
         $userData = $request->request->get('user');
         $user = json_decode($userData, true);
 
-        $storedUser = $request->getSession()->get('user');
-
-        if (!$storedUser) {
-            $request->getSession()->set('user', $user);
-            $storedUser = $user;
-        }
+        $request->getSession()->set('user', $user);
+        $storedUser = $user;
         
         return $this->render('backend/user/showUser.html.twig', [
             'user'=>$storedUser

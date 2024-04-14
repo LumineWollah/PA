@@ -74,12 +74,8 @@ class apartmentController extends AbstractController
         $apartmentData = $request->request->get('apartment');
         $apartment = json_decode($apartmentData, true);
 
-        $storedApartment = $request->getSession()->get('apartment');
-
-        if (!$storedApartment) {
-            $request->getSession()->set('apartment', $apartment);
-            $storedApartment = $apartment;
-        }
+        $request->getSession()->set('apartment', $apartment);
+        $storedApartment = $apartment;
 
         $defaults = [
             'name' => $storedApartment['name'],
@@ -148,12 +144,8 @@ class apartmentController extends AbstractController
         $apartmentData = $request->request->get('apartment');
         $apartment = json_decode($apartmentData, true);
 
-        $storedApartment = $request->getSession()->get('apartment');
-
-        if (!$storedApartment) {
-            $request->getSession()->set('apartment', $apartment);
-            $storedApartment = $apartment;
-        }
+        $request->getSession()->set('apartment', $apartment);
+        $storedApartment = $apartment;
         
         return $this->render('backend/apartment/showApartment.html.twig', [
             'apartment'=>$storedApartment

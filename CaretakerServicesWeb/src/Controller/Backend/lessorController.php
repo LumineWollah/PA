@@ -8,7 +8,8 @@ use App\Service\ApiHttpClient;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\Regex;
 
 class lessorController extends AbstractController
 {
@@ -68,12 +69,8 @@ class lessorController extends AbstractController
         $lessorData = $request->request->get('lessor');
         $lessor = json_decode($lessorData, true);
 
-        $storedLessor = $request->getSession()->get('lessor');
-
-        if (!$storedLessor) {
-            $request->getSession()->set('lessor', $lessor);
-            $storedLessor = $lessor;
-        }
+        $request->getSession()->set('lessor', $lessor);
+        $storedLessor = $lessor;
 
         $defaults = [
             'email' => $storedLessor['email'],
@@ -139,26 +136,6 @@ class lessorController extends AbstractController
             ]);
     }
 
-    #[Route('/admin-panel/lessor/show', name: 'lessorShow')]
-    public function lessorShow(Request $request)
-    {
-        if (!$this->checkUserRole($request)) {return $this->redirectToRoute('login');}
-
-        $lessorData = $request->request->get('lessor');
-        $lessor = json_decode($lessorData, true);
-
-        $storedLessor = $request->getSession()->get('lessor');
-
-        if (!$storedLessor) {
-            $request->getSession()->set('lessor', $lessor);
-            $storedLessor = $lessor;
-        }
-        
-        return $this->render('backend/lessor/showLessor.html.twig', [
-            'lessor'=>$storedLessor
-        ]);
-    }
-
     #[Route('/admin-panel/lessor/accept', name: 'lessorAccept')]
     public function lessorAccept(Request $request)
     {
@@ -175,12 +152,5 @@ class lessorController extends AbstractController
         ]);
         
         return $this->redirectToRoute('lessorList');
-        
     }
-
-    // #[Route('/admin-panel/lessor/refuse', name: 'lessorRefuse')]
-    // public function lessorRefuse(Request $request)
-    // {        
-    // }
-
 }

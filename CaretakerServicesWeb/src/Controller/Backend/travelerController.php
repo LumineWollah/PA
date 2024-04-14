@@ -9,6 +9,8 @@ use App\Service\ApiHttpClient;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\Regex;
 
 class travelerController extends AbstractController
 {
@@ -58,12 +60,8 @@ class travelerController extends AbstractController
         $travelerData = $request->request->get('traveler');
         $traveler = json_decode($travelerData, true);
 
-        $storedTraveler = $request->getSession()->get('traveler');
-
-        if (!$storedTraveler) {
-            $request->getSession()->set('traveler', $traveler);
-            $storedTraveler = $traveler;
-        }
+        $request->getSession()->set('traveler', $traveler);
+        $storedTraveler = $traveler;
 
         $defaults = [
             'email' => $storedTraveler['email'],
@@ -128,25 +126,4 @@ class travelerController extends AbstractController
                 'errorMessage'=>null
             ]);
     }
-
-    #[Route('/admin-panel/traveler/show', name: 'travelerShow')]
-    public function travelerShow(Request $request)
-    {
-        if (!$this->checkUserRole($request)) {return $this->redirectToRoute('login');}
-
-        $travelerData = $request->request->get('traveler');
-        $traveler = json_decode($travelerData, true);
-
-        $storedTraveler = $request->getSession()->get('traveler');
-
-        if (!$storedTraveler) {
-            $request->getSession()->set('traveler', $traveler);
-            $storedTraveler = $traveler;
-        }
-        
-        return $this->render('backend/traveler/showTraveler.html.twig', [
-            'traveler'=>$storedTraveler
-        ]);
-    }
-
 }
