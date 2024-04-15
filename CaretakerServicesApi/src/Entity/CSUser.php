@@ -26,12 +26,7 @@ use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasher;
 
-#[ApiResource(operations: [
-    new Get(
-        name: 'me', 
-        uriTemplate: '/cs_users/me', 
-        controller: CsUserController::class
-    )], normalizationContext: ['groups' => ['getUsers']])]
+#[ApiResource(normalizationContext: ['groups' => ['getUsers']])]
 #[Get(security: "is_granted('ROLE_ADMIN') or object.getOwner() == user")]
 #[Patch(security: "is_granted('ROLE_ADMIN') or object.getOwner() == user")]
 #[GetCollection()]

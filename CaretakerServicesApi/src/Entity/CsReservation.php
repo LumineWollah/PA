@@ -2,7 +2,7 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Doctrine\Odm\Filter\SearchFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
@@ -20,7 +20,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[Patch(security: "is_granted('ROLE_ADMIN') or object.getUser() == user or object.getApartmentOwner() == user or object.getProviderOwner() == user")]
 #[Get]
 #[GetCollection]
-#[Delete("is_granted('ROLE_ADMIN') or object.getUser() == user or object.getApartmentOwner() == user or object.getProviderOwner() == user")]
+#[Delete(security: "is_granted('ROLE_ADMIN') or object.getUser() == user or object.getApartmentOwner() == user or object.getProviderOwner() == user")]
 #[Post]
 #[ApiFilter(SearchFilter::class, properties: ['apartment' => 'exact', 'service' => 'exact', 'user' => 'exact'])]
 class CsReservation
