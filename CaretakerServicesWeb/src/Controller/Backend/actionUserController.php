@@ -40,6 +40,7 @@ class actionUserController extends AbstractController
                 'id' => $id
             ]
         ]);
+
         return $this->redirectToRoute($origin);
     }
 
@@ -51,12 +52,9 @@ class actionUserController extends AbstractController
 
         $userData = $request->request->get('user');
         $user = json_decode($userData, true);
-
-        $request->getSession()->set('user', $user);
-        $storedUser = $user;
         
         return $this->render('backend/user/showUser.html.twig', [
-            'user'=>$storedUser
+            'user'=>$user
         ]);
     }
 

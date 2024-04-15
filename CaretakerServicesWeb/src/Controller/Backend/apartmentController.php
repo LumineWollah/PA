@@ -5,6 +5,7 @@ namespace App\Controller\Backend;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Service\ApiHttpClient;
+use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -40,8 +41,6 @@ class apartmentController extends AbstractController
         
         $apartmentsList = $response->toArray();
 
-        $request->getSession()->remove('apartment');
-
         return $this->render('backend/apartment/apartments.html.twig', [
             'apartments' => $apartmentsList['hydra:member']
         ]);
@@ -63,7 +62,6 @@ class apartmentController extends AbstractController
         ]);
         
         return $this->redirectToRoute('apartmentList');
-        
     }
 
     #[Route('/admin-panel/apartment/edit', name: 'apartmentEdit')]
@@ -74,16 +72,23 @@ class apartmentController extends AbstractController
         $apartmentData = $request->request->get('apartment');
         $apartment = json_decode($apartmentData, true);
 
-        $request->getSession()->set('apartment', $apartment);
-        $storedApartment = $apartment;
+        $storedApartment = $request->getSession()->get('apartmentId');
 
-        $defaults = [
-            'name' => $storedApartment['name'],
-            'description' => $storedApartment['description'],
-            'bedrooms' => $storedApartment['bedrooms'],
-            'travelersMax' => $storedApartment['travelersMax'],
-            'price' => $storedApartment['price'],
-        ];
+        if (!$storedApartment) {
+            $request->getSession()->set('apartmentId', $apartment['id']);
+        }
+
+        try {
+            $defaults = [
+                'name' => $apartment['name'],
+                'description' => $apartment['description'],
+                'bedrooms' => $apartment['bedrooms'],
+                'travelersMax' => $apartment['travelersMax'],
+                'price' => $apartment['price'],
+            ];
+        } catch (Exception $e) {
+            $defaults = [];
+        }
 
         $form = $this->createFormBuilder($defaults)
         ->add("name", TextType::class, [
@@ -128,6 +133,8 @@ class apartmentController extends AbstractController
 
             $response = json_decode($response->getContent(), true);
 
+            $request->getSession()->remove('apartmentId');
+
             return $this->redirectToRoute('apartmentList');
         }      
         return $this->render('backend/apartment/editApartment.html.twig', [
@@ -143,12 +150,9 @@ class apartmentController extends AbstractController
 
         $apartmentData = $request->request->get('apartment');
         $apartment = json_decode($apartmentData, true);
-
-        $request->getSession()->set('apartment', $apartment);
-        $storedApartment = $apartment;
         
         return $this->render('backend/apartment/showApartment.html.twig', [
-            'apartment'=>$storedApartment
+            'apartment'=>$apartment
         ]);
     }
 }

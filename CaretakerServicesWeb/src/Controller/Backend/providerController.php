@@ -5,6 +5,7 @@ namespace App\Controller\Backend;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Service\ApiHttpClient;
+use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -51,15 +52,6 @@ class providerController extends AbstractController
             $provider['isVerified'] == 1 ? $verifiedProviders[] = $provider : $unverifiedProviders[] = $provider;
         }
 
-        // echo "<pre>";
-        // print_r($providersList);
-        // echo "</pre>";
-
-        $request->getSession()->remove('user');
-        $request->getSession()->remove('provider');
-
-        // return;
-
         return $this->render('backend/provider/providers.html.twig', [
             'verifiedProviders' => $verifiedProviders,
             'unverifiedProviders' => $unverifiedProviders
@@ -74,15 +66,22 @@ class providerController extends AbstractController
         $providerData = $request->request->get('provider');
         $provider = json_decode($providerData, true);
 
-        $request->getSession()->set('provider', $provider);
-        $storedProvider = $provider;
+        $storedProvider = $request->getSession()->get('providerId');
 
-        $defaults = [
-            'email' => $storedProvider['email'],
-            'firstname' => $storedProvider['firstname'],
-            'lastname' => $storedProvider['lastname'],
-            'telNumber' => $storedProvider['telNumber'],
-        ];
+        if (!$storedProvider) {
+            $request->getSession()->set('providerId', $provider['id']);
+        }
+
+        try {
+            $defaults = [
+                'email' => $provider['email'],
+                'firstname' => $provider['firstname'],
+                'lastname' => $provider['lastname'],
+                'telNumber' => $provider['telNumber'],
+            ];
+        } catch (Exception $e) {
+            $defaults = [];
+        }
 
         $form = $this->createFormBuilder($defaults)
         ->add("email", EmailType::class, [
@@ -127,12 +126,15 @@ class providerController extends AbstractController
                 
                 $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/merge-patch+json');
 
-                $response = $client->request('PATCH', 'cs_users/'.$storedProvider['id'], [
+                $response = $client->request('PATCH', 'cs_users/'.$storedProvider, [
                     'json' => $data,
                 ]);
 
                 $response = json_decode($response->getContent(), true);
     
+                $request->getSession()->remove('userId');
+                $request->getSession()->remove('providerId');
+
                 return $this->redirectToRoute('providerList');
             }      
             return $this->render('backend/provider/editProvider.html.twig', [

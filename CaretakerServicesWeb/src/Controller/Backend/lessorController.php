@@ -5,6 +5,7 @@ namespace App\Controller\Backend;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Service\ApiHttpClient;
+use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -46,14 +47,8 @@ class lessorController extends AbstractController
         $unverifiedLessors = array();
 
         foreach ($lessorsList['hydra:member'] as $lessor) {
-            //$lessor['telNumber'] = implode(".", str_split($lessor['telNumber'], 2));
             $lessor['isVerified'] == 1 ? $verifiedLessors[] = $lessor : $unverifiedLessors[] = $lessor;
         }
-
-        $request->getSession()->remove('user');
-        $request->getSession()->remove('lessor');
-
-        // return;
 
         return $this->render('backend/lessor/lessors.html.twig', [
             'verifiedLessors' => $verifiedLessors,
@@ -68,16 +63,23 @@ class lessorController extends AbstractController
 
         $lessorData = $request->request->get('lessor');
         $lessor = json_decode($lessorData, true);
+        
+        $storedLessor = $request->getSession()->get('lessorId');
 
-        $request->getSession()->set('lessor', $lessor);
-        $storedLessor = $lessor;
+        if (!$storedLessor) {
+            $request->getSession()->set('lessorId', $lessor['id']);
+        }
 
-        $defaults = [
-            'email' => $storedLessor['email'],
-            'firstname' => $storedLessor['firstname'],
-            'lastname' => $storedLessor['lastname'],
-            'telNumber' => $storedLessor['telNumber'],
-        ];
+        try {
+            $defaults = [
+                'email' => $lessor['email'],
+                'firstname' => $lessor['firstname'],
+                'lastname' => $lessor['lastname'],
+                'telNumber' => $lessor['telNumber'],
+            ];
+        } catch (Exception $e) {
+            $defaults = [];
+        }
 
         $form = $this->createFormBuilder($defaults)
         ->add("email", EmailType::class, [
@@ -117,23 +119,27 @@ class lessorController extends AbstractController
             "required"=>false,
         ])
         ->getForm()->handleRequest($request);
-            if ($form->isSubmitted() && $form->isValid()){
-                $data = $form->getData();
-                
-                $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/merge-patch+json');
 
-                $response = $client->request('PATCH', 'cs_users/'.$storedLessor['id'], [
-                    'json' => $data,
-                ]);
+        if ($form->isSubmitted() && $form->isValid()){
+            $data = $form->getData();
+            
+            $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/merge-patch+json');
 
-                $response = json_decode($response->getContent(), true);
-    
-                return $this->redirectToRoute('lessorList');
-            }      
-            return $this->render('backend/lessor/editLessor.html.twig', [
-                'form'=>$form,
-                'errorMessage'=>null
+            $response = $client->request('PATCH', 'cs_users/'.$storedLessor, [
+                'json' => $data,
             ]);
+
+            $response = json_decode($response->getContent(), true);
+
+            $request->getSession()->remove('userId');
+            $request->getSession()->remove('lessorId');
+
+            return $this->redirectToRoute('lessorList');
+        }      
+        return $this->render('backend/lessor/editLessor.html.twig', [
+            'form'=>$form,
+            'errorMessage'=>null
+        ]);
     }
 
     #[Route('/admin-panel/lessor/accept', name: 'lessorAccept')]

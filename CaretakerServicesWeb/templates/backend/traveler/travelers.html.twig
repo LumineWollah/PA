@@ -64,7 +64,7 @@
                             <td>{{ traveler.firstname|capitalize }}</td>
                             <td>{{ traveler.lastname|upper }}</td>
                             <td>{{ traveler.email }}</td>
-                            <td>{{ traveler.telNumber }}</td>
+                            <td>{{ traveler.telNumber|split('', 2)|join('.') }}</td>
                             <td>{{ traveler.dateInscription | date('d/m/Y H:i:s') }}</td>
                             <td class="action">
                                 <a href="{{ path('userDelete', {'id': traveler.id, 'origin': 'travelerList'}) }}" class="btn" style="background-color: #EE3939;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/bin.png') }}></div></a>

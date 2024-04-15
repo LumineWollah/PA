@@ -12,7 +12,7 @@
                     <p><strong>Nom :</strong> {{ company.companyName }}</p>
                     <p><strong>Numéro de Siret :</strong> {{ company.siretNumber }}</p>
                     <p><strong>Email :</strong> {{ company.companyEmail }}</p>
-                    <p><strong>Numéro de téléphone :</strong> {{ company.companyPhone }}</p>
+                    <p><strong>Numéro de téléphone :</strong> {{ company.companyPhone|split('', 2)|join('.') }}</p>
                     <p><strong>Adresse :</strong> {{ company.address }}</p>
                     <p><strong>Code postal :</strong> {{ company.postalCode }}</p>
                     <p><strong>Ville :</strong> {{ company.city }}</p>

@@ -13,7 +13,7 @@
                     <p><strong>Nom :</strong> {{ user.lastname }}</p>
                     <p><strong>Prénom :</strong> {{ user.firstname }}</p>
                     <p><strong>Email :</strong> {{ user.email }}</p>
-                    <p><strong>Numéro de téléphone :</strong> {{ user.telNumber }}</p>
+                    <p><strong>Numéro de téléphone :</strong> {{ user.telNumber|split('', 2)|join('.') }}</p>
                     <p><strong>Dernière connexion :</strong> {{ user.lastConnection|date('d/m/Y H:i:s') }}</p>
                     <p><strong>Inscrit le :</strong> {{ user.dateInscription|date('d/m/Y H:i:s') }}</p>
                     {% if user['company'] is defined and user['company'] is not empty %}

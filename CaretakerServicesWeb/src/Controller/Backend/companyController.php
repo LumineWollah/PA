@@ -5,6 +5,7 @@ namespace App\Controller\Backend;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Service\ApiHttpClient;
+use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -39,8 +40,6 @@ class companyController extends AbstractController
         
         $companiesList = $response->toArray();
 
-        $request->getSession()->remove('company');
-
         return $this->render('backend/company/companies.html.twig', [
             'companies' => $companiesList['hydra:member'],
         ]);
@@ -72,55 +71,73 @@ class companyController extends AbstractController
         $companyData = $request->request->get('company');
         $company = json_decode($companyData, true);
 
-        $request->getSession()->set('company', $company);
-        $storedCompany = $company;
+        $storedCompany = $request->getSession()->get('companyId');
 
-        $form = $this->createFormBuilder()
+        if (!$storedCompany) {
+            $request->getSession()->set('companyId', $company['id']);
+        }
+
+        try {
+            $defaults = [
+                'companyName' => $company['companyName'],
+                'siretNumber' => $company['siretNumber'],
+                'companyEmail' => $company['companyEmail'],
+                'companyPhone' => $company['companyPhone'],
+                'address' => $company['address'],
+                'city' => $company['city'],
+                'postalCode' => $company['postalCode'],
+                'country' => $company['country'],
+            ];
+        } catch (Exception $e) {
+            $defaults = [];
+        }
+
+        $form = $this->createFormBuilder($defaults)
         ->add("companyName", TextType::class, [
             "attr"=>[
-                "placeholder"=>$storedCompany["companyName"],
+                "placeholder"=>"Nom de l'entreprise",
             ], 
             "required"=>false,
         ])
         ->add("siretNumber", TextType::class, [
             "attr"=>[
-                "placeholder"=>$storedCompany["siretNumber"],
+                "placeholder"=>"Numéro Siret",
             ], 
             "required"=>false,
         ])
         ->add("companyEmail", EmailType::class, [
             "attr"=>[
-                "placeholder"=>$storedCompany["companyEmail"],
+                "placeholder"=>"Email de l'entreprise",
             ],
             "required"=>false,
         ])
         ->add("companyPhone", TextType::class, [
             "attr"=>[
-                "placeholder"=>$storedCompany["companyPhone"],
+                "placeholder"=>"Téléphone de l'entreprise",
             ],
             "required"=>false,
         ])
         ->add("address", TextType::class, [
             "attr"=>[
-                "placeholder"=>$storedCompany["address"],
+                "placeholder"=>"Adresse de l'entreprise",
             ], 
             "required"=>false,
         ])
         ->add("city", TextType::class, [
             "attr"=>[
-                "placeholder"=>$storedCompany["city"],
+                "placeholder"=>"Ville de l'entreprise",
             ], 
             "required"=>false,
         ])
         ->add("postalCode", TextType::class, [
             "attr"=>[
-                "placeholder"=>$storedCompany["postalCode"],
+                "placeholder"=>"Code postal de l'entreprise",
             ], 
             "required"=>false,
         ])
         ->add("country", TextType::class, [
             "attr"=>[
-                "placeholder"=>$storedCompany["country"],
+                "placeholder"=>"Pays de l'entreprise",
             ], 
             "required"=>false,
         ])
@@ -130,12 +147,14 @@ class companyController extends AbstractController
                 
                 $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/merge-patch+json');
 
-                $response = $client->request('PATCH', 'cs_companies/'.$storedCompany['id'], [
+                $response = $client->request('PATCH', 'cs_companies/'.$storedCompany, [
                     'json' => $data,
                 ]);
 
                 $response = json_decode($response->getContent(), true);
     
+                $request->getSession()->remove('companyId');
+
                 return $this->redirectToRoute('companyList');
             }      
             return $this->render('backend/company/editCompany.html.twig', [
@@ -151,12 +170,9 @@ class companyController extends AbstractController
 
         $companyData = $request->request->get('company');
         $company = json_decode($companyData, true);
-
-        $request->getSession()->set('company', $company);
-        $storedCompany = $company;
         
         return $this->render('backend/company/showCompany.html.twig', [
-            'company'=>$storedCompany
+            'company'=>$company
         ]);
     }
 }

@@ -6,6 +6,7 @@ use App\Security\CustomAccessManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Service\ApiHttpClient;
+use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -43,9 +44,6 @@ class travelerController extends AbstractController
 
         $travelersList = $response->toArray();
 
-        $request->getSession()->remove('user');
-        $request->getSession()->remove('traveler');
-
         return $this->render('backend/traveler/travelers.html.twig', [
             'travelers' => $travelersList['hydra:member']
 
@@ -60,15 +58,22 @@ class travelerController extends AbstractController
         $travelerData = $request->request->get('traveler');
         $traveler = json_decode($travelerData, true);
 
-        $request->getSession()->set('traveler', $traveler);
-        $storedTraveler = $traveler;
+        $storedTraveler = $request->getSession()->get('travelerId');
 
-        $defaults = [
-            'email' => $storedTraveler['email'],
-            'firstname' => $storedTraveler['firstname'],
-            'lastname' => $storedTraveler['lastname'],
-            'telNumber' => $storedTraveler['telNumber'],
-        ];
+        if (!$storedTraveler) {
+            $request->getSession()->set('travelerId', $traveler['id']);
+        }
+
+        try {
+            $defaults = [
+                'email' => $traveler['email'],
+                'firstname' => $traveler['firstname'],
+                'lastname' => $traveler['lastname'],
+                'telNumber' => $traveler['telNumber'],
+            ];
+        } catch (Exception $e) {
+            $defaults = [];
+        }
 
         $form = $this->createFormBuilder($defaults)
         ->add("email", EmailType::class, [
@@ -113,12 +118,15 @@ class travelerController extends AbstractController
                 
                 $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/merge-patch+json');
 
-                $response = $client->request('PATCH', 'cs_users/'.$storedTraveler['id'], [
+                $response = $client->request('PATCH', 'cs_users/'.$storedTraveler, [
                     'json' => $data,
                 ]);
 
                 $response = json_decode($response->getContent(), true);
     
+                $request->getSession()->remove('userId');
+                $request->getSession()->remove('travelerId');
+
                 return $this->redirectToRoute('travelerList');
             }      
             return $this->render('backend/traveler/editTraveler.html.twig', [

@@ -57,7 +57,7 @@
                             <p class="name">{{ lessor.firstname|capitalize }} {{ lessor.lastname|capitalize }}</p>
                             <p class="otherData inscription"><b>Inscrit le :</b> {{ lessor.dateInscription|date('d/m/Y H:i:s') }}</p>
                             <p class="otherData"><b>Email :</b> {{ lessor.email }}</p>
-                            <p class="otherData"><b>Téléphone :</b> {{ lessor.telNumber }}</p>
+                            <p class="otherData"><b>Téléphone :</b> {{ lessor.telNumber|split('', 2)|join('.') }}</p>
                             <form action="{{ path('userShow') }}" method="post" style="display: inline;">
                                 <input type="hidden" name="user" value="{{ lessor|json_encode }}">
                                 <button type="submit" class="seeMore" style="background-color: #A594F9;">Voir plus</button>
@@ -89,7 +89,7 @@
                             <td>{{ lessor.firstname|capitalize }}</td>
                             <td>{{ lessor.lastname|upper }}</td>
                             <td>{{ lessor.email }}</td>
-                            <td>{{ lessor.telNumber }}</td>
+                            <td>{{ lessor.telNumber|split('', 2)|join('.') }}</td>
                             <td>{{ lessor.dateInscription|date('d/m/Y H:i:s') }}</td>
                             <td class="action">
                                 <a href="{{ path('userDelete', {'id': lessor.id, 'origin':'lessorList' }) }}" class="btn" style="background-color: #EE3939;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/bin.png') }}></div></a>

@@ -62,7 +62,7 @@
                         <tr>
                             <td>{{ company.companyName|capitalize }}</td>
                             <td>{{ company.companyEmail }}</td>
-                            <td>{{ company.companyPhone }}</td>
+                            <td>{{ company.companyPhone|split('', 2)|join('.') }}</td>
                             <td>{{ company.city }}</td>
                             <td class="action">
                                 <a href="{{ path('companyDelete', {'id': company.id}) }}" class="btn" style="background-color: #EE3939;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/bin.png') }}></div></a>

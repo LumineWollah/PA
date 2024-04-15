@@ -5,6 +5,7 @@ namespace App\Controller\Backend;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Service\ApiHttpClient;
+use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -40,9 +41,6 @@ class documentController extends AbstractController
         
         $documentsList = $response->toArray();
 
-        $request->getSession()->remove('document');
-        $request->getSession()->remove('user');
-
         return $this->render('backend/document/documents.html.twig', [
             'documents' => $documentsList['hydra:member']
         ]);
@@ -64,7 +62,6 @@ class documentController extends AbstractController
         ]);
 
         return $this->redirectToRoute('documentList');
-        
     }
 
     #[Route('/admin-panel/document/edit', name: 'documentEdit')]
@@ -75,15 +72,22 @@ class documentController extends AbstractController
         $documentData = $request->request->get('document');
         $document = json_decode($documentData, true);
 
-        $request->getSession()->set('document', $document);
-        $storedDocument = $document;
+        $storedDocument = $request->getSession()->get('documentId');
+
+        if (!$storedDocument) {
+            $request->getSession()->set('documentId', $document['id']);
+        }
         
-        $defaults = [
-            'name' => $storedDocument['name'],
-            'type' => $storedDocument['type'],
-            'url' => $storedDocument['url'],
-            'owner' => $storedDocument['owner']['id'],
-        ];
+        try {
+            $defaults = [
+                'name' => $document['name'],
+                'type' => $document['type'],
+                'url' => $document['url'],
+                'owner' => $document['owner']['id'],
+            ];
+        } catch (Exception $e) {
+            $defaults = [];
+        }
 
         $form = $this->createFormBuilder($defaults)
         ->add("name", TextType::class, [
@@ -111,24 +115,26 @@ class documentController extends AbstractController
             "required"=>false,
         ])
         ->getForm()->handleRequest($request);
-            if ($form->isSubmitted() && $form->isValid()){
-                $data = $form->getData();
-                
-                $data['owner'] = 'api/cs_users/'.$data['owner'];
+        if ($form->isSubmitted() && $form->isValid()){
+            $data = $form->getData();
+            
+            $data['owner'] = 'api/cs_users/'.$data['owner'];
 
-                $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/merge-patch+json');
+            $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/merge-patch+json');
 
-                $response = $client->request('PATCH', 'cs_documents/'.$storedDocument['id'], [
-                    'json' => $data,
-                ]);
-
-                //$response = json_decode($response->getContent(), true);
-    
-                return $this->redirectToRoute('documentList');
-            }      
-            return $this->render('backend/document/editDocument.html.twig', [
-                'form'=>$form,
-                'errorMessage'=>null
+            $response = $client->request('PATCH', 'cs_documents/'.$storedDocument, [
+                'json' => $data,
             ]);
+
+            $response = json_decode($response->getContent(), true);
+
+            $request->getSession()->remove('documentId');
+
+            return $this->redirectToRoute('documentList');
+        }      
+        return $this->render('backend/document/editDocument.html.twig', [
+            'form'=>$form,
+            'errorMessage'=>null
+        ]);
     }
 }
