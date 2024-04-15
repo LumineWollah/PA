@@ -127,7 +127,7 @@ class apartmentController extends AbstractController
 
             $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/merge-patch+json');
 
-            $response = $client->request('PATCH', 'cs_apartments/'.$storedApartment['id'], [
+            $response = $client->request('PATCH', 'cs_apartments/'.$storedApartment, [
                 'json' => $data,
             ]);
 
