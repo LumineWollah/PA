@@ -113,7 +113,16 @@ class CsUser implements UserInterface, PasswordAuthenticatedUserInterface
     private ?CsCompany $company = null;
 
     #[ORM\OneToMany(targetEntity: CsReservation::class, mappedBy: 'user')]
+    #[Groups(["getUsers"])]
     private Collection $reservations;
+
+    #[ORM\OneToMany(targetEntity: CsService::class, mappedBy: 'provider', orphanRemoval: true)]
+    #[Groups(["getUsers"])]
+    private Collection $services;
+
+    #[ORM\OneToMany(targetEntity: CsReviews::class, mappedBy: 'author')]
+    #[Groups(["getUsers"])]
+    private Collection $reviews;
 
     public function __construct()
     {
@@ -122,6 +131,8 @@ class CsUser implements UserInterface, PasswordAuthenticatedUserInterface
         $this->documents = new ArrayCollection();
         $this->apartments = new ArrayCollection();
         $this->reservations = new ArrayCollection();
+        $this->services = new ArrayCollection();
+        $this->reviews = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -468,12 +479,12 @@ class CsUser implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @return Collection<int, CsReservation>
      */
-    public function getOccupancyDates(): Collection
+    public function getReservations(): Collection
     {
         return $this->reservations;
     }
 
-    public function addOccupancyDate(CsReservation $reservations): static
+    public function addReservation(CsReservation $reservations): static
     {
         if (!$this->reservations->contains($reservations)) {
             $this->reservations->add($reservations);
@@ -483,12 +494,72 @@ class CsUser implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function removeOccupancyDate(CsReservation $reservation): static
+    public function removeReservation(CsReservation $reservation): static
     {
         if ($this->reservations->removeElement($reservation)) {
             // set the owning side to null (unless already changed)
             if ($reservation->getUser() === $this) {
                 $reservation->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, CsService>
+     */
+    public function getServices(): Collection
+    {
+        return $this->services;
+    }
+
+    public function addService(CsService $service): static
+    {
+        if (!$this->services->contains($service)) {
+            $this->services->add($service);
+            $service->setProvider($this);
+        }
+
+        return $this;
+    }
+
+    public function removeService(CsService $service): static
+    {
+        if ($this->services->removeElement($service)) {
+            // set the owning side to null (unless already changed)
+            if ($service->getProvider() === $this) {
+                $service->setProvider(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, CsReviews>
+     */
+    public function getReviews(): Collection
+    {
+        return $this->reviews;
+    }
+
+    public function addReview(CsReviews $review): static
+    {
+        if (!$this->reviews->contains($review)) {
+            $this->reviews->add($review);
+            $review->setAuthor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReview(CsReviews $review): static
+    {
+        if ($this->reviews->removeElement($review)) {
+            // set the owning side to null (unless already changed)
+            if ($review->getAuthor() === $this) {
+                $review->setAuthor(null);
             }
         }
 

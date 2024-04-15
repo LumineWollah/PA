@@ -1,12 +1,22 @@
 {% extends 'frontend/base.html.twig' %}
 
-{% block stylesheets %}<link rel="stylesheet" href={{ asset('styles/frontend/apartments/apartmentList.css') }}>{% endblock %}
+{% block stylesheets %}
+    <link rel="stylesheet" href={{ asset('styles/frontend/apartments/apartmentList.css') }}>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+{% endblock %}
 
 {% block activeApar %}active{% endblock %}
 
 {% block body %}
 <div class="container-fluid pageContent">
     <h1>Nos <span class="h1span">logements</span> à louer</h1>
+    
+    <input type="text" name="datefilter" value="" />
+
+    
     {% for i in range(0, (((aps|length)/4)|round(0, 'ceil'))-1) %}
         <div class="row apsRow">
             {% for j in range(i*4, (i*4)+3) %}
@@ -27,4 +37,33 @@
         </div>
     {% endfor %}
 </div>
+{% endblock %}
+
+{% block javascripts %}
+<script type="text/javascript">
+    $(function() {
+
+    $('input[name="datefilter"]').daterangepicker({
+        autoUpdateInput: false,
+        autoApply: true,
+        locale: {
+            cancelLabel: 'Clear',
+            format: 'dd.mm.yyyy',
+            separator: ' - '
+        }
+    }, function(start, end, label) {
+                $(this).val(start.format('YYYY.MM.DD')+ " - " + end.format('YYYY.MM.DD'))
+                console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
+    });
+
+    $('input[name="datefilter"]').on('apply.daterangepicker', function(ev, picker) {
+        $(this).val(picker.startDate.format('MM.DD.YYYY') + ' - ' + picker.endDate.format('MM.DD.YYYY'));
+    });
+
+    $('input[name="datefilter"]').on('cancel.daterangepicker', function(ev, picker) {
+        $(this).val('');
+    });
+
+    });
+</script>
 {% endblock %}
