@@ -1,6 +1,10 @@
 {% extends 'frontend/base.html.twig' %}
 
-{% block stylesheets %}<link rel="stylesheet" href={{ asset('styles/frontend/apartments/apartmentDetail.css') }}>{% endblock %}
+{% block stylesheets %}
+    <link rel="stylesheet" href={{ asset('styles/frontend/apartments/apartmentDetail.css') }}>
+    <link href="https://api.mapbox.com/mapbox-gl-js/v3.2.0/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v3.2.0/mapbox-gl.js"></script>
+{% endblock %}
 
 {% block activeApar %}active{% endblock %}
 
@@ -99,8 +103,41 @@
             </div>
         </div>
         <div class="row localisation justify-content-center">
-        
+            <div id="map"></div>
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+    const centerGps = {{ apartment.centerGps|slice(0, 2)|json_encode|raw }};
+
+    mapboxgl.accessToken = 'pk.eyJ1IjoibGVvLXVyYWhhcmEiLCJhIjoiY2x2MTJrcHJ4MDIwdzJrdXNhcDhjazF4MSJ9.ZJjs_hvEVTuHKAe2CeDGbQ';
+    const map = new mapboxgl.Map({
+        container: 'map',
+        center: centerGps,
+        zoom: 16
+    });
+
+    const geojson = {
+        type: 'FeatureCollection',
+        features: [{
+            type: 'Feature',
+            geometry: {
+                type: 'Point',
+                coordinates: centerGps
+            }
+        }]
+    };
+
+    geojson.features.forEach(function(marker) {
+        var el = document.createElement('div');
+        el.className = 'marker';
+
+        new mapboxgl.Marker(el)
+            .setLngLat(marker.geometry.coordinates)
+            .addTo(map)
+    });
+</script>
 {% endblock %}

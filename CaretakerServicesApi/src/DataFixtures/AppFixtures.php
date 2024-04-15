@@ -49,9 +49,10 @@ class AppFixtures extends Fixture
             $apartment->setPrice(421);
             $apartment->setOwner($user);
             $apartment->setAddress("71, avenue d'Italie");
-            $apartment->setPostalCode("75013");
-            $apartment->setCity("Paris");
-            $apartment->setCountry("France");
+            $apartment->setCenterGps([2.357781, 48.825486]);
+            // $apartment->setPostalCode("75013");
+            // $apartment->setCity("Paris");
+            // $apartment->setCountry("France");
             $apartment->setMainPict($images[rand(0, 8)]);
             $apartment->setPictures(["https://tinyurl.com/2w8fnhrs", "https://tinyurl.com/4bck47tz"]);
             $manager->persist($apartment);
