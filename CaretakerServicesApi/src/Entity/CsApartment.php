@@ -25,8 +25,8 @@ use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 
 #[ApiResource(operations: [
     new Post(
-        name: 'check_availability', 
-        uriTemplate: '/check_availability', 
+        name: 'checkAvailability', 
+        uriTemplate: '/cs_apartments/availables', 
         controller: CsApartmentController::class,
         deserialize: false,
             openapiContext: [
@@ -151,10 +151,20 @@ class CsApartment
     #[Groups(["getApartments"])]
     private Collection $reservations;
 
+    #[ORM\OneToMany(targetEntity: CsReviews::class, mappedBy: 'apartment')]
+    #[Groups(["getApartments"])]
+    private Collection $reviews;
+
+    #[ORM\OneToMany(targetEntity: CsObligatoryService::class, mappedBy: 'apartment', orphanRemoval: true)]
+    #[Groups(["getApartments"])]
+    private Collection $obligatoryServices;
+
     public function __construct()
     {
         $this->dateCreation = new DateTime();
         $this->reservations = new ArrayCollection();
+        $this->reviews = new ArrayCollection();
+        $this->obligatoryServices = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -393,7 +403,7 @@ class CsApartment
     /**
      * @return Collection<int, CsReservation>
      */
-    public function getOccupancyDates(): Collection
+    public function getReservations(): Collection
     {
         return $this->reservations;
     }
@@ -414,6 +424,66 @@ class CsApartment
             // set the owning side to null (unless already changed)
             if ($reservation->getApartment() === $this) {
                 $reservation->setApartment(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, CsReviews>
+     */
+    public function getReviews(): Collection
+    {
+        return $this->reviews;
+    }
+
+    public function addReview(CsReviews $review): static
+    {
+        if (!$this->reviews->contains($review)) {
+            $this->reviews->add($review);
+            $review->setApartment($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReview(CsReviews $review): static
+    {
+        if ($this->reviews->removeElement($review)) {
+            // set the owning side to null (unless already changed)
+            if ($review->getApartment() === $this) {
+                $review->setApartment(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, CsObligatoryService>
+     */
+    public function getObligatoryServices(): Collection
+    {
+        return $this->obligatoryServices;
+    }
+
+    public function addObligatoryService(CsObligatoryService $obligatoryService): static
+    {
+        if (!$this->obligatoryServices->contains($obligatoryService)) {
+            $this->obligatoryServices->add($obligatoryService);
+            $obligatoryService->setApartment($this);
+        }
+
+        return $this;
+    }
+
+    public function removeObligatoryService(CsObligatoryService $obligatoryService): static
+    {
+        if ($this->obligatoryServices->removeElement($obligatoryService)) {
+            // set the owning side to null (unless already changed)
+            if ($obligatoryService->getApartment() === $this) {
+                $obligatoryService->setApartment(null);
             }
         }
 

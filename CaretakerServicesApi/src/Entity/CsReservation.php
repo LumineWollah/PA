@@ -2,23 +2,27 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Odm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use App\Repository\CsReservationRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use phpDocumentor\Reflection\Types\Integer;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ApiResource(normalizationContext: ['groups' => ['getReservations']])]
 #[ORM\Entity(repositoryClass: CsReservationRepository::class)]
+#[Patch(security: "is_granted('ROLE_ADMIN') or object.getUser() == user or object.getApartmentOwner() == user or object.getProviderOwner() == user")]
 #[Get]
 #[GetCollection]
-#[Delete]
+#[Delete("is_granted('ROLE_ADMIN') or object.getUser() == user or object.getApartmentOwner() == user or object.getProviderOwner() == user")]
 #[Post]
+#[ApiFilter(SearchFilter::class, properties: ['apartment' => 'exact', 'service' => 'exact', 'user' => 'exact'])]
 class CsReservation
 {
     #[ORM\Id]
@@ -46,11 +50,15 @@ class CsReservation
 
     private ?bool $active = true;
 
-    #[ORM\ManyToOne(inversedBy: 'occupancyDates')]
+    #[ORM\ManyToOne(inversedBy: 'reservations')]
     #[Groups(["getReservations"])]
     public ?CsApartment $apartment = null;
 
-    #[ORM\ManyToOne(inversedBy: 'occupancyDates')]
+    #[ORM\ManyToOne(inversedBy: 'reservations')]
+    #[Groups(["getReservations"])]
+    public ?CsService $service = null;
+
+    #[ORM\ManyToOne(inversedBy: 'reservations')]
     #[Groups(["getReservations"])]
     public ?CsUser $user = null;
 
@@ -129,5 +137,15 @@ class CsReservation
         $this->active = $active;
 
         return $this;
+    }
+
+    public function getApartmentOwner(): ?CsUser
+    {
+        return $this->apartment->getOwner();
+    }
+
+    public function getServiceOwner(): ?CsUser
+    {
+        return $this->service->getProvider();
     }
 }
