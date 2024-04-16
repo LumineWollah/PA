@@ -35,6 +35,11 @@ tr a, tr button{
     padding: 5px !important;
 }
 
+.provider{
+    width: auto !important;
+    padding: 5px !important;
+}
+
 .btnImage {
     display: flex;
     justify-content: center;
