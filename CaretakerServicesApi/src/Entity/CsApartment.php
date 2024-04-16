@@ -126,17 +126,17 @@ class CsApartment
     #[Groups(["getUsers", "getApartments", "getReservations"])]
     private ?array $centerGps = null;
 
-    // #[ORM\Column(length: 255)]
-    // #[Groups(["getUsers", "getApartments", "getReservations"])]
-    // private ?string $city = null;
+    #[ORM\Column(length: 255)]
+    #[Groups(["getUsers", "getApartments", "getReservations"])]
+    private ?string $city = null;
 
-    // #[ORM\Column(length: 5)]
-    // #[Groups(["getUsers", "getApartments", "getReservations"])]
-    // private ?string $postalCode = null;
+    #[ORM\Column(length: 5)]
+    #[Groups(["getUsers", "getApartments", "getReservations"])]
+    private ?string $postalCode = null;
 
-    // #[ORM\Column(length: 255)]
-    // #[Groups(["getUsers", "getApartments", "getReservations"])]
-    // private ?string $country = null;
+    #[ORM\Column(length: 255)]
+    #[Groups(["getUsers", "getApartments", "getReservations"])]
+    private ?string $country = null;
 
     #[ORM\ManyToOne(inversedBy: 'apartments')]
     #[ORM\JoinColumn(nullable: false)]
@@ -344,41 +344,41 @@ class CsApartment
         return $this;
     }
 
-    // public function getCity()
-    // {
-    //     return $this->city;
-    // }
+    public function getCity()
+    {
+        return $this->city;
+    }
 
-    // public function setCity($city)
-    // {
-    //     $this->city = $city;
+    public function setCity($city)
+    {
+        $this->city = $city;
 
-    //     return $this;
-    // }
+        return $this;
+    }
 
-    // public function getPostalCode()
-    // {
-    //     return $this->postalCode;
-    // }
+    public function getPostalCode()
+    {
+        return $this->postalCode;
+    }
 
-    // public function setPostalCode($postalCode)
-    // {
-    //     $this->postalCode = $postalCode;
+    public function setPostalCode($postalCode)
+    {
+        $this->postalCode = $postalCode;
 
-    //     return $this;
-    // }
+        return $this;
+    }
 
-    // public function getCountry()
-    // {
-    //     return $this->country;
-    // }
+    public function getCountry()
+    {
+        return $this->country;
+    }
 
-    // public function setCountry($country)
-    // {
-    //     $this->country = $country;
+    public function setCountry($country)
+    {
+        $this->country = $country;
 
-    //     return $this;
-    // }
+        return $this;
+    }
 
     public function getMainPict(): ?string
     {

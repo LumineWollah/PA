@@ -61,9 +61,9 @@
                     {% for service in services %}
                         <tr>
                             <td>
-                                <form action="{{ path('userShow') }}" method="post" style="display: inline;">
-                                    <input type="hidden" name="user" value="{{ service.provider|json_encode }}">
-                                    <button type="submit" class="btn btn-light provider" style="height:40px"><p> {{ service.provider.firstname ~ " " ~ service.provider.lastname|capitalize }} </p></button>
+                                <form action="{{ path('companyShow') }}" method="post" style="display: inline;">
+                                    <input type="hidden" name="company" value="{{ service.company|json_encode }}">
+                                    <button type="submit" class="btn btn-light provider" style="height:40px"><p> {{ service.company.companyName|capitalize }} </p></button>
                                 </form>
                             </td>
                             <td>{{ service.name|capitalize }}</td>

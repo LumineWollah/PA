@@ -17,10 +17,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ApiResource(normalizationContext: ['groups' => ['getReservations']])]
 #[ORM\Entity(repositoryClass: CsReservationRepository::class)]
-#[Patch(security: "is_granted('ROLE_ADMIN') or object.getUser() == user or object.getApartmentOwner() == user or object.getProviderOwner() == user")]
+#[Patch(security: "is_granted('ROLE_ADMIN') or object.getUser() == user or object.getApartmentOwner() == user or user in object.getServiceOwner().toArray()")]
 #[Get]
 #[GetCollection]
-#[Delete(security: "is_granted('ROLE_ADMIN') or object.getUser() == user or object.getApartmentOwner() == user or object.getProviderOwner() == user")]
+#[Delete(security: "is_granted('ROLE_ADMIN') or object.getUser() == user or object.getApartmentOwner() == user or user in object.getServiceOwner().toArray()")]
 #[Post]
 #[ApiFilter(SearchFilter::class, properties: ['apartment' => 'exact', 'service' => 'exact', 'user' => 'exact'])]
 class CsReservation
@@ -156,8 +156,8 @@ class CsReservation
         return $this->apartment->getOwner();
     }
 
-    public function getServiceOwner(): ?CsUser
+    public function getServiceOwner()
     {
-        return $this->service->getProvider();
+        return $this->service->getCompany()->getUsers();
     }
 }

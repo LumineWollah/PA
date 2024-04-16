@@ -40,21 +40,21 @@ class CsUser implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(["getUsers", "getDocuments", "getApartments", "getCompanies", "getServices", "getReservations"])]
+    #[Groups(["getUsers", "getDocuments", "getApartments", "getCompanies", "getReservations"])]
     private ?int $id = null;
 
     #[ORM\Column(length: 180)]
-    #[Groups(["getUsers", "getDocuments", "getApartments", "getCompanies", "getServices", "getReservations"])]
+    #[Groups(["getUsers", "getDocuments", "getApartments", "getCompanies", "getReservations"])]
     private ?string $email = null;
 
     #[ORM\Column(length: 150)]
-    #[Groups(["getUsers", "getDocuments", "getApartments", "getCompanies", "getServices", "getReservations"])]
+    #[Groups(["getUsers", "getDocuments", "getApartments", "getCompanies", "getReservations"])]
     #[Assert\NotBlank(message: "Le prénom est obligaoire")]
     #[Assert\Length(min: 3, max: 150, minMessage: "Le prénom doit faire au moins {{ limit }} caractères", maxMessage: "Le prénom ne peut pas faire plus de {{ limit }} caractères")]
     private ?string $firstname = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(["getUsers", "getDocuments", "getApartments", "getCompanies", "getServices", "getReservations"])]
+    #[Groups(["getUsers", "getDocuments", "getApartments", "getCompanies", "getReservations"])]
     private ?string $lastname = null;
 
     /**
@@ -64,35 +64,35 @@ class CsUser implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[ORM\Column]
-    #[Groups(["getUsers", "getDocuments", "getApartments", "getCompanies", "getServices", "getReservations"])]
+    #[Groups(["getUsers", "getDocuments", "getApartments", "getCompanies", "getReservations"])]
     private ?DateTime $lastConnection = null;
 
     #[ORM\Column]
-    #[Groups(["getUsers", "getDocuments", "getApartments", "getCompanies", "getServices", "getReservations"])]
+    #[Groups(["getUsers", "getDocuments", "getApartments", "getCompanies", "getReservations"])]
     private ?DateTime $dateInscription = null;
 
     #[ORM\Column(length: 500, nullable: true)]
-    #[Groups(["getUsers", "getDocuments", "getApartments", "getCompanies", "getServices", "getReservations"])]
+    #[Groups(["getUsers", "getDocuments", "getApartments", "getCompanies", "getReservations"])]
     private ?string $profilePict = null;
 
     #[ORM\Column(type: 'json')]
-    #[Groups(["getUsers", "getDocuments", "getApartments", "getCompanies", "getServices", "getReservations"])]
+    #[Groups(["getUsers", "getDocuments", "getApartments", "getCompanies", "getReservations"])]
     private $roles = [];
 
     #[ORM\Column(length: 10)]
-    #[Groups(["getUsers", "getDocuments", "getApartments", "getCompanies", "getServices", "getReservations"])]
+    #[Groups(["getUsers", "getDocuments", "getApartments", "getCompanies", "getReservations"])]
     private ?string $telNumber = null;
 
     #[ORM\Column]
-    #[Groups(["getUsers", "getDocuments", "getApartments", "getCompanies", "getServices", "getReservations"])]
+    #[Groups(["getUsers", "getDocuments", "getApartments", "getCompanies", "getReservations"])]
     private ?bool $isVerified = false;
 
     #[ORM\Column]
-    #[Groups(["getUsers", "getDocuments", "getApartments", "getCompanies", "getServices", "getReservations"])]
+    #[Groups(["getUsers", "getDocuments", "getApartments", "getCompanies", "getReservations"])]
     private ?bool $professional = false;
 
     #[ORM\Column(nullable: true)]
-    #[Groups(["getUsers", "getDocuments", "getApartments", "getCompanies", "getServices", "getReservations"])]
+    #[Groups(["getUsers", "getDocuments", "getApartments", "getCompanies", "getReservations"])]
     private ?int $subscription = null;
 
     #[ORM\OneToMany(targetEntity: CsDocument::class, mappedBy: 'owner', orphanRemoval: true)]
@@ -111,10 +111,6 @@ class CsUser implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(["getUsers"])]
     private Collection $reservations;
 
-    #[ORM\OneToMany(targetEntity: CsService::class, mappedBy: 'provider', orphanRemoval: true)]
-    #[Groups(["getUsers"])]
-    private Collection $services;
-
     #[ORM\OneToMany(targetEntity: CsReviews::class, mappedBy: 'author')]
     #[Groups(["getUsers"])]
     private Collection $reviews;
@@ -126,7 +122,6 @@ class CsUser implements UserInterface, PasswordAuthenticatedUserInterface
         $this->documents = new ArrayCollection();
         $this->apartments = new ArrayCollection();
         $this->reservations = new ArrayCollection();
-        $this->services = new ArrayCollection();
         $this->reviews = new ArrayCollection();
     }
 
@@ -495,36 +490,6 @@ class CsUser implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($reservation->getUser() === $this) {
                 $reservation->setUser(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, CsService>
-     */
-    public function getServices(): Collection
-    {
-        return $this->services;
-    }
-
-    public function addService(CsService $service): static
-    {
-        if (!$this->services->contains($service)) {
-            $this->services->add($service);
-            $service->setProvider($this);
-        }
-
-        return $this;
-    }
-
-    public function removeService(CsService $service): static
-    {
-        if ($this->services->removeElement($service)) {
-            // set the owning side to null (unless already changed)
-            if ($service->getProvider() === $this) {
-                $service->setProvider(null);
             }
         }
 

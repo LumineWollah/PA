@@ -75,6 +75,10 @@ th {
 tr {
     font-family: 'Quicksand';
     font-weight: 400;
+} 
+
+.tableAps {
+    max-width: 100%;
 }
 
 .name {

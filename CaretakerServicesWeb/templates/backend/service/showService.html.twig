@@ -17,11 +17,11 @@
                     <p><strong>Catégorie :</strong> Léopold la fraude</p>
 
                     <div class"container"><strong>Prestataire :</strong>
-                        <form action="{{ path('userShow') }}" method="post" style="display: inline;">
-                            <input type="hidden" name="user" value="{{ service.provider|json_encode }}">
+                        <form action="{{ path('companyShow') }}" method="post" style="display: inline;">
+                            <input type="hidden" name="company" value="{{ service.company|json_encode }}">
                             <button type="submit" class="container" style="background-color: #A594F9;">
                                 <div class="container">
-                                    <p><strong>Nom:</strong> {{ service.provider.firstname|capitalize }} {{ service.provider.lastname|upper }} </p>
+                                    <p><strong>Nom:</strong> {{ service.company.companyName|capitalize }}</p>
                                 </div>
                             </button>
                         </form>

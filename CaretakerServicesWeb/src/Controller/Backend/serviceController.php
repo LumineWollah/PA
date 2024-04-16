@@ -86,7 +86,7 @@ class serviceController extends AbstractController
                 'description' => $service['description'],
                 'price' => $service['price'],
                 // 'type' => $service['type'],
-                'provider' => $service['provider']['id'],
+                'company' => $service['company']['id'],
             ];
         } catch (Exception $e) {
             $defaults = [];
@@ -117,9 +117,9 @@ class serviceController extends AbstractController
             ],
             "required"=>false,
         ])
-        ->add("provider", IntegerType::class, [
+        ->add("company", IntegerType::class, [
             "attr"=>[
-                "placeholder"=>"Prestataire ID",
+                "placeholder"=>"Entreprise ID",
             ],
             "required"=>false,
         ])
@@ -127,7 +127,7 @@ class serviceController extends AbstractController
             if ($form->isSubmitted() && $form->isValid()){
                 $data = $form->getData();
 
-                $data['provider'] = 'api/cs_users/'.$data['provider'];
+                $data['company'] = 'api/cs_companies/'.$data['company'];
                 
                 $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/merge-patch+json');
 

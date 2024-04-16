@@ -52,9 +52,9 @@ class AppFixtures extends Fixture
             $apartment->setOwner($user);
             $apartment->setAddress("71, avenue d'Italie");
             $apartment->setCenterGps([2.357781, 48.825486]);
-            // $apartment->setPostalCode("75013");
-            // $apartment->setCity("Paris");
-            // $apartment->setCountry("France");
+            $apartment->setPostalCode("75013");
+            $apartment->setCity("Paris");
+            $apartment->setCountry("France");
             $apartment->setMainPict($images[rand(0, 8)]);
             $apartment->setPictures(["https://tinyurl.com/2w8fnhrs", "https://tinyurl.com/4bck47tz"]);
             $manager->persist($apartment);
@@ -71,6 +71,13 @@ class AppFixtures extends Fixture
         $company->setCountry("France");
         $manager->persist($company);
 
+        $service = new CsService();
+        $service->setName("Francis Huster Ménage");
+        $service->setCompany($company);
+        $service->setDescription("Test de description");
+        $service->setPrice(85.5);
+        $manager->persist($service);
+
         $user = new CsUser();
         $user->setEmail("mathis.vareilles@yahoo.com");
         $user->setFirstname("Mathis");
@@ -82,7 +89,7 @@ class AppFixtures extends Fixture
         $user->setRoles(['ROLE_PROVIDER']);
         $user->setCompany($company);
         $manager->persist($user);
-        
+
         $user = new CsUser();
         $user->setEmail("test@yahoo.com");
         $user->setFirstname("test");
@@ -118,13 +125,6 @@ class AppFixtures extends Fixture
         $document->setUrl("test2.s3");
         $document->setOwner($user);
         $manager->persist($document);
-
-        $service = new CsService();
-        $service->setName("Ménage");
-        $service->setDescription("Ménage de l'appartement");
-        $service->setPrice(50);
-        $service->setProvider($user);
-        $manager->persist($service);
 
         $reservation = new CsReservation();
         $reservation->setStartingDate(new \DateTime ("now"));

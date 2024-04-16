@@ -38,40 +38,44 @@ class CsCompany
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(["getUsers", "getCompanies"])]
+    #[Groups(["getUsers", "getCompanies", "getServices", "getReservations"])]
     private ?int $id = null;
 
     #[ORM\Column(length: 14)]
-    #[Groups(["getUsers", "getCompanies"])]
+    #[Groups(["getUsers", "getCompanies", "getServices", "getReservations"])]
     private ?string $siretNumber = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(["getUsers", "getCompanies"])]
+    #[Groups(["getUsers", "getCompanies", "getServices", "getReservations"])]
     private ?string $companyName = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(["getUsers", "getCompanies"])]
+    #[Groups(["getUsers", "getCompanies", "getServices", "getReservations"])]
     private ?string $companyEmail = null;
 
     #[ORM\Column(length: 10)]
-    #[Groups(["getUsers", "getCompanies"])]
+    #[Groups(["getUsers", "getCompanies", "getServices", "getReservations"])]
     private ?string $companyPhone = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(["getUsers", "getCompanies"])]
+    #[Groups(["getUsers", "getCompanies", "getServices", "getReservations"])]
     private ?string $address = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(["getUsers", "getCompanies"])]
+    #[Groups(["getUsers", "getCompanies", "getServices", "getReservations"])]
     private ?string $city = null;
 
     #[ORM\Column(length: 5)]
-    #[Groups(["getUsers", "getCompanies"])]
+    #[Groups(["getUsers", "getCompanies", "getServices", "getReservations"])]
     private ?string $postalCode = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(["getUsers", "getCompanies"])]
+    #[Groups(["getUsers", "getCompanies", "getServices", "getReservations"])]
     private ?string $country = null;
+
+    #[ORM\OneToMany(targetEntity: CsService::class, mappedBy: 'company', orphanRemoval: true)]
+    #[Groups(["getCompanies"])]
+    private Collection $services;
 
     #[ORM\OneToMany(targetEntity: CsUser::class, mappedBy: 'company')]
     #[Groups(["getCompanies"])]
@@ -207,6 +211,36 @@ class CsCompany
             // set the owning side to null (unless already changed)
             if ($user->getCompany() === $this) {
                 $user->setCompany(null);
+            }
+        }
+
+        return $this;
+    }
+
+     /**
+     * @return Collection<int, CsService>
+     */
+    public function getServices(): Collection
+    {
+        return $this->services;
+    }
+
+    public function addService(CsService $service): static
+    {
+        if (!$this->services->contains($service)) {
+            $this->services->add($service);
+            $service->setCompany($this);
+        }
+
+        return $this;
+    }
+
+    public function removeService(CsService $service): static
+    {
+        if ($this->services->removeElement($service)) {
+            // set the owning side to null (unless already changed)
+            if ($service->getCompany() === $this) {
+                $service->setCompany(null);
             }
         }
 

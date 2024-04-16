@@ -44,8 +44,8 @@ class CsService
 
     #[ORM\ManyToOne(inversedBy: 'services')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(["getServices"])]
-    private ?CsUser $provider = null;
+    #[Groups(["getServices", "getReservations"])]
+    private ?CsCompany $company = null;
 
     #[ORM\OneToMany(targetEntity: CsReservation::class, mappedBy: 'service')]
     #[Groups(["getServices"])]
@@ -105,14 +105,14 @@ class CsService
         return $this;
     }
 
-    public function getProvider(): ?CsUser
+    public function getCompany(): ?CsCompany
     {
-        return $this->provider;
+        return $this->company;
     }
 
-    public function setProvider(?CsUser $provider): static
+    public function setCompany(?CsCompany $company): static
     {
-        $this->provider = $provider;
+        $this->company = $company;
 
         return $this;
     }
