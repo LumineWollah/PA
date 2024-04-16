@@ -7,6 +7,8 @@ use App\Entity\CsApartmentPicture;
 use App\Entity\CsCompany;
 use App\Entity\CsDocument;
 use App\Entity\CsUser;
+use App\Entity\CsService;
+use App\Entity\CsReservation;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -116,6 +118,13 @@ class AppFixtures extends Fixture
         $document->setUrl("test2.s3");
         $document->setOwner($user);
         $manager->persist($document);
+
+        $service = new CsService();
+        $service->setName("Ménage");
+        $service->setDescription("Ménage de l'appartement");
+        $service->setPrice(50);
+        $service->setProvider($user);
+        $manager->persist($service);
 
         $manager->flush();
     }
