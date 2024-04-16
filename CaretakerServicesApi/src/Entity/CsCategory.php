@@ -26,15 +26,15 @@ class CsCategory
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['getCategories', 'getServices'])]
+    #[Groups(['getCategories', 'getServices', 'getReservations'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['getCategories', 'getServices'])]
+    #[Groups(['getCategories', 'getServices', 'getReservations'])]
     private ?string $name = null;
 
     #[ORM\Column(length: 6)]
-    #[Groups(['getCategories', 'getServices'])]
+    #[Groups(['getCategories', 'getServices', 'getReservations'])]
     private ?string $color = null;
 
     /**
