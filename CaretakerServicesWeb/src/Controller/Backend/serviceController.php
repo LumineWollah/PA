@@ -85,7 +85,7 @@ class serviceController extends AbstractController
                 'name' => $service['name'],
                 'description' => $service['description'],
                 'price' => $service['price'],
-                // 'type' => $service['type'],
+                'category' => $service['category']['id'],
                 'company' => $service['company']['id'],
             ];
         } catch (Exception $e) {
@@ -105,12 +105,12 @@ class serviceController extends AbstractController
             ],
             "required"=>false,
         ])
-        // ->add("type", TextType::class, [
-        //     "attr"=>[
-        //         "placeholder"=>"Type",
-        //     ],
-        //     "required"=>false,
-        // ])
+        ->add("category", IntegerType::class, [
+            "attr"=>[
+                "placeholder"=>"Catégorie ID",
+            ],
+            "required"=>false,
+        ])
         ->add("price", IntegerType::class, [
             "attr"=>[
                 "placeholder"=>"Prix",
@@ -128,6 +128,7 @@ class serviceController extends AbstractController
                 $data = $form->getData();
 
                 $data['company'] = 'api/cs_companies/'.$data['company'];
+                $data['category'] = 'api/cs_categories/'.$data['category'];
                 
                 $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/merge-patch+json');
 

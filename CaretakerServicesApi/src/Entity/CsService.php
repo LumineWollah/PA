@@ -47,6 +47,11 @@ class CsService
     #[Groups(["getServices", "getReservations"])]
     private ?CsCompany $company = null;
 
+    #[ORM\ManyToOne(inversedBy: 'services')]
+    #[ORM\JoinColumn(nullable: false)]
+    #[Groups(["getServices", "getReservations"])]
+    private ?CsCategory $category = null;
+
     #[ORM\OneToMany(targetEntity: CsReservation::class, mappedBy: 'service')]
     #[Groups(["getServices"])]
     private Collection $reservations;
@@ -185,6 +190,18 @@ class CsService
                 $obligatoryService->setService(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getCategory(): ?CsCategory
+    {
+        return $this->category;
+    }
+
+    public function setCategory(?CsCategory $category): static
+    {
+        $this->category = $category;
 
         return $this;
     }

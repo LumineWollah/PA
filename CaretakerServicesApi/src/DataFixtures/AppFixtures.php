@@ -4,6 +4,7 @@ namespace App\DataFixtures;
 
 use App\Entity\CsApartment;
 use App\Entity\CsApartmentPicture;
+use App\Entity\CsCategory;
 use App\Entity\CsCompany;
 use App\Entity\CsDocument;
 use App\Entity\CsUser;
@@ -71,11 +72,17 @@ class AppFixtures extends Fixture
         $company->setCountry("France");
         $manager->persist($company);
 
+        $category = new CsCategory();
+        $category->setName("Bricolage");
+        $category->setColor("2A04C5");
+        $manager->persist($category);
+
         $service = new CsService();
         $service->setName("Francis Huster Ménage");
         $service->setCompany($company);
         $service->setDescription("Test de description");
         $service->setPrice(85.5);
+        $service->setCategory($category);
         $manager->persist($service);
 
         $user = new CsUser();

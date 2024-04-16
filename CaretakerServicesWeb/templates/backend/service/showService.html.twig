@@ -13,8 +13,7 @@
                     <p><strong>Description :</strong> {{ service.description }}</p>
                     <p><strong>Prix :</strong> {{ service.price }}€</p>
 
-                    {# <p><strong>Catégorie :</strong> {{ service.category }}</p> #}
-                    <p><strong>Catégorie :</strong> Léopold la fraude</p>
+                    <p><strong>Catégorie :</strong> {{ service.category.name }}</p>
 
                     <div class"container"><strong>Prestataire :</strong>
                         <form action="{{ path('companyShow') }}" method="post" style="display: inline;">
