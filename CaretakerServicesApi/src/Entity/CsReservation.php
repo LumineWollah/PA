@@ -103,6 +103,18 @@ class CsReservation
         return $this;
     }
 
+    public function getService(): ?CsService
+    {
+        return $this->service;
+    }
+
+    public function setService(?CsService $service): static
+    {
+        $this->service = $service;
+
+        return $this;
+    }
+
     public function getUser(): ?CsUser
     {
         return $this->user;
