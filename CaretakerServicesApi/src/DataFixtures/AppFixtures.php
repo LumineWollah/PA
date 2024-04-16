@@ -134,6 +134,14 @@ class AppFixtures extends Fixture
         $reservation->setPrice(50);
         $manager->persist($reservation);
         
+        $reservation = new CsReservation();
+        $reservation->setStartingDate(new \DateTime ("now"));
+        $reservation->setEndingDate(new \DateTime ("now"));
+        $reservation->setUser($user);
+        $reservation->setService($service);
+        $reservation->setPrice(50);
+        $manager->persist($reservation);
+
         $manager->flush();
     }
 }
