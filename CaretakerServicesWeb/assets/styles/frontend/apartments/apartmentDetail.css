@@ -130,6 +130,7 @@ h2 {
     height: 50vh;
     width: 50vw;
     margin-top: 2vh;
+    margin-bottom: 8vh;
 }
 
 .carouselImg {
@@ -145,22 +146,21 @@ h2 {
     height: 6vh;
 }
 
-.left {
+.leftAr {
     position: absolute !important;
     left: -5vw;
 }
 
-.right {
+.rightAr {
     position: absolute !important;
     right: -5vw;
 }
 
-.localisation {
+#map {
+    margin-top: 2vh;
     height: 50vh;
-}
-
-#map { 
     width: 50vw;
+    margin-bottom: 8vh;
 }
 
 .marker {

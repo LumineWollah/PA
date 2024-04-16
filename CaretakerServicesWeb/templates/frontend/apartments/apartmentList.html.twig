@@ -12,11 +12,8 @@
 
 {% block body %}
 <div class="container-fluid pageContent">
-    <h1>Nos <span class="h1span">logements</span> à louer</h1>
-    
+    <h1>Nos <span class="h1span">logements</span> à louer</h1>    
     <input type="text" name="datefilter" value="" />
-
-    
     {% for i in range(0, (((aps|length)/4)|round(0, 'ceil'))-1) %}
         <div class="row apsRow">
             {% for j in range(i*4, (i*4)+3) %}

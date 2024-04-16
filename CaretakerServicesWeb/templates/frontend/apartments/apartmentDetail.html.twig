@@ -4,6 +4,10 @@
     <link rel="stylesheet" href={{ asset('styles/frontend/apartments/apartmentDetail.css') }}>
     <link href="https://api.mapbox.com/mapbox-gl-js/v3.2.0/mapbox-gl.css" rel="stylesheet">
     <script src="https://api.mapbox.com/mapbox-gl-js/v3.2.0/mapbox-gl.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 {% endblock %}
 
 {% block activeApar %}active{% endblock %}
@@ -65,12 +69,21 @@
             </div>
         </div>
         <hr>
-        <div class="row reservation">
+        <div class="row reservation justify-content-center">
             <h2>Réservation</h2>
+            {{form_start(form)}}
             <div class="row">
                 <div class="col-6">
+                    <p class="reservTitle">Date de votre voyage</p>
+                    {{ form_widget(form.startingDate) }}
+                </div>
+                <div class="col-3">
+                </div>
+                <div class="col-3">
                 </div>
             </div>
+            <button type="submit" class="btn loginBtn">Se connecter</button>
+            {{form_end(form)}}
         </div>
         <hr>
         <div class="row photosCaroussel justify-content-center">
@@ -93,24 +106,51 @@
                     {% endfor %}
                 </div>
                 <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
-                    <img src={{ asset('icons/arrow_left.png') }} class="arrow left">
+                    <img src={{ asset('icons/arrow_left.png') }} class="arrow leftAr">
                     <span class="visually-hidden">Previous</span>
                 </button>
                 <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
-                    <img src={{ asset('icons/arrow_right.png') }} class="arrow right">
+                    <img src={{ asset('icons/arrow_right.png') }} class="arrow rightAr">
                     <span class="visually-hidden">Next</span>
                 </button>
             </div>
         </div>
+        <hr>
         <div class="row localisation justify-content-center">
+            <h2>Localisation</h2>
             <div id="map"></div>
         </div>
+        <hr>
     </div>
 </div>
 {% endblock %}
 
 {% block javascripts %}
 <script>
+
+    $(function() {
+
+    $('input[id="form_startingDate"]').daterangepicker({
+        autoUpdateInput: false,
+        autoApply: true,
+        locale: {
+            cancelLabel: 'Clear',
+        }
+    }, function(start, end, label) {
+                $(this).val(start.format('YYYY.MM.DD')+ " - " + end.format('YYYY.MM.DD'))
+                console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
+    });
+
+    $('input[id="form_startingDate"]').on('apply.daterangepicker', function(ev, picker) {
+        $(this).val(picker.startDate.format('YYYY.MM.DD') + ' - ' + picker.endDate.format('YYYY.MM.DD'));
+    });
+
+    $('input[id="form_startingDate"]').on('cancel.daterangepicker', function(ev, picker) {
+        $(this).val('');
+    });
+
+    });
+
     const centerGps = {{ apartment.centerGps|slice(0, 2)|json_encode|raw }};
 
     mapboxgl.accessToken = 'pk.eyJ1IjoibGVvLXVyYWhhcmEiLCJhIjoiY2x2MTJrcHJ4MDIwdzJrdXNhcDhjazF4MSJ9.ZJjs_hvEVTuHKAe2CeDGbQ';

@@ -7,6 +7,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use App\Service\ApiHttpClient;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RadioType;
@@ -43,8 +44,30 @@ class apartmentsController extends AbstractController
 
         $ap = $responseApart->toArray();
 
+        $form = $this->createFormBuilder()
+        ->add("startingDate", TextType::class, [
+            "attr"=>[
+                "placeholder"=>"Votre email"
+            ],
+            'constraints'=>[
+                new NotBlank()
+            ]
+        ])
+        ->getForm()->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $data = $form->getData();
+
+            print_r($data);
+            $dates = explode(" - ", $data['startingDate']);
+            echo trim($dates[0]);
+            echo trim($dates[1]);
+            return;
+        }
+
         return $this->render('frontend/apartments/apartmentDetail.html.twig', [
-            'apartment'=>$ap
+            'apartment'=>$ap,
+            'form'=>$form
         ]);
     }
 
