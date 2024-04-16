@@ -27,19 +27,19 @@ class CsService
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(["getServices", "getUsers"])]
+    #[Groups(["getServices", "getUsers", "getReservations"])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(["getServices", "getUsers"])]
+    #[Groups(["getServices", "getUsers", "getReservations"])]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Groups(["getServices", "getUsers"])]
+    #[Groups(["getServices", "getUsers", "getReservations"])]
     private ?string $description = null;
 
     #[ORM\Column]
-    #[Groups(["getServices", "getUsers"])]
+    #[Groups(["getServices", "getUsers", "getReservations"])]
     private ?float $price = null;
 
     #[ORM\ManyToOne(inversedBy: 'services')]
