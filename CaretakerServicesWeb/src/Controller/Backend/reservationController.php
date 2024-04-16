@@ -85,7 +85,7 @@ class reservationController extends AbstractController
                 'startingDate' => $reservation['startingDate'],
                 'endingDate' => $reservation['endingDate'],
                 'price' => $reservation['price'],
-                'client' => $reservation['client']['id'],
+                'client' => $reservation['user']['id'],
                 'service' => $reservation['service']['id'],
             ];
         } catch (Exception $e) {
