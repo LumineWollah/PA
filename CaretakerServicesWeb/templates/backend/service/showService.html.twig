@@ -1,0 +1,33 @@
+{% extends 'backend/base.html.twig' %}
+
+{% block title %}Afficher un service{% endblock %}
+
+{% block body %}
+    <div class="col-10 p-0">
+        <div class="p-3">
+            <h1>Afficher un service</h1>
+            <div class="row">
+                <div class="col-6">
+                    <p><strong>Id :</strong> {{ service.id }}</p>
+                    <p><strong>Nom :</strong> {{ service.name }}</p>
+                    <p><strong>Description :</strong> {{ service.description }}</p>
+                    <p><strong>Prix :</strong> {{ service.price }}€</p>
+
+                    {# <p><strong>Catégorie :</strong> {{ service.category }}</p> #}
+                    <p><strong>Catégorie :</strong> Léopold la fraude</p>
+
+                    <div class"container"><strong>Prestataire :</strong>
+                        <form action="{{ path('userShow') }}" method="post" style="display: inline;">
+                            <input type="hidden" name="user" value="{{ service.provider|json_encode }}">
+                            <button type="submit" class="container" style="background-color: #A594F9;">
+                                <div class="container">
+                                    <p><strong>Nom:</strong> {{ service.provider.firstname|capitalize }} {{ service.provider.lastname|upper }} </p>
+                                </div>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
