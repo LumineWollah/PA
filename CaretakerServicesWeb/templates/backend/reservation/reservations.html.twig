@@ -67,27 +67,25 @@
                                     <button type="submit" class="btn btn-light client" style="height:40px"><p> {{ reservation.user.firstname ~ " " ~ reservation.user.lastname|capitalize }} </p></button>
                                 </form>
                             </td>
-                            <td> 
                                 {% if reservation['service'] is defined and reservation['service'] is not empty %}
-                                    <form action="{{ path('serviceShow') }}" method="post" style="display: inline;">
-                                        <input type="hidden" name="service" value="{{ reservation.service|json_encode }}">
-                                        <button type="submit" class="btn btn-light service" style="height:40px"><p> {{ reservation.service.name|capitalize }} </p></button>
-                                    </form>
-                                {% else %}
-                                    <p>~</p>
+                                    <td> 
+                                        <form action="{{ path('serviceShow') }}" method="post" style="display: inline;">
+                                            <input type="hidden" name="service" value="{{ reservation.service|json_encode }}">
+                                            <button type="submit" class="btn btn-light service" style="height:40px"><p> {{ reservation.service.name|capitalize }} </p></button>
+                                        </form>
+                                    </td>
+                                    <td>~</td>
+                                    <td>{{ reservation.startingDate|date('d/m/Y') }}</td>
+                                {% elseif reservation['apartment'] is defined and reservation['apartment'] is not empty %}
+                                    <td>~</td>
+                                    <td>
+                                        <form action="{{ path('apartmentShow') }}" method="post" style="display: inline;">
+                                            <input type="hidden" name="apartment" value="{{ reservation.apartment|json_encode }}">
+                                            <button type="submit" class="btn btn-light apartment" style="height:40px"><p> {{ reservation.apartment.name|capitalize }} </p></button>
+                                        </form>
+                                    </td>
+                                    <td>{{ reservation.startingDate|date('d/m/Y') }} - {{ reservation.endingDate|date('d/m/Y') }}</td>
                                 {% endif %}
-                            </td>
-                            <td> 
-                                {% if reservation['apartment'] is defined and reservation['apartment'] is not empty %}
-                                    <form action="{{ path('apartmentShow') }}" method="post" style="display: inline;">
-                                        <input type="hidden" name="apartment" value="{{ reservation.apartment|json_encode }}">
-                                        <button type="submit" class="btn btn-light apartment" style="height:40px"><p> {{ reservation.apartment.name|capitalize }} </p></button>
-                                    </form>
-                                {% else %}
-                                    <p>~</p>
-                                {% endif %}
-                            </td>
-                            <td>{{ reservation.startingDate|date('d/m/Y') }} - {{ reservation.endingDate|date('d/m/Y') }}</td>
                             <td>{{ reservation.price }} €</td>
                             <td class="action">
                                 <a href="{{ path('reservationDelete', {'id': reservation.id }) }}" class="btn" style="background-color: #EE3939;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/bin.png') }}></div></a>
