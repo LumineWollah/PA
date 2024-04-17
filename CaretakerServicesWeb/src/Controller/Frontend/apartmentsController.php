@@ -40,7 +40,7 @@ class apartmentsController extends AbstractController
         $responseApart = $client->request('GET', 'cs_apartments/'.$id);
         
         if ($responseApart->getStatusCode() == 404) {
-            echo "PAS TROUVÉ";
+            return $this->redirectToRoute('apartmentsList');
         }
 
         $ap = $responseApart->toArray();
@@ -127,17 +127,8 @@ class apartmentsController extends AbstractController
         $client = $this->apiHttpClient->getClientWithoutBearer();
 
         $responseAparts = $client->request('GET', 'cs_apartments');
-        
-        if ($responseAparts->getStatusCode() == 404) {
-            echo "PAS TROUVÉ";
-        }
 
         $aps = $responseAparts->toArray();
-
-        // echo "<pre>";
-        // print_r($aps);
-        // echo "</pre>";
-        // return;
 
         return $this->render('frontend/apartments/apartmentList.html.twig', [
             'aps'=>$aps['hydra:member']
