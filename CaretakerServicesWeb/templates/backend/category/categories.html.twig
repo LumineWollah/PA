@@ -55,7 +55,7 @@
                     {% for category in categories %}
                         <tr>
                             <td>{{ category.name|capitalize }}</td>
-                            <td>{{ category.color }}</td>
+                            <td style="color:#{{ category.color }};">• {{ category.color }}</td>
                             <td class="action">
                                 <a href="{{ path('categoryDelete', {'id': category.id }) }}" class="btn" style="background-color: #EE3939;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/bin.png') }}></div></a>
                                 <form action="{{ path('categoryEdit') }}" method="post" style="display: inline;">
