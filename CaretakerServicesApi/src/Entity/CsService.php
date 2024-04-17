@@ -27,19 +27,19 @@ class CsService
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(["getServices", "getUsers", "getReservations"])]
+    #[Groups(["getServices", "getUsers", "getReservations", "getApartments"])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(["getServices", "getUsers", "getReservations"])]
+    #[Groups(["getServices", "getUsers", "getReservations", "getApartments"])]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Groups(["getServices", "getUsers", "getReservations"])]
+    #[Groups(["getServices", "getUsers", "getReservations", "getApartments"])]
     private ?string $description = null;
 
     #[ORM\Column]
-    #[Groups(["getServices", "getUsers", "getReservations"])]
+    #[Groups(["getServices", "getUsers", "getReservations", "getApartments"])]
     private ?float $price = null;
 
     #[ORM\ManyToOne(inversedBy: 'services')]
@@ -60,13 +60,16 @@ class CsService
     #[Groups(["getServices"])]
     private Collection $reviews;
 
-    #[ORM\OneToMany(targetEntity: CsObligatoryService::class, mappedBy: 'service', orphanRemoval: true)]
-    private Collection $obligatoryServices;
+    /**
+     * @var Collection<int, CsApartment>
+     */
+    #[ORM\ManyToMany(targetEntity: CsApartment::class, mappedBy: 'mandatoryServices')]
+    private Collection $apartments;
 
     public function __construct()
     {
         $this->reviews = new ArrayCollection();
-        $this->obligatoryServices = new ArrayCollection();
+        $this->apartments = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -164,36 +167,6 @@ class CsService
         return $this;
     }
 
-    /**
-     * @return Collection<int, CsObligatoryService>
-     */
-    public function getObligatoryServices(): Collection
-    {
-        return $this->obligatoryServices;
-    }
-
-    public function addObligatoryService(CsObligatoryService $obligatoryService): static
-    {
-        if (!$this->obligatoryServices->contains($obligatoryService)) {
-            $this->obligatoryServices->add($obligatoryService);
-            $obligatoryService->setService($this);
-        }
-
-        return $this;
-    }
-
-    public function removeObligatoryService(CsObligatoryService $obligatoryService): static
-    {
-        if ($this->obligatoryServices->removeElement($obligatoryService)) {
-            // set the owning side to null (unless already changed)
-            if ($obligatoryService->getService() === $this) {
-                $obligatoryService->setService(null);
-            }
-        }
-
-        return $this;
-    }
-
     public function getCategory(): ?CsCategory
     {
         return $this->category;
@@ -202,6 +175,33 @@ class CsService
     public function setCategory(?CsCategory $category): static
     {
         $this->category = $category;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, CsApartment>
+     */
+    public function getApartments(): Collection
+    {
+        return $this->apartments;
+    }
+
+    public function addApartment(CsApartment $apartment): static
+    {
+        if (!$this->apartments->contains($apartment)) {
+            $this->apartments->add($apartment);
+            $apartment->addMandatoryService($this);
+        }
+
+        return $this;
+    }
+
+    public function removeApartment(CsApartment $apartment): static
+    {
+        if ($this->apartments->removeElement($apartment)) {
+            $apartment->removeMandatoryService($this);
+        }
 
         return $this;
     }

@@ -38,29 +38,6 @@ class AppFixtures extends Fixture
         $user->setRoles(['ROLE_LESSOR']);
         $manager->persist($user);
 
-        $images = ["https://tinyurl.com/ycyr8zdf", "https://tinyurl.com/9mmcfchx", "https://tinyurl.com/2ss5cam3", "https://tinyurl.com/6s9cpzhz", "https://tinyurl.com/bdeaxv7d", "https://tinyurl.com/mrxwuyy3", "https://tinyurl.com/mrxcrxfr", "https://tinyurl.com/5t4vwx47", "https://tinyurl.com/5bhk7a8f"];
-
-        for ($i=0; $i < 32; $i++) { 
-            $apartment = new CsApartment();
-            $apartment->setName("Mon super appart ".$i);
-            $apartment->setDescription("Contemplez le coucher de soleil sur les flots depuis la terrasse de cet appartement récemment rénové. Confortable et parfaitement aménagé, il possède une décoration soignée et des téléviseurs à écran plat dans chacune des deux chambres.\n\nDans le cadre de la pandémie de coronavirus (COVID-19), nous appliquons actuellement des mesures sanitaires supplémentaires.\n\nD'une superficie de 45 m2, l'appartement a été refait à neuf en 2018. J'ai choisi des matériaux et du mobilier \"comme si c'était pour moi\" : 2 chambres avec chacune sa petite salle d'eau, T.V écran plat au mur dans chaque chambre , séjour avec petite terrasse et vue mer magnifique, cuisine équipée d'un lave vaisselle, réfrigérateur/compartiment congélateur, four micro-onde et traditionnel, machine à laver le linge séchante, machine Nespresso et tout ce qu'il faut pour cuisiner :-)");
-            $apartment->setBedrooms(4);
-            $apartment->setTravelersMax(8);
-            $apartment->setArea(825.25);
-            $apartment->setIsFullhouse(true);
-            $apartment->setIsHouse(true);
-            $apartment->setPrice(421);
-            $apartment->setOwner($user);
-            $apartment->setAddress("71, avenue d'Italie");
-            $apartment->setCenterGps([2.357781, 48.825486]);
-            $apartment->setPostalCode("75013");
-            $apartment->setCity("Paris");
-            $apartment->setCountry("France");
-            $apartment->setMainPict($images[rand(0, 8)]);
-            $apartment->setPictures(["https://tinyurl.com/2w8fnhrs", "https://tinyurl.com/4bck47tz"]);
-            $manager->persist($apartment);
-        }
-
         $company = new CsCompany();
         $company->setCompanyName("Boite de glands");
         $company->setCompanyEmail("lesglands@gmail.com");
@@ -84,6 +61,30 @@ class AppFixtures extends Fixture
         $service->setPrice(85.5);
         $service->setCategory($category);
         $manager->persist($service);
+
+        $images = ["https://tinyurl.com/ycyr8zdf", "https://tinyurl.com/9mmcfchx", "https://tinyurl.com/2ss5cam3", "https://tinyurl.com/6s9cpzhz", "https://tinyurl.com/bdeaxv7d", "https://tinyurl.com/mrxwuyy3", "https://tinyurl.com/mrxcrxfr", "https://tinyurl.com/5t4vwx47", "https://tinyurl.com/5bhk7a8f"];
+
+        for ($i=0; $i < 32; $i++) { 
+            $apartment = new CsApartment();
+            $apartment->setName("Mon super appart ".$i);
+            $apartment->setDescription("Contemplez le coucher de soleil sur les flots depuis la terrasse de cet appartement récemment rénové. Confortable et parfaitement aménagé, il possède une décoration soignée et des téléviseurs à écran plat dans chacune des deux chambres.\n\nDans le cadre de la pandémie de coronavirus (COVID-19), nous appliquons actuellement des mesures sanitaires supplémentaires.\n\nD'une superficie de 45 m2, l'appartement a été refait à neuf en 2018. J'ai choisi des matériaux et du mobilier \"comme si c'était pour moi\" : 2 chambres avec chacune sa petite salle d'eau, T.V écran plat au mur dans chaque chambre , séjour avec petite terrasse et vue mer magnifique, cuisine équipée d'un lave vaisselle, réfrigérateur/compartiment congélateur, four micro-onde et traditionnel, machine à laver le linge séchante, machine Nespresso et tout ce qu'il faut pour cuisiner :-)");
+            $apartment->setBedrooms(4);
+            $apartment->setTravelersMax(8);
+            $apartment->setArea(825.25);
+            $apartment->setIsFullhouse(true);
+            $apartment->setIsHouse(true);
+            $apartment->setPrice(421);
+            $apartment->setOwner($user);
+            $apartment->setAddress("71, avenue d'Italie");
+            $apartment->setCenterGps([2.357781, 48.825486]);
+            $apartment->setPostalCode("75013");
+            $apartment->setCity("Paris");
+            $apartment->setCountry("France");
+            $apartment->addMandatoryService($service);
+            $apartment->setMainPict($images[rand(0, 8)]);
+            $apartment->setPictures(["https://tinyurl.com/2w8fnhrs", "https://tinyurl.com/4bck47tz"]);
+            $manager->persist($apartment);
+        }
 
         $user = new CsUser();
         $user->setEmail("mathis.vareilles@yahoo.com");

@@ -159,16 +159,19 @@ class CsApartment
     #[Groups(["getApartments"])]
     private Collection $reviews;
 
-    #[ORM\OneToMany(targetEntity: CsObligatoryService::class, mappedBy: 'apartment', orphanRemoval: true)]
+    /**
+     * @var Collection<int, CsService>
+     */
+    #[ORM\ManyToMany(targetEntity: CsService::class, inversedBy: 'apartments')]
     #[Groups(["getApartments"])]
-    private Collection $obligatoryServices;
+    private Collection $mandatoryServices;
 
     public function __construct()
     {
         $this->dateCreation = new DateTime();
         $this->reservations = new ArrayCollection();
         $this->reviews = new ArrayCollection();
-        $this->obligatoryServices = new ArrayCollection();
+        $this->mandatoryServices = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -464,36 +467,6 @@ class CsApartment
         return $this;
     }
 
-    /**
-     * @return Collection<int, CsObligatoryService>
-     */
-    public function getObligatoryServices(): Collection
-    {
-        return $this->obligatoryServices;
-    }
-
-    public function addObligatoryService(CsObligatoryService $obligatoryService): static
-    {
-        if (!$this->obligatoryServices->contains($obligatoryService)) {
-            $this->obligatoryServices->add($obligatoryService);
-            $obligatoryService->setApartment($this);
-        }
-
-        return $this;
-    }
-
-    public function removeObligatoryService(CsObligatoryService $obligatoryService): static
-    {
-        if ($this->obligatoryServices->removeElement($obligatoryService)) {
-            // set the owning side to null (unless already changed)
-            if ($obligatoryService->getApartment() === $this) {
-                $obligatoryService->setApartment(null);
-            }
-        }
-
-        return $this;
-    }
-
     public function getCenterGps()
     {
         return $this->centerGps;
@@ -502,6 +475,30 @@ class CsApartment
     public function setCenterGps($centerGps)
     {
         $this->centerGps = $centerGps;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, CsService>
+     */
+    public function getMandatoryServices(): Collection
+    {
+        return $this->mandatoryServices;
+    }
+
+    public function addMandatoryService(CsService $mandatoryService): static
+    {
+        if (!$this->mandatoryServices->contains($mandatoryService)) {
+            $this->mandatoryServices->add($mandatoryService);
+        }
+
+        return $this;
+    }
+
+    public function removeMandatoryService(CsService $mandatoryService): static
+    {
+        $this->mandatoryServices->removeElement($mandatoryService);
 
         return $this;
     }
