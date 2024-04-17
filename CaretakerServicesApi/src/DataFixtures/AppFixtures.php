@@ -153,6 +153,11 @@ class AppFixtures extends Fixture
         $reservation->setPrice(50);
         $manager->persist($reservation);
 
+        $category = new CsCategory();
+        $category->setName("Jardinage");
+        $category->setColor("2A04C5");
+        $manager->persist($category);
+
         $manager->flush();
     }
 }
