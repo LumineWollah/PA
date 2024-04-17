@@ -41,6 +41,7 @@ class CsCategory
      * @var Collection<int, CsService>
      */
     #[ORM\OneToMany(targetEntity: CsService::class, mappedBy: 'category')]
+    #[Groups(['getCategories'])]
     private Collection $services;
 
     public function __construct()
