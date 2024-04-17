@@ -155,7 +155,7 @@ class AppFixtures extends Fixture
 
         $category = new CsCategory();
         $category->setName("Jardinage");
-        $category->setColor("2A04C5");
+        $category->setColor("A00EE8");
         $manager->persist($category);
 
         $manager->flush();
