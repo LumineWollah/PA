@@ -9,6 +9,7 @@ use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RadioType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -44,13 +45,61 @@ class apartmentsController extends AbstractController
 
         $ap = $responseApart->toArray();
 
-        $form = $this->createFormBuilder()
+        $defaults = [
+            "adultTravelers"=>0,
+            "childTravelers"=>0,
+            "babyTravelers"=>0,
+        ];
+
+        $responseReserv = $client->request('GET', 'cs_reservations', [
+            'query' => [
+                'page' => 1,
+                'apartment' => $ap['id']
+            ]
+        ]);
+
+        $reservs = $responseReserv->toArray();
+
+        $datesRangeReservs = [];
+
+        foreach($reservs['hydra:member'] as $reserv) {
+            $formattedStartingDate = substr($reserv["startingDate"], 0, 10);
+            $formattedEndingDate = substr($reserv["endingDate"], 0, 10);
+            $datesRangeReservs[] = [$formattedStartingDate, $formattedEndingDate];
+        }
+
+        $form = $this->createFormBuilder($defaults)
         ->add("startingDate", TextType::class, [
             "attr"=>[
-                "placeholder"=>"Votre email"
+                "placeholder"=>"Départ - Arrivée",
+                'autocomplete'=>"off"
             ],
             'constraints'=>[
+                new NotBlank(),
+            ]
+        ])
+        ->add("adultTravelers", IntegerType::class, [
+            'constraints'=>[
                 new NotBlank()
+            ],
+            'attr' => [
+                'min' => 0
+            ]
+        ])
+        ->add("childTravelers", IntegerType::class, [
+            'constraints'=>[
+                new NotBlank()
+            ],
+            'attr' => [
+                'min' => 0
+            ]
+        ])
+        ->add("babyTravelers", IntegerType::class, [
+            'constraints'=>[
+                new NotBlank()
+            ],
+            'attr' => [
+                'min' => 0
             ]
         ])
         ->getForm()->handleRequest($request);
@@ -58,16 +107,17 @@ class apartmentsController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
 
-            print_r($data);
-            $dates = explode(" - ", $data['startingDate']);
-            echo trim($dates[0]);
-            echo trim($dates[1]);
+            // print_r($data);
+            // $dates = explode(" - ", $data['startingDate']);
+            // echo trim($dates[0]);
+            // echo trim($dates[1]);
             return;
         }
 
         return $this->render('frontend/apartments/apartmentDetail.html.twig', [
             'apartment'=>$ap,
-            'form'=>$form
+            'form'=>$form,
+            'datesRangeReservs'=>$datesRangeReservs
         ]);
     }
 

@@ -72,17 +72,48 @@
         <div class="row reservation justify-content-center">
             <h2>Réservation</h2>
             {{form_start(form)}}
-            <div class="row">
-                <div class="col-6">
-                    <p class="reservTitle">Date de votre voyage</p>
-                    {{ form_widget(form.startingDate) }}
+            <div class="row reservationRow">
+                <div class="col-6 leftFormContainer">
+                    <div class="leftForm">
+                        <p class="reservTitle">Date de votre voyage</p>
+                        {{ form_widget(form.startingDate) }}
+                        <p class="reservTitle mt-4">Nombre de voyageurs</p>
+                        <div class="leftFormRow">
+                            <div class="leftFormCol">
+                                <p class="reservSubtitle">Adultes (18+) :</p>
+                                {{ form_widget(form.adultTravelers) }}
+                            </div>
+                            <div class="leftFormCol">
+                                <p class="reservSubtitle">Enfants (2+) :</p>
+                                {{ form_widget(form.childTravelers) }}
+                            </div>
+                            <div class="leftFormCol">
+                                <p class="reservSubtitle">Bébé (0+) :</p>
+                                {{ form_widget(form.babyTravelers) }}
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="col-3">
+                    <div class="middleForm">
+                        <p class="reservTitle">Montant</p>
+                        <div class="secondColRow"><p class="">{{ apartment.price }}€ x 0 nuits</p><p><b>0 €</b></p></div>
+                        <div class="secondColRow"><p class="">Frais de services</p><p><b>0 €</b></p></div>
+                        <div class="secondColRow"><p class="">Taxes</p><p><b>0 €</b></p></div>
+                        <p class="reservTitle mt-4">Vos prestations</p>
+                        <button type="button" class="btn addPrestaBtn" data-bs-toggle="modal" data-bs-target="#exampleModalLive">
+                            Ajouter une prestation
+                        </button>
+                    </div>
                 </div>
                 <div class="col-3">
+                    <div class="rightForm">
+                        <p class="reservTitle">Total</p>
+                        <p class="totalText">0€ pour 0 nuit</p>
+                        <button type="submit" class="reservBtn">Réserver</button>
+                    </div>
                 </div>
             </div>
-            <button type="submit" class="btn loginBtn">Se connecter</button>
             {{form_end(form)}}
         </div>
         <hr>
@@ -128,28 +159,49 @@
 {% block javascripts %}
 <script>
 
+    const rangesTab = {{ datesRangeReservs|json_encode|raw }};
+    
     $(function() {
+        $('input[id="form_startingDate"]').daterangepicker({
+            autoUpdateInput: false,
+            autoApply: true,
+            locale: {
+                cancelLabel: 'Clear',
+            },
+            isInvalidDate: function(date) {
+                var dateString = date.format('YYYY-MM-DD');
+                for (var i = 0; i < rangesTab.length; i++) {
+                    var startDate = moment(rangesTab[i][0], 'YYYY-MM-DD');
+                    var endDate = moment(rangesTab[i][1], 'YYYY-MM-DD');
+                    if (date.isBetween(startDate, endDate, null, '[]')) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        }, function(start, end, label) {
+            $(this).val(start.format('YYYY.MM.DD') + " - " + end.format('YYYY.MM.DD'));
+            console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
 
-    $('input[id="form_startingDate"]').daterangepicker({
-        autoUpdateInput: false,
-        autoApply: true,
-        locale: {
-            cancelLabel: 'Clear',
-        }
-    }, function(start, end, label) {
-                $(this).val(start.format('YYYY.MM.DD')+ " - " + end.format('YYYY.MM.DD'))
-                console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
+        }).on('apply.daterangepicker', function(ev, picker) {
+            $(this).val('Du ' + picker.startDate.format('DD/MM/YYYY') + ' au ' + picker.endDate.format('DD/MM/YYYY'));
+            var startDate = picker.startDate;
+            var endDate = picker.endDate;
+            for (var i = 0; i < rangesTab.length; i++) {
+                var rangeStartDate = moment(rangesTab[i][0], 'YYYY-MM-DD');
+                var rangeEndDate = moment(rangesTab[i][1], 'YYYY-MM-DD');
+                if (rangeStartDate.isBetween(startDate, endDate, null, '[]') || rangeEndDate.isBetween(startDate, endDate, null, '[]')) {
+                    picker.setStartDate(moment());
+                    picker.setEndDate(moment());
+                    $(this).val('');
+                    break;
+                }
+            }
+        }).on('cancel.daterangepicker', function(ev, picker) {
+            $(this).val('');
+        });
     });
 
-    $('input[id="form_startingDate"]').on('apply.daterangepicker', function(ev, picker) {
-        $(this).val(picker.startDate.format('YYYY.MM.DD') + ' - ' + picker.endDate.format('YYYY.MM.DD'));
-    });
-
-    $('input[id="form_startingDate"]').on('cancel.daterangepicker', function(ev, picker) {
-        $(this).val('');
-    });
-
-    });
 
     const centerGps = {{ apartment.centerGps|slice(0, 2)|json_encode|raw }};
 

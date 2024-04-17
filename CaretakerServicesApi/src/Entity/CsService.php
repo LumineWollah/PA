@@ -66,10 +66,17 @@ class CsService
     #[ORM\ManyToMany(targetEntity: CsApartment::class, mappedBy: 'mandatoryServices')]
     private Collection $apartments;
 
+    /**
+     * @var Collection<int, CsReservation>
+     */
+    #[ORM\ManyToMany(targetEntity: CsReservation::class, mappedBy: 'services')]
+    private Collection $reservationsForApart;
+
     public function __construct()
     {
         $this->reviews = new ArrayCollection();
         $this->apartments = new ArrayCollection();
+        $this->reservationsForApart = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -201,6 +208,33 @@ class CsService
     {
         if ($this->apartments->removeElement($apartment)) {
             $apartment->removeMandatoryService($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, CsReservation>
+     */
+    public function getReservationsForApart(): Collection
+    {
+        return $this->reservationsForApart;
+    }
+
+    public function addReservationsForApart(CsReservation $reservationsForApart): static
+    {
+        if (!$this->reservationsForApart->contains($reservationsForApart)) {
+            $this->reservationsForApart->add($reservationsForApart);
+            $reservationsForApart->addService($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReservationsForApart(CsReservation $reservationsForApart): static
+    {
+        if ($this->reservationsForApart->removeElement($reservationsForApart)) {
+            $reservationsForApart->removeService($this);
         }
 
         return $this;

@@ -170,3 +170,90 @@ h2 {
     height: 40px;
     cursor: pointer;
 }
+
+.leftForm input {
+    border: #d2d2d2 solid 1px;
+    border-radius: 5px;
+    width: 100%;
+    height: 5vh;
+    text-indent: 1vw;
+    background-color: #F7F7F7;
+    font-family: "Quicksand";
+}
+
+.reservationRow {
+    margin-top: 2vh;
+    margin-bottom: 8vh;
+}
+
+input::-webkit-input-placeholder {
+    font-family: "Antonio";
+}
+
+.leftForm {
+    width: 60% !important;
+    margin: auto;
+}
+
+.leftFormRow {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.leftFormCol {
+    width: 30%;
+    display: flex;
+    flex-direction: column;
+}
+
+.secondColRow {
+    display: flex;
+    justify-content: space-between;
+}
+
+.addPrestaBtn {
+    outline: none;
+    text-decoration: underline;
+    padding: 0;
+    font-size: 1vw;
+    font-family: 'Quicksand';
+    font-weight: 400;
+    border: none;
+}
+
+.secondColRow p , .totalText {
+    font-family: 'Quicksand';
+    margin-bottom: 3px;
+    font-size: 1vw;
+}
+
+.middleForm, .rightForm {
+    width: 60%;
+}
+
+.reservTitle {
+    font-family: 'Antonio';
+    font-weight: 600;
+    font-size: 1.2vw;
+}
+
+.reservSubtitle {
+    font-family: 'Antonio';
+    font-weight: 100;
+    color: #606060;
+}
+
+.reservBtn {
+    background-color: #A594F9;
+    color: white;
+    font-weight: 700;
+    font-size: 1.5vw;
+    font-family: 'Antonio';
+    border: none;
+    outline: none;
+    border-radius: 5px;
+    width: 80%;
+    height: 8vh;
+    margin-top: 2vh;
+}

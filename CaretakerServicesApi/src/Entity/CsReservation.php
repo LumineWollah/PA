@@ -11,6 +11,8 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use App\Repository\CsReservationRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -61,6 +63,30 @@ class CsReservation
     #[ORM\ManyToOne(inversedBy: 'reservations')]
     #[Groups(["getReservations"])]
     public ?CsUser $user = null;
+
+    #[ORM\Column(nullable: true)]
+    #[Groups(["getReservations", "getUsers", "getApartments"])]
+    private ?int $adultTravelers = null;
+
+    #[ORM\Column(nullable: true)]
+    #[Groups(["getReservations", "getUsers", "getApartments"])]
+    private ?int $childTravelers = null;
+
+    #[ORM\Column(nullable: true)]
+    #[Groups(["getReservations", "getUsers", "getApartments"])]
+    private ?int $babyTravelers = null;
+
+    /**
+     * @var Collection<int, CsService>
+     */
+    #[ORM\ManyToMany(targetEntity: CsService::class, inversedBy: 'reservationsForApart')]
+    #[Groups(["getReservations"])]
+    private Collection $services;
+
+    public function __construct()
+    {
+        $this->services = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -159,5 +185,65 @@ class CsReservation
     public function getServiceOwner()
     {
         return $this->service->getCompany()->getUsers();
+    }
+
+    public function getAdultTravelers(): ?int
+    {
+        return $this->adultTravelers;
+    }
+
+    public function setAdultTravelers(?int $adultTravelers): static
+    {
+        $this->adultTravelers = $adultTravelers;
+
+        return $this;
+    }
+
+    public function getChildTravelers(): ?int
+    {
+        return $this->childTravelers;
+    }
+
+    public function setChildTravelers(?int $childTravelers): static
+    {
+        $this->childTravelers = $childTravelers;
+
+        return $this;
+    }
+
+    public function getBabyTravelers(): ?int
+    {
+        return $this->babyTravelers;
+    }
+
+    public function setBabyTravelers(?int $babyTravelers): static
+    {
+        $this->babyTravelers = $babyTravelers;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, CsService>
+     */
+    public function getServices(): Collection
+    {
+        return $this->services;
+    }
+
+    public function addService(CsService $service): static
+    {
+        if (!$this->services->contains($service)) {
+            $this->services->add($service);
+        }
+
+        return $this;
+    }
+
+    public function removeService(CsService $service): static
+    {
+        $this->services->removeElement($service);
+
+        return $this;
     }
 }
