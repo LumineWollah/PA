@@ -9,6 +9,10 @@ use App\Service\ApiHttpClient;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\Regex;
 
 class actionUserController extends AbstractController
 {
@@ -58,4 +62,104 @@ class actionUserController extends AbstractController
         ]);
     }
 
+    #[Route('/admin-panel/user/create', name: 'userCreate')]
+    public function userCreate(Request $request)
+    {
+        if (!$this->checkUserRole($request)) {return $this->redirectToRoute('login');}
+        
+        $role = $request->query->get('role');
+        
+        try {
+            $defaults = [
+                'roles' => $role,
+            ];
+        } catch (Exception $e) {
+            $defaults = [];
+        }
+
+        $form = $this->createFormBuilder($defaults)
+        ->add("email", EmailType::class, [
+            "attr"=>[
+                "placeholder"=>"Email",
+            ],
+            "required"=>false,
+        ])
+        ->add("firstname", TextType::class, [
+            "attr"=>[
+                "placeholder"=>"Prénom",
+            ],
+            "required"=>false,
+        ])
+        ->add("lastname", TextType::class, [
+            "attr"=>[
+                "placeholder"=>"Nom",
+            ],
+            "required"=>false,
+        ])
+        ->add("password", PasswordType::class, [
+            "attr"=>[
+                "placeholder"=>"Mot de passe"
+            ],
+            'constraints'=>[
+                new NotBlank(),
+                new Regex([
+                    'pattern' => '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*.?&])[A-Za-z\d@$!%*.?&]{8,}$/',
+                    'message' => "Le mot de passe doit contenir 8 caractères minimum, au moins 1 lettre majuscule, 1 lettre minuscule, 1 chiffre et 1 caractère spécial"
+                ]),
+            ]
+        ])
+        ->add("roles", TextType::class, [
+            "attr"=>[
+                "placeholder"=>"Rôles",   
+            ],
+            "required"=>false,
+        ])
+        ->add("telNumber", TextType::class, [
+            "attr"=>[
+                "placeholder"=>"Numéro de Téléphone",
+            ],
+            "constraints"=>[
+                new Length([
+                    'min' => 10,
+                    'minMessage' => 'Le numéro de téléphone doit contenir au moins {{ limit }} chiffres',
+                    'max' => 10,
+                    'maxMessage' => 'Le numéro de téléphone doit contenir au plus {{ limit }} chiffres',
+                ]),
+                new Regex([
+                    'pattern' => '/^[0-9]+$/',
+                    'message' => 'Le numéro de téléphone doit contenir uniquement des chiffres',
+                ]),
+            ],
+            "required"=>false,
+        ])
+        ->getForm()->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()){
+            $data = $form->getData();
+
+            $data['roles'] = explode(",", $data['roles']);
+
+
+            $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/ld+json');
+
+            $response = $client->request('POST', 'cs_users', [
+                'json' => $data,
+            ]);
+
+            $response = json_decode($response->getContent(), true);
+
+            if ($role == 'ROLE_LESSOR') {
+                $route = 'lessorList';
+            } elseif ($role == 'ROLE_PROVIDER') {
+                $route = 'providerList';
+            } else {
+                $route = 'travelerList';
+            }
+
+            return $this->redirectToRoute($route);
+        }      
+        return $this->render('backend/user/createUser.html.twig', [
+            'form'=>$form,
+            'errorMessage'=>null
+        ]);
+    }
 }
