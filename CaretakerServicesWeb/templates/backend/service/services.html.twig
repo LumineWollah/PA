@@ -68,7 +68,12 @@
                             </td>
                             <td>{{ service.name|capitalize }}</td>
 
-                            <td>{{ service.category.name }}</td>
+                            <td>
+                                <form action="{{ path('categoryShow') }}" method="post" style="display: inline;">
+                                    <input type="hidden" name="category" value="{{ service.category|json_encode }}">
+                                    <button type="submit" class="btn btn-light provider" style="height:40px"><p> {{ service.category.name|capitalize }} </p></button>
+                                </form>
+                            </td>
 
                             <td>{{ service.price }} €</td>
                             <td class="action">
