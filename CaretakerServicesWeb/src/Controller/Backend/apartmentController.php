@@ -10,6 +10,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\Extension\Core\Type\BooleanType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Validator\Constraints\File;
 
 class apartmentController extends AbstractController
 {
@@ -153,6 +157,140 @@ class apartmentController extends AbstractController
         
         return $this->render('backend/apartment/showApartment.html.twig', [
             'apartment'=>$apartment
+        ]);
+    }
+    
+    #[Route('/admin-panel/apartment/create', name: 'apartmentCreate')]
+    public function apartmentCreate(Request $request)
+    {
+        if (!$this->checkUserRole($request)) {return $this->redirectToRoute('login');}
+
+        $form = $this->createFormBuilder()
+        ->add("name", TextType::class, [
+            "attr"=>[
+                "placeholder"=>"Name",
+            ],
+            "required"=>false,
+        ])
+        ->add("description", TextType::class, [
+            "attr"=>[
+                "placeholder"=>"Description",
+            ], 
+            "required"=>false,
+        ])
+        ->add("bedrooms", IntegerType::class, [
+            "attr"=>[
+                "placeholder"=>"Chambres",
+            ],
+            "required"=>false,
+        ])
+        ->add("travelersMax", IntegerType::class, [
+            "attr"=>[
+                "placeholder"=>"Nombre maximum de voyageurs",
+            ],
+            "required"=>false,
+        ])
+        ->add("area", IntegerType::class, [
+            "attr"=>[
+                "placeholder"=>"Superficie",
+            ],
+            "required"=>false,
+        ])
+        ->add("isFullHouse", IntegerType::class, [
+            "attr"=>[
+                "placeholder"=>"Est-ce un logement entier (1) ou une chambre (0) ?",
+            ],
+            "required"=>false,
+        ])
+        ->add("isHouse", IntegerType::class, [
+            "attr"=>[
+                "placeholder"=>"Est-ce une maison (1) ou un appartement (0) ?",
+            ],
+            "required"=>false,
+        ])
+        ->add("price", IntegerType::class, [
+            "attr"=>[
+                "placeholder"=>"Prix",
+            ],
+            "required"=>false,
+        ])
+        ->add("apartNumber", TextType::class, [
+            "attr"=>[
+                "placeholder"=>"Numéro d'appartement (si appartement)",
+            ], 
+            "required"=>false,
+        ])
+        ->add("address", TextType::class, [
+            "attr"=>[
+                "placeholder"=>"Adresse",
+            ], 
+            "required"=>false,
+        ])
+        ->add("city", TextType::class, [
+            "attr"=>[
+                "placeholder"=>"Ville",
+            ], 
+            "required"=>false,
+        ])
+        ->add("postalCode", TextType::class, [
+            "attr"=>[
+                "placeholder"=>"Code postal",
+            ], 
+            "required"=>false,
+        ])
+        ->add("country", TextType::class, [
+            "attr"=>[
+                "placeholder"=>"Pays",
+            ], 
+            "required"=>false,
+        ])
+        ->add("owner", TextType::class, [
+            "attr"=>[
+                "placeholder"=>"Propriétaire",
+            ], 
+            "required"=>false,
+        ])
+        ->add("mainPict", FileType::class, [
+            "attr"=>[
+                "placeholder"=>"Image principale",
+            ], 
+            'constraints' => [
+                new File([
+                    'maxSize' => '10m',
+                    'mimeTypes' => [
+                        'image/png', 
+                        'image/jpeg', 
+                        'image/pjpeg', 
+                        'image/*' 
+                    ],
+                    'mimeTypesMessage' => 'Please upload a valid jpeg or png document',
+                ])
+            ],
+            "required"=>false,
+        ])
+        ->getForm()->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()){
+            $data = $form->getData();
+
+            $data['isHouse'] = $data['isHouse'] == 1;
+            $data['isFullHouse'] = $data['isFullHouse'] == 1;
+            $data['owner'] = 'api/cs_users/'.$data['owner'];
+
+            $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/merge-patch+json');
+
+            $response = $client->request('POST', 'cs_apartments', [
+                'json' => $data,
+            ]);
+
+            $response = json_decode($response->getContent(), true);
+
+            $request->getSession()->remove('apartmentId');
+
+            return $this->redirectToRoute('apartmentList');
+        }      
+        return $this->render('backend/apartment/createApartment.html.twig', [
+            'form'=>$form,
+            'errorMessage'=>null
         ]);
     }
 }
