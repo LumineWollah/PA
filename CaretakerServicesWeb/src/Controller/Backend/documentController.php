@@ -7,11 +7,12 @@ use Symfony\Component\Routing\Annotation\Route;
 use App\Service\ApiHttpClient;
 use Exception;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Validator\Constraints\File;
+use Symfony\Component\Form\ChoiceList\ChoiceList;
 
 class documentController extends AbstractController
 {
@@ -90,6 +91,21 @@ class documentController extends AbstractController
         } catch (Exception $e) {
             $defaults = [];
         }
+        
+        $client = $this->apiHttpClient->getClient($request->cookies->get('token'));
+        
+        $response = $client->request('GET', 'cs_users', [
+            'query' => [
+                'page' => 1,
+            ]
+        ]);
+
+        $usersList = $response->toArray();
+        $userChoice = array();
+
+        foreach ($usersList['hydra:member'] as $user) {
+            $userChoice += [ $user['firstname'].' '.$user['lastname'] => $user['id'] ];
+        }
 
         $form = $this->createFormBuilder($defaults)
         ->add("name", TextType::class, [
@@ -110,11 +126,8 @@ class documentController extends AbstractController
             ],
             "required"=>false,
         ])
-        ->add("owner", IntegerType::class, [
-            "attr"=>[
-                "placeholder"=>"Owner ID",
-            ],
-            "required"=>false,
+        ->add("owner", ChoiceType::class, [
+            "choices" => $userChoice,
         ])
         ->getForm()->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()){
@@ -145,6 +158,21 @@ class documentController extends AbstractController
     {
         if (!$this->checkUserRole($request)) {return $this->redirectToRoute('login');}
 
+        $client = $this->apiHttpClient->getClient($request->cookies->get('token'));
+        
+        $response = $client->request('GET', 'cs_users', [
+            'query' => [
+                'page' => 1,
+            ]
+        ]);
+
+        $usersList = $response->toArray();
+        $userChoice = array();
+
+        foreach ($usersList['hydra:member'] as $user) {
+            $userChoice += [ $user['firstname'].' '.$user['lastname'] => $user['id'] ];
+        }
+
         $form = $this->createFormBuilder()
         ->add("name", TextType::class, [
             "attr"=>[
@@ -170,6 +198,9 @@ class documentController extends AbstractController
                     'mimeTypesMessage' => 'Please upload a valid pdf document',
                 ])
             ],
+        ])
+        ->add("owner", ChoiceType::class, [
+            "choices" => $userChoice,
         ])
         ->getForm()->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()){
