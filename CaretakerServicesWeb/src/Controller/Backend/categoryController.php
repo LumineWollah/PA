@@ -83,7 +83,7 @@ class categoryController extends AbstractController
         try {
             $defaults = [
                 'name' => $category['name'],
-                'color' => $category['color'],
+                'color' => "#".$category['color'],
             ];
         } catch (Exception $e) {
             $defaults = [];
@@ -105,6 +105,8 @@ class categoryController extends AbstractController
         ->getForm()->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()){
             $data = $form->getData();
+
+            $data['color'] = strtoupper(substr($data['color'], 1));
 
             $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/merge-patch+json');
 
