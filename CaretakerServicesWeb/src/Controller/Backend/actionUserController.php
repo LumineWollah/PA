@@ -136,10 +136,26 @@ class actionUserController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()){
             $data = $form->getData();
 
-            $data['roles'] = explode(",", $data['roles']);
-
-
             $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/ld+json');
+            
+            $response = $client->request('GET', 'cs_users', [
+                'query' => [
+                    'page' => 1,
+                    'email' => $data['email']
+                    ]
+                ]);
+            
+            if ($response->toArray()["hydra:totalItems"] > 0){
+                $errorMessages[] = "Adresse mail déjà utilisée. Essayez en une autre.";
+
+                return $this->render('backend/user/createUser.html.twig', [
+                    'form'=>$form,
+                    'errorMessages'=>$errorMessages
+                ]);
+            }
+
+            $data['roles'] = explode(",", $data['roles']);
+            $data['password'] = password_hash($data['password'], PASSWORD_BCRYPT, ['cost' => 13]);
 
             $response = $client->request('POST', 'cs_users', [
                 'json' => $data,
