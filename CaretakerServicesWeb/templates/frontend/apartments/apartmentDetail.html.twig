@@ -97,7 +97,7 @@
                 <div class="col-3">
                     <div class="middleForm">
                         <p class="reservTitle">Montant</p>
-                        <div class="secondColRow"><p class="">{{ apartment.price }}€ x 0 nuits</p><p><b>0 €</b></p></div>
+                        <div class="secondColRow"><p class="">{{ apartment.price }}€ x <span class="nightsNb">0</span> nuits</p><p><b><span id="priceForNights">0</span> €</b></p></div>
                         <div class="secondColRow"><p class="">Frais de services</p><p><b>0 €</b></p></div>
                         <div class="secondColRow"><p class="">Taxes</p><p><b>0 €</b></p></div>
                         <p class="reservTitle mt-4">Vos prestations</p>
@@ -109,7 +109,7 @@
                 <div class="col-3">
                     <div class="rightForm">
                         <p class="reservTitle">Total</p>
-                        <p class="totalText">0€ pour 0 nuit</p>
+                        <p class="totalText">0€ pour <span class="nightsNb">0</span> nuits</p>
                         <button type="submit" class="reservBtn">Réserver</button>
                     </div>
                 </div>
@@ -160,7 +160,8 @@
 <script>
 
     const rangesTab = {{ datesRangeReservs|json_encode|raw }};
-    
+    const nightPrice = {{ apartment.price }};
+
     $(function() {
         $('input[id="form_startingDate"]').daterangepicker({
             autoUpdateInput: false,
@@ -181,22 +182,29 @@
             }
         }, function(start, end, label) {
             $(this).val(start.format('YYYY.MM.DD') + " - " + end.format('YYYY.MM.DD'));
-            console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
-
+            
         }).on('apply.daterangepicker', function(ev, picker) {
             $(this).val('Du ' + picker.startDate.format('DD/MM/YYYY') + ' au ' + picker.endDate.format('DD/MM/YYYY'));
+            
             var startDate = picker.startDate;
             var endDate = picker.endDate;
+            var duration = endDate.diff(startDate, 'days');
+            var priceForNights = duration*nightPrice
             for (var i = 0; i < rangesTab.length; i++) {
                 var rangeStartDate = moment(rangesTab[i][0], 'YYYY-MM-DD');
                 var rangeEndDate = moment(rangesTab[i][1], 'YYYY-MM-DD');
                 if (rangeStartDate.isBetween(startDate, endDate, null, '[]') || rangeEndDate.isBetween(startDate, endDate, null, '[]')) {
                     picker.setStartDate(moment());
                     picker.setEndDate(moment());
+                    duration = 0;
+                    priceForNights = 0;
+                    $('.nightsNb').text(duration);
                     $(this).val('');
                     break;
                 }
             }
+            $('.nightsNb').text(duration);
+            $('#priceForNights').text(priceForNights);
         }).on('cancel.daterangepicker', function(ev, picker) {
             $(this).val('');
         });
