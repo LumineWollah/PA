@@ -10,7 +10,8 @@
                 <div class="col-6">
                     <p><strong>Id :</strong> {{ category.id }}</p>
                     <p><strong>Nom :</strong> {{ category.name }}</p>
-                    <p><strong>Couleur :</strong> {{ category.color }}</p>
+                    <p style="color:#{{ category.color }};"><strong style="color:black;">Couleur :</strong> {{ category.color }}</p>
+                    <span style="display:inline-block;border-radius:50%;width:20vh;height:20vh;background-color:#{{ category.color }};"></span>
                     {% if category['services'] is defined and category['services'] is not empty %}
                         <div class"container"><strong>Services :</strong>
                             <ul>
