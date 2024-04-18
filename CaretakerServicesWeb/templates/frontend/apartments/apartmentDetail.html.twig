@@ -76,7 +76,7 @@
                 <div class="col-6 leftFormContainer">
                     <div class="leftForm">
                         <p class="reservTitle">Date de votre voyage</p>
-                        {{ form_widget(form.startingDate) }}
+                        {{ form_widget(form.dates) }}
                         <p class="reservTitle mt-4">Nombre de voyageurs</p>
                         <div class="leftFormRow">
                             <div class="leftFormCol">
@@ -89,7 +89,7 @@
                             </div>
                             <div class="leftFormCol">
                                 <p class="reservSubtitle">Bébé (0+) :</p>
-                                {{ form_widget(form.babyTravelers) }}
+                                {{ form_widget(form.babyTravelers) }} 
                             </div>
                         </div>
                     </div>
@@ -98,8 +98,8 @@
                     <div class="middleForm">
                         <p class="reservTitle">Montant</p>
                         <div class="secondColRow"><p class="">{{ apartment.price }}€ x <span class="nightsNb">0</span> nuits</p><p><b><span id="priceForNights">0</span> €</b></p></div>
-                        <div class="secondColRow"><p class="">Frais de services</p><p><b>0 €</b></p></div>
-                        <div class="secondColRow"><p class="">Taxes</p><p><b>0 €</b></p></div>
+                        <div class="secondColRow"><p class="">Frais de services</p><p><b><span id="servicesValue">0</span> €</b></p></div>
+                        <div class="secondColRow"><p class="">Taxes</p><p><b><span id="taxesValue">0</span> €</b></p></div>
                         <p class="reservTitle mt-4">Vos prestations</p>
                         <button type="button" class="btn addPrestaBtn" data-bs-toggle="modal" data-bs-target="#exampleModalLive">
                             Ajouter une prestation
@@ -109,7 +109,7 @@
                 <div class="col-3">
                     <div class="rightForm">
                         <p class="reservTitle">Total</p>
-                        <p class="totalText">0€ pour <span class="nightsNb">0</span> nuits</p>
+                        <p class="totalText"><span id="totalValue">0</span>€ pour <span class="nightsNb">0</span> nuits</p>
                         <button type="submit" class="reservBtn">Réserver</button>
                     </div>
                 </div>
@@ -157,13 +157,42 @@
 {% endblock %}
 
 {% block javascripts %}
+
 <script>
 
     const rangesTab = {{ datesRangeReservs|json_encode|raw }};
     const nightPrice = {{ apartment.price }};
+    var priceForNights = 0;
+    var taxesValue = 0;
+    var servicesValue = parseFloat($('#servicesValue').text());
+    var totalValue = servicesValue;
 
+    $("#form_adultTravelers").on('change', function(){
+        var adultTravelers = $(this).val();
+        if (adultTravelers == '' || adultTravelers < 0){
+            $(this).val(0);
+            $(this).text('0');
+        }
+        var travelersTaxes = parseFloat($(this).val()) * (0.005 * priceForNights);
+        $('#taxesValue').text((parseFloat(taxesValue) + travelersTaxes).toFixed(2));
+        $('#totalValue').text((parseFloat(totalValue) + parseFloat(travelersTaxes)).toFixed(2));
+    })
+    $("#form_childTravelers").on('change', function(){
+        var childTravelers = $(this).val();
+        if (childTravelers == '' || childTravelers < 0){
+            $(this).val(0);
+            $(this).text('0');
+        }
+    })
+    $("#form_babyTravelers").on('change', function(){
+        var babyTravelers = $(this).val();
+        if (babyTravelers == '' || babyTravelers < 0){
+            $(this).val(0);
+            $(this).text('0');
+        }
+    })
     $(function() {
-        $('input[id="form_startingDate"]').daterangepicker({
+        $('input[id="form_dates"]').daterangepicker({
             autoUpdateInput: false,
             autoApply: true,
             locale: {
@@ -189,29 +218,45 @@
             var startDate = picker.startDate;
             var endDate = picker.endDate;
             var duration = endDate.diff(startDate, 'days');
-            var priceForNights = duration*nightPrice
-            for (var i = 0; i < rangesTab.length; i++) {
-                var rangeStartDate = moment(rangesTab[i][0], 'YYYY-MM-DD');
-                var rangeEndDate = moment(rangesTab[i][1], 'YYYY-MM-DD');
-                if (rangeStartDate.isBetween(startDate, endDate, null, '[]') || rangeEndDate.isBetween(startDate, endDate, null, '[]')) {
-                    picker.setStartDate(moment());
-                    picker.setEndDate(moment());
-                    duration = 0;
-                    priceForNights = 0;
-                    $('.nightsNb').text(duration);
-                    $(this).val('');
-                    break;
+            if (duration == 0) {
+                picker.setStartDate(moment());
+                picker.setEndDate(moment());
+                priceForNights = 0;
+                taxesValue = 0;
+                totalValue = servicesValue;
+                $('.nightsNb').text(duration);
+                $(this).val('');
+            } else {
+                priceForNights = duration*nightPrice;
+                taxesValue = (priceForNights*0.03).toFixed(2);
+                totalValue = servicesValue + parseFloat(priceForNights) + parseFloat(taxesValue);
+                for (var i = 0; i < rangesTab.length; i++) {
+                    var rangeStartDate = moment(rangesTab[i][0], 'YYYY-MM-DD');
+                    var rangeEndDate = moment(rangesTab[i][1], 'YYYY-MM-DD');
+                    if (rangeStartDate.isBetween(startDate, endDate, null, '[]') || rangeEndDate.isBetween(startDate, endDate, null, '[]')) {
+                        picker.setStartDate(moment());
+                        picker.setEndDate(moment());
+                        duration = 0;
+                        priceForNights = 0;
+                        taxesValue = 0;
+                        totalValue = servicesValue;
+                        $('.nightsNb').text(duration);
+                        $(this).val('');
+                        break;
+                    }
                 }
             }
             $('.nightsNb').text(duration);
             $('#priceForNights').text(priceForNights);
+            $('#taxesValue').text(taxesValue);
+            $('#totalValue').text(totalValue.toFixed(2));
         }).on('cancel.daterangepicker', function(ev, picker) {
             $(this).val('');
         });
     });
 
 
-    const centerGps = {{ apartment.centerGps|slice(0, 2)|json_encode|raw }};
+    const centerGps = {{ apartment.centerGps|json_encode|raw }};
 
     mapboxgl.accessToken = 'pk.eyJ1IjoibGVvLXVyYWhhcmEiLCJhIjoiY2x2MTJrcHJ4MDIwdzJrdXNhcDhjazF4MSJ9.ZJjs_hvEVTuHKAe2CeDGbQ';
     const map = new mapboxgl.Map({

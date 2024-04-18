@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\CsApartment;
 use App\Entity\CsReservation;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -53,6 +54,17 @@ class CsReservationRepository extends ServiceEntityRepository
             ->andWhere('o.startingDate < :endingDate AND o.endingDate > :startingDate AND o.apartment IS NOT NULL')
             ->setParameter('startingDate', $startingDate)
             ->setParameter('endingDate', $endingDate)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findReservationsForApartment(\DateTimeInterface $startingDate, \DateTimeInterface $endingDate, CsApartment $apartment)
+    {
+        return $this->createQueryBuilder('o')
+            ->andWhere('o.startingDate < :endingDate AND o.endingDate > :startingDate AND o.apartment = :apartment')
+            ->setParameter('startingDate', $startingDate)
+            ->setParameter('endingDate', $endingDate)
+            ->setParameter('apartment', $apartment)
             ->getQuery()
             ->getResult();
     }

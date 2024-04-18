@@ -92,6 +92,8 @@ class connectionController extends AbstractController
             $responseCookie->headers->setCookie($cookie);
             $cookie = Cookie::create('roles', $response['roles'][0], 0, '/', null, true, true);
             $responseCookie->headers->setCookie($cookie);
+            $cookie = Cookie::create('id', $response['id'], 0, '/', null, true, true);
+            $responseCookie->headers->setCookie($cookie);
             
             $responseCookie->send();
 

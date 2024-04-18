@@ -26,34 +26,76 @@ use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 #[ApiResource(operations: [
     new Post(
         name: 'checkAvailability', 
-        uriTemplate: '/cs_apartments/availables', 
+        uriTemplate: 'api/cs_apartments/availables', 
         controller: CsApartmentController::class,
         deserialize: false,
-            openapiContext: [
-                'summary' => 'Check availability of apartments for a given date range',
-                'requestBody' => [
-                    'description' => 'Check availability of apartments for a given date range',
-                    'content' => [
-                        'application/json' => [
-                            'schema' => [
-                                'type' => 'object',
-                                'properties' => [
-                                    'starting_date' => [
-                                        'type' => 'string',
-                                        'format' => 'date',
-                                        'example' => 'YYYY-MM-DD',
-                                    ],
-                                    'ending_date' => [
-                                        'type' => 'string',
-                                        'format' => 'date',
-                                        'example' => 'YYYY-MM-DD',
-                                    ],
+        openapiContext: [
+            'summary' => 'Check availability of apartments for a given date range',
+            'requestBody' => [
+                'description' => 'Check availability of apartments for a given date range',
+                'content' => [
+                    'application/json' => [
+                        'schema' => [
+                            'type' => 'object',
+                            'properties' => [
+                                'starting_date' => [
+                                    'type' => 'string',
+                                    'format' => 'date',
+                                    'example' => 'YYYY-MM-DD',
+                                ],
+                                'ending_date' => [
+                                    'type' => 'string',
+                                    'format' => 'date',
+                                    'example' => 'YYYY-MM-DD',
                                 ],
                             ],
                         ],
                     ],
                 ],
-            ]
+            ],
+        ]
+    ),
+    new Post(
+        name: 'checkAvailabilityApartment', 
+        uriTemplate: 'api/cs_apartments/availables/{id}', 
+        controller: CsApartmentController::class,
+        deserialize: false,
+        openapiContext: [
+            'summary' => 'Check availability of an apartment for a given date range',
+            'parameters' => [
+                [
+                    'name' => 'id',
+                    'in' => 'path',
+                    'required' => true,
+                    'description' => 'ID of the apartment',
+                    'schema' => [
+                        'type' => 'integer',
+                    ],
+                ],
+            ],
+            'requestBody' => [
+                'description' => 'Check availability of an apartment for a given date range',
+                'content' => [
+                    'application/json' => [
+                        'schema' => [
+                            'type' => 'object',
+                            'properties' => [
+                                'starting_date' => [
+                                    'type' => 'string',
+                                    'format' => 'date',
+                                    'example' => 'YYYY-MM-DD',
+                                ],
+                                'ending_date' => [
+                                    'type' => 'string',
+                                    'format' => 'date',
+                                    'example' => 'YYYY-MM-DD',
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ]
     )], normalizationContext: ['groups' => ['getApartments']])]
 #[Get()]
 #[Patch(security: "is_granted('ROLE_ADMIN') or object.getOwner() == user")]

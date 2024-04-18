@@ -12,7 +12,7 @@ use App\Entity\CsReservation;
 
 class CsApartmentController extends AbstractController
 {
-    #[Route("/cs_apartments/availables", name:"checkAvailability", methods:["POST"])]
+    #[Route("api/cs_apartments/availables", name:"checkAvailability", methods:["POST"])]
     public function checkAvailability(Request $request, EntityManagerInterface $entityManager): Response
     {
         $requestData = json_decode($request->getContent(), true);
@@ -33,5 +33,19 @@ class CsApartmentController extends AbstractController
 
         $availableAppartments = $entityManager->getRepository(CsApartment::class)->findAvailableApartments($apartmentIds);
         return $this->json($availableAppartments);
+    }
+
+    #[Route("api/cs_apartments/availables/{id}", name:"checkAvailabilityApartment", methods:["POST"])]
+    public function checkAvailabilityApartment(Request $request, EntityManagerInterface $entityManager, CsApartment $apartment): Response
+    {
+        $requestData = json_decode($request->getContent(), true);
+        $startingDate = new \DateTime($requestData['starting_date']);
+        $endingDate = new \DateTime($requestData['ending_date']);
+
+        $notAvailableAppartments = $entityManager->getRepository(CsReservation::class)->findReservationsForApartment($startingDate, $endingDate, $apartment);
+
+        return $this->json([
+            "available"=>count($notAvailableAppartments) == 0
+        ]);
     }
 }

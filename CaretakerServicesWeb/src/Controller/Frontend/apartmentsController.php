@@ -5,10 +5,12 @@ namespace App\Controller\Frontend;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Service\ApiHttpClient;
+use DateTime;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RadioType;
@@ -22,6 +24,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Constraints\Email;
+use Symfony\Component\Validator\Constraints\PositiveOrZero;
 
 class apartmentsController extends AbstractController
 {
@@ -49,6 +52,7 @@ class apartmentsController extends AbstractController
             "adultTravelers"=>0,
             "childTravelers"=>0,
             "babyTravelers"=>0,
+            "price"=>0
         ];
 
         $responseReserv = $client->request('GET', 'cs_reservations', [
@@ -69,10 +73,11 @@ class apartmentsController extends AbstractController
         }
 
         $form = $this->createFormBuilder($defaults)
-        ->add("startingDate", TextType::class, [
+        ->add("dates", TextType::class, [
             "attr"=>[
                 "placeholder"=>"Départ - Arrivée",
-                'autocomplete'=>"off"
+                'autocomplete'=>"off",
+                'readonly'=>'readonly'
             ],
             'constraints'=>[
                 new NotBlank(),
@@ -80,7 +85,8 @@ class apartmentsController extends AbstractController
         ])
         ->add("adultTravelers", IntegerType::class, [
             'constraints'=>[
-                new NotBlank()
+                new NotBlank(),
+                new PositiveOrZero()
             ],
             'attr' => [
                 'min' => 0
@@ -88,7 +94,8 @@ class apartmentsController extends AbstractController
         ])
         ->add("childTravelers", IntegerType::class, [
             'constraints'=>[
-                new NotBlank()
+                new NotBlank(),
+                new PositiveOrZero()
             ],
             'attr' => [
                 'min' => 0
@@ -96,7 +103,8 @@ class apartmentsController extends AbstractController
         ])
         ->add("babyTravelers", IntegerType::class, [
             'constraints'=>[
-                new NotBlank()
+                new NotBlank(),
+                new PositiveOrZero()
             ],
             'attr' => [
                 'min' => 0
@@ -107,11 +115,48 @@ class apartmentsController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
 
-            // print_r($data);
-            // $dates = explode(" - ", $data['startingDate']);
-            // echo trim($dates[0]);
-            // echo trim($dates[1]);
-            return;
+            $id = $request->cookies->get('id');
+            
+            if ($id == null) {
+                return $this->redirectToRoute('login');
+            }
+
+            $dates = explode(" ", $data['dates']);
+
+            $startDateTime = DateTime::createFromFormat('d/m/Y', trim($dates[1]));
+            $endDateTime = DateTime::createFromFormat('d/m/Y', trim($dates[3]));
+
+            $duration = $endDateTime->diff($startDateTime)->format("%a");
+
+            $startDateTime = $startDateTime->format('Y-m-d');
+            $endDateTime = $endDateTime->format('Y-m-d');
+
+            $data['startingDate'] = $startDateTime;
+            $data['endingDate'] = $endDateTime;
+            unset($data['dates']);
+
+            $price = $duration * $ap['price'];
+            $data['price'] = $price + (0.03 * $price) + ($data['adultTravelers'] * (0.005 * $price));
+            
+            $data['user'] = 'api/cs_users/'.$id;
+            $data['apartment'] = 'api/cs_apartments/'.$ap['id'];
+
+            $response = $client->request('POST', 'cs_apartments/availables/'.$ap['id'], [
+                'json' => [
+                    'starting_date' => $startDateTime,
+                    'ending_date' => $endDateTime
+                ]
+            ]);
+
+            if (!(($response->toArray())['available'])) {
+                return;
+            }
+
+            $response = $client->request('POST', 'cs_reservations', [
+                'json' => $data,
+            ]);
+
+            return $this->redirectToRoute('apartmentsList');
         }
 
         return $this->render('frontend/apartments/apartmentDetail.html.twig', [
@@ -123,7 +168,7 @@ class apartmentsController extends AbstractController
 
     #[Route('/apartment', name: 'apartmentsList')]
     public function apartmentList(Request $request)
-    {
+    { 
         $client = $this->apiHttpClient->getClientWithoutBearer();
 
         $responseAparts = $client->request('GET', 'cs_apartments');

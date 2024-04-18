@@ -22,8 +22,8 @@
                         <div class="imgContainer">
                             <img src={{ aps[j].mainPict }}>
                         </div>
-                        <p class="apartName"><b>Mon super appartement de foufou des deglingos du glands</b></p>
-                        <p class="apartInfos"><span class="medium">Paris, France • 150€</span><span class="light"> / nuit</span></b></p>
+                        <p class="apartName"><b>{{ aps[j].name }}</b></p>
+                        <p class="apartInfos"><span class="medium">{{ aps[j].city }}, {{ aps[j].country }} • {{ aps[j].price }}€</span><span class="light"> / nuit</span></b></p>
                         <div class="apartNumbers">
                             <img src={{ asset('icons/bed.png') }}> {{ aps[j].bedrooms }} chambres
                             <img style="margin-left: 2%;" src={{ asset('icons/travelers.png') }}> {{ aps[j].travelersMax }} voyageurs max.
