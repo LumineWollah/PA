@@ -134,4 +134,42 @@ class categoryController extends AbstractController
             'category'=>$category
         ]);
     }
+        
+    #[Route('/admin-panel/category/create', name: 'categoryCreate')]
+    public function categoryCreate(Request $request)
+    {
+        if (!$this->checkUserRole($request)) {return $this->redirectToRoute('login');}
+
+        $form = $this->createFormBuilder()
+        ->add("name", TextType::class, [
+            "attr"=>[
+                "placeholder"=>"Name",
+            ],
+            "required"=>false,
+        ])
+        ->add("color", TextType::class, [
+            "attr"=>[
+                "placeholder"=>"Couleur",
+            ], 
+            "required"=>false,
+        ])
+        ->getForm()->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()){
+            $data = $form->getData();
+
+            $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/ld+json');
+
+            $response = $client->request('POST', 'cs_categories', [
+                'json' => $data,
+            ]);
+
+            $response = json_decode($response->getContent(), true);
+
+            return $this->redirectToRoute('categoryList');
+        }      
+        return $this->render('backend/category/createCategory.html.twig', [
+            'form'=>$form,
+            'errorMessage'=>null
+        ]);
+    }
 }
