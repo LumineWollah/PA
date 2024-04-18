@@ -82,19 +82,16 @@ class actionUserController extends AbstractController
             "attr"=>[
                 "placeholder"=>"Email",
             ],
-            "required"=>false,
         ])
         ->add("firstname", TextType::class, [
             "attr"=>[
                 "placeholder"=>"Prénom",
             ],
-            "required"=>false,
         ])
         ->add("lastname", TextType::class, [
             "attr"=>[
                 "placeholder"=>"Nom",
             ],
-            "required"=>false,
         ])
         ->add("password", PasswordType::class, [
             "attr"=>[
@@ -130,7 +127,6 @@ class actionUserController extends AbstractController
                     'message' => 'Le numéro de téléphone doit contenir uniquement des chiffres',
                 ]),
             ],
-            "required"=>false,
         ])
         ->getForm()->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()){

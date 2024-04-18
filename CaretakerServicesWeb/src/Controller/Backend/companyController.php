@@ -186,49 +186,41 @@ class companyController extends AbstractController
             "attr"=>[
                 "placeholder"=>"Numéro de Siret",
             ],
-            "required"=>false,
         ])
         ->add("companyName", TextType::class, [
             "attr"=>[
                 "placeholder"=>"Nom d'entreprise",
             ], 
-            "required"=>false,
         ])
         ->add("companyEmail", TextType::class, [
             "attr"=>[
                 "placeholder"=>"Email d'entreprise",
             ], 
-            "required"=>false,
         ])
         ->add("companyPhone", TextType::class, [
             "attr"=>[
                 "placeholder"=>"Téléphone d'entreprise",
             ], 
-            "required"=>false,
         ])
         ->add("address", TextType::class, [
             "attr"=>[
                 "placeholder"=>"Adresse",
             ], 
-            "required"=>false,
         ])
         ->add("city", TextType::class, [
             "attr"=>[
                 "placeholder"=>"Ville",
             ], 
-            "required"=>false,
         ])
         ->add("postalCode", TextType::class, [
             "attr"=>[
                 "placeholder"=>"Code postal",
             ], 
-            "required"=>false,
         ])
         ->add("country", TextType::class, [
             "attr"=>[
                 "placeholder"=>"Pays",
             ], 
-            "required"=>false,
         ])
         ->getForm()->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()){

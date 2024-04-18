@@ -98,37 +98,31 @@ class reservationController extends AbstractController
             "attr"=>[
                 "placeholder"=>"Date de départ",
             ], 
-            "required"=>false,
         ])
         ->add("endingDate", TextType::class, [
             "attr"=>[
                 "placeholder"=>"Date de fin",
             ], 
-            "required"=>false,
         ])
         ->add("price", IntegerType::class, [
             "attr"=>[
                 "placeholder"=>"Prix",
             ],
-            "required"=>false,
         ])
         ->add("service", IntegerType::class, [
             "attr"=>[
                 "placeholder"=>"Service",
             ],
-            "required"=>false,
         ])
         ->add("apartment", IntegerType::class, [
             "attr"=>[
                 "placeholder"=>"Appartement",
             ],
-            "required"=>false,
         ])
         ->add("client", IntegerType::class, [
             "attr"=>[
                 "placeholder"=>"Client",
             ],
-            "required"=>false,
         ])
         ->getForm()->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()){

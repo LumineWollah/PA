@@ -173,31 +173,26 @@ class serviceController extends AbstractController
             "attr"=>[
                 "placeholder"=>"Name",
             ],
-            "required"=>false,
         ])
         ->add("description", TextType::class, [
             "attr"=>[
                 "placeholder"=>"Description",
             ],
-            "required"=>false,
         ])
         ->add("company", IntegerType::class, [
             "attr"=>[
                 "placeholder"=>"Entreprise ID",
             ], 
-            "required"=>false,
         ])
         ->add("category", IntegerType::class, [
             "attr"=>[
                 "placeholder"=>"Catégorie ID",
             ], 
-            "required"=>false,
         ])
         ->add("price", NumberType::class, [
             "attr"=>[
                 "placeholder"=>"Prix",   
             ],
-            "required"=>false,
         ])
         ->getForm()->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()){

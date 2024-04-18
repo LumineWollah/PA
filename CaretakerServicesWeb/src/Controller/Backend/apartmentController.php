@@ -170,85 +170,71 @@ class apartmentController extends AbstractController
             "attr"=>[
                 "placeholder"=>"Name",
             ],
-            "required"=>false,
         ])
         ->add("description", TextType::class, [
             "attr"=>[
                 "placeholder"=>"Description",
             ], 
-            "required"=>false,
         ])
         ->add("bedrooms", IntegerType::class, [
             "attr"=>[
                 "placeholder"=>"Chambres",
             ],
-            "required"=>false,
         ])
         ->add("travelersMax", IntegerType::class, [
             "attr"=>[
                 "placeholder"=>"Nombre maximum de voyageurs",
             ],
-            "required"=>false,
         ])
         ->add("area", IntegerType::class, [
             "attr"=>[
                 "placeholder"=>"Superficie",
             ],
-            "required"=>false,
         ])
         ->add("isFullHouse", IntegerType::class, [
             "attr"=>[
                 "placeholder"=>"Est-ce un logement entier (1) ou une chambre (0) ?",
             ],
-            "required"=>false,
         ])
         ->add("isHouse", IntegerType::class, [
             "attr"=>[
                 "placeholder"=>"Est-ce une maison (1) ou un appartement (0) ?",
             ],
-            "required"=>false,
         ])
         ->add("price", IntegerType::class, [
             "attr"=>[
                 "placeholder"=>"Prix",
             ],
-            "required"=>false,
         ])
         ->add("apartNumber", TextType::class, [
             "attr"=>[
                 "placeholder"=>"Numéro d'appartement (si appartement)",
             ], 
-            "required"=>false,
         ])
         ->add("address", TextType::class, [
             "attr"=>[
                 "placeholder"=>"Adresse",
             ], 
-            "required"=>false,
         ])
         ->add("city", TextType::class, [
             "attr"=>[
                 "placeholder"=>"Ville",
             ], 
-            "required"=>false,
         ])
         ->add("postalCode", TextType::class, [
             "attr"=>[
                 "placeholder"=>"Code postal",
             ], 
-            "required"=>false,
         ])
         ->add("country", TextType::class, [
             "attr"=>[
                 "placeholder"=>"Pays",
             ], 
-            "required"=>false,
         ])
         ->add("owner", TextType::class, [
             "attr"=>[
                 "placeholder"=>"Propriétaire",
             ], 
-            "required"=>false,
         ])
         ->add("mainPict", FileType::class, [
             "attr"=>[
@@ -266,7 +252,6 @@ class apartmentController extends AbstractController
                     'mimeTypesMessage' => 'Please upload a valid jpeg or png document',
                 ])
             ],
-            "required"=>false,
         ])
         ->getForm()->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()){

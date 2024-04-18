@@ -150,13 +150,11 @@ class documentController extends AbstractController
             "attr"=>[
                 "placeholder"=>"Name",
             ],
-            "required"=>false,
         ])
         ->add("type", TextType::class, [
             "attr"=>[
                 "placeholder"=>"Type",
             ], 
-            "required"=>false,
         ])
         ->add("url", FileType::class, [
             "attr"=>[
@@ -172,7 +170,6 @@ class documentController extends AbstractController
                     'mimeTypesMessage' => 'Please upload a valid pdf document',
                 ])
             ],
-            "required"=>false,
         ])
         ->getForm()->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()){
