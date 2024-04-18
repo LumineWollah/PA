@@ -5,6 +5,7 @@ namespace App\Controller\Backend;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Service\ApiHttpClient;
+use App\Service\AmazonS3Client;
 use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
@@ -12,16 +13,19 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\BooleanType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Validator\Constraints\File;
 
 class apartmentController extends AbstractController
 {
     private $apiHttpClient;
+    private $amazonS3Client;
 
-    public function __construct(ApiHttpClient $apiHttpClient)
+    public function __construct(ApiHttpClient $apiHttpClient, AmazonS3Client $amazonS3Client)
     {
         $this->apiHttpClient = $apiHttpClient;
+        $this->amazonS3Client = $amazonS3Client;
     }
     
     private function checkUserRole(Request $request): bool
@@ -191,14 +195,22 @@ class apartmentController extends AbstractController
                 "placeholder"=>"Superficie",
             ],
         ])
-        ->add("isFullHouse", IntegerType::class, [
+        ->add("isFullHouse", ChoiceType::class, [
             "attr"=>[
-                "placeholder"=>"Est-ce un logement entier (1) ou une chambre (0) ?",
+                "placeholder"=>"Type de logement",
+            ],
+            'choices'  => [
+                'Logement Entier' => true,
+                'Chambre' => false,
             ],
         ])
-        ->add("isHouse", IntegerType::class, [
+        ->add("isHouse", ChoiceType::class, [
             "attr"=>[
-                "placeholder"=>"Est-ce une maison (1) ou un appartement (0) ?",
+                "placeholder"=>"Type de propriété",
+            ],
+            'choices'  => [
+                'Maison' => true,
+                'Appartement' => false,
             ],
         ])
         ->add("price", IntegerType::class, [
@@ -209,12 +221,13 @@ class apartmentController extends AbstractController
         ->add("apartNumber", TextType::class, [
             "attr"=>[
                 "placeholder"=>"Numéro d'appartement (si appartement)",
-            ], 
+            ],
+            "required"=>false
         ])
         ->add("address", TextType::class, [
             "attr"=>[
                 "placeholder"=>"Adresse",
-            ], 
+            ],
         ])
         ->add("city", TextType::class, [
             "attr"=>[
@@ -246,8 +259,6 @@ class apartmentController extends AbstractController
                     'mimeTypes' => [
                         'image/png', 
                         'image/jpeg', 
-                        'image/pjpeg', 
-                        'image/*' 
                     ],
                     'mimeTypesMessage' => 'Please upload a valid jpeg or png document',
                 ])
@@ -256,22 +267,24 @@ class apartmentController extends AbstractController
         ->getForm()->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()){
             $data = $form->getData();
+            
+            $results = $this->amazonS3Client->insertObject($data['mainPict']);
 
-            $data['isHouse'] = $data['isHouse'] == 1;
-            $data['isFullHouse'] = $data['isFullHouse'] == 1;
-            $data['owner'] = 'api/cs_users/'.$data['owner'];
+            if ($results['success']) {
 
-            $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/merge-patch+json');
+                $data['mainPict'] = $results['link'];
+                $data['owner'] = 'api/cs_users/'.$data['owner'];
 
-            $response = $client->request('POST', 'cs_apartments', [
-                'json' => $data,
-            ]);
+                $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/ld+json');
 
-            $response = json_decode($response->getContent(), true);
+                $response = $client->request('POST', 'cs_apartments', [
+                    'json' => $data,
+                ]);
 
-            $request->getSession()->remove('apartmentId');
+                $response = json_decode($response->getContent(), true);
 
-            return $this->redirectToRoute('apartmentList');
+                return $this->redirectToRoute('apartmentList');
+            }
         }      
         return $this->render('backend/apartment/createApartment.html.twig', [
             'form'=>$form,
