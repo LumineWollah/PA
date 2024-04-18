@@ -1,0 +1,76 @@
+{% extends 'backend/base.html.twig' %}
+
+{% block stylesheets %}<link rel="stylesheet" href={{ asset('styles/crud.css') }}>{% endblock %}
+
+{% block activeGest %}active{% endblock %}
+{% block activeCate %}active{% endblock %}
+
+{% block title %}Liste des catégories{% endblock %}
+
+{% block body %}
+<script>
+    $(document).ready( function () {
+        $('#crudList').DataTable( {
+            buttons: true,
+            pageLength: 10,
+            layout: {
+                topStart: {
+                    search: {
+                        placeholder: "Rechercher...",
+                        search: ""
+                    }
+                },
+                topEnd: 'buttons',
+                bottomStart: 'paging',
+                bottomEnd: 'info',
+            },
+            language: {
+                search: "",
+                info: "Affichage des entrées _START_ à _END_ sur _TOTAL_ au total",
+            },
+            buttons: [
+                'pdf'
+            ],
+            columnDefs: [
+                {
+                    targets: -1,
+                    orderable: false,
+                },
+            ]
+        } );
+    } );
+</script>
+    <div class="col-10 p-0">
+        <div class="p-3">
+            <h1>Liste des catégories</h1>
+            <table id="crudList" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">Nom</th>
+                        <th scope="col">Couleur</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for category in categories %}
+                        <tr>
+                            <td>{{ category.name|capitalize }}</td>
+                            <td style="color:#{{ category.color }};">• {{ category.color }}</td>
+                            <td class="action">
+                                <a href="{{ path('categoryDelete', {'id': category.id }) }}" class="btn" style="background-color: #EE3939;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/bin.png') }}></div></a>
+                                <form action="{{ path('categoryEdit') }}" method="post" style="display: inline;">
+                                    <input type="hidden" name="category" value="{{ category|json_encode }}">
+                                    <button type="submit" class="btn" style="background-color: #18A0FB;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/pen.png') }}></div></button>
+                                </form>
+                                <form action="{{ path('categoryShow') }}" method="post" style="display: inline;">
+                                    <input type="hidden" name="category" value="{{ category|json_encode }}">
+                                    <button type="submit" class="btn" style="background-color: #A594F9;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/chart.png') }}></div></button>
+                                </form>                        
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

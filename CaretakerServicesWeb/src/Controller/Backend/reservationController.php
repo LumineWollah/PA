@@ -87,6 +87,7 @@ class reservationController extends AbstractController
                 'price' => $reservation['price'],
                 'client' => $reservation['user']['id'],
                 'service' => $reservation['service']['id'],
+                'apartment' => $reservation['apartment']['id'],
             ];
         } catch (Exception $e) {
             $defaults = [];
@@ -114,6 +115,12 @@ class reservationController extends AbstractController
         ->add("service", IntegerType::class, [
             "attr"=>[
                 "placeholder"=>"Service",
+            ],
+            "required"=>false,
+        ])
+        ->add("apartment", IntegerType::class, [
+            "attr"=>[
+                "placeholder"=>"Appartement",
             ],
             "required"=>false,
         ])
