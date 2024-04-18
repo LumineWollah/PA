@@ -8,13 +8,10 @@ use App\Service\ApiHttpClient;
 use App\Service\AmazonS3Client;
 use Exception;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
-use Symfony\Component\Form\Extension\Core\Type\HiddenType;
-use Symfony\Component\Form\Extension\Core\Type\BooleanType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Validator\Constraints\File;
 
 class apartmentController extends AbstractController
@@ -98,6 +95,21 @@ class apartmentController extends AbstractController
             $defaults = [];
         }
 
+        $client = $this->apiHttpClient->getClient($request->cookies->get('token'));
+        
+        $response = $client->request('GET', 'cs_users', [
+            'query' => [
+                'page' => 1,
+            ]
+        ]);
+
+        $usersList = $response->toArray();
+        $userChoice = array();
+
+        foreach ($usersList['hydra:member'] as $user) {
+            $userChoice += [ $user['firstname'].' '.$user['lastname'] => $user['id'] ];
+        }
+
         $form = $this->createFormBuilder($defaults)
         ->add("name", TextType::class, [
             "attr"=>[
@@ -128,6 +140,9 @@ class apartmentController extends AbstractController
                 "placeholder"=>"Prix",
             ],
             "required"=>false,
+        ])
+        ->add("owner", ChoiceType::class, [
+            "choices" => $userChoice,
         ])
         ->getForm()->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()){
@@ -168,6 +183,21 @@ class apartmentController extends AbstractController
     public function apartmentCreate(Request $request)
     {
         if (!$this->checkUserRole($request)) {return $this->redirectToRoute('login');}
+        
+        $client = $this->apiHttpClient->getClient($request->cookies->get('token'));
+        
+        $response = $client->request('GET', 'cs_users', [
+            'query' => [
+                'page' => 1,
+            ]
+        ]);
+
+        $usersList = $response->toArray();
+        $userChoice = array();
+
+        foreach ($usersList['hydra:member'] as $user) {
+            $userChoice += [ $user['firstname'].' '.$user['lastname'] => $user['id'] ];
+        }
 
         $form = $this->createFormBuilder()
         ->add("name", TextType::class, [
@@ -244,10 +274,8 @@ class apartmentController extends AbstractController
                 "placeholder"=>"Pays",
             ], 
         ])
-        ->add("owner", TextType::class, [
-            "attr"=>[
-                "placeholder"=>"Propriétaire",
-            ], 
+        ->add("owner", ChoiceType::class, [
+            "choices" => $userChoice,
         ])
         ->add("mainPict", FileType::class, [
             "attr"=>[

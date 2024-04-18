@@ -10,8 +10,7 @@ use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
-use Symfony\Component\Validator\Constraints\Length;
-use Symfony\Component\Validator\Constraints\Regex;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 class reservationController extends AbstractController
 {
@@ -92,6 +91,48 @@ class reservationController extends AbstractController
         } catch (Exception $e) {
             $defaults = [];
         }
+        
+        $client = $this->apiHttpClient->getClient($request->cookies->get('token'));
+        
+        $response = $client->request('GET', 'cs_users', [
+            'query' => [
+                'page' => 1,
+            ]
+        ]);
+
+        $usersList = $response->toArray();
+        $userChoice = array();
+
+        foreach ($usersList['hydra:member'] as $user) {
+            $userChoice += [ $user['firstname'].' '.$user['lastname'] => $user['id'] ];
+        }
+        
+        $response = $client->request('GET', 'cs_services', [
+            'query' => [
+                'page' => 1,
+            ]
+        ]);
+
+        $servicesList = $response->toArray();
+        $serviceChoice = array();
+
+        foreach ($servicesList['hydra:member'] as $service) {
+            $serviceChoice += [ $service['name'] => $service['id'] ];
+        }
+
+        $response = $client->request('GET', 'cs_apartments', [
+            'query' => [
+                'page' => 1,
+            ]
+        ]);
+
+        $apartmentsList = $response->toArray();
+        $apartmentChoice = array();
+
+        foreach ($apartmentsList['hydra:member'] as $apartment) {
+            $apartmentChoice += [ $apartment['name'] => $apartment['id'] ];
+        }
+
 
         $form = $this->createFormBuilder($defaults)
         ->add("startingDate", TextType::class, [
@@ -109,26 +150,23 @@ class reservationController extends AbstractController
                 "placeholder"=>"Prix",
             ],
         ])
-        ->add("service", IntegerType::class, [
-            "attr"=>[
-                "placeholder"=>"Service",
-            ],
+        ->add("service", ChoiceType::class, [
+            "choices" => $serviceChoice,
+            "required"=>false,
         ])
-        ->add("apartment", IntegerType::class, [
-            "attr"=>[
-                "placeholder"=>"Appartement",
-            ],
+        ->add("apartment", ChoiceType::class, [
+            "choices" => $apartmentChoice,
+            "required"=>false,
         ])
-        ->add("client", IntegerType::class, [
-            "attr"=>[
-                "placeholder"=>"Client",
-            ],
+        ->add("client", ChoiceType::class, [
+            "choices" => $userChoice,
         ])
         ->getForm()->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()){
                 $data = $form->getData();
 
                 $data['service'] = 'api/cs_services/'.$data['service'];
+                $data['apartment'] = 'api/cs_apartments/'.$data['apartment'];
                 $data['client'] = 'api/cs_users/'.$data['client'];
                 
                 $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/merge-patch+json');
