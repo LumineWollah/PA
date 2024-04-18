@@ -226,18 +226,12 @@ class apartmentController extends AbstractController
             ],
         ])
         ->add("isFullHouse", ChoiceType::class, [
-            "attr"=>[
-                "placeholder"=>"Type de logement",
-            ],
             'choices'  => [
                 'Logement Entier' => true,
                 'Chambre' => false,
             ],
         ])
         ->add("isHouse", ChoiceType::class, [
-            "attr"=>[
-                "placeholder"=>"Type de propriété",
-            ],
             'choices'  => [
                 'Maison' => true,
                 'Appartement' => false,
