@@ -10,6 +10,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\ColorType;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ColorField;
 
 class categoryController extends AbstractController
 {
@@ -94,7 +96,7 @@ class categoryController extends AbstractController
             ],
             "required"=>false,
         ])
-        ->add("color", TextType::class, [
+        ->add("color", ColorType::class, [
             "attr"=>[
                 "placeholder"=>"Color",
             ], 
@@ -132,6 +134,44 @@ class categoryController extends AbstractController
         
         return $this->render('backend/category/showCategory.html.twig', [
             'category'=>$category
+        ]);
+    }
+        
+    #[Route('/admin-panel/category/create', name: 'categoryCreate')]
+    public function categoryCreate(Request $request)
+    {
+        if (!$this->checkUserRole($request)) {return $this->redirectToRoute('login');}
+
+        $form = $this->createFormBuilder()
+        ->add("name", TextType::class, [
+            "attr"=>[
+                "placeholder"=>"Name",
+            ],
+        ])
+        ->add("color", ColorType::class, [
+            "attr"=>[
+                "placeholder"=>"Couleur",
+            ], 
+        ])
+        ->getForm()->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()){
+            $data = $form->getData();
+
+            $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/ld+json');
+
+            $data['color'] = strtoupper(substr($data['color'], 1));
+
+            $response = $client->request('POST', 'cs_categories', [
+                'json' => $data,
+            ]);
+
+            $response = json_decode($response->getContent(), true);
+
+            return $this->redirectToRoute('categoryList');
+        }      
+        return $this->render('backend/category/createCategory.html.twig', [
+            'form'=>$form,
+            'errorMessage'=>null
         ]);
     }
 }

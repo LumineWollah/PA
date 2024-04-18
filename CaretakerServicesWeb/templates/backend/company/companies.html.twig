@@ -46,7 +46,10 @@
 </script>
     <div class="col-10 p-0">
         <div class="p-3">
-            <h1>Liste des entreprises</h1>
+            <div class="btn-create-row">
+                <h1>Liste des entreprise</h1>
+                <a href="{{ path('companyCreate') }}" class="btn btn-create"><div class="btnImage"><img style="height:20px;">Créer +</div></a>
+            </div>
             <table id="crudList" class="table table-striped">
                 <thead>
                     <tr>

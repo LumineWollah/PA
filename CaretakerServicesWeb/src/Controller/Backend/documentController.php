@@ -10,6 +10,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Validator\Constraints\File;
 
 class documentController extends AbstractController
 {
@@ -133,6 +135,57 @@ class documentController extends AbstractController
             return $this->redirectToRoute('documentList');
         }      
         return $this->render('backend/document/editDocument.html.twig', [
+            'form'=>$form,
+            'errorMessage'=>null
+        ]);
+    }
+    
+    #[Route('/admin-panel/document/create', name: 'documentCreate')]
+    public function documentCreate(Request $request)
+    {
+        if (!$this->checkUserRole($request)) {return $this->redirectToRoute('login');}
+
+        $form = $this->createFormBuilder()
+        ->add("name", TextType::class, [
+            "attr"=>[
+                "placeholder"=>"Name",
+            ],
+        ])
+        ->add("type", TextType::class, [
+            "attr"=>[
+                "placeholder"=>"Type",
+            ], 
+        ])
+        ->add("url", FileType::class, [
+            "attr"=>[
+                "placeholder"=>"URL",
+            ], 
+            'constraints' => [
+                new File([
+                    'maxSize' => '10m',
+                    'mimeTypes' => [
+                        'application/pdf',
+                        'application/x-pdf',
+                    ],
+                    'mimeTypesMessage' => 'Please upload a valid pdf document',
+                ])
+            ],
+        ])
+        ->getForm()->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()){
+            $data = $form->getData();
+
+            $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/ld+json');
+
+            $response = $client->request('POST', 'cs_documents', [
+                'json' => $data,
+            ]);
+
+            $response = json_decode($response->getContent(), true);
+
+            return $this->redirectToRoute('documentList');
+        }      
+        return $this->render('backend/document/createDocument.html.twig', [
             'form'=>$form,
             'errorMessage'=>null
         ]);

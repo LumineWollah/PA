@@ -10,6 +10,7 @@ use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\Regex;
 
@@ -161,4 +162,60 @@ class serviceController extends AbstractController
             'service'=>$service
         ]);
     }
+    
+    #[Route('/admin-panel/service/create', name: 'serviceCreate')]
+    public function serviceCreate(Request $request)
+    {
+        if (!$this->checkUserRole($request)) {return $this->redirectToRoute('login');}
+
+        $form = $this->createFormBuilder()
+        ->add("name", TextType::class, [
+            "attr"=>[
+                "placeholder"=>"Name",
+            ],
+        ])
+        ->add("description", TextType::class, [
+            "attr"=>[
+                "placeholder"=>"Description",
+            ],
+        ])
+        ->add("company", IntegerType::class, [
+            "attr"=>[
+                "placeholder"=>"Entreprise ID",
+            ], 
+        ])
+        ->add("category", IntegerType::class, [
+            "attr"=>[
+                "placeholder"=>"Catégorie ID",
+            ], 
+        ])
+        ->add("price", NumberType::class, [
+            "attr"=>[
+                "placeholder"=>"Prix",   
+            ],
+        ])
+        ->getForm()->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()){
+            $data = $form->getData();
+
+            $data['category'] = 'api/cs_categories/'.$data['category'];
+            $data['company'] = 'api/cs_companies/'.$data['company'];
+
+
+            $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/ld+json');
+
+            $response = $client->request('POST', 'cs_services', [
+                'json' => $data,
+            ]);
+
+            $response = json_decode($response->getContent(), true);
+
+            return $this->redirectToRoute('serviceList');
+        }      
+        return $this->render('backend/service/createService.html.twig', [
+            'form'=>$form,
+            'errorMessage'=>null
+        ]);
+    }
+
 }

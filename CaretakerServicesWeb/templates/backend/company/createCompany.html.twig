@@ -1,0 +1,39 @@
+{% extends 'backend/base.html.twig' %}
+
+{% block title %}Créer une entreprise{% endblock %}
+
+{% block body %}
+    <div class="col-10 p-0">
+        <div class="p-3">
+            <h1>Créer une entreprise</h1>
+            <div class="errors">{%if errorMessages is defined and errorMessages %}<ul>{% for errorMessage in errorMessages %}<li>{{errorMessage}}</li>{% endfor %}</ul>{% endif %}</div>
+            {{form_start(form)}}
+                <div class="inputDiv" style="position: relative;">
+                    {{form_widget(form.siretNumber)}}
+                </div>
+                <div class="inputDiv" style="position: relative;">
+                    {{form_widget(form.companyName)}}
+                </div>
+                <div class="inputDiv" style="position: relative;">
+                    {{form_widget(form.companyEmail)}}
+                </div>
+                <div class="inputDiv" style="position: relative;">
+                    {{form_widget(form.companyPhone)}}
+                </div>
+                <div class="inputDiv" style="position: relative;">
+                    {{form_widget(form.address)}}
+                </div>
+                <div class="inputDiv" style="position: relative;">
+                    {{form_widget(form.city)}}
+                </div>
+                <div class="inputDiv" style="position: relative;">
+                    {{form_widget(form.postalCode)}}
+                </div>
+                <div class="inputDiv" style="position: relative;">
+                    {{form_widget(form.country)}}
+                </div>
+                <button type="submit" class="btn">Créer</button>
+            {{form_end(form)}}
+        </div>
+    </div>
+{% endblock %}

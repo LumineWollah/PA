@@ -1,0 +1,59 @@
+{% extends 'backend/base.html.twig' %}
+
+{% block title %}Créer un appartement{% endblock %}
+
+{% block body %}
+    <div class="col-10 p-0">
+        <div class="p-3">
+            <h1>Créer un appartement</h1>
+            {{form_start(form)}}
+                <div class="inputDiv" style="position: relative;">
+                    {{form_widget(form.name)}}
+                </div>
+                <div class="inputDiv" style="position: relative;">
+                    {{form_widget(form.description)}}
+                </div>
+                <div class="inputDiv" style="position: relative;">
+                    {{form_widget(form.bedrooms)}}
+                </div>
+                <div class="inputDiv" style="position: relative;">
+                    {{form_widget(form.travelersMax)}}
+                </div>
+                <div class="inputDiv" style="position: relative;">
+                    {{form_widget(form.area)}}
+                </div>
+                <div class="inputDiv" style="position: relative;">
+                    {{form_widget(form.isFullHouse)}}
+                </div>
+                <div class="inputDiv" style="position: relative;">
+                    {{form_widget(form.isHouse)}}
+                </div>
+                <div class="inputDiv" style="position: relative;">
+                    {{form_widget(form.price)}}
+                </div>
+                <div class="inputDiv" style="position: relative;">
+                    {{form_widget(form.apartNumber)}}
+                </div>
+                <div class="inputDiv" style="position: relative;">
+                    {{form_widget(form.address)}}
+                </div>
+                <div class="inputDiv" style="position: relative;">
+                    {{form_widget(form.city)}}
+                </div>
+                <div class="inputDiv" style="position: relative;">
+                    {{form_widget(form.postalCode)}}
+                </div>
+                <div class="inputDiv" style="position: relative;">
+                    {{form_widget(form.country)}}
+                </div>
+                <div class="inputDiv" style="position: relative;">
+                    {{form_widget(form.owner)}}
+                </div>
+                <div class="inputDiv" style="position: relative;">
+                    {{form_widget(form.mainPict)}}
+                </div>
+                <button type="submit" class="btn">Créer</button>
+            {{form_end(form)}}
+        </div>
+    </div>
+{% endblock %}

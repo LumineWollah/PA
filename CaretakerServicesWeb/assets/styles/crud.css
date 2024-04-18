@@ -63,6 +63,17 @@ tr a, tr button{
     width: 100%;
 }
 
+.btn-create-row {
+    display:flex;
+    justify-content:space-between;
+}
+
+.btn-create {
+    background-color:#29B95F;
+    color:white;
+    height:100%;
+}
+
 h1, h4, th {
     font-family: 'Roboto Condensed';
     font-weight: bold;

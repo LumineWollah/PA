@@ -10,6 +10,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\Extension\Core\Type\BooleanType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Validator\Constraints\File;
 
 class apartmentController extends AbstractController
 {
@@ -153,6 +157,125 @@ class apartmentController extends AbstractController
         
         return $this->render('backend/apartment/showApartment.html.twig', [
             'apartment'=>$apartment
+        ]);
+    }
+    
+    #[Route('/admin-panel/apartment/create', name: 'apartmentCreate')]
+    public function apartmentCreate(Request $request)
+    {
+        if (!$this->checkUserRole($request)) {return $this->redirectToRoute('login');}
+
+        $form = $this->createFormBuilder()
+        ->add("name", TextType::class, [
+            "attr"=>[
+                "placeholder"=>"Name",
+            ],
+        ])
+        ->add("description", TextType::class, [
+            "attr"=>[
+                "placeholder"=>"Description",
+            ], 
+        ])
+        ->add("bedrooms", IntegerType::class, [
+            "attr"=>[
+                "placeholder"=>"Chambres",
+            ],
+        ])
+        ->add("travelersMax", IntegerType::class, [
+            "attr"=>[
+                "placeholder"=>"Nombre maximum de voyageurs",
+            ],
+        ])
+        ->add("area", IntegerType::class, [
+            "attr"=>[
+                "placeholder"=>"Superficie",
+            ],
+        ])
+        ->add("isFullHouse", IntegerType::class, [
+            "attr"=>[
+                "placeholder"=>"Est-ce un logement entier (1) ou une chambre (0) ?",
+            ],
+        ])
+        ->add("isHouse", IntegerType::class, [
+            "attr"=>[
+                "placeholder"=>"Est-ce une maison (1) ou un appartement (0) ?",
+            ],
+        ])
+        ->add("price", IntegerType::class, [
+            "attr"=>[
+                "placeholder"=>"Prix",
+            ],
+        ])
+        ->add("apartNumber", TextType::class, [
+            "attr"=>[
+                "placeholder"=>"Numéro d'appartement (si appartement)",
+            ], 
+        ])
+        ->add("address", TextType::class, [
+            "attr"=>[
+                "placeholder"=>"Adresse",
+            ], 
+        ])
+        ->add("city", TextType::class, [
+            "attr"=>[
+                "placeholder"=>"Ville",
+            ], 
+        ])
+        ->add("postalCode", TextType::class, [
+            "attr"=>[
+                "placeholder"=>"Code postal",
+            ], 
+        ])
+        ->add("country", TextType::class, [
+            "attr"=>[
+                "placeholder"=>"Pays",
+            ], 
+        ])
+        ->add("owner", TextType::class, [
+            "attr"=>[
+                "placeholder"=>"Propriétaire",
+            ], 
+        ])
+        ->add("mainPict", FileType::class, [
+            "attr"=>[
+                "placeholder"=>"Image principale",
+            ], 
+            'constraints' => [
+                new File([
+                    'maxSize' => '10m',
+                    'mimeTypes' => [
+                        'image/png', 
+                        'image/jpeg', 
+                        'image/pjpeg', 
+                        'image/*' 
+                    ],
+                    'mimeTypesMessage' => 'Please upload a valid jpeg or png document',
+                ])
+            ],
+        ])
+        ->getForm()->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()){
+            $data = $form->getData();
+
+            $data['isHouse'] = $data['isHouse'] == 1;
+            $data['isFullHouse'] = $data['isFullHouse'] == 1;
+            $data['owner'] = 'api/cs_users/'.$data['owner'];
+
+            $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/merge-patch+json');
+
+            $response = $client->request('POST', 'cs_apartments', [
+                'json' => $data,
+            ]);
+
+            $response = json_decode($response->getContent(), true);
+
+            $request->getSession()->remove('apartmentId');
+
+            return $this->redirectToRoute('apartmentList');
+        }      
+        return $this->render('backend/apartment/createApartment.html.twig', [
+            'form'=>$form,
+            'errorMessage'=>null
         ]);
     }
 }

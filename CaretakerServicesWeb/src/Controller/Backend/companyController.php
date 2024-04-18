@@ -175,4 +175,86 @@ class companyController extends AbstractController
             'company'=>$company
         ]);
     }
+         
+    #[Route('/admin-panel/company/create', name: 'companyCreate')]
+    public function companyCreate(Request $request)
+    {
+        if (!$this->checkUserRole($request)) {return $this->redirectToRoute('login');}
+
+        $form = $this->createFormBuilder()
+        ->add("siretNumber", TextType::class, [
+            "attr"=>[
+                "placeholder"=>"Numéro de Siret",
+            ],
+        ])
+        ->add("companyName", TextType::class, [
+            "attr"=>[
+                "placeholder"=>"Nom d'entreprise",
+            ], 
+        ])
+        ->add("companyEmail", TextType::class, [
+            "attr"=>[
+                "placeholder"=>"Email d'entreprise",
+            ], 
+        ])
+        ->add("companyPhone", TextType::class, [
+            "attr"=>[
+                "placeholder"=>"Téléphone d'entreprise",
+            ], 
+        ])
+        ->add("address", TextType::class, [
+            "attr"=>[
+                "placeholder"=>"Adresse",
+            ], 
+        ])
+        ->add("city", TextType::class, [
+            "attr"=>[
+                "placeholder"=>"Ville",
+            ], 
+        ])
+        ->add("postalCode", TextType::class, [
+            "attr"=>[
+                "placeholder"=>"Code postal",
+            ], 
+        ])
+        ->add("country", TextType::class, [
+            "attr"=>[
+                "placeholder"=>"Pays",
+            ], 
+        ])
+        ->getForm()->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()){
+            $data = $form->getData();
+
+            $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/ld+json');
+            
+            $response = $client->request('GET', 'cs_companies', [
+                'query' => [
+                    'page' => 1,
+                    'siretNumber' => $data['siretNumber']
+                    ]
+                ]);
+            
+            if ($response->toArray()["hydra:totalItems"] > 0){
+                $errorMessages[] = "Numéro de SIRET déjà utilisé. Veuillez en utiliser un autre.";
+
+                return $this->render('backend/company/createCompany.html.twig', [
+                    'form'=>$form,
+                    'errorMessages'=>$errorMessages
+                ]);
+            }
+
+            $response = $client->request('POST', 'cs_companies', [
+                'json' => $data,
+            ]);
+
+            $response = json_decode($response->getContent(), true);
+
+            return $this->redirectToRoute('companyList');
+        }      
+        return $this->render('backend/company/createCompany.html.twig', [
+            'form'=>$form,
+            'errorMessage'=>null
+        ]);
+    }
 }

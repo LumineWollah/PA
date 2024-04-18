@@ -42,7 +42,10 @@
 </script>
     <div class="col-10 p-0">
         <div class="p-3">
-            <h1>Liste des documents</h1>
+            <div class="btn-create-row">
+                <h1>Liste des documents</h1>
+                <a href="{{ path('documentCreate') }}" class="btn btn-create"><div class="btnImage"><img style="height:20px;">Créer +</div></a>
+            </div>
             <table id="crudList" class="table table-striped">
                 <thead>
                     <tr>
