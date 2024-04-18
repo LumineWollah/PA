@@ -10,6 +10,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\ColorType;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ColorField;
 
 class categoryController extends AbstractController
 {
@@ -94,7 +96,7 @@ class categoryController extends AbstractController
             ],
             "required"=>false,
         ])
-        ->add("color", TextType::class, [
+        ->add("color", ColorType::class, [
             "attr"=>[
                 "placeholder"=>"Color",
             ], 
@@ -145,19 +147,19 @@ class categoryController extends AbstractController
             "attr"=>[
                 "placeholder"=>"Name",
             ],
-            "required"=>false,
         ])
-        ->add("color", TextType::class, [
+        ->add("color", ColorType::class, [
             "attr"=>[
                 "placeholder"=>"Couleur",
             ], 
-            "required"=>false,
         ])
         ->getForm()->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()){
             $data = $form->getData();
 
             $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/ld+json');
+
+            $data['color'] = strtoupper(substr($data['color'], 1));
 
             $response = $client->request('POST', 'cs_categories', [
                 'json' => $data,
