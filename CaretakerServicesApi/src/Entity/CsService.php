@@ -21,25 +21,25 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[Get]
 #[GetCollection]
 #[Delete(security: "is_granted('ROLE_ADMIN') or object.getProvider() == user")]
-#[Post(security: "is_granted('ROLE_PROVIDER') or is_granted('ROLE_ADMIN')")]
+#[Post(security: "is_granted('ROLE_PROVIDER')")]
 class CsService
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(["getServices", "getUsers", "getReservations", "getApartments", "getCategories"])]
+    #[Groups(["getServices", "getUsers", "getReservations", "getApartments", "getCategories", "getCompanies"])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(["getServices", "getUsers", "getReservations", "getApartments", "getCategories"])]
+    #[Groups(["getServices", "getUsers", "getReservations", "getApartments", "getCategories", "getCompanies"])]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Groups(["getServices", "getUsers", "getReservations", "getApartments", "getCategories"])]
+    #[Groups(["getServices", "getUsers", "getReservations", "getApartments", "getCategories", "getCompanies"])]
     private ?string $description = null;
 
     #[ORM\Column]
-    #[Groups(["getServices", "getUsers", "getReservations", "getApartments", "getCategories"])]
+    #[Groups(["getServices", "getUsers", "getReservations", "getApartments", "getCategories", "getCompanies"])]
     private ?float $price = null;
 
     #[ORM\ManyToOne(inversedBy: 'services')]
