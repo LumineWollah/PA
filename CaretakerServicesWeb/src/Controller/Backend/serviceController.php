@@ -10,6 +10,7 @@ use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\Regex;
 
@@ -168,16 +169,22 @@ class serviceController extends AbstractController
         if (!$this->checkUserRole($request)) {return $this->redirectToRoute('login');}
 
         $form = $this->createFormBuilder()
-        ->add("provider", IntegerType::class, [
-            "attr"=>[
-                "placeholder"=>"Prestataire ID",
-            ],
-            "required"=>false,
-        ])
         ->add("name", TextType::class, [
             "attr"=>[
                 "placeholder"=>"Name",
             ],
+            "required"=>false,
+        ])
+        ->add("description", TextType::class, [
+            "attr"=>[
+                "placeholder"=>"Description",
+            ],
+            "required"=>false,
+        ])
+        ->add("company", IntegerType::class, [
+            "attr"=>[
+                "placeholder"=>"Entreprise ID",
+            ], 
             "required"=>false,
         ])
         ->add("category", IntegerType::class, [
@@ -186,7 +193,7 @@ class serviceController extends AbstractController
             ], 
             "required"=>false,
         ])
-        ->add("price", FloatType::class, [
+        ->add("price", NumberType::class, [
             "attr"=>[
                 "placeholder"=>"Prix",   
             ],
@@ -197,6 +204,8 @@ class serviceController extends AbstractController
             $data = $form->getData();
 
             $data['category'] = 'api/cs_categories/'.$data['category'];
+            $data['company'] = 'api/cs_companies/'.$data['company'];
+
 
             $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/ld+json');
 
@@ -213,4 +222,5 @@ class serviceController extends AbstractController
             'errorMessage'=>null
         ]);
     }
+
 }
