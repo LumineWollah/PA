@@ -161,4 +161,56 @@ class serviceController extends AbstractController
             'service'=>$service
         ]);
     }
+    
+    #[Route('/admin-panel/service/create', name: 'serviceCreate')]
+    public function serviceCreate(Request $request)
+    {
+        if (!$this->checkUserRole($request)) {return $this->redirectToRoute('login');}
+
+        $form = $this->createFormBuilder()
+        ->add("provider", IntegerType::class, [
+            "attr"=>[
+                "placeholder"=>"Prestataire ID",
+            ],
+            "required"=>false,
+        ])
+        ->add("name", TextType::class, [
+            "attr"=>[
+                "placeholder"=>"Name",
+            ],
+            "required"=>false,
+        ])
+        ->add("category", IntegerType::class, [
+            "attr"=>[
+                "placeholder"=>"Catégorie ID",
+            ], 
+            "required"=>false,
+        ])
+        ->add("price", FloatType::class, [
+            "attr"=>[
+                "placeholder"=>"Prix",   
+            ],
+            "required"=>false,
+        ])
+        ->getForm()->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()){
+            $data = $form->getData();
+
+            $data['category'] = 'api/cs_categories/'.$data['category'];
+
+            $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/ld+json');
+
+            $response = $client->request('POST', 'cs_services', [
+                'json' => $data,
+            ]);
+
+            $response = json_decode($response->getContent(), true);
+
+            return $this->redirectToRoute('serviceList');
+        }      
+        return $this->render('backend/service/createService.html.twig', [
+            'form'=>$form,
+            'errorMessage'=>null
+        ]);
+    }
 }
