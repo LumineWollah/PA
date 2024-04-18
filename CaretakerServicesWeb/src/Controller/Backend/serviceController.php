@@ -11,8 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
-use Symfony\Component\Validator\Constraints\Length;
-use Symfony\Component\Validator\Constraints\Regex;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 class serviceController extends AbstractController
 {
@@ -92,7 +91,34 @@ class serviceController extends AbstractController
         } catch (Exception $e) {
             $defaults = [];
         }
+        
+        $client = $this->apiHttpClient->getClient($request->cookies->get('token'));
+        
+        $response = $client->request('GET', 'cs_companies', [
+            'query' => [
+                'page' => 1,
+            ]
+        ]);
 
+        $companiesList = $response->toArray();
+        $companyChoice = array();
+
+        foreach ($companiesList['hydra:member'] as $company) {
+            $companyChoice += [ $company['companyName'] => $company['id'] ];
+        }
+
+        $response = $client->request('GET', 'cs_categories', [
+            'query' => [
+                'page' => 1,
+            ]
+        ]);
+
+        $categoriesList = $response->toArray();
+        $categoryChoice = array();
+
+        foreach ($categoriesList['hydra:member'] as $category) {
+            $categoryChoice += [ $category['name'] => $category['id'] ];
+        }
         $form = $this->createFormBuilder($defaults)
         ->add("name", TextType::class, [
             "attr"=>[
@@ -106,23 +132,17 @@ class serviceController extends AbstractController
             ],
             "required"=>false,
         ])
-        ->add("category", IntegerType::class, [
-            "attr"=>[
-                "placeholder"=>"Catégorie ID",
-            ],
-            "required"=>false,
-        ])
         ->add("price", IntegerType::class, [
             "attr"=>[
                 "placeholder"=>"Prix",
             ],
             "required"=>false,
         ])
-        ->add("company", IntegerType::class, [
-            "attr"=>[
-                "placeholder"=>"Entreprise ID",
-            ],
-            "required"=>false,
+        ->add("category", ChoiceType::class, [
+            "choices" => $categoryChoice,
+        ])
+        ->add("company", ChoiceType::class, [
+            "choices" => $companyChoice,
         ])
         ->getForm()->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()){
@@ -168,31 +188,57 @@ class serviceController extends AbstractController
     {
         if (!$this->checkUserRole($request)) {return $this->redirectToRoute('login');}
 
+        $client = $this->apiHttpClient->getClient($request->cookies->get('token'));
+        
+        $response = $client->request('GET', 'cs_companies', [
+            'query' => [
+                'page' => 1,
+            ]
+        ]);
+
+        $companiesList = $response->toArray();
+        $companyChoice = array();
+
+        foreach ($companiesList['hydra:member'] as $company) {
+            $companyChoice += [ $company['companyName'] => $company['id'] ];
+        }
+
+        $response = $client->request('GET', 'cs_categories', [
+            'query' => [
+                'page' => 1,
+            ]
+        ]);
+
+        $categoriesList = $response->toArray();
+        $categoryChoice = array();
+
+        foreach ($categoriesList['hydra:member'] as $category) {
+            $categoryChoice += [ $category['name'] => $category['id'] ];
+        }
         $form = $this->createFormBuilder()
         ->add("name", TextType::class, [
             "attr"=>[
-                "placeholder"=>"Name",
-            ],
+                "placeholder"=>"Nom",
+            ], 
+            "required"=>false,
         ])
         ->add("description", TextType::class, [
             "attr"=>[
                 "placeholder"=>"Description",
             ],
+            "required"=>false,
         ])
-        ->add("company", IntegerType::class, [
+        ->add("price", IntegerType::class, [
             "attr"=>[
-                "placeholder"=>"Entreprise ID",
-            ], 
-        ])
-        ->add("category", IntegerType::class, [
-            "attr"=>[
-                "placeholder"=>"Catégorie ID",
-            ], 
-        ])
-        ->add("price", NumberType::class, [
-            "attr"=>[
-                "placeholder"=>"Prix",   
+                "placeholder"=>"Prix",
             ],
+            "required"=>false,
+        ])
+        ->add("category", ChoiceType::class, [
+            "choices" => $categoryChoice,
+        ])
+        ->add("company", ChoiceType::class, [
+            "choices" => $companyChoice,
         ])
         ->getForm()->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()){
