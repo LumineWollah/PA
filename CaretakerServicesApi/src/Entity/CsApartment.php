@@ -193,7 +193,7 @@ class CsApartment
     #[Groups(["getUsers", "getApartments", "getReservations"])]
     private ?array $pictures = null;
 
-    #[ORM\OneToMany(targetEntity: CsReservation::class, mappedBy: 'apartment')]
+    #[ORM\OneToMany(targetEntity: CsReservation::class, mappedBy: 'apartment', orphanRemoval:true)]
     #[Groups(["getApartments"])]
     private Collection $reservations;
 
