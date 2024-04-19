@@ -31,7 +31,7 @@ use App\Controller\CsCompanyController;
 #[GetCollection()]
 // #[Delete(security: "is_granted('ROLE_ADMIN') or user in object.getUsers().toArray()")]
 #[Post()]
-// #[ApiFilter(SearchFilter::class, properties: ['type' => 'exact'])]
+#[ApiFilter(SearchFilter::class, properties: ['siretNumber' => 'exact'])]
 #[ORM\Entity(repositoryClass: CsCompanyRepository::class)]
 class CsCompany
 {
