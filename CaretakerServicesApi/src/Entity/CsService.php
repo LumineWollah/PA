@@ -21,7 +21,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[Get]
 #[GetCollection]
 #[Delete(security: "is_granted('ROLE_ADMIN') or object.getProvider() == user")]
-#[Post(security: "is_granted('ROLE_PROVIDER')")]
+#[Post(security: "is_granted('ROLE_PROVIDER') or is_granted('ROLE_ADMIN')")]
 class CsService
 {
     #[ORM\Id]
