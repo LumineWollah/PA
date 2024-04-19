@@ -40,11 +40,8 @@ class actionUserController extends AbstractController
         $id = $request->query->get('id');
         $origin = $request->query->get('origin');
 
-        $response = $client->request('DELETE', 'cs_users/'.$id, [
-            'query' => [
-                'id' => $id
-            ]
-        ]);
+
+        $response = $client->request('DELETE', 'cs_users/'.$id);
 
         return $this->redirectToRoute($origin);
     }

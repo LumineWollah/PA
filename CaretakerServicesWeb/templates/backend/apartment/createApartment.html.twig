@@ -2,6 +2,14 @@
 
 {% block title %}Créer un appartement{% endblock %}
 
+{% block stylesheets %}
+    <link href="https://api.mapbox.com/mapbox-gl-js/v3.2.0/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v3.2.0/mapbox-gl.js"></script>
+
+    <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.min.js"></script>
+    <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.css" type="text/css">
+{% endblock %}
+
 {% block body %}
     <div class="col-10 p-0">
         <div class="p-3">
@@ -23,7 +31,7 @@
                     {{form_widget(form.area)}}
                 </div>
                 <div class="inputDiv" style="position: relative;">
-                    {{form_widget(form.isFullHouse)}}
+                    {{form_widget(form.isFullhouse)}}
                 </div>
                 <div class="inputDiv" style="position: relative;">
                     {{form_widget(form.isHouse)}}
@@ -35,25 +43,35 @@
                     {{form_widget(form.apartNumber)}}
                 </div>
                 <div class="inputDiv" style="position: relative;">
-                    {{form_widget(form.address)}}
-                </div>
-                <div class="inputDiv" style="position: relative;">
-                    {{form_widget(form.city)}}
-                </div>
-                <div class="inputDiv" style="position: relative;">
-                    {{form_widget(form.postalCode)}}
-                </div>
-                <div class="inputDiv" style="position: relative;">
-                    {{form_widget(form.country)}}
-                </div>
-                <div class="inputDiv" style="position: relative;">
                     {{form_widget(form.owner)}}
                 </div>
                 <div class="inputDiv" style="position: relative;">
                     {{form_widget(form.mainPict)}}
                 </div>
+                <div id="geocoder" style="position: relative; height: 3vh;"></div>
+                {{form_widget(form.address)}}
                 <button type="submit" class="btn">Créer</button>
+
             {{form_end(form)}}
         </div>
     </div>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+    mapboxgl.accessToken = 'pk.eyJ1IjoibGVvLXVyYWhhcmEiLCJhIjoiY2x2MTJrcHJ4MDIwdzJrdXNhcDhjazF4MSJ9.ZJjs_hvEVTuHKAe2CeDGbQ';
+    const geocoder = new MapboxGeocoder({
+        accessToken: mapboxgl.accessToken
+    });
+    geocoder.addTo('#geocoder');
+
+    const results = document.getElementById('form_address');
+    geocoder.on('result', (e) => {
+        results.value = JSON.stringify(e.result, null, 2);
+    });
+
+    geocoder.on('clear', () => {
+        results.value = '';
+    });
+</script>
 {% endblock %}

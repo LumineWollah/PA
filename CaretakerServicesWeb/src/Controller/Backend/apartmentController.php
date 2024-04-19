@@ -12,6 +12,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Validator\Constraints\File;
 
 class apartmentController extends AbstractController
@@ -23,6 +24,15 @@ class apartmentController extends AbstractController
     {
         $this->apiHttpClient = $apiHttpClient;
         $this->amazonS3Client = $amazonS3Client;
+    }
+
+    private function extractValueByPrefix($data, $prefix) {
+        foreach ($data as $item) {
+            if (is_array($item) && strpos($item['id'], $prefix) === 0) {
+                return $item['text'];
+            }
+        }
+        return null;
     }
     
     private function checkUserRole(Request $request): bool
@@ -225,7 +235,7 @@ class apartmentController extends AbstractController
                 "placeholder"=>"Superficie",
             ],
         ])
-        ->add("isFullHouse", ChoiceType::class, [
+        ->add("isFullhouse", ChoiceType::class, [
             'choices'  => [
                 'Logement Entier' => true,
                 'Chambre' => false,
@@ -248,25 +258,7 @@ class apartmentController extends AbstractController
             ],
             "required"=>false
         ])
-        ->add("address", TextType::class, [
-            "attr"=>[
-                "placeholder"=>"Adresse",
-            ],
-        ])
-        ->add("city", TextType::class, [
-            "attr"=>[
-                "placeholder"=>"Ville",
-            ], 
-        ])
-        ->add("postalCode", TextType::class, [
-            "attr"=>[
-                "placeholder"=>"Code postal",
-            ], 
-        ])
-        ->add("country", TextType::class, [
-            "attr"=>[
-                "placeholder"=>"Pays",
-            ], 
+        ->add("address", HiddenType::class, [
         ])
         ->add("owner", ChoiceType::class, [
             "choices" => $userChoice,
@@ -289,12 +281,21 @@ class apartmentController extends AbstractController
         ->getForm()->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()){
             $data = $form->getData();
-            
+
             $results = $this->amazonS3Client->insertObject($data['mainPict']);
 
             if ($results['success']) {
 
+                $data['address'] = json_decode($data['address'], true);
+                
+                $data["country"] = $this->extractValueByPrefix($data["address"]['context'], 'country');
+                $data["city"] = $this->extractValueByPrefix($data["address"]['context'], 'place');
+                $data["postalCode"] = $this->extractValueByPrefix($data["address"]['context'], 'postcode');
+                $data["centerGps"] = $data['address']['center'];                
+                $data["address"] = $data['address']['place_name'];                
+
                 $data['mainPict'] = $results['link'];
+                $data['pictures'] = array($results['link']);
                 $data['owner'] = 'api/cs_users/'.$data['owner'];
 
                 $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/ld+json');

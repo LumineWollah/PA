@@ -106,7 +106,7 @@ class AppFixtures extends Fixture
         $user->setPassword($this->userPasswordHasher->hashPassword($user, "Test1234!"));
         $user->setProfessional(false);
         $user->setisVerified(true);
-        $user->setRoles(['ROLE_PROVIDER', 'ROLE_TRAVELER', 'ROLE_LESSOR']);
+        $user->setRoles(['ROLE_TRAVELER']);
         $manager->persist($user);     
         
         for ($i=0; $i < 32; $i++) { 
@@ -118,7 +118,7 @@ class AppFixtures extends Fixture
             $user->setPassword($this->userPasswordHasher->hashPassword($user, "Test1234!"));
             $user->setProfessional(false);
             $user->setisVerified(true);
-            $user->setRoles(['ROLE_PROVIDER', 'ROLE_TRAVELER', 'ROLE_LESSOR']);
+            $user->setRoles(['ROLE_LESSOR']);
             $manager->persist($user);     
         }
         
