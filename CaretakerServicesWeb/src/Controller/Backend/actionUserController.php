@@ -93,7 +93,7 @@ class actionUserController extends AbstractController
                     'max' => 150,
                     'maxMessage' => 'Le prénom doit contenir au plus {{ limit }} caractères',
                 ]),
-            ]
+            ],
         ])
         ->add("lastname", TextType::class, [
             "attr"=>[
@@ -104,7 +104,7 @@ class actionUserController extends AbstractController
                     'max' => 255,
                     'maxMessage' => 'Le nom doit contenir au plus {{ limit }} caractères',
                 ]),
-            ]
+            ],
         ])
         ->add("password", PasswordType::class, [
             "attr"=>[
