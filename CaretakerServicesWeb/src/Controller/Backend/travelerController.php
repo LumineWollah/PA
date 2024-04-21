@@ -10,6 +10,7 @@ use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\Regex;
 
@@ -70,6 +71,7 @@ class travelerController extends AbstractController
                 'firstname' => $traveler['firstname'],
                 'lastname' => $traveler['lastname'],
                 'telNumber' => $traveler['telNumber'],
+                'roles' => $traveler['roles'],
             ];
         } catch (Exception $e) {
             $defaults = [];
@@ -94,6 +96,17 @@ class travelerController extends AbstractController
             ],
             "required"=>false,
         ])
+        ->add("roles", ChoiceType::class, [
+            "multiple"=>true,
+            "expanded"=>false,   
+            "choices"=>[
+                "Lessor"=>"ROLE_LESSOR",
+                "Provider"=>"ROLE_PROVIDER",
+                "Traveler"=>"ROLE_TRAVELER",
+                "Admin"=>"ROLE_ADMIN",
+            ],
+            "required"=>false,
+        ])
         ->add("telNumber", TextType::class, [
             "attr"=>[
                 "placeholder"=>"Numéro de Téléphone",
@@ -115,7 +128,7 @@ class travelerController extends AbstractController
         ->getForm()->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()){
                 $data = $form->getData();
-                
+                dd($data);
                 $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/merge-patch+json');
 
                 $response = $client->request('PATCH', 'cs_users/'.$storedTraveler, [

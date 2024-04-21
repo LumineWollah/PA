@@ -9,6 +9,7 @@ use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\Regex;
 
@@ -76,6 +77,7 @@ class lessorController extends AbstractController
                 'firstname' => $lessor['firstname'],
                 'lastname' => $lessor['lastname'],
                 'telNumber' => $lessor['telNumber'],
+                'roles' => $lessor['roles'],
             ];
         } catch (Exception $e) {
             $defaults = [];
@@ -97,6 +99,17 @@ class lessorController extends AbstractController
         ->add("lastname", TextType::class, [
             "attr"=>[
                 "placeholder"=>"Nom",
+            ],
+            "required"=>false,
+        ])
+        ->add("roles", ChoiceType::class, [
+            "multiple"=>true,
+            "expanded"=>false,   
+            "choices"=>[
+                "Lessor"=>"ROLE_LESSOR",
+                "Provider"=>"ROLE_PROVIDER",
+                "Traveler"=>"ROLE_TRAVELER",
+                "Admin"=>"ROLE_ADMIN",
             ],
             "required"=>false,
         ])
@@ -122,7 +135,7 @@ class lessorController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()){
             $data = $form->getData();
-            
+            dd($data);
             $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/merge-patch+json');
 
             $response = $client->request('PATCH', 'cs_users/'.$storedLessor, [
