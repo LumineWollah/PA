@@ -13,6 +13,9 @@ use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\File;
 
 class apartmentController extends AbstractController
@@ -110,6 +113,7 @@ class apartmentController extends AbstractController
         $response = $client->request('GET', 'cs_users', [
             'query' => [
                 'page' => 1,
+                'role' => 'ROLE_LESSOR',
             ]
         ]);
 
@@ -214,6 +218,12 @@ class apartmentController extends AbstractController
             "attr"=>[
                 "placeholder"=>"Name",
             ],
+            "constraints"=>[
+                new Length([
+                    'max' => 50,
+                    'maxMessage' => 'Le nom doit contenir au plus {{ limit }} caractères',
+                ]),
+            ],
         ])
         ->add("description", TextType::class, [
             "attr"=>[
@@ -224,15 +234,36 @@ class apartmentController extends AbstractController
             "attr"=>[
                 "placeholder"=>"Chambres",
             ],
+            'constraints'=>[
+                new GreaterThanOrEqual([
+                    'value' => 1,
+                    'message' => 'Le nombre de chambres doit être égal ou supérieur à 1',
+                
+                ]),
+            ],
         ])
         ->add("travelersMax", IntegerType::class, [
             "attr"=>[
                 "placeholder"=>"Nombre maximum de voyageurs",
             ],
+            'constraints'=>[
+                new GreaterThanOrEqual([
+                    'value' => 1,
+                    'message' => 'Le nombre maximum de voyageurs doit être égal ou supérieur à 1',
+                
+                ]),
+            ],
         ])
         ->add("area", IntegerType::class, [
             "attr"=>[
                 "placeholder"=>"Superficie",
+            ],
+            'constraints'=>[
+                new GreaterThanOrEqual([
+                    'value' => 1,
+                    'message' => 'La superficie doit être égal ou supérieur à 1',
+                
+                ]),
             ],
         ])
         ->add("isFullhouse", ChoiceType::class, [
@@ -251,6 +282,13 @@ class apartmentController extends AbstractController
             "attr"=>[
                 "placeholder"=>"Prix",
             ],
+            'constraints'=>[
+                new GreaterThanOrEqual([
+                    'value' => 1,
+                    'message' => 'Le prix doit être égal ou supérieur à 1',
+                
+                ]),
+            ],
         ])
         ->add("apartNumber", TextType::class, [
             "attr"=>[
@@ -259,6 +297,9 @@ class apartmentController extends AbstractController
             "required"=>false
         ])
         ->add("address", HiddenType::class, [
+            "constraints"=>[
+                new NotBlank(),
+            ],
         ])
         ->add("owner", ChoiceType::class, [
             "choices" => $userChoice,
@@ -298,6 +339,7 @@ class apartmentController extends AbstractController
                 $data['pictures'] = array($results['link']);
                 $data['owner'] = 'api/cs_users/'.$data['owner'];
 
+
                 $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/ld+json');
 
                 $response = $client->request('POST', 'cs_apartments', [
@@ -311,7 +353,7 @@ class apartmentController extends AbstractController
         }      
         return $this->render('backend/apartment/createApartment.html.twig', [
             'form'=>$form,
-            'errorMessage'=>null
+            'errorMessage'=>null,
         ]);
     }
 }
