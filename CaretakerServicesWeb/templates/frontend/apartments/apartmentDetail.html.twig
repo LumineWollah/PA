@@ -201,7 +201,9 @@
                 cancelLabel: 'Clear',
             },
             isInvalidDate: function(date) {
-                var dateString = date.format('YYYY-MM-DD');
+                if (date.isBefore(moment(), 'day')) {
+                    return true;
+                }
                 for (var i = 0; i < rangesTab.length; i++) {
                     var startDate = moment(rangesTab[i][0], 'YYYY-MM-DD');
                     var endDate = moment(rangesTab[i][1], 'YYYY-MM-DD');
