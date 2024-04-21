@@ -10,6 +10,7 @@ use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\Regex;
 
@@ -70,6 +71,7 @@ class travelerController extends AbstractController
                 'firstname' => $traveler['firstname'],
                 'lastname' => $traveler['lastname'],
                 'telNumber' => $traveler['telNumber'],
+                'roles' => $traveler['roles'],
             ];
         } catch (Exception $e) {
             $defaults = [];
@@ -91,6 +93,17 @@ class travelerController extends AbstractController
         ->add("lastname", TextType::class, [
             "attr"=>[
                 "placeholder"=>"Nom",
+            ],
+            "required"=>false,
+        ])
+        ->add("roles", ChoiceType::class, [
+            "multiple"=>true,
+            "expanded"=>false,   
+            "choices"=>[
+                "Lessor"=>"ROLE_LESSOR",
+                "Provider"=>"ROLE_PROVIDER",
+                "Traveler"=>"ROLE_TRAVELER",
+                "Admin"=>"ROLE_ADMIN",
             ],
             "required"=>false,
         ])
