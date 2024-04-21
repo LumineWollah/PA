@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\Regex;
@@ -69,7 +70,7 @@ class actionUserController extends AbstractController
         
         try {
             $defaults = [
-                'roles' => $role,
+                'roles' => [$role],
             ];
         } catch (Exception $e) {
             $defaults = [];
@@ -103,11 +104,15 @@ class actionUserController extends AbstractController
                 ]),
             ]
         ])
-        ->add("roles", TextType::class, [
-            "attr"=>[
-                "placeholder"=>"Rôles",   
+        ->add("roles", ChoiceType::class, [
+            "multiple"=>true,
+            "expanded"=>false,   
+            "choices"=>[
+                "Lessor"=>"ROLE_LESSOR",
+                "Provider"=>"ROLE_PROVIDER",
+                "Traveler"=>"ROLE_TRAVELER",
+                "Admin"=>"ROLE_ADMIN",
             ],
-            "required"=>false,
         ])
         ->add("telNumber", TextType::class, [
             "attr"=>[
@@ -129,7 +134,6 @@ class actionUserController extends AbstractController
         ->getForm()->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()){
             $data = $form->getData();
-
             $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/ld+json');
             
             $response = $client->request('GET', 'cs_users', [
@@ -148,18 +152,16 @@ class actionUserController extends AbstractController
                 ]);
             }
 
-            $data['roles'] = explode(",", $data['roles']);
             $data['password'] = password_hash($data['password'], PASSWORD_BCRYPT, ['cost' => 13]);
 
             $response = $client->request('POST', 'cs_users', [
                 'json' => $data,
             ]);
-
             $response = json_decode($response->getContent(), true);
 
-            if ($role == 'ROLE_LESSOR') {
+            if ($role[0] == 'ROLE_LESSOR') {
                 $route = 'lessorList';
-            } elseif ($role == 'ROLE_PROVIDER') {
+            } elseif ($role[0] == 'ROLE_PROVIDER') {
                 $route = 'providerList';
             } else {
                 $route = 'travelerList';

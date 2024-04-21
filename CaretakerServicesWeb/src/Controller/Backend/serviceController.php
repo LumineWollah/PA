@@ -12,6 +12,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
 
 class serviceController extends AbstractController
 {
@@ -231,6 +232,9 @@ class serviceController extends AbstractController
         ->add("price", IntegerType::class, [
             "attr"=>[
                 "placeholder"=>"Prix",
+            ],
+            'constraints'=>[
+                new GreaterThanOrEqual(1),
             ],
             "required"=>false,
         ])

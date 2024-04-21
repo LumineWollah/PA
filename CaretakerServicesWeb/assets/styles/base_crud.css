@@ -74,3 +74,13 @@ html::-webkit-scrollbar {
 .active {
     color: #A594F9 !important;
 }
+
+.inputDiv {
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+}
+
+.inputDiv input {
+    max-height: 100%;
+}
