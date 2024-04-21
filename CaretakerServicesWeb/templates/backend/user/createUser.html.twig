@@ -5,26 +5,30 @@
 {% block body %}
     <div class="col-10 p-0">
         <div class="p-3">
-            <h1>Créer un utilisateur</h1>
-            <div class="errors">{%if errorMessages is defined and errorMessages %}<ul>{% for errorMessage in errorMessages %}<li>{{errorMessage}}</li>{% endfor %}</ul>{% endif %}{{form_errors(form.firstname)}}</div>
+            <h1>Créer un utilisateur</h1>            
+            <div class="errors">{%if errorMessages %}<ul>{% for errorMessage in errorMessages %}<li>{{errorMessage}}</li>{% endfor %}</ul>{% endif %}{{form_errors(form.firstname)}}</div>
             {{form_start(form)}}
                 <div class="inputDiv" style="position: relative;">
                     {{form_widget(form.email)}}
                 </div>
                 <div class="inputDiv" style="position: relative;">
                     {{form_widget(form.firstname)}}
+                    <div class="errors">{{form_errors(form.firstname)}}</div>
                 </div>
                 <div class="inputDiv" style="position: relative;">
                     {{form_widget(form.lastname)}}
+                    <div class="errors">{{form_errors(form.lastname)}}</div>
                 </div>
                 <div class="inputDiv" style="position: relative;">
                     {{form_widget(form.password)}}
+                    <div class="errors">{{form_errors(form.password)}}</div>
                 </div>
                 <div class="inputDiv" style="position: relative;">
                     {{form_widget(form.roles)}}
                 </div>
                 <div class="inputDiv" style="position: relative;">
                     {{form_widget(form.telNumber)}}
+                    <div class="errors">{{form_errors(form.telNumber)}}</div>
                 </div>
                 <button type="submit" class="btn">Créer</button>
             {{form_end(form)}}
