@@ -135,7 +135,7 @@ class lessorController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()){
             $data = $form->getData();
-            dd($data);
+            
             $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/merge-patch+json');
 
             $response = $client->request('PATCH', 'cs_users/'.$storedLessor, [
