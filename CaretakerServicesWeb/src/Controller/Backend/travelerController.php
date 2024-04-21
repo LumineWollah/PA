@@ -128,7 +128,7 @@ class travelerController extends AbstractController
         ->getForm()->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()){
                 $data = $form->getData();
-                dd($data);
+                
                 $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/merge-patch+json');
 
                 $response = $client->request('PATCH', 'cs_users/'.$storedTraveler, [
