@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
 
 class reservationController extends AbstractController
 {
@@ -148,6 +149,9 @@ class reservationController extends AbstractController
         ->add("price", IntegerType::class, [
             "attr"=>[
                 "placeholder"=>"Prix",
+            ],
+            'constraints'=>[
+                new GreaterThanOrEqual(0),
             ],
         ])
         ->add("service", ChoiceType::class, [
