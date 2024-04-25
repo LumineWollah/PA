@@ -12,7 +12,6 @@ use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\Regex;
 
@@ -86,10 +85,24 @@ class actionUserController extends AbstractController
             "attr"=>[
                 "placeholder"=>"Prénom",
             ],
+            "constraints"=>[
+                new Length([
+                    'min' => 3,
+                    'minMessage' => 'Le prénom doit contenir au moins {{ limit }} caractères',
+                    'max' => 150,
+                    'maxMessage' => 'Le prénom doit contenir au plus {{ limit }} caractères',
+                ]),
+            ],
         ])
         ->add("lastname", TextType::class, [
             "attr"=>[
                 "placeholder"=>"Nom",
+            ],
+            "constraints"=>[
+                new Length([
+                    'max' => 255,
+                    'maxMessage' => 'Le nom doit contenir au plus {{ limit }} caractères',
+                ]),
             ],
         ])
         ->add("password", PasswordType::class, [
@@ -97,7 +110,6 @@ class actionUserController extends AbstractController
                 "placeholder"=>"Mot de passe"
             ],
             'constraints'=>[
-                new NotBlank(),
                 new Regex([
                     'pattern' => '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*.?&])[A-Za-z\d@$!%*.?&]{8,}$/',
                     'message' => "Le mot de passe doit contenir 8 caractères minimum, au moins 1 lettre majuscule, 1 lettre minuscule, 1 chiffre et 1 caractère spécial"
@@ -120,10 +132,9 @@ class actionUserController extends AbstractController
             ],
             "constraints"=>[
                 new Length([
-                    'min' => 10,
-                    'minMessage' => 'Le numéro de téléphone doit contenir au moins {{ limit }} chiffres',
                     'max' => 10,
-                    'maxMessage' => 'Le numéro de téléphone doit contenir au plus {{ limit }} chiffres',
+                    'min' => 10,
+                    'exactMessage' => 'Le numéro de téléphone doit contenir {{ limit }} chiffres',
                 ]),
                 new Regex([
                     'pattern' => '/^[0-9]+$/',

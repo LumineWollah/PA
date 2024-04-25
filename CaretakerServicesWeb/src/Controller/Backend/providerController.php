@@ -95,11 +95,25 @@ class providerController extends AbstractController
             "attr"=>[
                 "placeholder"=>"Prénom",
             ], 
+            "constraints"=>[
+                new Length([
+                    'min' => 3,
+                    'minMessage' => 'Le prénom doit contenir au moins {{ limit }} caractères',
+                    'max' => 150,
+                    'maxMessage' => 'Le prénom doit contenir au plus {{ limit }} caractères',
+                ]),
+            ],
             "required"=>false,
         ])
         ->add("lastname", TextType::class, [
             "attr"=>[
                 "placeholder"=>"Nom",
+            ],
+            "constraints"=>[
+                new Length([
+                    'max' => 255,
+                    'maxMessage' => 'Le nom doit contenir au plus {{ limit }} caractères',
+                ]),
             ],
             "required"=>false,
         ])
@@ -120,10 +134,9 @@ class providerController extends AbstractController
             ],
             "constraints"=>[
                 new Length([
-                    'min' => 10,
-                    'minMessage' => 'Le numéro de téléphone doit contenir au moins {{ limit }} chiffres',
                     'max' => 10,
-                    'maxMessage' => 'Le numéro de téléphone doit contenir au plus {{ limit }} chiffres',
+                    'min' => 10,
+                    'exactMessage' => 'Le numéro de téléphone doit contenir {{ limit }} chiffres',
                 ]),
                 new Regex([
                     'pattern' => '/^[0-9]+$/',
@@ -132,20 +145,26 @@ class providerController extends AbstractController
             ],
             "required"=>false,
         ])
-        ->add("roles", ChoiceType::class, [
-            "multiple"=>true,
-            "expanded"=>false,   
-            "choices"=>[
-                "Lessor"=>"ROLE_LESSOR",
-                "Provider"=>"ROLE_PROVIDER",
-                "Traveler"=>"ROLE_TRAVELER",
-                "Admin"=>"ROLE_ADMIN",
-            ],
-            "required"=>false,
-        ])
         ->getForm()->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()){
                 $data = $form->getData();
+                $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/ld+json');
+                
+                $response = $client->request('GET', 'cs_users', [
+                    'query' => [
+                        'page' => 1,
+                        'email' => $data['email']
+                        ]
+                    ]);
+                
+                if ($response->toArray()["hydra:totalItems"] > 0){
+                    $errorMessages[] = "Adresse mail déjà utilisée. Essayez en une autre.";
+    
+                    return $this->render('backend/provider/editProvider.html.twig', [
+                        'form'=>$form,
+                        'errorMessages'=>$errorMessages
+                    ]);
+                }
                 
                 $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/merge-patch+json');
 
