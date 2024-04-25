@@ -70,7 +70,9 @@
 <script>
     mapboxgl.accessToken = 'pk.eyJ1IjoibGVvLXVyYWhhcmEiLCJhIjoiY2x2MTJrcHJ4MDIwdzJrdXNhcDhjazF4MSJ9.ZJjs_hvEVTuHKAe2CeDGbQ';
     const geocoder = new MapboxGeocoder({
-        accessToken: mapboxgl.accessToken
+        accessToken: mapboxgl.accessToken,
+        countries: 'fr', // Limiter la recherche aux adresses françaises
+        types: 'address', // Limiter la recherche aux adresses précises
     });
     geocoder.addTo('#geocoder');
 
