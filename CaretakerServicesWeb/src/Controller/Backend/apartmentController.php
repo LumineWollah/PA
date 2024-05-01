@@ -298,7 +298,9 @@ class apartmentController extends AbstractController
         ])
         ->add("address", HiddenType::class, [
             "constraints"=>[
-                new NotBlank(),
+                new NotBlank([
+                    'message' => 'L\'adresse est obligatoire',
+                ]),
             ],
         ])
         ->add("owner", ChoiceType::class, [

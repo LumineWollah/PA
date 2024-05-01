@@ -1,5 +1,8 @@
 {% extends 'backend/base.html.twig' %}
 
+{% block activeGest %}active{% endblock %}
+{% block activeComp %}active{% endblock %}
+
 {% block title %}Créer une entreprise{% endblock %}
 
 {% block body %}
@@ -13,24 +16,18 @@
                 </div>
                 <div class="inputDiv" style="position: relative;">
                     {{form_widget(form.companyName)}}
+                    <div class="errors">{{form_errors(form.companyName)}}</div>
                 </div>
                 <div class="inputDiv" style="position: relative;">
                     {{form_widget(form.companyEmail)}}
                 </div>
                 <div class="inputDiv" style="position: relative;">
                     {{form_widget(form.companyPhone)}}
+                    <div class="errors">{{form_errors(form.companyPhone)}}</div>
                 </div>
                 <div class="inputDiv" style="position: relative;">
                     {{form_widget(form.address)}}
-                </div>
-                <div class="inputDiv" style="position: relative;">
-                    {{form_widget(form.city)}}
-                </div>
-                <div class="inputDiv" style="position: relative;">
-                    {{form_widget(form.postalCode)}}
-                </div>
-                <div class="inputDiv" style="position: relative;">
-                    {{form_widget(form.country)}}
+                    <div class="errors">{{form_errors(form.address)}}</div>
                 </div>
                 <button type="submit" class="btn">Créer</button>
             {{form_end(form)}}

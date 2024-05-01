@@ -214,6 +214,12 @@ class companyController extends AbstractController
             "attr"=>[
                 "placeholder"=>"Nom d'entreprise",
             ], 
+            "constraints"=>[
+                new Length([
+                    'max' => 255,
+                    'maxMessage' => 'Le nom d\'entreprise doit contenir au plus {{ limit }} caractères',
+                ]),
+            ],
         ])
         ->add("companyEmail", TextType::class, [
             "attr"=>[
@@ -224,26 +230,27 @@ class companyController extends AbstractController
             "attr"=>[
                 "placeholder"=>"Téléphone d'entreprise",
             ], 
+            "constraints"=>[
+                new Length([
+                    'max' => 10,
+                    'min' => 10,
+                    'exactMessage' => 'Le numéro de téléphone doit contenir {{ limit }} chiffres',
+                ]),
+                new Regex([
+                    'pattern' => '/^[0-9]+$/',
+                    'message' => 'Le numéro de téléphone doit contenir uniquement des chiffres',
+                ]),
+            ],
         ])
         ->add("address", TextType::class, [
             "attr"=>[
                 "placeholder"=>"Adresse",
             ], 
-        ])
-        ->add("city", TextType::class, [
-            "attr"=>[
-                "placeholder"=>"Ville",
-            ], 
-        ])
-        ->add("postalCode", TextType::class, [
-            "attr"=>[
-                "placeholder"=>"Code postal",
-            ], 
-        ])
-        ->add("country", TextType::class, [
-            "attr"=>[
-                "placeholder"=>"Pays",
-            ], 
+            "constraints"=>[
+                new NotBlank([
+                    'message' => 'L\'adresse est obligatoire',
+                ]),
+            ],
         ])
         ->getForm()->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()){
