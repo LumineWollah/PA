@@ -45,6 +45,7 @@ class AppFixtures extends Fixture
         $company->setSiretNumber("01022033304444");
         $company->setAddress("71, avenue d'Italie");
         $company->setPostalCode("75013");
+        $company->setCenterGps([2.357781, 48.825486]);
         $company->setCity("Paris");
         $company->setCountry("France");
         $manager->persist($company);

@@ -3,20 +3,17 @@
 namespace App\Controller\Frontend;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Service\ApiHttpClient;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
-use Symfony\Component\Form\Extension\Core\Type\RadioType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Cookie;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Symfony\Component\Validator\Constraints\Country;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\Regex;
@@ -29,6 +26,15 @@ class connectionController extends AbstractController
     public function __construct(ApiHttpClient $apiHttpClient)
     {
         $this->apiHttpClient = $apiHttpClient;
+    }
+
+    private function extractValueByPrefix($data, $prefix) {
+        foreach ($data as $item) {
+            if (is_array($item) && strpos($item['id'], $prefix) === 0) {
+                return $item['text'];
+            }
+        }
+        return null;
     }
 
     #[Route('/login', name: 'login')]
@@ -110,6 +116,33 @@ class connectionController extends AbstractController
     public function register(Request $request)
     {
         $form0 = $this->createFormBuilder()
+        ->add("traveler", SubmitType::class, ["label"=>"Voyageur", "attr"=>["class"=>"choiceBtn btn"]])
+        ->add("lessorPerso", SubmitType::class, ["label"=>"Bailleur particulier", "attr"=>["class"=>"choiceBtn btn"]])
+        ->add("lessorPro", SubmitType::class, ["label"=>"Bailleur professionnel", "attr"=>["class"=>"choiceBtn btn"]])
+        ->add("provider", SubmitType::class, ["label"=>"Prestataire", "attr"=>["class"=>"choiceBtn btn"]])
+        ->getForm()->handleRequest($request);
+
+        if ($form0->isSubmitted() && $form0->isValid()) {
+            if ($form0->get("traveler")->isClicked()) {$request->getSession()->set("status", "ROLE_TRAVELER");}
+            elseif ($form0->get("lessorPerso")->isClicked() || $form0->get("lessorPro")->isClicked()) {$request->getSession()->set("status", "ROLE_LESSOR");}
+            else {$request->getSession()->set("status", "ROLE_PROVIDER");}
+            
+            if ($form0->get("traveler")->isClicked() || $form0->get("lessorPerso")->isClicked()) {
+                return $this->redirectToRoute("registerPerso");
+            } else {
+                return $this->redirectToRoute("registerPro"); 
+            }         
+        }
+
+        return $this->render('frontend/login_register/whichRegister.html.twig', [
+            'form'=>$form0
+        ]);        
+    }
+
+    #[Route('/register/perso', name: 'registerPerso')]
+    public function registerPerso(Request $request)
+    {
+        $formForPerso = $this->createFormBuilder([])
         ->add("firstname", TextType::class, [
             "attr"=>[
                 "placeholder"=>"Prénom"
@@ -170,18 +203,124 @@ class connectionController extends AbstractController
                 ]),
             ]
         ])
-        ->add("choiceRadio", ChoiceType::class, [
-            "choices"=> [
-                'Particulier' => 'traveler',
-                'Bailleur Particulier' => 'lessorPart',
-                'Bailleur Professionel' => 'lessorPro',
-                'Prestataire' => 'provider',
-            ],
-            'multiple' => false
-        ])
         ->getForm()->handleRequest($request);
 
-        $form1 = $this->createFormBuilder()
+        if ($formForPerso->isSubmitted() && $formForPerso->isValid()) {
+
+            $data = $formForPerso->getData();
+            $errorMessages = [];
+
+            if ($data['password'] != $data['confirmation']){
+                $errorMessages[] = "Vos mots de passe ne sont pas identiques";
+            }
+            unset($data['confirmation']);
+
+            $client = $this->apiHttpClient->getClientWithoutBearer();
+            
+            $response = $client->request('GET', 'cs_users', [
+                'query' => [
+                    'page' => 1,
+                    'email' => $data['email']
+                ]
+            ]);
+            
+            if ($response->toArray()["hydra:totalItems"] > 0){
+                $errorMessages[] = "Adresse mail déjà utilisée. Essayez en une autre.";
+                return $this->render('frontend/login_register/registerPerso.html.twig', [
+                    'formPerso'=>$formForPerso,
+                    'errorMessages'=>$errorMessages
+                ]);
+            }
+
+            $data['password'] = password_hash($data['password'], PASSWORD_BCRYPT, ['cost' => 13]);
+            $data['roles'] = [$request->getSession()->get("status")];
+            
+            $jsonData = [
+                "email"=>$data["email"],
+                "firstname"=>$data["firstname"],
+                "lastname"=>$data["lastname"],
+                "password"=>$data["password"],
+                "roles"=>$data["roles"],
+                "telNumber"=>$data["telNumber"],
+            ];
+
+            $response = $client->request('POST', 'cs_users', [
+                'json' => $jsonData
+            ]);
+
+            return $this->redirectToRoute('login');
+        }
+
+        return $this->render('frontend/login_register/registerPerso.html.twig', [
+            'formPerso'=>$formForPerso,
+            'errorMessages'=>null
+        ]);
+    }
+
+    #[Route('/register/pro', name: 'registerPro')]
+    public function registerPro(Request $request)
+    {
+        $formForPro = $this->createFormBuilder([])
+        ->add("firstname", TextType::class, [
+            "attr"=>[
+                "placeholder"=>"Prénom"
+            ],
+            'constraints'=>[
+                new NotBlank(),
+                new Length(min:3),
+            ]
+        ])
+        ->add("lastname", TextType::class, [
+            "attr"=>[
+                "placeholder"=>"Nom"
+            ],
+            'constraints'=>[
+                new NotBlank(),
+                new Length(min:3)
+            ]
+        ])
+        ->add("email", EmailType::class, [
+            "attr"=>[
+                "placeholder"=>"Email"
+            ],
+            'constraints'=>[
+                new NotBlank(),
+                new Email()
+            ]
+        ])
+        ->add("telNumber", TextType::class, [
+            "attr"=>[
+                "placeholder"=>"Téléphone"
+            ],
+            'constraints'=>[
+                new NotBlank(),
+                new Length(exactly:10)
+            ]
+        ])
+        ->add("password", PasswordType::class, [
+            "attr"=>[
+                "placeholder"=>"Mot de passe"
+            ],
+            'constraints'=>[
+                new NotBlank(),
+                new Regex([
+                    'pattern' => '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*.?&])[A-Za-z\d@$!%*.?&]{8,}$/',
+                    'message' => "Votre mot de passe doit contenir 8 caractères minimum, au moins 1 lettre majuscule, 1 lettre minuscule, 1 chiffre et 1 caractère spécial"
+                ]),
+            ]
+        ])
+        ->add("confirmation", PasswordType::class, [
+            "attr"=>[
+                "placeholder"=>"Confirmation"
+            ],
+            'constraints'=>[
+                new NotBlank(),
+                new Regex([
+                    'pattern' => '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*.?&])[A-Za-z\d@$!%*.?&]{8,}$/',
+                    'message' => "Votre mot de passe doit contenir 8 caractères minimum, au moins 1 lettre majuscule, 1 lettre minuscule, 1 chiffre et 1 caractère spécial"
+                ]),
+            ]
+        ])
         ->add("companyName", TextType::class, [
             "attr"=>[
                 "placeholder"=>"Nom de l'entreprise"
@@ -217,44 +356,16 @@ class connectionController extends AbstractController
                 new Length(exactly:10)
             ]
         ])
-        ->add("address", TextType::class, [
-            "attr"=>[
-                "placeholder"=>"Adresse de l'entreprise"
-            ],
-            'constraints'=>[
+        ->add("address", HiddenType::class, [
+            "constraints"=>[
                 new NotBlank(),
-                new Length(min:10)
-            ]
-        ])
-        ->add("city", TextType::class, [
-            "attr"=>[
-                "placeholder"=>"Ville"
             ],
-            'constraints'=>[
-                new NotBlank(),
-            ]
-        ])
-        ->add("postalCode", TextType::class, [
-            "attr"=>[
-                "placeholder"=>"Code Postal"
-            ],
-            'constraints'=>[
-                new NotBlank(),
-                new Length(exactly:5)
-            ]
-        ])
-        ->add("country", TextType::class, [
-            "attr"=>[
-                "placeholder"=>"Pays"
-            ],
-            'constraints'=>[
-                new NotBlank()            ]
         ])
         ->getForm()->handleRequest($request);
 
-        if ($form0->isSubmitted() && $form0->isValid()){
+        if ($formForPro->isSubmitted() && $formForPro->isValid()) {
 
-            $data = $form0->getData();
+            $data = $formForPro->getData();
             $errorMessages = [];
 
             if ($data['password'] != $data['confirmation']){
@@ -268,71 +379,62 @@ class connectionController extends AbstractController
                 'query' => [
                     'page' => 1,
                     'email' => $data['email']
-                    ]
-                ]);
+                ]
+            ]);
             
             if ($response->toArray()["hydra:totalItems"] > 0){
                 $errorMessages[] = "Adresse mail déjà utilisée. Essayez en une autre.";
-
-                return $this->render('frontend/login_register/register.html.twig', [
-                    'formIsValid'=>false,
-                    'form'=>$form0,
-                    'form1'=>$form1,
+                return $this->render('frontend/login_register/registerPro.html.twig', [
+                    'formPro'=>$formForPro,
                     'errorMessages'=>$errorMessages
                 ]);
             }
 
             $data['password'] = password_hash($data['password'], PASSWORD_BCRYPT, ['cost' => 13]);
+            $data['roles'] = [$request->getSession()->get("status")];
 
-            if ($data['choiceRadio'] == 'traveler' || $data['choiceRadio'] == 'lessorPart') {
-
-                $data['roles'] = ($data['choiceRadio'] == 'traveler') ? ['ROLE_TRAVELER'] : ['ROLE_LESSOR'];
-
-                $response = $client->request('POST', 'cs_users', [
-                    'json' => $data,
-                ]);
-
-                return $this->redirectToRoute('login');
-            }
-
-            $data['roles'] = ($data['choiceRadio'] == 'provider') ? ['ROLE_PROVIDER'] : ['ROLE_LESSOR'];
-
-            $request->getSession()->set('formIsValid', true);
-            $request->getSession()->set('dataForm', $data);
-            return $this->redirectToRoute('register');
-        }
-        
-        if ($form1->isSubmitted() && $form1->isValid()){
-            
-            $request->getSession()->remove('formIsValid');
-            
-            $data = $form1->getData();
-            $errorMessages = [];
-
-            $client = $this->apiHttpClient->getClientWithoutBearer();
+            $data['address'] = json_decode($data['address'], true);
+            $data["country"] = $this->extractValueByPrefix($data["address"]['context'], 'country');
+            $data["city"] = $this->extractValueByPrefix($data["address"]['context'], 'place');
+            $data["postalCode"] = $this->extractValueByPrefix($data["address"]['context'], 'postcode');
+            $data["centerGps"] = $data['address']['center'];                
+            $data["address"] = $data['address']['place_name'];                
 
             $response = $client->request('POST', 'cs_companies', [
-                'json' => $data,
+                'json' => [
+                    "siretNumber"=>$data["siretNumber"],
+                    "companyName"=>$data["companyName"],
+                    "companyEmail"=>$data["companyEmail"],
+                    "companyPhone"=>$data["companyPhone"],
+                    "address"=>$data["address"],
+                    "city"=>$data["city"],
+                    "postalCode"=>$data["postalCode"],
+                    "country"=>$data["country"],
+                    "centerGps"=>$data["centerGps"]
+                ]
             ]);
             
-            $client = $this->apiHttpClient->getClientWithoutBearer();
-
-            $data = $request->getSession()->get('dataForm');
             $data['company'] = $response->toArray()['@id'];
 
+            $jsonData = [
+                "email"=>$data["email"],
+                "firstname"=>$data["firstname"],
+                "lastname"=>$data["lastname"],
+                "password"=>$data["password"],
+                "roles"=>$data["roles"],
+                "telNumber"=>$data["telNumber"],
+                "company"=>$data["company"]
+            ];
+
             $response = $client->request('POST', 'cs_users', [
-                'json' => $data,
+                'json' => $jsonData
             ]);
 
             return $this->redirectToRoute('login');
         }
 
-        $formIsValid = $request->getSession()->get('formIsValid');
-
-        return $this->render('frontend/login_register/register.html.twig', [
-            'formIsValid'=>$formIsValid,
-            'form'=>$form0,
-            'form1'=>$form1,
+        return $this->render('frontend/login_register/registerPro.html.twig', [
+            'formPro'=>$formForPro,
             'errorMessages'=>null
         ]);
     }

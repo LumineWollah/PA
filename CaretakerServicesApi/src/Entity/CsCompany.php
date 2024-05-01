@@ -73,6 +73,10 @@ class CsCompany
     #[Groups(["getUsers", "getCompanies", "getServices", "getReservations"])]
     private ?string $country = null;
 
+    #[ORM\Column]
+    #[Groups(["getUsers", "getCompanies", "getServices", "getReservations"])]
+    private ?array $centerGps = null;
+
     #[ORM\OneToMany(targetEntity: CsService::class, mappedBy: 'company', orphanRemoval: true)]
     #[Groups(["getCompanies"])]
     private Collection $services;
@@ -243,6 +247,18 @@ class CsCompany
                 $service->setCompany(null);
             }
         }
+
+        return $this;
+    }
+    
+    public function getCenterGps()
+    {
+        return $this->centerGps;
+    }
+
+    public function setCenterGps($centerGps)
+    {
+        $this->centerGps = $centerGps;
 
         return $this;
     }
