@@ -77,7 +77,8 @@ class apartmentsController extends AbstractController
             "attr"=>[
                 "placeholder"=>"Départ - Arrivée",
                 'autocomplete'=>"off",
-                'readonly'=>'readonly'
+                'readonly'=>'readonly',
+                'required'=>true
             ],
             'constraints'=>[
                 new NotBlank(),
@@ -89,7 +90,8 @@ class apartmentsController extends AbstractController
                 new PositiveOrZero()
             ],
             'attr' => [
-                'min' => 0
+                'min' => 0,
+                'max' => $ap['travelersMax']
             ]
         ])
         ->add("childTravelers", IntegerType::class, [
@@ -98,7 +100,8 @@ class apartmentsController extends AbstractController
                 new PositiveOrZero()
             ],
             'attr' => [
-                'min' => 0
+                'min' => 0,
+                'max' => $ap['travelersMax']
             ]
         ])
         ->add("babyTravelers", IntegerType::class, [
@@ -118,7 +121,7 @@ class apartmentsController extends AbstractController
             $id = $request->cookies->get('id');
             
             if ($id == null) {
-                return $this->redirectToRoute('login');
+                return $this->redirectToRoute('login', ['redirect'=>'/apartment/'.$ap['id']]);
             }
 
             $dates = explode(" ", $data['dates']);
@@ -141,6 +144,10 @@ class apartmentsController extends AbstractController
             $data['user'] = 'api/cs_users/'.$id;
             $data['apartment'] = 'api/cs_apartments/'.$ap['id'];
 
+            if ($data['adultTravelers'] + $data['childTravelers'] > $ap['travelersMax']) {
+                return $this->redirectToRoute('apartmentsList', ['id' => $ap['id']]);
+            }
+
             $response = $client->request('POST', 'cs_apartments/availables/'.$ap['id'], [
                 'json' => [
                     'starting_date' => $startDateTime,
@@ -149,7 +156,7 @@ class apartmentsController extends AbstractController
             ]);
 
             if (!(($response->toArray())['available'])) {
-                return;
+                return $this->redirectToRoute('apartmentsList', ['id' => $ap['id']]);
             }
 
             $response = $client->request('POST', 'cs_reservations', [

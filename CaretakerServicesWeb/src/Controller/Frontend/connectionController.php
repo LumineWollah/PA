@@ -103,6 +103,9 @@ class connectionController extends AbstractController
             
             $responseCookie->send();
 
+            if ($request->get('redirect')) {
+                return $this->redirect($request->get('redirect'));
+            }
             return $this->redirectToRoute('providerList');
         }      
 

@@ -76,6 +76,7 @@
                 <div class="col-6 leftFormContainer">
                     <div class="leftForm">
                         <p class="reservTitle">Date de votre voyage</p>
+                        <div style="color: red;">{{ form_errors(form.dates) }}</div>
                         {{ form_widget(form.dates) }}
                         <p class="reservTitle mt-4">Nombre de voyageurs</p>
                         <div class="leftFormRow">
@@ -110,7 +111,7 @@
                     <div class="rightForm">
                         <p class="reservTitle">Total</p>
                         <p class="totalText"><span id="totalValue">0</span>€ pour <span class="nightsNb">0</span> nuits</p>
-                        <button type="submit" class="reservBtn">Réserver</button>
+                        <button type="submit" class="reservBtn" id="reservation" disabled>Réserver</button>
                     </div>
                 </div>
             </div>
@@ -161,6 +162,48 @@
 {% block javascripts %}
 
 <script>
+
+    const travelersMax = {{ apartment.travelersMax }};
+    var input1 = document.getElementById("form_adultTravelers");
+    var input2 = document.getElementById("form_childTravelers");
+    var reservBtn = document.getElementById("reservation");
+    var dates = document.getElementById("form_dates");
+
+    input1.addEventListener("change", function() {
+        updateMax(input1, input2);
+        checkButtonStatus();
+    });
+
+    input2.addEventListener("change", function() {
+        updateMax(input2, input1);
+        checkButtonStatus();
+    });
+
+    function checkButtonStatus() {
+        if ((parseInt(input1.value) !== 0 || parseInt(input2.value) !== 0) && dates.value.trim() != "" ) {
+            reservBtn.disabled = false;
+        } else {
+            reservBtn.disabled = true;
+        }
+    }
+
+    function updateMax(input, otherInput) {
+        var otherValue = parseInt(otherInput.value);
+        var total = parseInt(input.value) + otherValue;
+        var maxLimit = travelersMax;
+
+        var newMax = maxLimit - otherValue;
+        input.max = newMax;
+        otherInput.max = maxLimit - parseInt(input.value);
+
+        if (parseInt(input.value) > maxLimit) {
+            input.value = maxLimit;
+            total = parseInt(input.value) + otherValue;
+        }
+        if (total > maxLimit) {
+            otherInput.value = maxLimit - parseInt(input.value);
+        }
+    }
 
     const rangesTab = {{ datesRangeReservs|json_encode|raw }};
     const nightPrice = {{ apartment.price }};
@@ -218,7 +261,7 @@
             
         }).on('apply.daterangepicker', function(ev, picker) {
             $(this).val('Du ' + picker.startDate.format('DD/MM/YYYY') + ' au ' + picker.endDate.format('DD/MM/YYYY'));
-            
+            checkButtonStatus();
             var startDate = picker.startDate;
             var endDate = picker.endDate;
             var duration = endDate.diff(startDate, 'days');
