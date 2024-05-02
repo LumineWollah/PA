@@ -185,4 +185,30 @@ class actionUserController extends AbstractController
             'errorMessage'=>null
         ]);
     }
+    
+    #[Route('/admin-panel/user/ban', name: 'userBan')]
+    public function userBan(Request $request)
+    {
+        if (!$this->checkUserRole($request)) {return $this->redirectToRoute('login');}
+
+        $client = $this->apiHttpClient->getClient($request->cookies->get('token'));
+
+        $email = $request->query->get('email');
+        $origin = $request->query->get('origin');
+
+
+        $response = $client->request('DELETE', 'cs_users/'.$id);
+
+        $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/ld+json');
+
+        $data = array('email' => $email);
+        $data = json_encode($data);
+
+        $response = $client->request('POST', 'cs_banned', [
+            'json' => $data,
+        ]);
+        $response = json_decode($response->getContent(), true);
+
+        return $this->redirectToRoute($origin);
+    }
 }
