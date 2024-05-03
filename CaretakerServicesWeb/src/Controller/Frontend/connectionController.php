@@ -426,7 +426,8 @@ class connectionController extends AbstractController
                 "password"=>$data["password"],
                 "roles"=>$data["roles"],
                 "telNumber"=>$data["telNumber"],
-                "company"=>$data["company"]
+                "company"=>$data["company"],
+                "professional"=>true
             ];
 
             $response = $client->request('POST', 'cs_users', [
