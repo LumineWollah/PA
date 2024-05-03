@@ -126,6 +126,10 @@ class CsApartment
 
     #[ORM\Column(type: Types::SMALLINT)]
     #[Groups(["getUsers", "getApartments", "getReservations"])]
+    private ?int $bathrooms = null;
+
+    #[ORM\Column(type: Types::SMALLINT)]
+    #[Groups(["getUsers", "getApartments", "getReservations"])]
     private ?int $travelersMax = null;
 
     #[ORM\Column]
@@ -147,10 +151,6 @@ class CsApartment
     #[ORM\Column]
     #[Groups(["getUsers", "getApartments", "getReservations"])]
     private ?float $price = null;
-
-    #[ORM\Column(length: 5, nullable: true)]
-    #[Groups(["getUsers", "getApartments", "getReservations"])]
-    private ?string $apartNumber = null;
 
     #[ORM\Column]
     #[Groups(["getUsers", "getApartments", "getReservations"])]
@@ -208,12 +208,19 @@ class CsApartment
     #[Groups(["getApartments"])]
     private Collection $mandatoryServices;
 
+    /**
+     * @var Collection<int, CsAddons>
+     */
+    #[ORM\ManyToMany(targetEntity: CsAddons::class, inversedBy: 'apartments')]
+    private Collection $addons;
+
     public function __construct()
     {
         $this->dateCreation = new DateTime();
         $this->reservations = new ArrayCollection();
         $this->reviews = new ArrayCollection();
         $this->mandatoryServices = new ArrayCollection();
+        $this->addons = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -313,18 +320,6 @@ class CsApartment
     public function setPrice(float $price): static
     {
         $this->price = $price;
-
-        return $this;
-    }
-
-    public function getApartNumber(): ?string
-    {
-        return $this->apartNumber;
-    }
-
-    public function setApartNumber(?string $apartNumber): static
-    {
-        $this->apartNumber = $apartNumber;
 
         return $this;
     }
@@ -541,6 +536,42 @@ class CsApartment
     public function removeMandatoryService(CsService $mandatoryService): static
     {
         $this->mandatoryServices->removeElement($mandatoryService);
+
+        return $this;
+    }
+
+    public function getBathrooms()
+    {
+        return $this->bathrooms;
+    }
+
+    public function setBathrooms($bathrooms)
+    {
+        $this->bathrooms = $bathrooms;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, CsAddons>
+     */
+    public function getAddons(): Collection
+    {
+        return $this->addons;
+    }
+
+    public function addAddon(CsAddons $addon): static
+    {
+        if (!$this->addons->contains($addon)) {
+            $this->addons->add($addon);
+        }
+
+        return $this;
+    }
+
+    public function removeAddon(CsAddons $addon): static
+    {
+        $this->addons->removeElement($addon);
 
         return $this;
     }

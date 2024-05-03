@@ -95,6 +95,10 @@ class CsUser implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(["getUsers", "getDocuments", "getApartments", "getCompanies", "getReservations"])]
     private ?int $subscription = null;
 
+    #[ORM\Column]
+    #[Groups(["getUsers", "getDocuments", "getApartments", "getCompanies", "getReservations"])]
+    private ?bool $isBan = false;
+
     #[ORM\OneToMany(targetEntity: CsDocument::class, mappedBy: 'owner', orphanRemoval: true)]
     #[Groups(["getUsers"])]
     private Collection $documents;
@@ -309,6 +313,18 @@ class CsUser implements UserInterface, PasswordAuthenticatedUserInterface
     public function setTelNumber($telNumber)
     {
         $this->telNumber = $telNumber;
+
+        return $this;
+    }
+
+    public function getisBan()
+    {
+        return $this->isBan;
+    }
+    
+    public function setisBan($isBan)
+    {
+        $this->isBan = $isBan;
 
         return $this;
     }

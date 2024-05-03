@@ -10,20 +10,24 @@ use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RadioType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Validator\Constraints\Country;
+use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Constraints\Email;
+use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\Validator\Constraints\PositiveOrZero;
 
 class apartmentsController extends AbstractController
@@ -33,6 +37,129 @@ class apartmentsController extends AbstractController
     public function __construct(ApiHttpClient $apiHttpClient)
     {
         $this->apiHttpClient = $apiHttpClient;
+    }
+
+    #[Route('/apartment/create', name: 'apartmentCreate')]
+    public function apartmentCreate(Request $request)
+    {
+        $defaults = [
+            "bedrooms"=>1,
+            "bathrooms"=>1,
+            "travelersMax"=>1,
+            "area"=>1
+        ];
+
+        $form = $this->createFormBuilder($defaults)
+        ->add("name", TextType::class, [
+            "attr"=>[
+                "placeholder"=>"Nom de votre appartement",
+            ],
+            "constraints"=>[
+                new Length([
+                    'max' => 50,
+                    'maxMessage' => 'Le nom doit contenir au plus {{ limit }} caractères',
+                ]),
+            ],
+        ])
+        ->add("description", TextareaType::class, [
+            "attr"=>[
+                "placeholder"=>"Description de votre appartement",
+            ], 
+        ])
+        ->add("bedrooms", IntegerType::class, [
+            'constraints'=>[
+                new GreaterThanOrEqual([
+                    'value' => 1,
+                    'message' => 'Le nombre de chambres doit être égal ou supérieur à 1',
+                
+                ]),
+            ],
+            'attr'=>[
+                'min'=>1
+            ]
+        ])
+        ->add("bathrooms", IntegerType::class, [
+            'constraints'=>[
+                new GreaterThanOrEqual([
+                    'value' => 1,
+                    'message' => 'Le nombre de chambres doit être égal ou supérieur à 1',
+                
+                ]),
+            ],
+            'attr'=>[
+                'min'=>1
+            ]
+        ])
+        ->add("travelersMax", IntegerType::class, [
+            'constraints'=>[
+                new GreaterThanOrEqual([
+                    'value' => 1,
+                    'message' => 'Le nombre maximum de voyageurs doit être égal ou supérieur à 1',
+                
+                ]),
+            ],
+            'attr'=>[
+                'min'=>1
+            ]
+        ])
+        ->add("area", IntegerType::class, [
+            'constraints'=>[
+                new GreaterThanOrEqual([
+                    'value' => 1,
+                    'message' => 'La superficie doit être égal ou supérieur à 1',
+                
+                ]),
+            ],
+        ])
+        ->add("isFullhouse", ChoiceType::class, [
+            'choices'  => [
+                'Logement Entier' => true,
+                'Chambre' => false,
+            ],
+        ])
+        ->add("isHouse", ChoiceType::class, [
+            'choices'  => [
+                'Maison' => true,
+                'Appartement' => false,
+            ],
+        ])
+        ->add("price", IntegerType::class, [
+            'constraints'=>[
+                new GreaterThanOrEqual([
+                    'value' => 1,
+                    'message' => 'Le prix doit être égal ou supérieur à 1',
+                
+                ]),
+            ],
+            'attr'=>['class'=>"form-control"]
+        ])
+        ->add("address", HiddenType::class, [
+            "constraints"=>[
+                new NotBlank([
+                    'message' => 'L\'adresse est obligatoire',
+                ]),
+            ],
+        ])
+        ->add("mainPict", FileType::class, [
+            "attr"=>[
+                "placeholder"=>"Image principale",
+            ], 
+            'constraints' => [
+                new File([
+                    'maxSize' => '10m',
+                    'mimeTypes' => [
+                        'image/png', 
+                        'image/jpeg', 
+                    ],
+                    'mimeTypesMessage' => 'Please upload a valid jpeg or png document',
+                ])
+            ],
+        ])
+        ->getForm()->handleRequest($request);
+
+        return $this->render('frontend/apartments/apartmentCreate.html.twig', [
+            'form'=>$form,
+        ]);
     }
 
     #[Route('/apartment/{id}', name: 'apartmentsDetail')]

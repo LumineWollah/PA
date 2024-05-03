@@ -1,0 +1,170 @@
+.pageContent {
+    position: absolute;
+    top: 8vh;
+}
+
+.mainImg {
+    width: 100vw;
+    height: 55vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #919191;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.mainImg img {
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+}
+
+.drop-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    height: 200px;
+    padding: 20px;
+    border: 2px dashed #3D2F44;
+    color: #3D2F44;
+    cursor: pointer;
+    transition: background .2s ease-in-out, border .2s ease-in-out;
+}
+  
+.drop-container:hover {
+    background: #eee;
+}
+
+.drop-title {
+    color: #3D2F44;
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.drop-container.drag-active {
+    background: #eee;
+}
+
+input[type=file] {
+    width: 350px;
+    max-width: 100%;
+    color: #3D2F44;
+    padding: 8px;
+    background-color: #fff;
+    border: 1px solid #3D2F44;
+}
+
+input[type=file]:focus {
+    outline: none;
+}
+
+input[type=file]::file-selector-button {
+    margin-right: 8px;
+    border: none;
+    background: #3D2F44;
+    padding: 8px 12px;
+    color: #fff;
+    cursor: pointer;
+}
+
+input[type=file]::file-selector-button:hover {
+    background: #A594F9;
+}
+  
+.mainInfos {
+    padding: 2%;
+}
+
+.inputs {
+    display: flex;
+    justify-content: space-between;
+    height: 12vh;
+}
+
+.inputName p, .inputDesc p {
+    margin: 0;
+    font-size: 0.7vw;
+}
+
+h4 {
+    margin: 0;
+    font-family: 'Antonio';
+    font-weight: 600;
+    font-size: 1.4vw;
+}
+
+.input {
+    height: 12vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.inputDesc {
+    height: 28vh;
+}
+
+textarea {
+    height: 100%;
+    resize: none;
+}
+
+.inputsNb {
+    display: flex;
+    width: 50%;
+    justify-content: space-between;
+}
+
+.inputName, .inputDesc {
+    width: 30%;
+}
+
+.inputNb {
+    width: 12%;
+}
+
+.inputAdr {
+    width: 36%;
+    padding-left: 1%;
+}
+
+.inputs input {
+    border: #d2d2d2 solid 1px;
+    border-radius: 5px;
+    width: 100%;
+    height: 5vh;
+    text-indent: 0.7vw;
+    background-color: #F7F7F7;
+    font-family: "Quicksand";
+}
+
+.inputs input:focus {
+    outline: black solid 2px;
+    box-shadow: none;
+    border: #d2d2d2 solid 1px;
+}
+
+.mapboxgl-ctrl-geocoder {
+    width: 100% !important;
+    margin-top: -2.5vh;
+    box-shadow: none !important;
+}
+
+@media screen and (min-width: 640px) {
+    .mapboxgl-ctrl-geocoder {
+        max-width: none !important;
+    }
+}
+
+.inputAdr input {
+    width: 100%;
+}
+
+input::-webkit-input-placeholder {
+    font-family: "Antonio";
+}
