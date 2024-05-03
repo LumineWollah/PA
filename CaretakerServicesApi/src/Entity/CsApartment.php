@@ -212,6 +212,7 @@ class CsApartment
      * @var Collection<int, CsAddons>
      */
     #[ORM\ManyToMany(targetEntity: CsAddons::class, inversedBy: 'apartments')]
+    #[Groups(["getApartments"])]
     private Collection $addons;
 
     public function __construct()
