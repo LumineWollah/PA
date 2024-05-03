@@ -143,6 +143,12 @@ class apartmentController extends AbstractController
             ],
             "required"=>false,
         ])
+        ->add("bathrooms", IntegerType::class, [
+            "attr"=>[
+                "placeholder"=>"Toilettes",
+            ],
+            "required"=>false,
+        ])
         ->add("travelersMax", IntegerType::class, [
             "attr"=>[
                 "placeholder"=>"Nombre maximum de voyageurs",
@@ -238,6 +244,18 @@ class apartmentController extends AbstractController
                 new GreaterThanOrEqual([
                     'value' => 1,
                     'message' => 'Le nombre de chambres doit être égal ou supérieur à 1',
+                
+                ]),
+            ],
+        ])
+        ->add("bathrooms", IntegerType::class, [
+            "attr"=>[
+                "placeholder"=>"Toilettes",
+            ],
+            'constraints'=>[
+                new GreaterThanOrEqual([
+                    'value' => 1,
+                    'message' => 'Le nombre de toilettes doit être égal ou supérieur à 1',
                 
                 ]),
             ],

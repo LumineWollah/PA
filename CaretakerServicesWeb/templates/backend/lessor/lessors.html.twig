@@ -104,6 +104,7 @@
                                     <input type="hidden" name="user" value="{{ lessor|json_encode }}">
                                     <button type="submit" class="btn" style="background-color: #A594F9;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/chart.png') }}></div></button>
                                 </form>
+                                <a href="{{ path('userBan', {'id': lessor.email, 'origin':'lessorList' }) }}" class="btn" style="background-color: #EE3939;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/ban.png') }}></div></a>
                             </td>
                         </tr>
                     {% endfor %}
