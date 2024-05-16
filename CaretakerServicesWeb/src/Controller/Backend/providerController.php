@@ -157,7 +157,7 @@ class providerController extends AbstractController
                         ]
                     ]);
                 
-                if ($response->toArray()["hydra:totalItems"] > 0){
+                if ($response->toArray()["hydra:totalItems"] > 0 && $response->toArray()["hydra:member"][0]['id'] != $storedProvider) {
                     $errorMessages[] = "Adresse mail déjà utilisée. Essayez en une autre.";
     
                     return $this->render('backend/provider/editProvider.html.twig', [
