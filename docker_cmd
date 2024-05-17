@@ -1,7 +1,0 @@
-docker build --target api -t mon-api .
-docker run -p 4443:4443 --name app-api -d mon-api
-docker exec -it app-api /bin/sh -c "symfony server:start --port=4443"
-
-docker build --target web -t mon-web .
-docker run -p 443:443 --name app-web -d mon-web
-docker exec -it app-web /bin/sh -c "symfony server:start --port=443"

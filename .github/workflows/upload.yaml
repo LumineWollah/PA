@@ -1,34 +1,36 @@
-name: Upload
-on: push
+name: Deploy to Linux Server
+
+on:
+  push:
+    branches:
+      - dev
+
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v3
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-      - name: Remove unwanted files in server
-        run: "rm -r .git .github"
+    - name: SSH Deploy
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.SSHKEY }}
+        script: |
+          cd /var/www/html/PA
+          git fetch origin main  # Fetch latest changes
+          git reset --hard origin/main  # Reset local code to match remote
+          # Add more deployment steps if needed
 
-      # - name: Exclude unwanted directory
-      #   run: |
-      #     # Excluding the 'unwanted_directory' from the copy
-      #     shopt -s extglob
-      #     rsync -av --exclude='vendor' ./ /tmp/repo
-      - uses: actions/upload-artifact@v3
-        name: Upload Artifact
-        with:
-          name: PA
-          path: "/tmp/repo/*"
+          # Build and run API Docker container
+          docker build --target api -t mon-api .
+          docker run -p 4443:4443 --name app-api -d mon-api
+          docker exec -it app-api /bin/sh -c "symfony server:start --port=4443"
 
-      - name: Copy repository contents
-        uses: wangyucode/sftp-upload-action@v1.4.9
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          port: ${{ secrets.PORT }}
-          privateKey: ${{ secrets.SSHKEY }}
-          passphrase: ${{ secrets.PASSPHRASE }}
-          localDir: "/tmp/repo"
-          remoteDir: "/var/www/PA"
-          dryRun: false
-          forceUpload: true
+          # Build and run Web Docker container
+          docker build --target web -t mon-web .
+          docker run -p 443:443 --name app-web -d mon-web
+          docker exec -it app-web /bin/sh -c "symfony server:start --port=443"
