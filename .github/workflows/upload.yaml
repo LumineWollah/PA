@@ -33,10 +33,15 @@ jobs:
           sudo usermod -aG docker $USER || true
           sudo chmod 666 /var/run/docker.sock
 
+          docker stop app-api || true
+          docker rm app-api || true
+          docker stop app-web || true
+          docker rm app-web || true
+
           docker build --target api -t mon-api .
           docker run -p 4443:4443 --name app-api -d mon-api || docker start app-api
-          docker exec -it app-api /bin/sh -c "symfony server:start --port=4443"
+          docker exec app-api /bin/sh -c "symfony server:start --port=4443"
 
           # docker build --target web -t mon-web .
           # docker run -p 443:443 --name app-web -d mon-web || docker start app-web
-          # docker exec -it app-web /bin/sh -c "symfony server:start --port=443"
+          # docker exec app-web /bin/sh -c "symfony server:start --port=443"
