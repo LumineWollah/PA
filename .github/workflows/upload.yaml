@@ -20,6 +20,9 @@ jobs:
         username: ${{ secrets.USERNAME }}
         key: ${{ secrets.SSHKEY }}
         script: |
+          sudo usermod -aG docker $USER
+          newgrp docker
+          
           cd /var/www/html/PA
           git fetch origin main  # Fetch latest changes
           git reset --hard origin/main  # Reset local code to match remote
