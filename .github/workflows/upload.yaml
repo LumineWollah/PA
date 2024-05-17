@@ -1,0 +1,34 @@
+name: Upload
+on: push
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Remove unwanted files in server
+        run: "rm -r README.md .git .github"
+
+      # - name: Exclude unwanted directory
+      #   run: |
+      #     # Excluding the 'unwanted_directory' from the copy
+      #     shopt -s extglob
+      #     rsync -av --exclude='vendor' ./ /tmp/repo
+      - uses: actions/upload-artifact@v3
+        name: Upload Artifact
+        with:
+          name: PA
+          path: "/tmp/repo/*"
+
+      - name: Copy repository contents
+        uses: wangyucode/sftp-upload-action@v1.4.9
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          port: ${{ secrets.PORT }}
+          privateKey: ${{ secrets.SSHKEY }}
+          passphrase: ${{ secrets.PASSPHRASE }}
+          localDir: "/tmp/repo"
+          remoteDir: "/var/www/PA"
+          dryRun: false
+          forceUpload: true
