@@ -20,9 +20,18 @@ jobs:
         username: ${{ secrets.USERNAME }}
         key: ${{ secrets.SSHKEY }}
         script: |
+          sudo chown -R $USER:$USER /var/www/html/PA
+          sudo chmod -R 755 /var/www/html/PA
+
           cd /var/www/html/PA
+
+          git config --global --add safe.directory /var/www/html/PA
+
           git fetch origin dev
           git reset --hard origin/dev
+
+          sudo usermod -aG docker $USER || true
+          sudo chmod 666 /var/run/docker.sock
 
           docker build --target api -t mon-api .
           docker run -p 4443:4443 --name app-api -d mon-api
