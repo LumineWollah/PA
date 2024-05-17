@@ -7,7 +7,7 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Remove unwanted files in server
-        run: "rm -r README.md .git .github"
+        run: "rm -r .git .github"
 
       # - name: Exclude unwanted directory
       #   run: |
