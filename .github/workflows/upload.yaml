@@ -45,4 +45,3 @@ jobs:
           # docker build --target web -t mon-web .
           # docker run -p 443:443 --name app-web -d mon-web || docker start app-web
           # docker exec -d app-web /bin/sh -c "symfony server:start --port=443"
-          # test

@@ -14,4 +14,3 @@ FROM base AS web
 COPY CaretakerServicesWeb ./CaretakerServicesWeb
 WORKDIR /var/www/html/PA/CaretakerServicesWeb
 RUN composer install --no-scripts --no-autoloader
-# test
