@@ -13,7 +13,7 @@ FROM base AS api
 COPY CaretakerServicesApi ./CaretakerServicesApi
 WORKDIR /usr/share/nginx/html/PA/CaretakerServicesApi
 RUN composer install --no-scripts --no-autoloader
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+
 
 FROM base AS web
 COPY CaretakerServicesWeb ./CaretakerServicesWeb
