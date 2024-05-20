@@ -39,7 +39,7 @@ jobs:
           docker rm app-web || true
 
           docker build --target api -t mon-api .
-          docker run -p 4443:443 --name app-api -d mon-api || docker start app-api
+          docker run -p 80:80 --name app-api -d mon-api || docker start app-api
           docker cp /home/webadmin/default.conf app-api:/etc/nginx/conf.d/default.conf
           docker exec -d app-api /bin/bash "composer install"
           docker exec -d app-api /bin/bash "symfony server:start"
