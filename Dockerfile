@@ -13,7 +13,7 @@ COPY CaretakerServicesApi ./CaretakerServicesApi
 RUN rm -r /etc/nginx/conf.d/default.conf
 WORKDIR /usr/share/nginx/html/PA/CaretakerServicesApi
 RUN composer install --no-scripts --no-autoloader
-CMD ["/bin/bash"]
+
 
 FROM base AS web
 COPY CaretakerServicesWeb ./CaretakerServicesWeb
