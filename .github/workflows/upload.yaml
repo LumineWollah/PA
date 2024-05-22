@@ -22,8 +22,8 @@ jobs:
         username: ${{ secrets.USERNAME }}
         key: ${{ secrets.SSHKEY }}
         script: |
-          sudo chown -R $USER:$USER /usr/share/nginx/html/PA
-          sudo chmod -R 755 /usr/share/nginx/html/PA
+          # sudo chown -R $USER:$USER /usr/share/nginx/html/PA
+          # sudo chmod -R 755 /usr/share/nginx/html/PA
 
           cd /usr/share/nginx/html/PA
 
