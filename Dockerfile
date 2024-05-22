@@ -5,17 +5,13 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 RUN curl -1sLf 'https://dl.cloudsmith.io/public/symfony/stable/setup.deb.sh' | bash
 RUN apt-get install symfony-cli
 
-
-
-
 FROM base AS api 
 COPY CaretakerServicesApi ./CaretakerServicesApi
 RUN rm -r /etc/nginx/conf.d/default.conf
 WORKDIR /usr/share/nginx/html/PA/CaretakerServicesApi
 RUN composer install --no-scripts --no-autoloader
 
-
 FROM base AS web
 COPY CaretakerServicesWeb ./CaretakerServicesWeb
-WORKDIR /usr/share/nginx/html/PA/PA/CaretakerServicesWeb
+WORKDIR /usr/share/nginx/html/PA/CaretakerServicesWeb
 RUN composer install --no-scripts --no-autoloader
