@@ -12,6 +12,8 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
+      with: 
+        ref: dev
 
     - name: SSH Deploy
       uses: appleboy/ssh-action@master
@@ -28,7 +30,7 @@ jobs:
           git config --global --add safe.directory /usr/share/nginx/html/PA
 
           git fetch origin dev
-          git reset --hard dev
+          git reset --hard origin/dev
 
           sudo usermod -aG docker $USER || true
           sudo chmod 666 /var/run/docker.sock
