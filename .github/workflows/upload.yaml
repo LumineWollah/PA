@@ -28,7 +28,7 @@ jobs:
           git config --global --add safe.directory /usr/share/nginx/html/PA
 
           git fetch origin dev
-          git reset --hard origin/dev
+          git reset --hard dev
 
           sudo usermod -aG docker $USER || true
           sudo chmod 666 /var/run/docker.sock
