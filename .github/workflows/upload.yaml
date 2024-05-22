@@ -32,8 +32,8 @@ jobs:
           git fetch origin
           git reset --hard origin/dev
 
-          sudo usermod -aG docker $USER || true
-          sudo chmod 666 /var/run/docker.sock
+          # sudo usermod -aG docker $USER || true
+          # sudo chmod 666 /var/run/docker.sock
 
           docker stop app-api || true
           docker rm app-api || true
