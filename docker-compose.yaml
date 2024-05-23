@@ -27,6 +27,7 @@ services:
       - 8050:8050
     volumes:
       - ./CaretakerServicesApi:/usr/share/nginx/html/CaretakerServicesApi
+      - /etc/letsencrypt:/etc/letsencrypt
       - /home/webadmin/default-api.conf:/etc/nginx/conf.d/default.conf
     networks:
       - symfony
