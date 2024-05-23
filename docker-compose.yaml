@@ -18,7 +18,7 @@ services:
   #   networks:
   #     - symfony
   app-api:
-    build: app-api
+    build: .
     ports:
       - 4443:4443
     volumes:
