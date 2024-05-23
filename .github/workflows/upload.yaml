@@ -40,7 +40,7 @@ jobs:
           # docker stop app-web || true
           # docker rm app-web || true
 
-          docker-compose up
+          docker-compose up -d
 
           # docker build --target api -t mon-api .
           # docker run -p 4443:4443 --name app-api -d mon-api || docker start app-api
