@@ -47,6 +47,7 @@ services:
       - /etc/letsencrypt:/etc/letsencrypt
       - /home/webadmin/default-api.conf:/etc/nginx/conf.d/default.conf
       - /home/webadmin/jwt:/usr/share/nginx/html/CaretakerServicesApi/config/jwt
+      - /home/webadmin/.env-api:/usr/share/nginx/html/CaretakerServicesApi/.env
     networks:
       - symfony
     environment:
