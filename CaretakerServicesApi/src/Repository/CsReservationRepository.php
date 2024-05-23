@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\CsApartment;
 use App\Entity\CsReservation;
+use App\Entity\CsUser;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -65,6 +66,36 @@ class CsReservationRepository extends ServiceEntityRepository
             ->setParameter('startingDate', $startingDate)
             ->setParameter('endingDate', $endingDate)
             ->setParameter('apartment', $apartment)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function getPastReserv(\DateTimeInterface $todayDate, CsUser $user)
+    {
+        return $this->createQueryBuilder('o')
+            ->andWhere('o.endingDate < :todayDate AND o.user = :user AND o.apartment IS NOT NULL')
+            ->setParameter('todayDate', $todayDate)
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function getPresentReserv(\DateTimeInterface $todayDate, CsUser $user)
+    {
+        return $this->createQueryBuilder('o')
+            ->andWhere('o.startingDate < :endingDate AND o.endingDate > :startingDate AND o.user = :user AND o.apartment IS NOT NULL')
+            ->setParameter('todayDate', $todayDate)
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function getFutureReserv(\DateTimeInterface $todayDate, CsUser $user)
+    {
+        return $this->createQueryBuilder('o')
+            ->andWhere('o.startingDate > :todayDate AND o.user = :user AND o.apartment IS NOT NULL')
+            ->setParameter('todayDate', $todayDate)
+            ->setParameter('user', $user)
             ->getQuery()
             ->getResult();
     }

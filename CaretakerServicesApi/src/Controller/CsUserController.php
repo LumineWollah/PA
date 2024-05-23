@@ -9,7 +9,10 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 use ApiPlatform\Metadata\ApiResource;
+use App\Entity\CsReservation;
 use App\Entity\CsUser;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\Request;
 
 // #[ApiResource]
 class CsUserController extends AbstractController
@@ -19,5 +22,26 @@ class CsUserController extends AbstractController
     {
         $jsonUsersList = $serializer->serialize($user, 'json', ['groups' => 'getUsers']);
         return new JsonResponse($jsonUsersList, Response::HTTP_OK, ['accept' => 'json'], true);
+    }
+
+    #[Route("/api/cs_users/{id}/reservations", name:"getReservByDate", methods:["POST"])]
+    public function getReservByDate(Request $request, EntityManagerInterface $entityManager, CsUser $user): Response
+    {
+        $requestData = json_decode($request->getContent(), true);
+        // PAST - PRESENT - FUTURE
+        $time = $requestData['time'];
+
+        switch($time){
+            case 'PAST':
+                $reserv = $entityManager->getRepository(CsReservation::class)->getPastReserv(new \DateTime(), $user);
+                break;
+            case 'PRESENT':
+                $reserv = $entityManager->getRepository(CsReservation::class)->getPresentReserv(new \DateTime(), $user);
+                break;
+            default:
+                $reserv = $entityManager->getRepository(CsReservation::class)->getFutureReserv(new \DateTime(), $user);
+        }
+
+        return $this->json($reserv, 200, [], ['groups' => 'getReservations']);
     }
 }

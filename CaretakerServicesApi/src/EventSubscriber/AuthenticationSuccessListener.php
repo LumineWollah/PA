@@ -24,8 +24,18 @@ class AuthenticationSuccessListener implements EventSubscriberInterface
             return;
         }
 
-        $data['roles'] = $user->getRoles();
-        $data['id'] = $user->getId();
+        $userData = [
+            'id' => $user->getId(),
+            'firstname' => $user->getFirstname(),
+            'lastname' => $user->getLastname(),
+            'profile_pict' => $user->getProfilePict(),
+            // Ajoutez d'autres données de l'utilisateur selon vos besoins
+            'roles' => $user->getRoles(),
+            // ...
+        ];
+
+        // Ajouter les données de l'utilisateur au tableau de données
+        $data['user'] = $userData;
 
         $event->setData($data);
     }

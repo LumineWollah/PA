@@ -30,14 +30,24 @@
                         </li>
                     </ul>
                 </div>
-                <form class="d-flex" role="search">
-                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                    <button class="btn btn-outline-success" type="submit">Search</button>
-                </form>
-                </div>
+                {% set id = app.request.cookies.get('id') %}
+                {% set pp = app.request.cookies.get('profile_pict') %}
+
+                {% if id is not defined or id is null %}
+                    <a href="{{ path('login') }}" class="btn btn-primary me-3 btnConnect">Connexion</a>
+                    <a href="{{ path('register') }}" class="btn btn-primary btnRegister">Inscription</a>
+                {% else %}
+                    <div class="d-flex align-items-center">
+                        <span class="username">{{ app.request.cookies.get('firstname') }} {{ app.request.cookies.get('lastname') }}</span>
+                        {% if pp is null %}
+                            <a href={{ path('myProfile') }}><img src={{ asset('icons/profile_pict_default_white.png') }} alt="Profile Picture" width="40" height="40" class="rounded-circle me-2"></a>
+                        {% else %}
+                            <a href={{ path('myProfile') }}><img src="{{ pp }}" alt="Profile Picture" width="40" height="40" class="rounded-circle me-2"></a>
+                        {% endif %}
+                    </div>
+                {% endif %}
             </div>
         </nav>
-
         {% block body %}{% endblock %}
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
         {% block javascripts %}{% endblock %}

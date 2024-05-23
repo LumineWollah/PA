@@ -90,23 +90,29 @@ class connectionController extends AbstractController
 
             $response = json_decode($response->getContent(), true);
             
-            unset($response['roles'][array_search('ROLE_USER', $response['roles'])]);
+            unset($response['user']['roles'][array_search('ROLE_USER', $response['user']['roles'])]);
 
             $responseCookie = new Response();
 
             $cookie = Cookie::create('token', $response['token'], 0, '/', null, true, true);
             $responseCookie->headers->setCookie($cookie);
-            $cookie = Cookie::create('roles', $response['roles'][0], 0, '/', null, true, true);
+            $cookie = Cookie::create('roles', $response['user']['roles'][0], 0, '/', null, true, true);
             $responseCookie->headers->setCookie($cookie);
-            $cookie = Cookie::create('id', $response['id'], 0, '/', null, true, true);
+            $cookie = Cookie::create('id', $response['user']['id'], 0, '/', null, true, true);
             $responseCookie->headers->setCookie($cookie);
-            
+            $cookie = Cookie::create('profile_pict', $response['user']['profile_pict'], 0, '/', null, true, true);
+            $responseCookie->headers->setCookie($cookie);
+            $cookie = Cookie::create('lastname', $response['user']['lastname'], 0, '/', null, true, true);
+            $responseCookie->headers->setCookie($cookie);
+            $cookie = Cookie::create('firstname', $response['user']['firstname'], 0, '/', null, true, true);
+            $responseCookie->headers->setCookie($cookie);
+
             $responseCookie->send();
 
             if ($request->get('redirect')) {
                 return $this->redirect($request->get('redirect'));
             }
-            return $this->redirectToRoute('providerList');
+            return $this->redirectToRoute('apartmentsList');
         }      
 
         return $this->render('frontend/login_register/login.html.twig', [
