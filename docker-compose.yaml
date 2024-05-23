@@ -24,7 +24,7 @@ services:
       dockerfile: Dockerfile
       target: app-api
     ports:
-      - 4443:4443
+      - 8050:8050
     volumes:
       - ./CaretakerServicesApi:/usr/share/nginx/html/CaretakerServicesApi
       - /home/webadmin/default-api.conf:/etc/nginx/conf.d/default.conf
@@ -38,7 +38,7 @@ services:
       dockerfile: Dockerfile
       target: app-web
     ports:
-      - 443:443
+      - 8060:8060
     volumes:
       - ./CaretakerServicesWeb:/usr/share/nginx/html/CaretakerServicesWeb
       - /home/webadmin/default-web.conf:/etc/nginx/conf.d/default.conf
