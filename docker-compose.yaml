@@ -26,6 +26,14 @@ services:
   #     - ./CaretakerServicesApi:/var/www/html
   #   networks:
   #     - symfony
+  php-fpm:
+    image: php:fpm
+    container_name: php-fpm
+    volumes:
+      - ./CaretakerServicesApi:/var/www/html  # Adapter le chemin selon votre arborescence
+      - ./CaretakerServicesWeb:/var/www/html  # Adapter le chemin selon votre arborescence
+    networks:
+      - symfony
 
   app-api:
     build: 
