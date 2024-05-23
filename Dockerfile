@@ -12,10 +12,10 @@ RUN cp /home/webadmin/default.conf /etc/nginx/conf.d/default.conf
 WORKDIR /usr/share/nginx/html/PA/CaretakerServicesApi
 RUN composer install --no-scripts --no-autoloader
 
-FROM base AS app-web
-COPY CaretakerServicesWeb ./CaretakerServicesWeb
-WORKDIR /usr/share/nginx/html/PA/CaretakerServicesWeb
-RUN composer install --no-scripts --no-autoloader
+# FROM base AS app-web
+# COPY CaretakerServicesWeb ./CaretakerServicesWeb
+# WORKDIR /usr/share/nginx/html/PA/CaretakerServicesWeb
+# RUN composer install --no-scripts --no-autoloader
 
 # FROM php:8.2.19-apache:latest AS base
 # WORKDIR /var/www/html/PA

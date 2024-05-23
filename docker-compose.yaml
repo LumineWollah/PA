@@ -28,14 +28,14 @@ services:
       - ./CaretakerServicesApi:/usr/share/nginx/html/CaretakerServicesApi
     networks:
       - symfony
-  app-web:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: app-web
-    ports:
-      - 443:443
-    volumes:
-      - ./CaretakerServicesWeb:/usr/share/nginx/html/CaretakerServicesWeb
-    networks:
-      - symfony
+  # app-web:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #     target: app-web
+  #   ports:
+  #     - 443:443
+  #   volumes:
+  #     - ./CaretakerServicesWeb:/usr/share/nginx/html/CaretakerServicesWeb
+  #   networks:
+  #     - symfony
