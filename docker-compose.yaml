@@ -67,6 +67,7 @@ services:
       - ./CaretakerServicesWeb:/usr/share/nginx/html/CaretakerServicesWeb
       - /etc/letsencrypt:/etc/letsencrypt
       - /home/webadmin/default-web.conf:/etc/nginx/conf.d/default.conf
+      - /home/webadmin/.env-web:/usr/share/nginx/html/CaretakerServicesWeb/.env
     networks:
       - symfony
     environment:

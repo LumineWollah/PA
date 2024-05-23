@@ -10,7 +10,3 @@
 /vendor/
 /config/jwt/
 ###< symfony/framework-bundle ###
-
-###> lexik/jwt-authentication-bundle ###
-# /config/jwt/*.pem
-###< lexik/jwt-authentication-bundle ###
