@@ -11,7 +11,7 @@ RUN composer install
 
 FROM base AS app-web
 WORKDIR /usr/share/nginx/html/CaretakerServicesWeb
-RUN composer install
+# RUN composer install
 
 # FROM php:8.2.19-apache:latest AS base
 # WORKDIR /var/www/html/PA

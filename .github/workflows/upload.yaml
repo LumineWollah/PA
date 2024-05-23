@@ -33,4 +33,4 @@ jobs:
           docker-compose up -d
 
           docker exec -d pa-app-api-1 /bin/sh -c "symfony server:start --port=4443"
-          docker exec -d pa-app-web-1 /bin/sh -c "symfony server:start --port=443"
+          # docker exec -d pa-app-web-1 /bin/sh -c "symfony server:start --port=443"
