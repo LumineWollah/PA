@@ -8,12 +8,12 @@ RUN apt-get install symfony-cli
 FROM base AS app-api 
 COPY CaretakerServicesApi ./CaretakerServicesApi
 RUN rm -r /etc/nginx/conf.d/default.conf
-WORKDIR /usr/share/nginx/html/PA/CaretakerServicesApi
+WORKDIR /usr/share/nginx/html/CaretakerServicesApi
 RUN composer install --no-scripts --no-autoloader
 
 FROM base AS app-web
 COPY CaretakerServicesWeb ./CaretakerServicesWeb
-WORKDIR /usr/share/nginx/html/PA/CaretakerServicesWeb
+WORKDIR /usr/share/nginx/html/CaretakerServicesWeb
 RUN composer install --no-scripts --no-autoloader
 
 # FROM php:8.2.19-apache:latest AS base
