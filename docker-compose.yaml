@@ -22,14 +22,14 @@ services:
     ports:
       - 4443:4443
     volumes:
-      - CaretakerServicesApi:/usr/share/nginx/html/CaretakerServicesApi
+      - ./CaretakerServicesApi:/usr/share/nginx/html/CaretakerServicesApi
     networks:
       - symfony
-  # app-web:
-  #   build: app-web
-  #   ports:
-  #     - 443:443
-  #   volumes:
-  #     - CaretakerServicesWeb:/usr/share/nginx/html/CaretakerServicesWeb
-  #   networks:
-  #     - symfony
+  app-web:
+    build: app-web
+    ports:
+      - 443:443
+    volumes:
+      - ./CaretakerServicesWeb:/usr/share/nginx/html/CaretakerServicesWeb
+    networks:
+      - symfony
