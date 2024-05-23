@@ -1,0 +1,35 @@
+version: '3'
+networks:
+  symfony:
+    driver: bridge
+services:
+  # mysql:
+  #   image: mysql:8.0
+  #   container_name: mysql
+  #   environment:
+  #     MYSQL_ROOT_PASSWORD: root
+  #     MYSQL_DATABASE: website
+  #     MYSQL_USER: pcs
+  #     MYSQL_PASSWORD: pass
+  #   ports:
+  #     - 3308:3306
+  #   volumes:
+  #     - ./mysql:/var/lib/mysql
+  #   networks:
+  #     - symfony
+  app-api:
+    build: app-api
+    ports:
+      - 4443:4443
+    volumes:
+      - CaretakerServicesApi:/usr/share/nginx/html/CaretakerServicesApi
+    networks:
+      - symfony
+  app-web:
+    build: app-web
+    ports:
+      - 443:443
+    volumes:
+      - CaretakerServicesWeb:/usr/share/nginx/html/CaretakerServicesWeb
+    networks:
+      - symfony
