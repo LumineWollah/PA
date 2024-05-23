@@ -22,8 +22,6 @@ jobs:
         username: ${{ secrets.USERNAME }}
         key: ${{ secrets.SSHKEY }}
         script: |
-          # sudo chown -R $USER:$USER /usr/share/nginx/html/PA
-          # sudo chmod -R 755 /usr/share/nginx/html/PA
 
           cd /usr/share/nginx/html/PA
 
@@ -32,21 +30,6 @@ jobs:
           git fetch origin
           git reset --hard origin/dev
 
-          # sudo usermod -aG docker $USER || true
-          # sudo chmod 666 /var/run/docker.sock
-
-          # docker stop app-api || true
-          # docker rm app-api || true
-          # docker stop app-web || true
-          # docker rm app-web || true
-
           docker-compose up -d
 
-          # docker build --target api -t mon-api .
-          # docker run -p 4443:4443 --name app-api -d mon-api || docker start app-api
-          # docker cp /home/webadmin/default.conf app-api:/etc/nginx/conf.d/default.conf
-          # docker exec -d app-api /bin/sh -c "symfony server:start --port=4443"
-          
-          # docker build --target web -t mon-web .
-          # docker run -p 443:443 --name app-web -d mon-web || docker start app-web
-          # docker exec -d app-web /bin/sh -c "symfony server:start --port=443"
+          docker exec -d pa-app-api-1 /bin/sh -c "symfony server:start --port=4443"
