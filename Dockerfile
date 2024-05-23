@@ -7,8 +7,6 @@ RUN apt-get install symfony-cli
 
 FROM base AS app-api 
 WORKDIR /usr/share/nginx/html/CaretakerServicesApi
-RUN composer install
 
 FROM base AS app-web
 WORKDIR /usr/share/nginx/html/CaretakerServicesWeb
-RUN composer install
