@@ -18,8 +18,6 @@ framework:
     php_errors:
         log: false
 
-    debug: false
-
 when@test:
     framework:
         test: true
