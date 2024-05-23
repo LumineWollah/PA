@@ -17,7 +17,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ApiResource(normalizationContext: ['groups' => ['getCategories']])]
 #[ORM\Entity(repositoryClass: CsCategoryRepository::class)]
 #[Patch(security: "is_granted('ROLE_ADMIN')")]
-// #[Get]
+#[Get]
 #[GetCollection]
 #[Delete(security: "is_granted('ROLE_ADMIN')")]
 #[Post(security: "is_granted('ROLE_ADMIN')")]
