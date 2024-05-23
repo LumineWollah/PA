@@ -5,6 +5,7 @@ networks:
 services:
   mariadb:
     image: mariadb:10.4.33
+    restart: always
     container_name: mariadb
     environment:
       MYSQL_ROOT_PASSWORD: root
@@ -12,7 +13,7 @@ services:
       MYSQL_USER: pcs
       MYSQL_PASSWORD: pass
     ports:
-      - 3306:3306
+      - 3311:3306
     volumes:
       - mariadb_data:/var/lib/mysql
     networks:
@@ -30,7 +31,7 @@ services:
     networks:
       - symfony
     environment:
-      DATABASE_URL: "mysql://root:root@mariadb:3306/caretakerservicesdb"
+      DATABASE_URL: "mysql://root:root@mariadb:3311/caretakerservicesdb"
   # app-web:
   #   build:
   #     context: .
