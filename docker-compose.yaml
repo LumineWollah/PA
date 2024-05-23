@@ -30,8 +30,8 @@ services:
       - /home/webadmin/default-api.conf:/etc/nginx/conf.d/default.conf
     networks:
       - symfony
-    # environment:
-    #   DATABASE_URL: 
+    environment:
+      DATABASE_URL: "mysql://root:root@mariadb:3306/caretakerservicesdb"
   app-web:
     build:
       context: .
