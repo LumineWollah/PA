@@ -8,6 +8,7 @@ RUN apt-get install symfony-cli
 FROM base AS app-api 
 COPY CaretakerServicesApi ./CaretakerServicesApi
 RUN rm -r /etc/nginx/conf.d/default.conf
+RUN cp /home/webadmin/default.conf /etc/nginx/conf.d/default.conf
 WORKDIR /usr/share/nginx/html/PA/CaretakerServicesApi
 RUN composer install --no-scripts --no-autoloader
 
