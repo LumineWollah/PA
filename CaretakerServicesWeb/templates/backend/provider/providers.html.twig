@@ -89,12 +89,12 @@
                 <tbody>
                     {% for provider in verifiedProviders %}
                         <tr>
-                            <td>{{ provider.firstname|capitalize }}</td>
-                            <td>{{ provider.lastname|upper }}</td>
-                            <td>{{ provider.email }}</td>
-                            <td>{{ provider.telNumber|split('', 2)|join('.') }}</td>
-                            <td>{{ provider.dateInscription | date('d/m/Y H:i:s') }}</td>
-                            <td class="action">
+                            <td {% if provider['isBan'] %} style="background-color: #FFB5B5;"{% endif %}>{{ provider.firstname|capitalize }}</td>
+                            <td {% if provider['isBan'] %} style="background-color: #FFB5B5;"{% endif %}>{{ provider.lastname|upper }}</td>
+                            <td {% if provider['isBan'] %} style="background-color: #FFB5B5;"{% endif %}>{{ provider.email }}</td>
+                            <td {% if provider['isBan'] %} style="background-color: #FFB5B5;"{% endif %}>{{ provider.telNumber|split('', 2)|join('.') }}</td>
+                            <td {% if provider['isBan'] %} style="background-color: #FFB5B5;"{% endif %}>{{ provider.dateInscription | date('d/m/Y H:i:s') }}</td>
+                            <td class="action" {% if provider['isBan'] %} style="background-color: #FFB5B5;"{% endif %}>
                                 <a href="{{ path('userDelete', {'id': provider.id, 'origin':'providerList' }) }}" class="btn" style="background-color: #EE3939;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/bin.png') }}></div></a>
                                 <form action="{{ path('providerEdit') }}" method="post" style="display: inline;">
                                     <input type="hidden" name="provider" value="{{ provider|json_encode }}">

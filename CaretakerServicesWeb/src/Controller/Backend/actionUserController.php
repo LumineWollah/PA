@@ -203,15 +203,17 @@ class actionUserController extends AbstractController
 
         $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/merge-patch+json');
 
+
         $data = array('isBan' => true);
-        $data = json_encode($data);
 
         $response = $client->request('PATCH', 'cs_users/'.$user['id'], [
             'json' => $data,
         ]);
 
-        $response = $response->getStatusCode();
+        $var = $response->getContent(false);
 
+        
+        $response = $response->getStatusCode();
         return $this->redirectToRoute($origin);
     }
 }

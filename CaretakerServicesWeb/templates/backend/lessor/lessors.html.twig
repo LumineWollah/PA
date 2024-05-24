@@ -89,12 +89,12 @@
                 <tbody>
                     {% for lessor in verifiedLessors %}
                         <tr>
-                            <td>{{ lessor.firstname|capitalize }}</td>
-                            <td>{{ lessor.lastname|upper }}</td>
-                            <td>{{ lessor.email }}</td>
-                            <td>{{ lessor.telNumber|split('', 2)|join('.') }}</td>
-                            <td>{{ lessor.dateInscription|date('d/m/Y H:i:s') }}</td>
-                            <td class="action">
+                            <td {% if lessor['isBan'] %} style="background-color: #FFB5B5;"{% endif %}>{{ lessor.firstname|capitalize }}</td>
+                            <td {% if lessor['isBan'] %} style="background-color: #FFB5B5;"{% endif %}>{{ lessor.lastname|upper }}</td>
+                            <td {% if lessor['isBan'] %} style="background-color: #FFB5B5;"{% endif %}>{{ lessor.email }}</td>
+                            <td {% if lessor['isBan'] %} style="background-color: #FFB5B5;"{% endif %}>{{ lessor.telNumber|split('', 2)|join('.') }}</td>
+                            <td {% if lessor['isBan'] %} style="background-color: #FFB5B5;"{% endif %}>{{ lessor.dateInscription|date('d/m/Y H:i:s') }}</td>
+                            <td class="action" {% if lessor['isBan'] %} style="background-color: #FFB5B5;"{% endif %}>
                                 <a href="{{ path('userDelete', {'id': lessor.id, 'origin':'lessorList' }) }}" class="btn" style="background-color: #EE3939;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/bin.png') }}></div></a>
                                 <form action="{{ path('lessorEdit') }}" method="post" style="display: inline;">
                                     <input type="hidden" name="lessor" value="{{ lessor|json_encode }}">
