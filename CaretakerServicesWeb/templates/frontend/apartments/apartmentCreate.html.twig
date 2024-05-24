@@ -6,6 +6,10 @@
     <script src="https://api.mapbox.com/mapbox-gl-js/v3.2.0/mapbox-gl.js"></script>
     <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.min.js"></script>
     <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.css" type="text/css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 {% endblock %}
 
 {% block activeApar %}active{% endblock %}
@@ -85,6 +89,10 @@
             </div>
         </div>
         <hr class="mt-5">
+        <div class="row">
+            <input type="text" name="daterange" value="" />
+            <div id="selectedDates" style="height: 200px; overflow-y: scroll;"></div>
+        </div>
             {# <div class="col-7">
                 <h1>{{ apartment.name }}</h1>
                 <div class="apartDescDiv">
@@ -226,6 +234,64 @@
 {% block javascripts %}
 
 <script>
+    $(function() {
+    var selectedDates = [];
+
+    // Initialisation de la date range picker
+    $('input[name="daterange"]').daterangepicker({
+        isInvalidDate: function(date) {
+            // Vérifier si la date est passée
+            if (date.isBefore(moment(), 'day')) {
+                return true;
+            }
+
+            // Vérifier si la date est déjà sélectionnée dans la liste
+            for (var i = 0; i < selectedDates.length; i++) {
+                var range = selectedDates[i].split(' to ');
+                var startDate = moment(range[0], 'YYYY-MM-DD');
+                var endDate = moment(range[1], 'YYYY-MM-DD');
+                if (date.isBetween(startDate, endDate, null, '[]')) {
+                    return true;
+                }
+            }
+            return false;
+        },
+        opens: 'left'
+    }, function(start, end, label) {
+        console.log("ouiii");
+        var selectedDate = start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD');
+        addDateToList(selectedDate); // Ajouter la date à la liste
+    });
+
+    function addDateToList(date) {
+        // Création d'un élément span pour la date
+        var $dateSpan = $('<span>', {
+            text: date
+        });
+
+        // Création d'un élément pour la croix de suppression
+        var $removeButton = $('<button>', {
+            text: 'x',
+            click: function() {
+                // Supprimer la date de la liste lorsque la croix est cliquée
+                $dateSpan.remove();
+                var index = selectedDates.indexOf(date);
+                if (index > -1) {
+                    selectedDates.splice(index, 1);
+                }
+            }
+        });
+
+        // Ajout du bouton de suppression à l'élément span de la date
+        $dateSpan.append($removeButton);
+
+        // Ajout de la date à la liste
+        $('#selectedDates').append($dateSpan);
+        selectedDates.push(date);
+    }
+});
+
+
     var input = document.getElementById("form_mainPict");
     var preview = document.getElementById("preview");
     

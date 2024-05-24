@@ -1,0 +1,36 @@
+name: Deploy to Linux Server
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+      with: 
+        ref: dev
+
+    - name: SSH Deploy
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.SSHKEY }}
+        script: |
+
+          cd /usr/share/nginx/html/PA
+
+          git config --global --add safe.directory /usr/share/nginx/html/PA
+
+          git fetch origin
+          git reset --hard origin/dev
+
+          docker-compose up -d
+
+          # docker exec -d pa-app-api-1 /bin/sh -c "symfony server:start --port=8050"
+          # docker exec -d pa-app-web-1 /bin/sh -c "symfony server:start --port=8060"

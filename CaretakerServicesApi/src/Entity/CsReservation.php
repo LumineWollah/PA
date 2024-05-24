@@ -184,7 +184,11 @@ class CsReservation
 
     public function getServiceOwner()
     {
-        return $this->service->getCompany()->getUsers();
+        if ($this->service !== null) {
+            return $this->service->getCompany()->getUsers();
+        }
+        
+        return null;
     }
 
     public function getAdultTravelers(): ?int

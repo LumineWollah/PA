@@ -32,3 +32,26 @@ html {
 html::-webkit-scrollbar {
     display: none;
 }
+
+.btnConnect {
+    background: none;
+    border: 1px solid white;
+    animation: all 1s ease-in-out;
+}
+
+.btnRegister {
+    background-color: #221A27;
+    border: 1px solid #221A27;
+    animation: all 1s ease-in-out;
+}
+
+.btnConnect:hover, .btnRegister:hover {
+    color: #221A27 !important;
+    border: 1px solid #221A27;
+    background-color: white;
+}
+
+.username {
+    color: white;
+    margin-right: 1.3vw;
+}

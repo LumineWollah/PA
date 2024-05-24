@@ -26,7 +26,32 @@ use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasher;
 
-#[ApiResource(normalizationContext: ['groups' => ['getUsers']])]
+#[ApiResource(operations: [
+    new Post(
+        name: 'getReservByDate', 
+        uriTemplate: '/cs_users/{id}/reservations', 
+        controller: CsUserController::class,
+        deserialize: false,
+        openapiContext: [
+            'summary' => 'Get reservations by time',
+            'requestBody' => [
+                'description' => 'Get reservations by time',
+                'content' => [
+                    'application/json' => [
+                        'schema' => [
+                            'type' => 'object',
+                            'properties' => [
+                                'time' => [
+                                    'type' => 'string',
+                                    'example' => 'PAST',
+                                ]
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ]
+    )], normalizationContext: ['groups' => ['getUsers']])]
 #[Get()]
 #[Patch(security: "is_granted('ROLE_ADMIN')")]
 #[GetCollection()]
