@@ -79,6 +79,11 @@
                                     <input type="hidden" name="user" value="{{ traveler|json_encode }}">
                                     <button type="submit" class="btn" style="background-color: #A594F9;"><div class="btnImage"><img style="height:17px;" src={{ asset('icons/crud/chart.png') }}></div></button>
                                 </form>
+                                <form action="{{ path('userBan') }}" method="post" style="display: inline;">
+                                    <input type="hidden" name="user" value="{{ traveler|json_encode }}">
+                                    <input type="hidden" name="origin" value="travelerList">
+                                    <button type="submit" class="btn" style="background-color: #18A0FB;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/ban.png') }}></div></button>
+                                </form>
                             </td>
                         </tr>
                     {% endfor %}

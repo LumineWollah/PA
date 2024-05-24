@@ -191,23 +191,26 @@ class actionUserController extends AbstractController
     {
         if (!$this->checkUserRole($request)) {return $this->redirectToRoute('login');}
 
-        $client = $this->apiHttpClient->getClient($request->cookies->get('token'));
+        $userData = $request->request->get('user');
+        $user = json_decode($userData, true);
+        
+        $origin = $request->request->get('origin');
+        $storedUser = $request->getSession()->get('userId');
 
-        $email = $request->query->get('email');
-        $origin = $request->query->get('origin');
+        if (!$storedUser) {
+            $request->getSession()->set('userId', $user['id']);
+        }
 
+        $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/merge-patch+json');
 
-        $response = $client->request('DELETE', 'cs_users/'.$id);
-
-        $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/ld+json');
-
-        $data = array('email' => $email);
+        $data = array('isBan' => true);
         $data = json_encode($data);
 
-        $response = $client->request('POST', 'cs_banned', [
+        $response = $client->request('PATCH', 'cs_users/'.$user['id'], [
             'json' => $data,
         ]);
-        $response = json_decode($response->getContent(), true);
+
+        $response = $response->getStatusCode();
 
         return $this->redirectToRoute($origin);
     }

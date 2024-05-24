@@ -87,6 +87,20 @@ class connectionController extends AbstractController
                     'errorMessage'=>$errorMessage
                 ]);
             }
+            
+            $responseBan = $client->request('GET', 'cs_users', [
+                'query' => [
+                    'page' => 1,
+                    'email' => $data['username']
+                ]
+            ]);            
+            if ($responseBan->toArray()["hydra:member"][0]["isBan"] == true){
+                $errorMessages[] = "Ce compte est banni";
+                return $this->render('frontend/login_register/login.html.twig', [
+                    'form'=>$form,
+                    'errorMessages'=>$errorMessages
+                ]);
+            }
 
             $response = json_decode($response->getContent(), true);
             
