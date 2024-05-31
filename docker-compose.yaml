@@ -10,8 +10,8 @@ services:
       - ./CaretakerServicesWeb:/var/www/html
       - ./certs:/etc/apache2/ssl
     ports:
-      - "80:80"
-      - "443:443"
+      - "8090:80"
+      - "7443:443"
     depends_on:
       - mariadb
     environment:
