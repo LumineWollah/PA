@@ -25,7 +25,7 @@ jobs:
 
           cd /home/webadmin
 
-          git config --global --add safe.directory /home/webadmin/PA
+          pwd
 
           git fetch origin
           git reset --hard origin/dev
