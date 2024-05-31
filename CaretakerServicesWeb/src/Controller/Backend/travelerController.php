@@ -150,7 +150,7 @@ class travelerController extends AbstractController
                         ]
                     ]);
                 
-                if ($response->toArray()["hydra:totalItems"] > 0){
+                if ($response->toArray()["hydra:totalItems"] > 0 && $response->toArray()["hydra:member"][0]['id'] != $storedTraveler) {
                     $errorMessages[] = "Adresse mail déjà utilisée. Essayez en une autre.";
     
                     return $this->render('backend/traveler/editTraveler.html.twig', [

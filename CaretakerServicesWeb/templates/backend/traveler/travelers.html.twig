@@ -64,12 +64,12 @@
                 <tbody>
                     {% for traveler in travelers %}
                         <tr>
-                            <td>{{ traveler.firstname|capitalize }}</td>
-                            <td>{{ traveler.lastname|upper }}</td>
-                            <td>{{ traveler.email }}</td>
-                            <td>{{ traveler.telNumber|split('', 2)|join('.') }}</td>
-                            <td>{{ traveler.dateInscription | date('d/m/Y H:i:s') }}</td>
-                            <td class="action">
+                            <td {% if traveler['isBan'] %} style="background-color: #FFB5B5;"{% endif %}>{{ traveler.firstname|capitalize }}</td>
+                            <td {% if traveler['isBan'] %} style="background-color: #FFB5B5;"{% endif %}>{{ traveler.lastname|upper }}</td>
+                            <td {% if traveler['isBan'] %} style="background-color: #FFB5B5;"{% endif %}>{{ traveler.email }}</td>
+                            <td {% if traveler['isBan'] %} style="background-color: #FFB5B5;"{% endif %}>{{ traveler.telNumber|split('', 2)|join('.') }}</td>
+                            <td {% if traveler['isBan'] %} style="background-color: #FFB5B5;"{% endif %}>{{ traveler.dateInscription | date('d/m/Y H:i:s') }}</td>
+                            <td class="action" {% if traveler['isBan'] %} style="background-color: #FFB5B5;"{% endif %}>
                                 <a href="{{ path('userDelete', {'id': traveler.id, 'origin': 'travelerList'}) }}" class="btn" style="background-color: #EE3939;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/bin.png') }}></div></a>
                                 <form action="{{ path('travelerEdit') }}" method="post" style="display: inline;">
                                     <input type="hidden" name="traveler" value="{{ traveler|json_encode }}">
@@ -78,6 +78,11 @@
                                 <form action="{{ path('userShow') }}" method="post" style="display: inline;">
                                     <input type="hidden" name="user" value="{{ traveler|json_encode }}">
                                     <button type="submit" class="btn" style="background-color: #A594F9;"><div class="btnImage"><img style="height:17px;" src={{ asset('icons/crud/chart.png') }}></div></button>
+                                </form>
+                                <form action="{{ path('userBan') }}" method="post" style="display: inline;">
+                                    <input type="hidden" name="user" value="{{ traveler|json_encode }}">
+                                    <input type="hidden" name="origin" value="travelerList">
+                                    <button type="submit" class="btn" style="background-color: #18A0FB;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/ban.png') }}></div></button>
                                 </form>
                             </td>
                         </tr>

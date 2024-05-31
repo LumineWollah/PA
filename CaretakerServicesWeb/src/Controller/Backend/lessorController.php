@@ -64,7 +64,7 @@ class lessorController extends AbstractController
 
         $lessorData = $request->request->get('lessor');
         $lessor = json_decode($lessorData, true);
-        
+
         $storedLessor = $request->getSession()->get('lessorId');
 
         if (!$storedLessor) {
@@ -82,7 +82,6 @@ class lessorController extends AbstractController
         } catch (Exception $e) {
             $defaults = [];
         }
-
         $form = $this->createFormBuilder($defaults)
         ->add("email", EmailType::class, [
             "attr"=>[
@@ -157,8 +156,7 @@ class lessorController extends AbstractController
                     'email' => $data['email']
                     ]
                 ]);
-            
-            if ($response->toArray()["hydra:totalItems"] > 0){
+            if ($response->toArray()["hydra:totalItems"] > 0 && $response->toArray()["hydra:member"][0]['id'] != $storedLessor) {
                 $errorMessages[] = "Adresse mail déjà utilisée. Essayez en une autre.";
 
                 return $this->render('backend/lessor/editLessor.html.twig', [
