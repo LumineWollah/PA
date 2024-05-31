@@ -11,13 +11,13 @@ RUN apt-get update && apt-get install -y \
     pdo_mysql \
     zip
 
+COPY apache/vhost.conf /etc/apache2/sites-available/000-default.conf
+
 WORKDIR /etc/letsencrypt
 
 COPY . /etc/letsencrypt/
 
 RUN update-ca-certificates
-
-COPY apache/vhost.conf /etc/apache2/sites-available/000-default.conf
 
 RUN a2enmod rewrite ssl
 
