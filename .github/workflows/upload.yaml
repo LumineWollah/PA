@@ -23,9 +23,9 @@ jobs:
         key: ${{ secrets.SSHKEY }}
         script: |
 
-          cd /home
+          cd /home/webadmin
 
-          git config --global --add safe.directory /home/PA
+          git config --global --add safe.directory /home/webadmin/PA
 
           git fetch origin
           git reset --hard origin/dev
