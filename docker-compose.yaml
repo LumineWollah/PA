@@ -9,6 +9,7 @@ services:
     volumes:
       - ./CaretakerServicesWeb:/var/www/html
       - /etc/letsencrypt:/etc/letsencrypt
+      - /home/webadmin/.env-web:/var/www/html/.env
     ports:
       - "80:80"
       - "443:443"
@@ -27,6 +28,8 @@ services:
     volumes:
       - ./CaretakerServicesApi:/var/www/html
       - /etc/letsencrypt:/etc/letsencrypt
+      - /home/webadmin/jwt:/var/www/html/config/jwt
+      - /home/webadmin/.env-api:/var/www/html/.env
     ports:
       - "8080:80"
       - "4443:443"
