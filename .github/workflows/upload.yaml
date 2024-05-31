@@ -23,9 +23,9 @@ jobs:
         key: ${{ secrets.SSHKEY }}
         script: |
 
-          cd /usr/share/nginx/html/PA
+          cd /home/
 
-          git config --global --add safe.directory /usr/share/nginx/html/PA
+          git config --global --add safe.directory /home/PA
 
           git fetch origin
           git reset --hard origin/dev
