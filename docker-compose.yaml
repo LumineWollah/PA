@@ -11,7 +11,7 @@ services:
       - ./certs:/etc/apache2/ssl
     ports:
       - "80:80"
-      - "7443:443"
+      - "443:443"
     depends_on:
       - mariadb
     environment:
@@ -28,7 +28,7 @@ services:
       - ./CaretakerServicesApi:/var/www/html
       - ./certs:/etc/apache2/ssl
     ports:
-      - "8090:80"
+      - "8080:80"
       - "8443:443"
     depends_on:
       - mariadb
