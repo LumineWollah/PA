@@ -3,7 +3,7 @@
 {% block stylesheets %}<link rel="stylesheet" href={{ asset('styles/crud.css') }}>{% endblock %}
 
 {% block activeRese %}active{% endblock %}
-{% block activePast %}active{% endblock %}
+{% block activePres %}active{% endblock %}
 
 {% block title %}Liste des réservations passées{% endblock %}
 
@@ -47,7 +47,7 @@
     <div class="col-10 p-0">
         <div class="p-3">
             <div class="btn-create-row">
-                <h1>Liste des réservations passées</h1>
+                <h1>Liste des réservations en cours</h1>
             </div>
             <table id="crudList" class="table table-striped">
                 <thead>

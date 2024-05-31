@@ -19,15 +19,11 @@ services:
     networks:
       - symfony
 
-  # php-fpm:
-  #   image: php:8.0-fpm
-  #   container_name: php-fpm
-  #   volumes:
-  #     - ./CaretakerServicesApi:/var/www/html
-  #   networks:
-  #     - symfony
   php-fpm:
-    image: php:fpm
+    build:
+      context: .
+      dockerfile: php.Dockerfile
+    image: php:fpm-alpine
     container_name: php-fpm
     volumes:
       - ./CaretakerServicesApi:/var/www/html  # Adapter le chemin selon votre arborescence

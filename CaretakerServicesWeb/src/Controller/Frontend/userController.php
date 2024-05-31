@@ -70,4 +70,54 @@ class userController extends AbstractController
             'reservations'=>$reserv
         ]);
     }
+
+    #[Route('/profile/reservations/present', name: 'reservationsPresent')]
+    public function reservationsPresent(Request $request)
+    {
+
+        $id = $request->cookies->get('id');
+            
+        if ($id == null) {
+            return $this->redirectToRoute('login', ['redirect'=>'myProfile']);
+        }
+
+        $client = $this->apiHttpClient->getClientWithoutBearer();
+
+        $response = $client->request('POST', 'cs_users/'.$id.'/reservations', [
+            'json' => [
+                'time' => 'PRESENT',
+            ]
+        ]);
+
+        $reserv = $response->toArray();
+
+        return $this->render('frontend/user/reservPresent.html.twig', [
+            'reservations'=>$reserv
+        ]);
+    }
+
+    #[Route('/profile/reservations/future', name: 'reservationsFuture')]
+    public function reservationsFuture(Request $request)
+    {
+
+        $id = $request->cookies->get('id');
+            
+        if ($id == null) {
+            return $this->redirectToRoute('login', ['redirect'=>'myProfile']);
+        }
+
+        $client = $this->apiHttpClient->getClientWithoutBearer();
+
+        $response = $client->request('POST', 'cs_users/'.$id.'/reservations', [
+            'json' => [
+                'time' => 'FUTURE',
+            ]
+        ]);
+
+        $reserv = $response->toArray();
+
+        return $this->render('frontend/user/reservFuture.html.twig', [
+            'reservations'=>$reserv
+        ]);
+    }
 }

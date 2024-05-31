@@ -42,6 +42,11 @@ class apartmentsController extends AbstractController
     #[Route('/apartment/create', name: 'apartmentCreate')]
     public function apartmentCreate(Request $request)
     {
+        $role = $request->cookies->get('roles');
+        if ($role == null || !($role == 'ROLE_ADMIN' || $role == 'ROLE_LESSOR')) {
+            return $this->redirectToRoute('login');
+        }
+
         $defaults = [
             "bedrooms"=>1,
             "bathrooms"=>1,
@@ -286,11 +291,14 @@ class apartmentsController extends AbstractController
                 return $this->redirectToRoute('apartmentsList', ['id' => $ap['id']]);
             }
 
-            $response = $client->request('POST', 'cs_reservations', [
-                'json' => $data,
-            ]);
+            // $response = $client->request('POST', 'cs_reservations', [
+            //     'json' => $data,
+            // ]);
+            
+            // return $this->redirectToRoute('apartmentsList');
 
-            return $this->redirectToRoute('apartmentsList');
+            // $request->getSession()->set('reservId', $ap['id']);
+            return $this->redirectToRoute('reservPay', ['id'=>$ap['id']]);
         }
 
         return $this->render('frontend/apartments/apartmentDetail.html.twig', [

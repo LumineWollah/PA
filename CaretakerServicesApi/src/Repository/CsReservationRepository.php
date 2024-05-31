@@ -83,7 +83,7 @@ class CsReservationRepository extends ServiceEntityRepository
     public function getPresentReserv(\DateTimeInterface $todayDate, CsUser $user)
     {
         return $this->createQueryBuilder('o')
-            ->andWhere('o.startingDate < :endingDate AND o.endingDate > :startingDate AND o.user = :user AND o.apartment IS NOT NULL')
+            ->andWhere('o.startingDate < :todayDate AND o.endingDate > :todayDate AND o.user = :user AND o.apartment IS NOT NULL')
             ->setParameter('todayDate', $todayDate)
             ->setParameter('user', $user)
             ->getQuery()

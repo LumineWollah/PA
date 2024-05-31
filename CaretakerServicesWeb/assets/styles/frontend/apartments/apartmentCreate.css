@@ -109,6 +109,42 @@ h4 {
     height: 28vh;
 }
 
+.inputIndispo {
+    width: 13%;
+}
+
+#selectedDates {
+    margin-top: 2vh;
+    background-color: #d0cfcf;
+    border: black 2px solid;
+    border-radius: 5px;
+    width: 17%;
+}
+ 
+#selectedDates span {
+    margin-right: 1%;
+    margin-top: 1%;
+    color: #3D2F44;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+
+#selectedDates button {
+    margin-left: 0.5%;
+    height: 3vh;
+    width: 3vh;
+    padding-top: 0px !important;
+    font-weight: bold;
+    color: white;
+    font-size: 80%;
+    border-radius: 50%;
+    background-color: rgb(201, 32, 32);
+    outline: none;
+    border: 1px solid black;
+}
+
 textarea {
     height: 100%;
     resize: none;

@@ -65,21 +65,21 @@ class CsUser implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(["getUsers", "getDocuments", "getApartments", "getCompanies", "getReservations"])]
+    #[Groups(["getUsers", "getDocuments", "getApartments", "getCompanies", "getReservations", "getTickets"])]
     private ?int $id = null;
 
     #[ORM\Column(length: 180)]
-    #[Groups(["getUsers", "getDocuments", "getApartments", "getCompanies", "getReservations"])]
+    #[Groups(["getUsers", "getDocuments", "getApartments", "getCompanies", "getReservations", "getTickets"])]
     private ?string $email = null;
 
     #[ORM\Column(length: 150)]
-    #[Groups(["getUsers", "getDocuments", "getApartments", "getCompanies", "getReservations"])]
+    #[Groups(["getUsers", "getDocuments", "getApartments", "getCompanies", "getReservations", "getTickets"])]
     #[Assert\NotBlank(message: "Le prénom est obligaoire")]
     #[Assert\Length(min: 3, max: 150, minMessage: "Le prénom doit faire au moins {{ limit }} caractères", maxMessage: "Le prénom ne peut pas faire plus de {{ limit }} caractères")]
     private ?string $firstname = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(["getUsers", "getDocuments", "getApartments", "getCompanies", "getReservations"])]
+    #[Groups(["getUsers", "getDocuments", "getApartments", "getCompanies", "getReservations", "getTickets"])]
     private ?string $lastname = null;
 
     /**
@@ -101,7 +101,7 @@ class CsUser implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $profilePict = null;
 
     #[ORM\Column(type: 'json')]
-    #[Groups(["getUsers", "getDocuments", "getApartments", "getCompanies", "getReservations"])]
+    #[Groups(["getUsers", "getDocuments", "getApartments", "getCompanies", "getReservations", "getTickets"])]
     private $roles = [];
 
     #[ORM\Column(length: 10)]
@@ -144,6 +144,12 @@ class CsUser implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(["getUsers"])]
     private Collection $reviews;
 
+    /**
+     * @var Collection<int, CsTicket>
+     */
+    #[ORM\OneToMany(targetEntity: CsTicket::class, mappedBy: 'author', orphanRemoval: true)]
+    private Collection $tickets;
+
     public function __construct()
     {
         $this->dateInscription = new DateTime();
@@ -152,6 +158,7 @@ class CsUser implements UserInterface, PasswordAuthenticatedUserInterface
         $this->apartments = new ArrayCollection();
         $this->reservations = new ArrayCollection();
         $this->reviews = new ArrayCollection();
+        $this->tickets = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -561,6 +568,36 @@ class CsUser implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($review->getAuthor() === $this) {
                 $review->setAuthor(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, CsTicket>
+     */
+    public function getTickets(): Collection
+    {
+        return $this->tickets;
+    }
+
+    public function addTicket(CsTicket $ticket): static
+    {
+        if (!$this->tickets->contains($ticket)) {
+            $this->tickets->add($ticket);
+            $ticket->setAuthor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTicket(CsTicket $ticket): static
+    {
+        if ($this->tickets->removeElement($ticket)) {
+            // set the owning side to null (unless already changed)
+            if ($ticket->getAuthor() === $ticket) {
+                $ticket->setAuthor(null);
             }
         }
 

@@ -37,6 +37,29 @@ class connectionController extends AbstractController
         return null;
     }
 
+    #[Route('/logout', name: 'logoutFunc')]
+    public function logout()
+    {
+        $expireTime = time() - 3600;
+
+        $responseCookie = new Response();
+
+        $cookie = Cookie::create('token', '', $expireTime, '/', null, true, true);
+        $responseCookie->headers->setCookie($cookie);
+        $cookie = Cookie::create('roles', '', $expireTime, '/', null, true, true);
+        $responseCookie->headers->setCookie($cookie);
+        $cookie = Cookie::create('id', '', $expireTime, '/', null, true, true);
+        $responseCookie->headers->setCookie($cookie);
+        $cookie = Cookie::create('profile_pict', '', $expireTime, '/', null, true, true);
+        $responseCookie->headers->setCookie($cookie);
+        $cookie = Cookie::create('lastname', '', $expireTime, '/', null, true, true);
+        $responseCookie->headers->setCookie($cookie);
+        $cookie = Cookie::create('firstname', '', $expireTime, '/', null, true, true);
+        $responseCookie->headers->setCookie($cookie);
+
+        return $this->redirectToRoute('login');
+    }
+
     #[Route('/login', name: 'login')]
     public function login(Request $request)
     {
