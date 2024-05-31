@@ -18,7 +18,7 @@ services:
     environment:
       - VIRTUAL_HOST=caretakerservices.fr
       - LETSENCRYPT_HOST=caretakerservices.fr
-      - LETSENCRYPT_EMAIL=your-email@example.com
+      - LETSENCRYPT_EMAIL=leopold.goudier@gmail.com
 
   api:
     build:
@@ -38,7 +38,7 @@ services:
     environment:
       - VIRTUAL_HOST=api.caretakerservices.fr
       - LETSENCRYPT_HOST=api.caretakerservices.fr
-      - LETSENCRYPT_EMAIL=your-email@example.com
+      - LETSENCRYPT_EMAIL=leopold.goudier@gmail.com
 
   mariadb:
     image: mariadb:latest

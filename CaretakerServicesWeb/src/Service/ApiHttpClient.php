@@ -6,9 +6,16 @@ use Symfony\Component\HttpClient\HttpClient;
 
 class ApiHttpClient
 {
+    private $apiLink;
+
+    public function __construct(string $apiLink)
+    {
+        $this->apiLink = $apiLink;
+    }
 
     public function getClient($bearerToken, $contentType = false)
     {
+        var_dump($this->apiLink);
         $headers = [
             'Accept' => 'application/ld+json',
             'Authorization' => 'Bearer ' . $bearerToken
@@ -18,7 +25,7 @@ class ApiHttpClient
         }
         return HttpClient::create([
             // 'base_uri' => 'https://api.caretakerservices.fr/api/',
-            'base_uri' => 'http://127.0.0.1:8000/api/',
+            'base_uri' => $this->apiLink,
             'headers' => $headers
         ]);
     }
@@ -27,7 +34,7 @@ class ApiHttpClient
     {
         return HttpClient::create([
             // 'base_uri' => 'https://api.caretakerservices.fr/api/',
-            'base_uri' => 'http://127.0.0.1:8000/api/',
+            'base_uri' => $this->apiLink,
             'headers' => [
                 'Accept' => 'application/ld+json',
                 'Content-Type' => 'application/ld+json'
