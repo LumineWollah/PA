@@ -10,8 +10,8 @@ services:
       - ./CaretakerServicesWeb:/var/www/html
       - /etc/letsencrypt:/etc/letsencrypt
     ports:
-      - "8090:80"
-      - "7443:443"
+      - "80:80"
+      - "443:443"
     depends_on:
       - mariadb
     environment:
@@ -29,7 +29,7 @@ services:
       - /etc/letsencrypt:/etc/letsencrypt
     ports:
       - "8080:80"
-      - "8443:443"
+      - "4443:443"
     depends_on:
       - mariadb
     environment:
