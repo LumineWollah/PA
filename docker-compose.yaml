@@ -31,8 +31,8 @@ services:
       - /home/webadmin/jwt:/var/www/html/config/jwt
       - /home/webadmin/.env-api:/var/www/html/.env
     ports:
-      - "80:80"
-      - "443:443"
+      - "8080:80"
+      - "4443:443"
     depends_on:
       - mariadb
     environment:
