@@ -1,0 +1,53 @@
+version: '3.7'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    container_name: api
+    volumes:
+      - ./CaretakerServicesApi:/var/www/html
+    networks:
+      - symfony
+    environment:
+      - DATABASE_URL=mysql://root:root@mariadb:3306/caretakerservicesdb
+      - COMPOSER_ALLOW_SUPERUSER=1
+    depends_on:
+      - mariadb
+      - nginx
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.web
+    container_name: web
+    volumes:
+      - ./CaretakerServicesWeb:/var/www/html
+    networks:
+      - symfony
+    depends_on:
+      - nginx
+      - api
+
+  mariadb:
+    image: mariadb:latest
+    container_name: mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: caretakerservicesdb
+      MYSQL_USER: pcs
+      MYSQL_PASSWORD: pass
+    ports:
+      - 3310:3306
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - symfony
+
+networks:
+  symfony:
+    driver: bridge
+
+volumes:
+  db_data:

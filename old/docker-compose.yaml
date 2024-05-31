@@ -1,0 +1,57 @@
+version: '3'
+networks:
+  symfony:
+    driver: bridge
+
+services:
+  mariadb:
+    image: mariadb:10.4.33
+    restart: always
+    container_name: mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: caretakerservicesdb
+      MYSQL_USER: pcs
+      MYSQL_PASSWORD: pass
+    ports:
+      - 3311:3306
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    networks:
+      - symfony
+
+  php-fpm:
+    build:
+      context: .
+      dockerfile: php.Dockerfile
+    container_name: php-fpm
+    volumes:
+      - ./CaretakerServicesApi:/var/www/api 
+      - ./CaretakerServicesWeb:/var/www/web
+    networks:
+      - symfony
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - 8050:8050
+      - 8060:8060
+    volumes:
+      - ./CaretakerServicesApi:/usr/share/nginx/html/api
+      - ./CaretakerServicesWeb:/usr/share/nginx/html/web
+      # - /etc/letsencrypt:/etc/letsencrypt
+      # - /home/webadmin/nginx/api.conf:/etc/nginx/conf.d/api.conf
+      # - /home/webadmin/nginx/web.conf:/etc/nginx/conf.d/web.conf
+      # - /home/webadmin/jwt:/usr/share/nginx/html/api/config/jwt
+      # - /home/webadmin/.env-api:/usr/share/nginx/html/api/.env
+      # - /home/webadmin/.env-web:/usr/share/nginx/html/web/.env
+      
+    networks:
+      - symfony
+    depends_on:
+      - php-fpm
+      - mariadb
+
+volumes:
+  mariadb_data:
