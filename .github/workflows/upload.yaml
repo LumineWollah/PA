@@ -23,7 +23,7 @@ jobs:
         key: ${{ secrets.SSHKEY }}
         script: |
 
-          cd /home/
+          cd /home
 
           git config --global --add safe.directory /home/PA
 
