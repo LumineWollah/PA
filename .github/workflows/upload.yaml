@@ -28,4 +28,4 @@ jobs:
           git fetch origin
           git reset --hard origin/dev
 
-          docker-compose up -d
+          docker-compose up -d --build
