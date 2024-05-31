@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y \
     pdo_mysql \
     zip
 
-COPY /etc/letsencrypt /etc/letsencrypt
+COPY /etc/letsencrypt/ /etc/letsencrypt/
 
 RUN update-ca-certificates
 
