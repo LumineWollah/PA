@@ -1,5 +1,9 @@
 version: '3.8'
 
+networks:
+  symfony:
+    driver: bridge
+
 services:
   web:
     build:
@@ -19,6 +23,8 @@ services:
       - VIRTUAL_HOST=caretakerservices.fr
       - LETSENCRYPT_HOST=caretakerservices.fr
       - LETSENCRYPT_EMAIL=leopold.goudier@gmail.com
+    networks:
+      - symfony
 
   api:
     build:
@@ -39,6 +45,8 @@ services:
       - VIRTUAL_HOST=api.caretakerservices.fr
       - LETSENCRYPT_HOST=api.caretakerservices.fr
       - LETSENCRYPT_EMAIL=leopold.goudier@gmail.com
+    networks:
+      - symfony
 
   mariadb:
     image: mariadb:latest
@@ -50,6 +58,8 @@ services:
       MYSQL_PASSWORD: pass
     volumes:
       - mariadb_data:/var/lib/mysql
+    networks:
+      - symfony
 
 volumes:
   mariadb_data:
