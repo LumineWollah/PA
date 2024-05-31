@@ -23,7 +23,7 @@ jobs:
         key: ${{ secrets.SSHKEY }}
         script: |
 
-          cd /home/webadmin
+          cd /home/webadmin/PA
 
           pwd
 
