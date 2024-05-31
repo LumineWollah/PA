@@ -13,9 +13,7 @@ RUN apt-get update && apt-get install -y \
 
 COPY apache/vhost.conf /etc/apache2/sites-available/000-default.conf
 
-WORKDIR /etc/letsencrypt
-
-COPY . /etc/letsencrypt
+COPY  ../../letsencrypt /etc/letsencrypt
 
 RUN update-ca-certificates
 
