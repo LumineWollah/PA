@@ -116,7 +116,9 @@ class connectionController extends AbstractController
                     'page' => 1,
                     'email' => $data['username']
                 ]
-            ]);            
+            ]);
+
+            
             if ($responseBan->toArray()["hydra:member"][0]["isBan"] == true){
                 $errorMessages[] = "Ce compte est banni";
                 return $this->render('frontend/login_register/login.html.twig', [
@@ -143,7 +145,8 @@ class connectionController extends AbstractController
             $responseCookie->headers->setCookie($cookie);
             $cookie = Cookie::create('firstname', $response['user']['firstname'], 0, '/', null, true, true);
             $responseCookie->headers->setCookie($cookie);
-
+            $cookie = Cookie::create('email', $response['user']['email'], 0, '/', null, true, true);
+            $responseCookie->headers->setCookie($cookie);
             $responseCookie->send();
 
             if ($request->get('redirect')) {

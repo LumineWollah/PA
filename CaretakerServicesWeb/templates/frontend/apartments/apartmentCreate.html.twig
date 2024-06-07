@@ -89,145 +89,92 @@
             </div>
         </div>
         <hr class="mt-5">
-        <div class="column">
-            <h4>Date d'indisponibilité</h4>
-            <input type="text" name="daterange" value="" class="mt-3 inputIndispo">
-            <div id="selectedDates" style="height: 200px; overflow-y: scroll;"></div>
-        </div>
-            {# <div class="col-7">
-                <h1>{{ apartment.name }}</h1>
-                <div class="apartDescDiv">
-                    <p class="apartDesc"><b>Description : </b>{{ apartment.description }}</p>
-                </div>
-                <div class="modal fade" id="exampleModalLive" tabindex="-1" aria-labelledby="exampleModalLiveLabel" style="display: none;" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-scrollable .modal-dialog-centered">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h1 class="modal-title fs-5" id="exampleModalLiveLabel">Description</h1>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
-                            </div>
-                            <div class="modal-body">
-                                <p>{{ apartment.description }}</p>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <button type="button" class="btn readMoreBtn" data-bs-toggle="modal" data-bs-target="#exampleModalLive">
-                    LIRE PLUS
-                </button>
-            </div>
-            <div class="col-5 caractColumn align-items-center">
-                <div class="caract">
-                    <h4>Caractéristiques</h4>
-                    <ul>
-                        <li>Type de bien : <b>{{ (apartment.isHouse == 1) ? 'Maison' : 'Appartement' }}</b></li>
-                        <li>Type de location : <b>{{ (apartment.isFullhouse == 1) ? 'Logement entier' : 'Chambre privée' }}</b></li>
-                        <li>Nombre de chambre : <b>{{ apartment.bedrooms }} chambre{{ (apartment.bedrooms > 1) ? 's' : ''}}</b></li>
-                        <li>Nombre de voyageur : <b>{{ apartment.travelersMax }} voyageur{{ (apartment.travelersMax > 1) ? 's' : ''}}</b></li>
-                        <li>Surface : <b>{{ apartment.area }} m²</b></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
         <div class="row">
-            <div class="col-2 lessorTinyProfile">
-                <img src={{ asset('icons/profile_pict_default.png') }}>
-                <div class="textName">
-                    <p><b>Hôte :</b> Francis Lalanne</p>
-                    <p class="inscription">Inscrit depuis 6 ans</p>
-                </div>
+            <div class="col-3"> 
+                <h4 style="height: 3vh;">Date d'indisponibilité</h4>
+                <input type="text" name="daterange" value="" class="mt-3 inputIndispo">
+                <div id="selectedDates" style="height: 200px; overflow-y: scroll;"></div>
+                {{form_widget(form.indisponibilities)}}
             </div>
-        </div>
-        <hr>
-        <div class="row reservation justify-content-center">
-            <h2>Réservation</h2>
-            {{form_start(form)}}
-            <div class="row reservationRow">
-                <div class="col-6 leftFormContainer">
-                    <div class="leftForm">
-                        <p class="reservTitle">Date de votre voyage</p>
-                        <div style="color: red;">{{ form_errors(form.dates) }}</div>
-                        {{ form_widget(form.dates) }}
-                        <p class="reservTitle mt-4">Nombre de voyageurs</p>
-                        <div class="leftFormRow">
-                            <div class="leftFormCol">
-                                <p class="reservSubtitle">Adultes (18+) :</p>
-                                {{ form_widget(form.adultTravelers) }}
+            <div class="col-9">
+                <h4 style="height: 3vh;">Autres photos</h4>
+                <div class="row" style="height: calc(100% - 3vh);">
+                    <div class="col-4" style="display: flex; align-items: center;">
+                        <p>Vous pouvez poster jusqu'à 10 photos supplémentaires ...</p>
+                    </div>
+                    <div class="col-8" style="display: flex; justify-content: space-around; flex-direction: column;">
+                        <div class="row">
+                            <div class="pictDiv" id="preview1">
+                                <label for="form_pict1">
+                                    +
+                                    {{ form_widget(form.pict1) }}
+                                </label>
                             </div>
-                            <div class="leftFormCol">
-                                <p class="reservSubtitle">Enfants (2+) :</p>
-                                {{ form_widget(form.childTravelers) }}
+                            <div class="pictDiv" id="preview2">
+                                <label for="form_pict2">
+                                    +
+                                    {{ form_widget(form.pict2) }}
+                                </label>
                             </div>
-                            <div class="leftFormCol">
-                                <p class="reservSubtitle">Bébé (0+) :</p>
-                                {{ form_widget(form.babyTravelers) }} 
+                            <div class="pictDiv" id="preview3">
+                                <label for="form_pict3">
+                                    +
+                                    {{ form_widget(form.pict3) }}
+                                </label>
+                            </div>
+                            <div class="pictDiv" id="preview4">
+                                <label for="form_pict4">
+                                    +
+                                    {{ form_widget(form.pict4) }}
+                                </label>
+                            </div>
+                            <div class="pictDiv" id="preview5">
+                                <label for="form_pict5">
+                                    +
+                                    {{ form_widget(form.pict5) }}
+                                </label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="pictDiv" id="preview6">
+                                <label for="form_pict6">
+                                    +
+                                    {{ form_widget(form.pict6) }}
+                                </label>
+                            </div>
+                            <div class="pictDiv" id="preview7">
+                                <label for="form_pict7">
+                                    +
+                                    {{ form_widget(form.pict7) }}
+                                </label>
+                            </div>
+                            <div class="pictDiv" id="preview8">
+                                <label for="form_pict8">
+                                    +
+                                    {{ form_widget(form.pict8) }}
+                                </label>
+                            </div>
+                            <div class="pictDiv" id="preview9">
+                                <label for="form_pict9">
+                                    +
+                                    {{ form_widget(form.pict9) }}
+                                </label>
+                            </div>
+                            <div class="pictDiv" id="preview10">
+                                <label for="form_pict10">
+                                    +
+                                    {{ form_widget(form.pict10) }}
+                                </label>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-3">
-                    <div class="middleForm">
-                        <p class="reservTitle">Montant</p>
-                        <div class="secondColRow"><p class="">{{ apartment.price }}€ x <span class="nightsNb">0</span> nuits</p><p><b><span id="priceForNights">0</span> €</b></p></div>
-                        <div class="secondColRow"><p class="">Frais de services</p><p><b><span id="servicesValue">0</span> €</b></p></div>
-                        <div class="secondColRow"><p class="">Taxes</p><p><b><span id="taxesValue">0</span> €</b></p></div>
-                        <p class="reservTitle mt-4">Vos prestations</p>
-                        <button type="button" class="btn addPrestaBtn" data-bs-toggle="modal" data-bs-target="#exampleModalLive">
-                            Ajouter une prestation
-                        </button>
-                    </div>
-                </div>
-                <div class="col-3">
-                    <div class="rightForm">
-                        <p class="reservTitle">Total</p>
-                        <p class="totalText"><span id="totalValue">0</span>€ pour <span class="nightsNb">0</span> nuits</p>
-                        <button type="submit" class="reservBtn" id="reservation" disabled>Réserver</button>
-                    </div>
-                </div>
-            </div>
-            {{form_end(form)}}
-        </div>
-        <hr>
-        <div class="row photosCaroussel justify-content-center">
-            <h2>Autres photos</h2>
-            <div id="carouselExampleIndicators" class="carousel slide">
-                <div class="carousel-indicators">
-                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-                    {% if apartment.pictures|length > 1 %}
-                        {% for i in range(1, (apartment.pictures|length)-1) %}
-                            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to={{ i }} aria-label="Slide {{ i + 1 }}"></button>
-                        {% endfor %}
-                    {% endif %}
-                </div>
-                <div class="carousel-inner">
-                    <div class="carousel-item active">
-                        <img src={{ apartment.pictures[0] }} class="d-block w-100 carouselImg" alt="...">
-                    </div>
-                    {% for img in apartment.pictures[1:] %}
-                        <div class="carousel-item">
-                            <img src={{ img }} class="d-block w-100 carouselImg" alt="...">
-                        </div>
-                    {% endfor %}
-                </div>
-                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
-                    <img src={{ asset('icons/arrow_left.png') }} class="arrow leftAr">
-                    <span class="visually-hidden">Previous</span>
-                </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
-                    <img src={{ asset('icons/arrow_right.png') }} class="arrow rightAr">
-                    <span class="visually-hidden">Next</span>
-                </button>
             </div>
         </div>
-        <hr>
-        <div class="row localisation justify-content-center">
-            <h2>Localisation</h2>
-            <div id="map"></div>
+        <div class="col-12 d-flex mt-5" style="justify-content: center;">
+            <button type="submit" class="validBtn">Valider</button>
         </div>
-        <hr> #}
+        {{form_end(form)}}
     </div>
 </div>
 {% endblock %}
@@ -235,72 +182,105 @@
 {% block javascripts %}
 
 <script>
+
     $(function() {
-    var selectedDates = [];
+        var selectedDates = [];
+        var indispo = document.getElementById('form_indisponibilities');
 
-    // Initialisation de la date range picker
-    $('input[name="daterange"]').daterangepicker({
-        isInvalidDate: function(date) {
-            // Vérifier si la date est passée
-            if (date.isBefore(moment(), 'day')) {
-                return true;
-            }
-
-            // Vérifier si la date est déjà sélectionnée dans la liste
-            for (var i = 0; i < selectedDates.length; i++) {
-                var range = selectedDates[i].split(' à ');
-                var startDate = moment(range[0], 'DD/MM/YYYY');
-                var endDate = moment(range[1], 'DD/MM/YYYY');
-                if (date.isBetween(startDate, endDate, null, '[]')) {
+        $('input[name="daterange"]').daterangepicker({
+            isInvalidDate: function(date) {
+                if (date.isBefore(moment(), 'day')) {
                     return true;
                 }
-            }
-            return false;
-        },
-        opens: 'left'
-    }, function(start, end, label) {
-        console.log("ouiii");
-        var selectedDate = start.format('DD/MM/YYYY') + ' à ' + end.format('DD/MM/YYYY');
-        addDateToList(selectedDate); // Ajouter la date à la liste
-    });
 
-    function addDateToList(date) {
-        // Création d'un élément span pour la date
-        var $dateSpan = $('<span>', {
-            text: date
-        });
-
-        // Création d'un élément pour la croix de suppression
-        var $removeButton = $('<button>', {
-            text: 'X',
-            click: function() {
-                // Supprimer la date de la liste lorsque la croix est cliquée
-                $dateSpan.remove();
-                var index = selectedDates.indexOf(date);
-                if (index > -1) {
-                    selectedDates.splice(index, 1);
+                for (var i = 0; i < selectedDates.length; i++) {
+                    var range = selectedDates[i].split(' à ');
+                    var startDate = moment(range[0], 'DD/MM/YYYY');
+                    var endDate = moment(range[1], 'DD/MM/YYYY');
+                    if (date.isBetween(startDate, endDate, null, '[]')) {
+                        return true;
+                    }
                 }
-            }
+                return false;
+            },
+            opens: 'left'
+        }, function(start, end, label) {
+            console.log("ouiii");
+            var selectedDate = start.format('DD/MM/YYYY') + ' à ' + end.format('DD/MM/YYYY');
+            addDateToList(selectedDate); 
         });
 
-        // Ajout du bouton de suppression à l'élément span de la date
-        $dateSpan.append($removeButton);
+        function addDateToList(date) {
+            var $dateSpan = $('<span>', {
+                text: date
+            });
 
-        // Ajout de la date à la liste
-        $('#selectedDates').append($dateSpan);
-        selectedDates.push(date);
-    }
-});
+            var $removeButton = $('<button>', {
+                text: 'X',
+                click: function() {
+                    $dateSpan.remove();
+                    var index = selectedDates.indexOf(date);
+                    if (index > -1) {
+                        selectedDates.splice(index, 1);
+                    }
+                }
+            });
 
+            $dateSpan.append($removeButton);
 
-    var input = document.getElementById("form_mainPict");
-    var preview = document.getElementById("preview");
-    
-    input.addEventListener("change", function () {
-        updatePreview(this);
+            $('#selectedDates').append($dateSpan);
+            selectedDates.push(date);
+            $('#form_indisponibilities').val(selectedDates.join(','))
+        }
     });
 
-    function updatePreview(input) {
+
+    var ids = [
+        { input: "form_mainPict", preview: "preview" },
+        { input: "form_pict1", preview: "preview1" },
+        { input: "form_pict2", preview: "preview2" },
+        { input: "form_pict3", preview: "preview3" },
+        { input: "form_pict4", preview: "preview4" },
+        { input: "form_pict5", preview: "preview5" },
+        { input: "form_pict6", preview: "preview6" },
+        { input: "form_pict7", preview: "preview7" },
+        { input: "form_pict8", preview: "preview8" },
+        { input: "form_pict9", preview: "preview9" },
+        { input: "form_pict10", preview: "preview10" },
+    ];
+
+    var images = [
+        "{{ mainPict }}",
+        "{{ pict1 }}",
+        "{{ pict2 }}",
+        "{{ pict3 }}",
+        "{{ pict4 }}",
+        "{{ pict5 }}",
+        "{{ pict6 }}",
+        "{{ pict7 }}",
+        "{{ pict8 }}",
+        "{{ pict9 }}",
+        "{{ pict10 }}"
+    ]
+
+    images.forEach(function(img) {
+        if (img != null){
+            var input = document.getElementById(ids[images.indexOf(img)].input);
+            var preview = document.getElementById(ids[images.indexOf(img)].preview);
+            updatePreview(input, preview, img);
+        }
+    })
+
+    ids.forEach(function(id) {
+        var input = document.getElementById(id.input);
+        var preview = document.getElementById(id.preview);
+        
+        input.addEventListener("change", function () {
+            updatePreview(this, preview);
+        });
+    });
+
+    function updatePreview(input, preview, url = null) {
         var file = input.files[0];
         
         if (file) {
@@ -313,6 +293,12 @@
             });
 
             reader.readAsDataURL(file);
+        }
+
+        if (url) {
+            preview.style.backgroundImage = "url('" + url + "')";
+            preview.style.backgroundColor = "#ffffff";
+            preview.style.border = "none";
         }
     }
 
@@ -353,131 +339,5 @@
     geocoder.on('clear', () => {
         results.value = '';
     });
-    {# const rangesTab = {{ datesRangeReservs|json_encode|raw }};
-    const nightPrice = {{ apartment.price }};
-    var priceForNights = 0;
-    var taxesValue = 0;
-    var servicesValue = parseFloat($('#servicesValue').text());
-    var totalValue = servicesValue;
-
-    $("#form_adultTravelers").on('change', function(){
-        var adultTravelers = $(this).val();
-        if (adultTravelers == '' || adultTravelers < 0){
-            $(this).val(0);
-            $(this).text('0');
-        }
-        var travelersTaxes = parseFloat($(this).val()) * (0.005 * priceForNights);
-        $('#taxesValue').text((parseFloat(taxesValue) + travelersTaxes).toFixed(2));
-        $('#totalValue').text((parseFloat(totalValue) + parseFloat(travelersTaxes)).toFixed(2));
-    })
-    $("#form_childTravelers").on('change', function(){
-        var childTravelers = $(this).val();
-        if (childTravelers == '' || childTravelers < 0){
-            $(this).val(0);
-            $(this).text('0');
-        }
-    })
-    $("#form_babyTravelers").on('change', function(){
-        var babyTravelers = $(this).val();
-        if (babyTravelers == '' || babyTravelers < 0){
-            $(this).val(0);
-            $(this).text('0');
-        }
-    })
-    $(function() {
-        $('input[id="form_dates"]').daterangepicker({
-            autoUpdateInput: false,
-            autoApply: true,
-            locale: {
-                cancelLabel: 'Clear',
-            },
-            isInvalidDate: function(date) {
-                if (date.isBefore(moment(), 'day')) {
-                    return true;
-                }
-                for (var i = 0; i < rangesTab.length; i++) {
-                    var startDate = moment(rangesTab[i][0], 'YYYY-MM-DD');
-                    var endDate = moment(rangesTab[i][1], 'YYYY-MM-DD');
-                    if (date.isBetween(startDate, endDate, null, '[]')) {
-                        return true;
-                    }
-                }
-                return false;
-            }
-        }, function(start, end, label) {
-            $(this).val(start.format('YYYY.MM.DD') + " - " + end.format('YYYY.MM.DD'));
-            
-        }).on('apply.daterangepicker', function(ev, picker) {
-            $(this).val('Du ' + picker.startDate.format('DD/MM/YYYY') + ' au ' + picker.endDate.format('DD/MM/YYYY'));
-            checkButtonStatus();
-            var startDate = picker.startDate;
-            var endDate = picker.endDate;
-            var duration = endDate.diff(startDate, 'days');
-            if (duration == 0) {
-                picker.setStartDate(moment());
-                picker.setEndDate(moment());
-                priceForNights = 0;
-                taxesValue = 0;
-                totalValue = servicesValue;
-                $('.nightsNb').text(duration);
-                $(this).val('');
-            } else {
-                priceForNights = duration*nightPrice;
-                taxesValue = (priceForNights*0.03).toFixed(2);
-                totalValue = servicesValue + parseFloat(priceForNights) + parseFloat(taxesValue);
-                for (var i = 0; i < rangesTab.length; i++) {
-                    var rangeStartDate = moment(rangesTab[i][0], 'YYYY-MM-DD');
-                    var rangeEndDate = moment(rangesTab[i][1], 'YYYY-MM-DD');
-                    if (rangeStartDate.isBetween(startDate, endDate, null, '[]') || rangeEndDate.isBetween(startDate, endDate, null, '[]')) {
-                        picker.setStartDate(moment());
-                        picker.setEndDate(moment());
-                        duration = 0;
-                        priceForNights = 0;
-                        taxesValue = 0;
-                        totalValue = servicesValue;
-                        $('.nightsNb').text(duration);
-                        $(this).val('');
-                        break;
-                    }
-                }
-            }
-            $('.nightsNb').text(duration);
-            $('#priceForNights').text(priceForNights);
-            $('#taxesValue').text(taxesValue);
-            $('#totalValue').text(totalValue.toFixed(2));
-        }).on('cancel.daterangepicker', function(ev, picker) {
-            $(this).val('');
-        });
-    });
-
-
-    const centerGps = {{ apartment.centerGps|json_encode|raw }};
-
-    mapboxgl.accessToken = 'pk.eyJ1IjoibGVvLXVyYWhhcmEiLCJhIjoiY2x2MTJrcHJ4MDIwdzJrdXNhcDhjazF4MSJ9.ZJjs_hvEVTuHKAe2CeDGbQ';
-    const map = new mapboxgl.Map({
-        container: 'map',
-        center: centerGps,
-        zoom: 16
-    });
-
-    const geojson = {
-        type: 'FeatureCollection',
-        features: [{
-            type: 'Feature',
-            geometry: {
-                type: 'Point',
-                coordinates: centerGps
-            }
-        }]
-    };
-
-    geojson.features.forEach(function(marker) {
-        var el = document.createElement('div');
-        el.className = 'marker';
-
-        new mapboxgl.Marker(el)
-            .setLngLat(marker.geometry.coordinates)
-            .addTo(map)
-    }); #}
 </script>
 {% endblock %}

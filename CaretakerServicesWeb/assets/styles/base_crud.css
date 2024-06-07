@@ -78,7 +78,7 @@ html::-webkit-scrollbar {
 .inputDiv {
     display: flex;
     flex-direction: row;
-    height: 100%;
+    /* height: 10%; */
 }
 
 .inputDiv input {

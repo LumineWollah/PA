@@ -34,7 +34,7 @@
                     {% elseif role == 'ROLE_LESSOR' %}
                         <ul class="navbar-nav">
                             <li class="nav-item">
-                                <a class="nav-link {% block activeMyApar %}{% endblock %} me-4" aria-current="page" href={{ path('apartmentsList') }}>Mes logements</a>
+                                <a class="nav-link {% block activeMyApar %}{% endblock %} me-4" aria-current="page" href={{ path('myApartmentsList') }}>Mes logements</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link me-4" href={{ path('apartmentCreate') }}>Ajouter un logement</a>

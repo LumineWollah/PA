@@ -1,0 +1,99 @@
+{% extends 'frontend/base.html.twig' %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href={{ asset('styles/frontend/apartments/apartmentList.css') }}>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+{% endblock %}
+
+{% block activeApar %}active{% endblock %}
+
+{% block body %}
+<div class="container-fluid pageContent">
+    <h1>Vos <span class="h1span">logements</span> en location</h1> 
+
+    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Impossible de supprimer ce logement</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Vous ne pouvez pas supprimer un logement qui a une réservation actuellement en cours
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Compris</button>
+                </div>
+            </div>
+        </div>
+    </div>   
+    <input type="text" name="datefilter" value="" />
+    {% for i in range(0, (((aps|length)/4)|round(0, 'ceil'))-1) %}
+        <div class="row apsRowLessor">
+            {% for j in range(i*4, (i*4)+3) %}
+                {% if j < aps|length %}
+                    <div class="col-3 apartContainer apartContainerLessor">
+                    <a class="" href={{ path('apartmentsDetail', {'id': aps[j].id}) }}>               
+                        <div class="imgContainer">
+                            <img src={{ aps[j].mainPict }}>
+                        </div>
+                        <p class="apartName"><b>{{ aps[j].name }}</b></p>
+                        <p class="apartInfos">
+                            <span class="medium">{{ aps[j].city }}, {{ aps[j].country }} • {{ aps[j].price }}€</span>
+                            <span class="light"> / nuit</span>
+                        </p>
+                        <div class="apartNumbers">
+                            <img src={{ asset('icons/bed.png') }}> {{ aps[j].bedrooms }} chambres
+                            <img style="margin-left: 2%;" src={{ asset('icons/travelers.png') }}> {{ aps[j].travelersMax }} voyageurs max.
+                        </div>
+                    </a>
+                        <div class="apartActions mt-2 d-flex">
+                            <form action="{{ path('apartmentUpdate') }}" method="post" >
+                                <input type="hidden" name="apartment" value="{{ aps[j]|json_encode }}">
+                                <button type="submit">Modifier</button>
+                            </form>
+                            <a href="{{ path('apartmentDeleteLessor', {'id': aps[j].id}) }}" class="deleteApBtn">Supprimer</a>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}
+
+{% block javascripts %}
+<script type="text/javascript">   
+
+    $(function() {
+
+    var showPopup = {{ showPopup1 }};
+    if (showPopup == true){$('#staticBackdrop').modal('show')};
+
+    $('input[name="datefilter"]').daterangepicker({
+        autoUpdateInput: false,
+        autoApply: true,
+        locale: {
+            cancelLabel: 'Clear',
+            format: 'dd.mm.yyyy',
+            separator: ' - '
+        }
+    }, function(start, end, label) {
+                $(this).val(start.format('YYYY.MM.DD')+ " - " + end.format('YYYY.MM.DD'))
+                console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
+    });
+
+    $('input[name="datefilter"]').on('apply.daterangepicker', function(ev, picker) {
+        $(this).val(picker.startDate.format('MM.DD.YYYY') + ' - ' + picker.endDate.format('MM.DD.YYYY'));
+    });
+
+    $('input[name="datefilter"]').on('cancel.daterangepicker', function(ev, picker) {
+        $(this).val('');
+    });
+
+    });
+</script>
+{% endblock %}

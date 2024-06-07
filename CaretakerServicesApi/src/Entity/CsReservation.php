@@ -24,7 +24,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[GetCollection]
 #[Delete(security: "is_granted('ROLE_ADMIN') or object.getUser() == user or object.getApartmentOwner() == user or user in object.getServiceOwner().toArray()")]
 #[Post]
-#[ApiFilter(SearchFilter::class, properties: ['apartment' => 'exact', 'service' => 'exact', 'user' => 'exact'])]
+#[ApiFilter(SearchFilter::class, properties: ['apartment' => 'exact', 'service' => 'exact', 'user' => 'exact', 'unavailability' => 'exact'])]
 class CsReservation
 {
     #[ORM\Id]
@@ -44,12 +44,14 @@ class CsReservation
 
     #[ORM\Column()]
     #[Groups(["getReservations", "getUsers", "getApartments"])]
-
     private ?float $price = null;
+
+    #[ORM\Column(nullable: true)]
+    #[Groups(["getReservations"])]
+    private ?string $payementId = null;
 
     #[ORM\Column()]
     #[Groups(["getReservations", "getUsers", "getApartments"])]
-
     private ?bool $active = true;
 
     #[ORM\ManyToOne(inversedBy: 'reservations')]
@@ -75,6 +77,10 @@ class CsReservation
     #[ORM\Column(nullable: true)]
     #[Groups(["getReservations", "getUsers", "getApartments"])]
     private ?int $babyTravelers = null;
+
+    #[ORM\Column]
+    #[Groups(["getReservations", "getUsers", "getApartments"])]
+    private bool $unavailability = false;
 
     /**
      * @var Collection<int, CsService>
@@ -247,6 +253,30 @@ class CsReservation
     public function removeService(CsService $service): static
     {
         $this->services->removeElement($service);
+
+        return $this;
+    }
+
+    public function getUnavailability()
+    {
+        return $this->unavailability;
+    }
+
+    public function setUnavailability($unavailability)
+    {
+        $this->unavailability = $unavailability;
+
+        return $this;
+    }
+
+    public function getPayementId()
+    {
+        return $this->payementId;
+    }
+
+    public function setPayementId($payementId)
+    {
+        $this->payementId = $payementId;
 
         return $this;
     }

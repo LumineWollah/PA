@@ -110,15 +110,15 @@ h4 {
 }
 
 .inputIndispo {
-    width: 13%;
+    width: 50%;
 }
-
+ 
 #selectedDates {
     margin-top: 2vh;
     background-color: #d0cfcf;
     border: black 2px solid;
     border-radius: 5px;
-    width: 17%;
+    width: 80%;
 }
  
 #selectedDates span {
@@ -143,6 +143,55 @@ h4 {
     background-color: rgb(201, 32, 32);
     outline: none;
     border: 1px solid black;
+}
+
+.pictDiv {
+    background-color: gray;
+    width: 19.5vh;
+    height: 15vh;
+    margin-right: 1vh;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.validBtn {
+    border: none;
+    outline: none;
+    padding: 7px 12px 7px 12px;
+    background-color: #A594F9;
+    color: #3D2F44;
+    border-radius: 10px;
+    font-weight: bold;
+    border: #A594F9 2px solid;
+}
+
+.validBtn:hover {
+    background-color: white;
+}
+
+.pictDiv input[type=file] {
+    display: none;
+}
+  
+.pictDiv label {
+    background: #A594F9;
+    color: #fff;
+    cursor: pointer;
+    width: 25%;
+    height: 30%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+}
+
+.pictDiv label:hover {
+    background: #3D2F44;
 }
 
 textarea {
