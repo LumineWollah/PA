@@ -33,44 +33,46 @@ class reservationsController extends AbstractController
         $success = $this->generateUrl('reservPaySucc', [], UrlGeneratorInterface::ABSOLUTE_URL);
         $failure = $this->generateUrl('reservPayFail');
 
-        $email = $request->cookies->get('email');
-        var_dump($email);
+        $emailAdr = $request->cookies->get('email');
+
         $customer = \Stripe\Customer::create([
-            'email' => $email,
+            'email' => $emailAdr,
             'name' => $request->cookies->get('lastname'), 
         ]);
     
         $product = \Stripe\Product::create([
             'name' => $apName,
         ]);
-    
+
         $price = \Stripe\Price::create([
             'product' => $product->id,
-            'unit_amount' => $data['price'] * 100,
+            'unit_amount' => intval(round($data['price'] * 100)),
             'currency' => 'eur',
         ]);
 
-        \Stripe\InvoiceItem::create([
-            'customer' => $customer->id,
-            'price' => $price->id,
-        ]);
+        // \Stripe\InvoiceItem::create([
+        //     'customer' => $customer->id,
+        //     'price' => $price->id,
+        // ]);
 
-        $invoice = \Stripe\Invoice::create([
-            'customer' => $customer->id,
-            'auto_advance' => true,
-        ]);
+        // $invoice = \Stripe\Invoice::create([
+        //     'customer' => $customer->id,
+        //     'auto_advance' => true,
+        // ]);
 
-        $invoice->finalizeInvoice();
+        // $invoice->finalizeInvoice();
         
-        $invoice = \Stripe\Invoice::retrieve($invoice->id);
-        $pdfUrl = $invoice->invoice_pdf;
+        // // $invoice = \Stripe\Invoice::retrieve($invoice->id);
+        // $pdfUrl = $invoice->invoice_pdf;
+
+        // $tempPdfPath = sys_get_temp_dir() . '/facture.pdf';
+        // file_put_contents($tempPdfPath, file_get_contents($pdfUrl));
 
         $email = (new Email())
             ->from('ne-pas-repondre@caretakerservices.fr')
-            ->to($email)
+            ->to($emailAdr)
             ->subject('Votre facture pour la réservation')
-            ->html('<p>Veuillez trouver votre facture en pièce jointe.</p>')
-            ->attachFromPath($pdfUrl, 'facture.pdf');
+            ->html('<p>Veuillez trouver votre facture en pièce jointe.</p>');
 
         $mailer->send($email);
 
