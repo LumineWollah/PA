@@ -21,7 +21,7 @@
                     <h1 class="modal-title fs-5" id="staticBackdropLabel">Impossible de supprimer ce logement</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body" id="content">
                     Vous ne pouvez pas supprimer un logement qui a une réservation actuellement en cours
                 </div>
                 <div class="modal-footer">
@@ -70,8 +70,15 @@
 
     $(function() {
 
-    var showPopup = {{ showPopup1 }};
-    if (showPopup == true){$('#staticBackdrop').modal('show')};
+    var showPopup = {{ showPopup }};
+    console.log(showPopup);
+    if (showPopup == true){
+        var contentPopup = "{{ content }}";
+        var titlePopup = "{{ title }}";
+        $('#content').html(contentPopup);
+        $('#staticBackdropLabel').html(titlePopup);
+        $('#staticBackdrop').modal('show');
+    };
 
     $('input[name="datefilter"]').daterangepicker({
         autoUpdateInput: false,
