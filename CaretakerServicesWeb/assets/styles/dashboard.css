@@ -1,0 +1,93 @@
+.stats {
+    display: flex;
+    flex-direction: column;
+}
+
+.graphandlist {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.graphs {
+    display: flex;
+    flex-direction: column;
+    margin: 2%;
+}
+
+.cards {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-top: 5%;
+}
+
+.cards a {
+    text-decoration: none;
+    margin: 1%;
+}
+
+.card {
+    height: 200px;
+    width: 200px;
+    background-color: gray !important;
+    color: #000; 
+}
+
+.card-title {
+    color: #000;
+    font-size: 25px;
+    font-weight: 700;
+    text-align: center;
+}
+
+.card-number {
+    margin-top: 15%;
+    color: #A594F9;
+    font-size: 50px;
+    font-weight: 500;
+    text-align: center;
+    align-content: center;
+}
+
+.card:hover {
+    background-color: #A594F9 !important;
+    color: white;
+}
+
+.graph {
+    height: 300px;
+    width: 500px;
+    background-color: gray !important;
+    color: #000; 
+    font-family: 'Roboto Condensed';
+    font-weight: 500;
+    font-size: 22px;
+    text-decoration: none;
+    margin: 1%;
+}
+
+.lists {
+    display: flex;
+    flex-direction: row;
+    margin: 2%;
+    justify-content: flex-end;
+}
+
+.list {
+    display: flex;
+    flex-direction: column;
+    width: 30%;
+    margin: 2%;
+}
+
+.user {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 5%;
+}
+
+.date {
+    text-align: end;
+}

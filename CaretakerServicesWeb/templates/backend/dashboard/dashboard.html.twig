@@ -1,0 +1,91 @@
+{% extends 'backend/base.html.twig' %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href={{ asset('styles/crud.css') }}>
+    <link rel="stylesheet" href={{ asset('styles/dashboard.css') }}>
+{% endblock %}
+
+
+{% block activeDash %}active{% endblock %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block body %}
+    <div class="col-10 p-0">
+            <div class="p-3">
+            <h1>Dashboard</h1>
+            <div class="stats">
+                <div class="cards">
+                    <a href="{{ path('apartmentCrud') }}">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Logements</h5>
+                                <p class="card-number">{{ apartments}}</p>
+                            </div>
+                        </div>
+                    </a>
+                    <a href="{{ path('serviceList') }}">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Services</h5>
+                                <p class="card-number">{{ services }}</p>
+                            </div>
+                        </div>
+                    </a>
+                    <a href="{{ path('companyList') }}">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Entreprises</h5>
+                                <p class="card-number">{{ companies}}</p>
+                            </div>
+                        </div>
+                    </a>
+                    <a href="{{ path('lessorList') }}">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Utilisateurs</h5>
+                                <p class="card-number">{{ users|length }}</p>
+                            </div>
+                        </div>
+                    </a>
+                    <a href="{{ path('reservationList') }}">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Réservations</h5>
+                                <p class="card-number">{{ reservations|length }}</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            <div class="graphandlist">
+                <div class="graphs">
+                    <div class="graph">         
+                    </div>
+                    <div class="graph">
+                    </div>
+                </div>
+                <div class="lists">
+                    <div class="list">
+                        <h1>Derniers inscrits</h1>
+                        {% for user in users|slice(0, 10) %}
+                            <div class="user">      
+                                <p class="name"> {{ user.firstname|capitalize }} {{ user.lastname|capitalize }} </p><p class="date"> {{ user.dateInscription | date('d/m/Y H:i:s') }} </p>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="list">
+                        <h1>Dernières réservations</h1>
+                        {% for reservation in reservations|slice(0, 10) %}
+                            <div class="reservation">      
+                                {# <p class="name"> {{ reservation.user.firstname|capitalize }} {{ reservation.user.lastname|capitalize }} </p><p class="date"> {{ reservation.dateReservation | date('d/m/Y H:i:s') }} </p> #}
+                                <p class="name"> {{ reservation.user.firstname|capitalize }} {{ reservation.user.lastname|capitalize }} </p><p class="date"> 18/03/2005 15:00:00 </p>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
