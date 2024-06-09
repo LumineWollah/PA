@@ -152,6 +152,13 @@ class connectionController extends AbstractController
             if ($request->get('redirect')) {
                 return $this->redirect($request->get('redirect'));
             }
+
+            if ($response['user']['roles'][0] == "ROLE_LESSOR"){
+                return $this->redirectToRoute('myApartmentsList');
+            }elseif ($response['user']['roles'][0] == "ROLE_ADMIN"){
+                return $this->redirectToRoute('apartmentList');
+            }
+
             return $this->redirectToRoute('apartmentsList');
         }      
 
