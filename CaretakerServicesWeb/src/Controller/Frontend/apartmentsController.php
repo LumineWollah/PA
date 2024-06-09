@@ -150,8 +150,12 @@ class apartmentsController extends AbstractController
         $apartmentData = $request->request->get('apartment');
         $apartment = json_decode($apartmentData, true);
 
+        if ($apartment != null) {
+            $request->getSession()->set('apartment', $apartment);
+        }
+
         if ($apartment == null) {
-            return $this->redirectToRoute('myApartmentsList', ['showPopup'=>true, 'content'=>'Le logement n\'existe pas', 'title'=>'Erreur']);
+            $apartment = $request->getSession()->get('apartment');
         }
 
         $defaults = [
@@ -165,7 +169,7 @@ class apartmentsController extends AbstractController
             "isHouse"=>$apartment['isHouse'],
             "price"=>$apartment['price'],
             // "mainPict"=>$apartment['mainPict'],
-            "address"=>$apartment['address'],
+            // "address" => json_encode($apartment['address']),
             // "indisponibilities"=>$apartment['indisponibilities'],
 
         ];
@@ -255,6 +259,7 @@ class apartmentsController extends AbstractController
             'attr'=>['class'=>"form-control"]
         ])
         ->add("address", HiddenType::class, [
+            "required"=>true,
             "constraints"=>[
                 new NotBlank([
                     'message' => 'L\'adresse est obligatoire',
@@ -265,6 +270,7 @@ class apartmentsController extends AbstractController
             "attr"=>[
                 "placeholder"=>"Image principale",
             ], 
+            'required'=>false,
             'constraints' => $this->getImageConstraints(),
         ])
         ->add("pict1", FileType::class, [
@@ -312,66 +318,53 @@ class apartmentsController extends AbstractController
         ])
         ->getForm()->handleRequest($request);
 
+        if ($apartment == null && !$form->isSubmitted()) {
+            return $this->redirectToRoute('myApartmentsList', ['showPopup'=>true, 'content'=>'Le logement n\'existe pas', 'title'=>'Erreur']);
+        }
+
         if ($form->isSubmitted() && $form->isValid()) {
+            $apartment = $request->getSession()->get('apartment');
+
             $data = $form->getData();
-            
-            $results = $this->amazonS3Client->insertObject($data['mainPict']);
-
-            if ($results['success']) {
-
-                $data['address'] = json_decode($data['address'], true);
-                
-                $data["country"] = $this->extractValueByPrefix($data["address"]['context'], 'country');
-                $data["city"] = $this->extractValueByPrefix($data["address"]['context'], 'place');
-                $data["postalCode"] = $this->extractValueByPrefix($data["address"]['context'], 'postcode');
-                $data["centerGps"] = $data['address']['center'];                
-                $data["address"] = $data['address']['place_name'];                
-
-                $data['mainPict'] = $results['link'];
-                
-                $pictures = array($results['link']);
-                
-                for ($i=1; $i < 10; $i++) { 
-                    if ($data['pict'.$i] != null) {
-                        $pictures[] = $this->amazonS3Client->insertObject($data['pict'.$i])['link'];
-                    }
-                    unset($data['pict'.$i]);
+    
+            if ($data['mainPict']) {
+                $results = $this->amazonS3Client->insertObject($data['mainPict']);
+                if ($results['success']) {
+                    $data['mainPict'] = $results['link'];
                 }
-                
-                $data['pictures'] = $pictures;
-
-                $data['owner'] = 'api/cs_users/'.$id;
-
-                $indispo = explode(",", $data['indisponibilities']);
-
-                unset($data['indisponibilities']);
-
-                $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/ld+json');
-                
-                $response = $client->request('POST', 'cs_apartments', [
-                    'json' => $data,
-                ]);
-
-                $response = json_decode($response->getContent(), true);
-                $apId = $response["id"];
-
-                for ($i=0; $i < count($indispo); $i++) { 
-                    $dates = explode(" ", trim($indispo[$i]));
-
-                    $startDateTime = DateTime::createFromFormat('d/m/Y', trim($dates[0]));
-                    $endDateTime = DateTime::createFromFormat('d/m/Y', trim($dates[2]));
-
-                    $response = $client->request('POST', 'cs_reservations', [
-                        'json' => [
-                            "startingDate" => $startDateTime->format('Y-m-d'),
-                            "endingDate" => $endDateTime->format('Y-m-d'),
-                            "price" => 0,
-                            "apartment" => "/api/cs_apartments/".$apId
-                        ],
-                    ]);   
-                }
-                return $this->redirectToRoute('apartmentList');
+            } else {
+                $data['mainPict'] = $apartment['mainPict'];
             }
+    
+            $data['address'] = json_decode($data['address'], true);
+            $data["country"] = $this->extractValueByPrefix($data["address"]['context'], 'country');
+            $data["city"] = $this->extractValueByPrefix($data["address"]['context'], 'place');
+            $data["postalCode"] = $this->extractValueByPrefix($data["address"]['context'], 'postcode');
+            $data["centerGps"] = $data['address']['center'];
+            $data["address"] = $data['address']['place_name'];
+    
+            $pictures = array($data['mainPict']);
+            for ($i = 1; $i <= 10; $i++) {
+                if (isset($data['pict' . $i])) {
+                    $results = $this->amazonS3Client->insertObject($data['pict' . $i]);
+                    if ($results['success']) {
+                        $pictures[] = $results['link'];
+                    }
+                } elseif (isset($apartment['pictures'][$i - 1])) {
+                    $pictures[] = $apartment['pictures'][$i - 1];
+                }
+                unset($data['pict' . $i]);
+            }
+    
+            $data['pictures'] = $pictures;
+            $id = $apartment['id'];
+            $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/merge-patch+json');
+
+            $client->request('PATCH', 'cs_apartments/' . $id, ['json' => $data]);
+            
+            $request->getSession()->remove('apartment');
+
+            return $this->redirectToRoute('myApartmentsList');
         }
 
         $apPict = array_pad($apartment['pictures'], 11, null);
