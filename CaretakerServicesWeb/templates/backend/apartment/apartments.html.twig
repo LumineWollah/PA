@@ -54,6 +54,32 @@
                 <h1>Liste des logements</h1>
                 <a href="{{ path('apartmentCreate') }}" class="btn btn-create"><div class="btnImage"><img style="height:20px;">Créer +</div></a>
             </div>
+            <h4 class="mt-4">Non validés:</h4>
+            <div class="container m-0 mb-4">
+                <div class="row">
+                {% for apartment in unverifiedApartments %}
+                    <div class="col-3 p-0 me-4">
+                        <div class="noValidateCard">
+                            <img src={% if apartment['mainPict'] is defined and apartment['mainPict'] is not empty %}{{ apartment.mainPict }}{% endif %}>                            
+                            <p class="name">{{ apartment.name|capitalize }}</p>
+                            <p class="otherData inscription"><b>Créé le :</b> {{ apartment.dateCreation|date('d/m/Y H:i:s') }}</p>
+                            <p class="otherData"><b>Propriétaire :</b> {{ apartment.owner.firstname|capitalize }} {{ apartment.owner.lastname|capitalize }}</p>
+                            <p class="otherData"><b>Prix :</b> {{ apartment.price }}</p>
+                            <p class="otherData"><b>Surface :</b> {{ apartment.area }}</p>
+                            <form action="{{ path('apartmentShow') }}" method="post" style="display: inline;">
+                                <input type="hidden" name="apartment" value="{{ apartment|json_encode }}">
+                                <button type="submit" class="seeMore" style="background-color: #A594F9;">Voir plus</button>
+                            </form>
+                            <div class="validateBtns">
+                                <a href="{{ path('apartmentAccept', {'id': apartment.id}) }}" class="validateBtn validBtn">Valider</a>
+                                <a href="{{ path('apartmentDelete', {'id': apartment.id, 'origin':'apartmentCrud' }) }}" class="validateBtn refuseBtn">Refuser</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+                </div>
+              </div> 
+            <h4>Validés:</h4>
             <table id="crudList" class="table table-striped tableAps">
                 <thead>
                     <tr>
@@ -67,7 +93,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for apartment in apartments %}
+                    {% for apartment in verifiedApartments %}
                         <tr>
                             <td class="mainPict"><img src={{apartment.mainPict}}></td>
                             <td>{{ apartment.name|capitalize }}</td>

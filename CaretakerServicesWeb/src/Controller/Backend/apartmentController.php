@@ -44,8 +44,8 @@ class apartmentController extends AbstractController
         return $role !== null && $role == 'ROLE_ADMIN';
     }
 
-    #[Route('/admin-panel/apartment/list', name: 'apartmentList')]
-    public function apartmentList(Request $request)
+    #[Route('/admin-panel/apartment/list', name: 'apartmentCrud')]
+    public function apartmentCrud(Request $request)
     {
         if (!$this->checkUserRole($request)) {return $this->redirectToRoute('login');}
 
@@ -56,11 +56,19 @@ class apartmentController extends AbstractController
                 'page' => 1
             ]
         ]);
-        
+
         $apartmentsList = $response->toArray();
+        
+        $verifiedApartments = array();
+        $unverifiedApartments = array();
+
+        foreach ($apartmentsList['hydra:member'] as $apartment) {
+            $apartment['isVerified'] == 1 ? $verifiedApartments[] = $apartment : $unverifiedApartments[] = $apartment;
+        }
 
         return $this->render('backend/apartment/apartments.html.twig', [
-            'apartments' => $apartmentsList['hydra:member']
+            'verifiedApartments' => $verifiedApartments,
+            'unverifiedApartments' => $unverifiedApartments
         ]);
     }
     
@@ -79,7 +87,7 @@ class apartmentController extends AbstractController
             ]
         ]);
         
-        return $this->redirectToRoute('apartmentList');
+        return $this->redirectToRoute('apartmentCrud');
     }
 
     #[Route('/admin-panel/apartment/edit', name: 'apartmentEdit')]
@@ -213,7 +221,7 @@ class apartmentController extends AbstractController
 
             $request->getSession()->remove('apartmentId');
 
-            return $this->redirectToRoute('apartmentList');
+            return $this->redirectToRoute('apartmentCrud');
         }      
         return $this->render('backend/apartment/editApartment.html.twig', [
             'defaults' => $defaultValues,
@@ -422,12 +430,30 @@ class apartmentController extends AbstractController
 
                 $response = json_decode($response->getContent(), true);
 
-                return $this->redirectToRoute('apartmentList');
+                return $this->redirectToRoute('apartmentCrud');
             }
         }      
         return $this->render('backend/apartment/createApartment.html.twig', [
             'form'=>$form,
             'errorMessage'=>null,
         ]);
+    }
+    
+    #[Route('/admin-panel/apartment/accept', name: 'apartmentAccept')]
+    public function apartmentAccept(Request $request)
+    {
+        if (!$this->checkUserRole($request)) {return $this->redirectToRoute('login');}
+
+        $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/merge-patch+json');
+
+        $id = $request->query->get('id');
+
+        $response = $client->request('PATCH', 'cs_apartments/'.$id, [
+            'json' => [
+                'isVerified'=>true
+            ],
+        ]);
+        
+        return $this->redirectToRoute('apartmentCrud');
     }
 }
