@@ -120,10 +120,10 @@ class connectionController extends AbstractController
 
             
             if ($responseBan->toArray()["hydra:member"][0]["isBan"] == true){
-                $errorMessages[] = "Ce compte est banni";
+                $errorMessage = "Ce compte est banni";
                 return $this->render('frontend/login_register/login.html.twig', [
                     'form'=>$form,
-                    'errorMessages'=>$errorMessages
+                    'errorMessage'=>$errorMessage
                 ]);
             }
 
