@@ -19,10 +19,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ApiResource(normalizationContext: ['groups' => ['getReservations']])]
 #[ORM\Entity(repositoryClass: CsReservationRepository::class)]
-#[Patch(security: "is_granted('ROLE_ADMIN') or object.getUser() == user or object.getApartmentOwner() == user or user in object.getServiceOwner().toArray()")]
+#[Patch(security: "is_granted('ROLE_ADMIN') or object.getUser() == user or object.getApartmentOwner() == user or object.getServiceOwner() == user")]
 #[Get]
 #[GetCollection]
-#[Delete(security: "is_granted('ROLE_ADMIN') or object.getUser() == user or object.getApartmentOwner() == user or user in object.getServiceOwner().toArray()")]
+#[Delete(security: "is_granted('ROLE_ADMIN') or object.getUser() == user or object.getApartmentOwner() == user or object.getServiceOwner() == user")]
 #[Post]
 #[ApiFilter(SearchFilter::class, properties: ['apartment' => 'exact', 'service' => 'exact', 'user' => 'exact', 'unavailability' => 'exact'])]
 class CsReservation

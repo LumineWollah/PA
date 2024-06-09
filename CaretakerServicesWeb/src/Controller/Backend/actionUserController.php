@@ -3,6 +3,7 @@
 namespace App\Controller\Backend;
 
 use App\Security\CustomAccessManager;
+use App\Service\AmazonS3Client;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Service\ApiHttpClient;
@@ -12,16 +13,20 @@ use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\Regex;
 
 class actionUserController extends AbstractController
 {
     private $apiHttpClient;
+    private $amazonS3Client;
 
-    public function __construct(ApiHttpClient $apiHttpClient)
+    public function __construct(ApiHttpClient $apiHttpClient, AmazonS3Client $amazonS3Client)
     {
         $this->apiHttpClient = $apiHttpClient;
+        $this->amazonS3Client = $amazonS3Client;
     }
 
     private function checkUserRole(Request $request): bool
@@ -54,7 +59,7 @@ class actionUserController extends AbstractController
 
         $userData = $request->request->get('user');
         $user = json_decode($userData, true);
-        
+
         return $this->render('backend/user/showUser.html.twig', [
             'user'=>$user
         ]);
@@ -142,9 +147,25 @@ class actionUserController extends AbstractController
                 ]),
             ],
         ])
+        ->add("profilePict", FileType::class, [
+            'constraints' => [
+                new File([
+                    'maxSize' => '10m',
+                    'mimeTypes' => [
+                        'image/png', 
+                        'image/jpeg', 
+                    ],
+                    'mimeTypesMessage' => 'Please upload a valid jpeg or png document',
+                ])
+            ],
+        ])
         ->getForm()->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()){
             $data = $form->getData();
+
+            $results = $this->amazonS3Client->insertObject($data['profilePict']);
+            $data['profilePict'] = $results['link'];
+
             $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/ld+json');
             
             $response = $client->request('GET', 'cs_users', [
@@ -152,7 +173,7 @@ class actionUserController extends AbstractController
                     'page' => 1,
                     'email' => $data['email']
                     ]
-                ]);
+            ]);
             
             if ($response->toArray()["hydra:totalItems"] > 0){
                 $errorMessages[] = "Adresse mail déjà utilisée. Essayez en une autre.";

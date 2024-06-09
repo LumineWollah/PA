@@ -2,6 +2,7 @@
 
 namespace App\Controller\Backend;
 
+use App\Service\AmazonS3Client;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Service\ApiHttpClient;
@@ -10,15 +11,18 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Validator\Constraints\File;
 
 class documentController extends AbstractController
 {
     private $apiHttpClient;
+    private $amazonS3Client;
 
-    public function __construct(ApiHttpClient $apiHttpClient)
+    public function __construct(ApiHttpClient $apiHttpClient, AmazonS3Client $amazonS3Client)
     {
         $this->apiHttpClient = $apiHttpClient;
+        $this->amazonS3Client = $amazonS3Client;
     }
 
     private function checkUserRole(Request $request): bool
@@ -118,7 +122,7 @@ class documentController extends AbstractController
             ], 
             "required"=>false,
         ])
-        ->add("url", TextType::class, [
+        ->add("url", UrlType::class, [
             "attr"=>[
                 "placeholder"=>"URL",
             ],
@@ -183,17 +187,10 @@ class documentController extends AbstractController
             ], 
         ])
         ->add("url", FileType::class, [
-            "attr"=>[
-                "placeholder"=>"URL",
-            ], 
             'constraints' => [
                 new File([
                     'maxSize' => '10m',
-                    'mimeTypes' => [
-                        'application/pdf',
-                        'application/x-pdf',
-                    ],
-                    'mimeTypesMessage' => 'Please upload a valid pdf document',
+                    'mimeTypesMessage' => 'Please upload a valid document',
                 ])
             ],
         ])
@@ -201,9 +198,13 @@ class documentController extends AbstractController
             "choices" => $userChoice,
         ])
         ->getForm()->handleRequest($request);
+        
         if ($form->isSubmitted() && $form->isValid()){
             $data = $form->getData();
 
+            $results = $this->amazonS3Client->insertObject($data['url']);
+            $data['url'] = $results['link'];
+            $data['owner'] = 'api/cs_users/'.$data['owner'];
             $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/ld+json');
 
             $response = $client->request('POST', 'cs_documents', [
@@ -213,7 +214,8 @@ class documentController extends AbstractController
             $response = json_decode($response->getContent(), true);
 
             return $this->redirectToRoute('documentList');
-        }      
+        }
+
         return $this->render('backend/document/createDocument.html.twig', [
             'form'=>$form,
             'errorMessage'=>null

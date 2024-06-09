@@ -11,6 +11,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Validator\Constraints\DateTime;
 use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
 
 class reservationController extends AbstractController
@@ -35,7 +39,7 @@ class reservationController extends AbstractController
 
         $client = $this->apiHttpClient->getClient($request->cookies->get('token'));
 
-        $response = $client->request('GET', 'cs_reservations', [
+        $response = $client->request('GET', 'cs_reservations?unavailability=false', [
             'query' => [
                 'page' => 1,
             ]
@@ -82,13 +86,17 @@ class reservationController extends AbstractController
 
         try {
             $defaults = [
-                'startingDate' => $reservation['startingDate'],
-                'endingDate' => $reservation['endingDate'],
+                'startingDate' => new \DateTime($reservation['startingDate']),
+                'endingDate' => new \DateTime($reservation['endingDate']),
                 'price' => $reservation['price'],
                 'client' => $reservation['user']['id'],
-                'service' => $reservation['service']['id'],
-                'apartment' => $reservation['apartment']['id'],
             ];
+
+            if (isset($reservation['service'])) {
+                $defaults['service'] = $reservation['service']['id'];
+            }elseif (isset($reservation['apartment'])) {
+                $defaults['apartment'] = $reservation['apartment']['id'];
+            }
         } catch (Exception $e) {
             $defaults = [];
         }
@@ -134,19 +142,31 @@ class reservationController extends AbstractController
             $apartmentChoice += [ $apartment['name'] => $apartment['id'] ];
         }
 
+        $response = $client->request('GET', 'cs_services', [
+            'query' => [
+                'page' => 1,
+            ]
+        ]);
+
+        $servicesList = $response->toArray();
+        $serviceChoice = array();
+
+        foreach ($servicesList['hydra:member'] as $service) {
+            $serviceChoice += [ $service['name'] => $service['id'] ];
+        }
 
         $form = $this->createFormBuilder($defaults)
-        ->add("startingDate", TextType::class, [
+        ->add("startingDate", DateType::class, [
             "attr"=>[
                 "placeholder"=>"Date de départ",
             ], 
         ])
-        ->add("endingDate", TextType::class, [
+        ->add("endingDate", DateType::class, [
             "attr"=>[
                 "placeholder"=>"Date de fin",
             ], 
         ])
-        ->add("price", IntegerType::class, [
+        ->add("price", NumberType::class, [
             "attr"=>[
                 "placeholder"=>"Prix",
             ],
@@ -166,30 +186,43 @@ class reservationController extends AbstractController
             "choices" => $userChoice,
         ])
         ->getForm()->handleRequest($request);
-            if ($form->isSubmitted() && $form->isValid()){
-                $data = $form->getData();
+        if ($form->isSubmitted() && $form->isValid()){
+            $data = $form->getData();
 
+            if ($data['service'] != null) {
                 $data['service'] = 'api/cs_services/'.$data['service'];
-                $data['apartment'] = 'api/cs_apartments/'.$data['apartment'];
-                $data['client'] = 'api/cs_users/'.$data['client'];
-                
-                $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/merge-patch+json');
+            }else{
+                unset($data['service']);
+            }
 
-                $response = $client->request('PATCH', 'cs_reservations/'.$storedReservation, [
-                    'json' => $data,
-                ]);
-
-                $response = json_decode($response->getContent(), true);
-    
-                $request->getSession()->remove('userId');
-                $request->getSession()->remove('reservationId');
-
-                return $this->redirectToRoute('reservationList');
-            }      
-            return $this->render('backend/reservation/editReservation.html.twig', [
-                'form'=>$form,
-                'errorMessage'=>null
+            if ($data['apartment'] != null) {
+                $data['apartment'] = 'api/cs_apartments/'.$data['apartment']; 
+            }else{
+                unset($data['apartment']);
+            }
+            $data['client'] = 'api/cs_users/'.$data['client'];
+            
+            $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/merge-patch+json');
+            
+            $data['startingDate'] = $data['startingDate']->format('Y-m-d');
+            $data['endingDate'] = $data['endingDate']->format('Y-m-d');
+            
+            $response = $client->request('PATCH', 'cs_reservations/'.$storedReservation, [
+                'json' => $data,
             ]);
+
+            $response = json_decode($response->getContent(), true);
+
+            $request->getSession()->remove('userId');
+            $request->getSession()->remove('reservationId');
+
+            return $this->redirectToRoute('reservationList');
+        }
+
+        return $this->render('backend/reservation/editReservation.html.twig', [
+            'form'=>$form,
+            'errorMessage'=>null
+        ]);
     }
 
     #[Route('/admin-panel/reservation/show', name: 'reservationShow')]
@@ -204,4 +237,121 @@ class reservationController extends AbstractController
             'reservation'=>$reservation
         ]);
     }
+
+    #[Route('/admin-panel/reservation/create', name: 'reservationCreate')]
+    public function reservationCreate(Request $request)
+    {
+        if (!$this->checkUserRole($request)) {
+            return $this->redirectToRoute('login');
+        }
+
+        $client = $this->apiHttpClient->getClient($request->cookies->get('token'));
+
+        $response = $client->request('GET', 'cs_users', [
+            'query' => [
+                'page' => 1,
+            ]
+        ]);
+
+        $usersList = $response->toArray();
+        $userChoice = array();
+
+        foreach ($usersList['hydra:member'] as $user) {
+            $userChoice += [$user['firstname'] . ' ' . $user['lastname'] => $user['id']];
+        }
+
+        $response = $client->request('GET', 'cs_services', [
+            'query' => [
+                'page' => 1,
+            ]
+        ]);
+
+        $servicesList = $response->toArray();
+        $serviceChoice = array();
+
+        foreach ($servicesList['hydra:member'] as $service) {
+            $serviceChoice += [$service['name'] => $service['id']];
+        }
+
+        $response = $client->request('GET', 'cs_apartments', [
+            'query' => [
+                'page' => 1,
+            ]
+        ]);
+
+        $apartmentsList = $response->toArray();
+        $apartmentChoice = array();
+
+        foreach ($apartmentsList['hydra:member'] as $apartment) {
+            $apartmentChoice += [$apartment['name'] => $apartment['id']];
+        }
+
+        $form = $this->createFormBuilder()
+            ->add("startingDate", DateType::class, [
+                "attr" => [
+                    "placeholder" => "Date de départ",
+                ],
+            ])
+            ->add("endingDate", DateType::class, [
+                "attr" => [
+                    "placeholder" => "Date de fin",
+                ],
+            ])
+            ->add("price", NumberType::class, [
+                "attr" => [
+                    "placeholder" => "Prix",
+                ],
+                'constraints' => [
+                    new GreaterThanOrEqual(0),
+                ],
+            ])
+            ->add("service", ChoiceType::class, [
+                "choices" => $serviceChoice,
+                "required" => false,
+            ])
+            ->add("apartment", ChoiceType::class, [
+                "choices" => $apartmentChoice,
+                "required" => false,
+            ])
+            ->add("client", ChoiceType::class, [
+                "choices" => $userChoice,
+            ])
+            ->getForm()->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $data = $form->getData();
+
+            if ($data['service'] != null) {
+                $data['service'] = 'api/cs_services/' . $data['service'];
+            } else {
+                unset($data['service']);
+            }
+
+            if ($data['apartment'] != null) {
+                $data['apartment'] = 'api/cs_apartments/' . $data['apartment'];
+            } else {
+                unset($data['apartment']);
+            }
+            $data['user'] = 'api/cs_users/' . $data['client'];
+
+            $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/ld+json');
+
+            $data['startingDate'] = $data['startingDate']->format('Y-m-d');
+            $data['endingDate'] = $data['endingDate']->format('Y-m-d');
+
+            $response = $client->request('POST', 'cs_reservations', [
+                'json' => $data,
+            ]);
+
+            $response = json_decode($response->getContent(), true);
+
+            return $this->redirectToRoute('reservationList');
+        }
+
+        return $this->render('backend/reservation/createReservation.html.twig', [
+            'form' => $form,
+            'errorMessage' => null,
+        ]);
+    }
+
 }

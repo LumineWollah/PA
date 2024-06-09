@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\Regex;
 
@@ -72,6 +73,7 @@ class travelerController extends AbstractController
                 'lastname' => $traveler['lastname'],
                 'telNumber' => $traveler['telNumber'],
                 'roles' => $traveler['roles'],
+                'profilePict' => $traveler['profilePict'],
             ];
         } catch (Exception $e) {
             $defaults = [];
@@ -135,6 +137,12 @@ class travelerController extends AbstractController
                     'pattern' => '/^[0-9]+$/',
                     'message' => 'Le numéro de téléphone doit contenir uniquement des chiffres',
                 ]),
+            ],
+            "required"=>false,
+        ])
+        ->add("profilePict", UrlType::class, [
+            "attr"=>[
+                "placeholder"=>"URL de la photo de profil",
             ],
             "required"=>false,
         ])
