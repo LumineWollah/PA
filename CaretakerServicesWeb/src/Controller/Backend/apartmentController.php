@@ -122,6 +122,7 @@ class apartmentController extends AbstractController
         try {
             $defaultValues = [
                 'owner' => $apartment['owner']['firstname'] . ' ' . $apartment['owner']['lastname'],
+                'address' => $apartment['address'],
             ];
             
             for ($i = 0; $i < count($apartment['addons']); $i++) {
@@ -198,12 +199,20 @@ class apartmentController extends AbstractController
             ],
             "required"=>false,
         ])
+        ->add("address", HiddenType::class, [
+            "constraints"=>[
+                new NotBlank([
+                    'message' => 'L\'adresse est obligatoire',
+                ]),
+            ],
+        ])
         ->add("owner", ChoiceType::class, [
             "choices" => $userChoice,
         ])
         ->add("addons", ChoiceType::class, [
             "choices" => $addonChoice,
             "multiple" => True,
+            "required"=>false,
         ])
         ->add("mainPict", UrlType::class, [
             "attr"=>[
@@ -215,11 +224,19 @@ class apartmentController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()){
             $data = $form->getData();
 
+            $data['address'] = json_decode($data['address'], true);
+                
+            $data["country"] = $this->extractValueByPrefix($data["address"]['context'], 'country');
+            $data["city"] = $this->extractValueByPrefix($data["address"]['context'], 'place');
+            $data["postalCode"] = $this->extractValueByPrefix($data["address"]['context'], 'postcode');
+            $data["centerGps"] = $data['address']['center'];                
+            $data["address"] = $data['address']['place_name'];
+
             $data['owner'] = 'api/cs_users/'.$data['owner'];
             foreach ($data['addons'] as $key => $addon) {
                 $data['addons'][$key] = 'api/cs_addonss/'.$addon;
             }
-
+            
             $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/merge-patch+json');
             $response = $client->request('PATCH', 'cs_apartments/'.$storedApartment, [
                 'json' => $data,
@@ -429,7 +446,7 @@ class apartmentController extends AbstractController
                 $data['owner'] = 'api/cs_users/'.$data['owner'];
 
                 foreach ($data['addons'] as $key => $addon) {
-                    $data['addons'][$key] = 'api/cs_addonss/'.$addon;
+                    $data['addons'][$key] = 'api/cs_addonss'.$addon;
                 }    
 
                 $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/ld+json');
