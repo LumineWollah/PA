@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\Regex;
 
@@ -79,6 +80,7 @@ class providerController extends AbstractController
                 'lastname' => $provider['lastname'],
                 'telNumber' => $provider['telNumber'],
                 'roles' => $provider['roles'],
+                'profilePict' => $provider['profilePict'],
             ];
         } catch (Exception $e) {
             $defaults = [];
@@ -142,6 +144,12 @@ class providerController extends AbstractController
                     'pattern' => '/^[0-9]+$/',
                     'message' => 'Le numéro de téléphone doit contenir uniquement des chiffres',
                 ]),
+            ],
+            "required"=>false,
+        ])
+        ->add("profilePict", UrlType::class, [
+            "attr"=>[
+                "placeholder"=>"URL de la photo de profil",
             ],
             "required"=>false,
         ])

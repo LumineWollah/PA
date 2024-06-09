@@ -75,7 +75,7 @@ class apartmentsController extends AbstractController
         $id = $request->query->get('id');
         $client = $this->apiHttpClient->getClient($request->cookies->get('token'));
 
-        $responseReserv = $client->request('GET', 'cs_reservations?unavibility=false&apartment='.$id);
+        $responseReserv = $client->request('GET', 'cs_reservations?unavailability=false&apartment='.$id);
         $reservations = $responseReserv->toArray()['hydra:member'];
 
         if (count($reservations) == 0){

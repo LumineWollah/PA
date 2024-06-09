@@ -13,6 +13,7 @@ use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Length;
@@ -104,6 +105,7 @@ class apartmentController extends AbstractController
                 'bathrooms' => $apartment['bathrooms'],
                 'travelersMax' => $apartment['travelersMax'],
                 'price' => $apartment['price'],
+                'mainPict' => $apartment['mainPict'], 
             ];
         } catch (Exception $e) {
             $defaults = [];
@@ -172,7 +174,7 @@ class apartmentController extends AbstractController
         ])
         ->add("bathrooms", IntegerType::class, [
             "attr"=>[
-                "placeholder"=>"Toilettes",
+                "placeholder"=>"Salles de bain",
             ],
             "required"=>false,
         ])
@@ -194,6 +196,12 @@ class apartmentController extends AbstractController
         ->add("addons", ChoiceType::class, [
             "choices" => $addonChoice,
             "multiple" => True,
+        ])
+        ->add("mainPict", UrlType::class, [
+            "attr"=>[
+                "placeholder"=>"URL",
+            ],
+            "required"=>false,
         ])
         ->getForm()->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()){
@@ -235,8 +243,8 @@ class apartmentController extends AbstractController
         ]);
     }
     
-    #[Route('/admin-panel/apartment/create', name: 'apartmentCreate')]
-    public function apartmentCreate(Request $request)
+    #[Route('/admin-panel/apartment/create', name: 'apartmentCreateCrud')]
+    public function apartmentCreateCrud(Request $request)
     {
         if (!$this->checkUserRole($request)) {return $this->redirectToRoute('login');}
         
@@ -299,7 +307,7 @@ class apartmentController extends AbstractController
         ])
         ->add("bathrooms", IntegerType::class, [
             "attr"=>[
-                "placeholder"=>"Toilettes",
+                "placeholder"=>"Salles de bain",
             ],
             'constraints'=>[
                 new GreaterThanOrEqual([
@@ -396,7 +404,6 @@ class apartmentController extends AbstractController
         ->getForm()->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()){
             $data = $form->getData();
-
             $results = $this->amazonS3Client->insertObject($data['mainPict']);
 
             if ($results['success']) {
@@ -413,6 +420,9 @@ class apartmentController extends AbstractController
                 $data['pictures'] = array($results['link']);
                 $data['owner'] = 'api/cs_users/'.$data['owner'];
 
+                foreach ($data['addons'] as $key => $addon) {
+                    $data['addons'][$key] = 'api/cs_addonss/'.$addon;
+                }    
 
                 $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/ld+json');
 
