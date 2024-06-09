@@ -26,7 +26,7 @@ class reservationsController extends AbstractController
     }
 
     #[Route('/reservation/{id}/pay', 'reservPay')]
-    public function reservPay(Request $request, MailerInterface $mailer){
+    public function reservPay(Request $request){
         $data = $request->getSession()->get('reservData');
         $apName = $request->getSession()->get('apName');
 
@@ -68,14 +68,6 @@ class reservationsController extends AbstractController
         // $tempPdfPath = sys_get_temp_dir() . '/facture.pdf';
         // file_put_contents($tempPdfPath, file_get_contents($pdfUrl));
 
-        $email = (new Email())
-            ->from('ne-pas-repondre@caretakerservices.fr')
-            ->to($emailAdr)
-            ->subject('Votre facture pour la réservation')
-            ->html('<p>Veuillez trouver votre facture en pièce jointe.</p>');
-
-        $mailer->send($email);
-
         $session = Session::create([
             'payment_method_types' => ['card'],
             'line_items' => [[
@@ -94,7 +86,7 @@ class reservationsController extends AbstractController
     }
 
     #[Route('/reservation/pay/success', 'reservPaySucc')]
-    public function reservPaySucc(Request $request){
+    public function reservPaySucc(Request $request, MailerInterface $mailer){
         $data = $request->getSession()->get('reservData');
         $client = $this->apiHttpClient->getClientWithoutBearer();
         
@@ -106,6 +98,16 @@ class reservationsController extends AbstractController
         $response = $client->request('POST', 'cs_reservations', [
             'json' => $data,
         ]);
+
+        $emailAdr = $request->cookies->get('email');
+
+        $email = (new Email())
+            ->from('ne-pas-repondre@caretakerservices.fr')
+            ->to($emailAdr)
+            ->subject('Votre réservation')
+            ->html('<p>Votre réservation pour le #### a bien été validée</p>');
+
+        $mailer->send($email);
         
         return $this->redirectToRoute('apartmentsList');
     }
@@ -113,25 +115,6 @@ class reservationsController extends AbstractController
     #[Route('/reservation/pay/failure', 'reservPayFail')]
     public function reservPayFail(){
         #...
-    }
-
-    #[Route('/reservation/{id}/refund', 'reservRefund')]
-    public function reservRefund(int $id){
-        $client = $this->apiHttpClient->getClientWithoutBearer();
-
-        $responseReserv = $client->request('GET', 'cs_reservations/'.$id);
-        $reserv = $responseReserv->toArray();
-        
-        $refund = \Stripe\Refund::create([
-            'charge' => $reserv['paymentId'],
-            'amount' => $reserv['price'] * 100,
-        ]);
-    
-        if ($refund->status == 'succeeded') {
-            $client->request('PATCH', 'cs_reservations/'.$id, [
-                'active' => false
-            ]);
-        }
     }
 
 }
