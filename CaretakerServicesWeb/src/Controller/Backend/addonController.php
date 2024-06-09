@@ -99,9 +99,6 @@ class addonController extends AbstractController
         ->getForm()->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()){
                 $data = $form->getData();
-
-                $data['company'] = 'api/cs_companies/'.$data['company'];
-                $data['category'] = 'api/cs_categories/'.$data['category'];
                 
                 $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/merge-patch+json');
 
@@ -150,10 +147,6 @@ class addonController extends AbstractController
         ->getForm()->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()){
             $data = $form->getData();
-
-            $data['category'] = 'api/cs_categories/'.$data['category'];
-            $data['company'] = 'api/cs_companies/'.$data['company'];
-
 
             $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/ld+json');
 

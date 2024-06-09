@@ -31,6 +31,17 @@
                 </div>
                 <div class="inputDiv" style="position: relative;">
                     {{form_widget(form.owner)}}
+                    <p>{{ defaults.owner }}</p>
+                </div>
+                <div class="inputDiv" style="position: relative;">
+                    {{form_widget(form.addons)}}
+                    {% if defaults.addons is defined and defaults.addons is not empty %}
+                        <ul>
+                            {% for addon in defaults.addons %}
+                                <li>{{ addon }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
                 </div>
                 <button type="submit" class="btn">Modifier</button>
             {{form_end(form)}}

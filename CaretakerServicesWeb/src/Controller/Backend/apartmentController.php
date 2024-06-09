@@ -101,6 +101,7 @@ class apartmentController extends AbstractController
                 'name' => $apartment['name'],
                 'description' => $apartment['description'],
                 'bedrooms' => $apartment['bedrooms'],
+                'bathrooms' => $apartment['bathrooms'],
                 'travelersMax' => $apartment['travelersMax'],
                 'price' => $apartment['price'],
             ];
@@ -108,6 +109,19 @@ class apartmentController extends AbstractController
             $defaults = [];
         }
 
+        try {
+            $defaultValues = [
+                'owner' => $apartment['owner']['firstname'] . ' ' . $apartment['owner']['lastname'],
+            ];
+            
+            for ($i = 0; $i < count($apartment['addons']); $i++) {
+                $defaultValues['addons'][$i] = $apartment['addons'][$i]['name'];
+            }
+    
+        } catch (Exception $e) {
+            $defaultValues = [];
+        }
+        
         $client = $this->apiHttpClient->getClient($request->cookies->get('token'));
         
         $response = $client->request('GET', 'cs_users', [
@@ -122,6 +136,19 @@ class apartmentController extends AbstractController
 
         foreach ($usersList['hydra:member'] as $user) {
             $userChoice += [ $user['firstname'].' '.$user['lastname'] => $user['id'] ];
+        }
+
+        $response = $client->request('GET', 'cs_addonss', [
+            'query' => [
+                'page' => 1,
+            ]
+        ]);
+
+        $addonsList = $response->toArray();
+        $addonChoice = array();
+
+        foreach ($addonsList['hydra:member'] as $addon) {
+            $addonChoice += [ $addon['name'] => $addon['id'] ];
         }
 
         $form = $this->createFormBuilder($defaults)
@@ -164,12 +191,20 @@ class apartmentController extends AbstractController
         ->add("owner", ChoiceType::class, [
             "choices" => $userChoice,
         ])
+        ->add("addons", ChoiceType::class, [
+            "choices" => $addonChoice,
+            "multiple" => True,
+        ])
         ->getForm()->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()){
             $data = $form->getData();
 
-            $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/merge-patch+json');
+            $data['owner'] = 'api/cs_users/'.$data['owner'];
+            foreach ($data['addons'] as $key => $addon) {
+                $data['addons'][$key] = 'api/cs_addonss/'.$addon;
+            }
 
+            $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/merge-patch+json');
             $response = $client->request('PATCH', 'cs_apartments/'.$storedApartment, [
                 'json' => $data,
             ]);
@@ -181,6 +216,7 @@ class apartmentController extends AbstractController
             return $this->redirectToRoute('apartmentList');
         }      
         return $this->render('backend/apartment/editApartment.html.twig', [
+            'defaults' => $defaultValues,
             'form'=>$form,
             'errorMessage'=>null
         ]);
@@ -217,6 +253,19 @@ class apartmentController extends AbstractController
 
         foreach ($usersList['hydra:member'] as $user) {
             $userChoice += [ $user['firstname'].' '.$user['lastname'] => $user['id'] ];
+        }
+
+        $response = $client->request('GET', 'cs_addonss', [
+            'query' => [
+                'page' => 1,
+            ]
+        ]);
+
+        $addonsList = $response->toArray();
+        $addonChoice = array();
+
+        foreach ($addonsList['hydra:member'] as $addon) {
+            $addonChoice += [ $addon['name'] => $addon['id'] ];
         }
 
         $form = $this->createFormBuilder()
@@ -323,6 +372,11 @@ class apartmentController extends AbstractController
         ])
         ->add("owner", ChoiceType::class, [
             "choices" => $userChoice,
+        ])
+        ->add("addons", ChoiceType::class, [
+            "choices" => $addonChoice,
+            "expanded" => True,
+            "multiple" => True,
         ])
         ->add("mainPict", FileType::class, [
             "attr"=>[
