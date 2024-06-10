@@ -16,7 +16,7 @@
                 </a>
                 {% set role = app.request.cookies.get('roles') %}
                 <div class="collapse navbar-collapse" id="navbarNav">
-                    {% if role == 'ROLE_TRAVELER' %}
+                    {% if role == 'ROLE_TRAVELER' or role is not defined or role == null %}
                         <ul class="navbar-nav">
                             <li class="nav-item">
                                 <a class="nav-link {% block activeApar %}{% endblock %} me-4" aria-current="page" href={{ path('apartmentsList') }}>Logements</a>
