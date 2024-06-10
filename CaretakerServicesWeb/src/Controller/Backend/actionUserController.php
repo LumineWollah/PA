@@ -237,4 +237,35 @@ class actionUserController extends AbstractController
         $response = $response->getStatusCode();
         return $this->redirectToRoute($origin);
     }
+    
+    #[Route('/admin-panel/user/unban', name: 'userUnban')]
+    public function userUnban(Request $request)
+    {
+        if (!$this->checkUserRole($request)) {return $this->redirectToRoute('login');}
+
+        $userData = $request->request->get('user');
+        $user = json_decode($userData, true);
+        
+        $origin = $request->request->get('origin');
+        $storedUser = $request->getSession()->get('userId');
+
+        if (!$storedUser) {
+            $request->getSession()->set('userId', $user['id']);
+        }
+
+        $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/merge-patch+json');
+
+
+        $data = array('isBan' => false);
+
+        $response = $client->request('PATCH', 'cs_users/'.$user['id'], [
+            'json' => $data,
+        ]);
+
+        $var = $response->getContent(false);
+
+        
+        $response = $response->getStatusCode();
+        return $this->redirectToRoute($origin);
+    }
 }

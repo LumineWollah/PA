@@ -58,7 +58,7 @@ class addonController extends AbstractController
 
         $id = $request->query->get('id');
 
-        $response = $client->request('DELETE', 'cs_addonss/'.$id, [
+        $response = $client->request('DELETE', 'cs_addonss'.$id, [
             'query' => [
                 'id' => $id
             ]
@@ -102,7 +102,7 @@ class addonController extends AbstractController
                 
                 $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/merge-patch+json');
 
-                $response = $client->request('PATCH', 'cs_addonss/'.$storedAddon, [
+                $response = $client->request('PATCH', 'cs_addonss'.$storedAddon, [
                     'json' => $data,
                 ]);
 
