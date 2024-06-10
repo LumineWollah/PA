@@ -6,6 +6,7 @@ use App\Repository\CsCompanyRepository;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -85,9 +86,21 @@ class CsCompany
     #[Groups(["getCompanies"])]
     private Collection $users;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(["getUsers", "getCompanies", "getServices", "getReservations"])]
+    private ?string $coverImage = null;
+
+    /**
+     * @var Collection<int, CsCategory>
+     */
+    #[ORM\ManyToMany(targetEntity: CsCategory::class, inversedBy: 'csCompanies')]
+    #[Groups(["getCompanies"])]
+    private Collection $categories;
+
     public function __construct()
     {
         $this->users = new ArrayCollection();
+        $this->categories = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -259,6 +272,42 @@ class CsCompany
     public function setCenterGps($centerGps)
     {
         $this->centerGps = $centerGps;
+
+        return $this;
+    }
+
+    public function getCoverImage(): ?string
+    {
+        return $this->coverImage;
+    }
+
+    public function setCoverImage(?string $coverImage): static
+    {
+        $this->coverImage = $coverImage;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, CsCategory>
+     */
+    public function getCategories(): Collection
+    {
+        return $this->categories;
+    }
+
+    public function addCategory(CsCategory $category): static
+    {
+        if (!$this->categories->contains($category)) {
+            $this->categories->add($category);
+        }
+
+        return $this;
+    }
+
+    public function removeCategory(CsCategory $category): static
+    {
+        $this->categories->removeElement($category);
 
         return $this;
     }

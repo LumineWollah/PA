@@ -8,6 +8,7 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Post;
+use App\Controller\CsServiceController;
 use App\Repository\CsServiceRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -15,13 +16,25 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-#[ApiResource(normalizationContext: ['groups' => ['getServices']])]
+#[ApiResource(normalizationContext: ['groups' => ['getServices']],
+operations: [
+    new Get(),
+    new GetCollection(),
+    new Post(
+        name: 'createService', 
+        uriTemplate: '/cs_services/',
+        controller: CsServiceController::class,
+        security: "is_granted('ROLE_PROVIDER') or is_granted('ROLE_ADMIN')"
+    ),
+    new Patch(security: "is_granted('ROLE_ADMIN') or object.getProvider() == user"),
+    new Delete(security: "is_granted('ROLE_ADMIN') or object.getProvider() == user")
+])]
 #[ORM\Entity(repositoryClass: CsServiceRepository::class)]
-#[Patch(security: "is_granted('ROLE_ADMIN') or object.getProvider() == user")]
-#[Get]
-#[GetCollection]
-#[Delete(security: "is_granted('ROLE_ADMIN') or object.getProvider() == user")]
-#[Post(security: "is_granted('ROLE_PROVIDER') or is_granted('ROLE_ADMIN')")]
+// #[Patch(security: "is_granted('ROLE_ADMIN') or object.getProvider() == user")]
+// #[Get]
+// #[GetCollection]
+// #[Delete(security: "is_granted('ROLE_ADMIN') or object.getProvider() == user")]
+// #[Post(security: "is_granted('ROLE_PROVIDER') or is_granted('ROLE_ADMIN')")]
 class CsService
 {
     #[ORM\Id]
@@ -71,6 +84,10 @@ class CsService
      */
     #[ORM\ManyToMany(targetEntity: CsReservation::class, mappedBy: 'services')]
     private Collection $reservationsForApart;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(["getServices", "getUsers", "getReservations", "getApartments", "getCategories", "getCompanies"])]
+    private ?string $coverImage = null;
 
     public function __construct()
     {
@@ -236,6 +253,18 @@ class CsService
         if ($this->reservationsForApart->removeElement($reservationsForApart)) {
             $reservationsForApart->removeService($this);
         }
+
+        return $this;
+    }
+
+    public function getCoverImage(): ?string
+    {
+        return $this->coverImage;
+    }
+
+    public function setCoverImage(string $coverImage): static
+    {
+        $this->coverImage = $coverImage;
 
         return $this;
     }

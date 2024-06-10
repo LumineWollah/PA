@@ -69,7 +69,7 @@ class apartmentsController extends AbstractController
         ];
     }
 
-    #[Route('/apartment/delete', name: 'apartmentDeleteLessor')]
+    #[Route('/apartments/delete', name: 'apartmentDeleteLessor')]
     public function apartmentDeleteLessor(Request $request, MailerInterface $mailer)
     { 
         $id = $request->query->get('id');
@@ -385,7 +385,7 @@ class apartmentsController extends AbstractController
         ]);
     }
 
-    #[Route('/apartment/create', name: 'apartmentCreate')]
+    #[Route('/apartments/create', name: 'apartmentCreate')]
     public function apartmentCreate(Request $request)
     {
         $role = $request->cookies->get('roles');
@@ -611,7 +611,7 @@ class apartmentsController extends AbstractController
         ]);
     }
 
-    #[Route('/apartment/{id}', name: 'apartmentsDetail')]
+    #[Route('/apartments/{id}', name: 'apartmentsDetail')]
     public function apartmentDetail(int $id, Request $request)
     {
         $client = $this->apiHttpClient->getClientWithoutBearer();
@@ -747,7 +747,7 @@ class apartmentsController extends AbstractController
         ]);
     }
 
-    #[Route('/apartment', name: 'apartmentsList')]
+    #[Route('/apartments', name: 'apartmentsList')]
     public function apartmentList(Request $request)
     { 
         $client = $this->apiHttpClient->getClientWithoutBearer();

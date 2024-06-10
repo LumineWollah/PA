@@ -1,0 +1,40 @@
+{% extends 'frontend/base.html.twig' %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href={{ asset('styles/frontend/companies/companiesList.css') }}>
+{% endblock %}
+
+{% block activeProv %}active{% endblock %}
+
+{% block body %}
+<div class="container-fluid pageContent">
+    <h1>Nos <span class="h1span">prestataires</span> à consulter</h1>    
+    {% for i in range(0, (((companies|length)/4)|round(0, 'ceil'))-1) %}
+        <div class="row apsRow">
+            {% for j in range(i*4, (i*4)+3) %}
+                {% if j < companies|length %}
+                    <a class="col-3 companyContainer" href={{ path('providersDetail', {'id': companies[j].id}) }}>               
+                        <div class="imgContainer">
+                            {% if companies[j].coverImage is not defined or companies[j].coverImage is null %}
+                                <img src={{ asset('icons/profile_pict_default_white.png') }}>
+                            {% else %}
+                                {% set coverImage = companies[j].coverImage %}
+                                <img src="{{ coverImage }}">
+                            {% endif %}
+                        </div>
+                        <p class="apartName"><b>{{ companies[j].companyName }}</b></p>
+                        <p class="apartDesc">{{ companies[j].address }}, {{ companies[j].postalCode }} {{ companies[j].city }}</p>
+                        <div class="row ms-1">
+                            {% for category in companies[j].categories|slice(0, 3) %}
+                                <div class="categoryContainer me-2" style="border-color: #{{ category.color }}">
+                                    <p class="categoryName" style="color: #{{ category.color }};">• {{ category.name }}</p>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </a>
+                {% endif %}
+            {% endfor %}
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

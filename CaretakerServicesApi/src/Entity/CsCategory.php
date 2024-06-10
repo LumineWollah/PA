@@ -26,15 +26,15 @@ class CsCategory
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['getCategories', 'getServices', 'getReservations'])]
+     #[Groups(['getCategories', 'getServices', 'getReservations', 'getCompanies'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['getCategories', 'getServices', 'getReservations'])]
+     #[Groups(['getCategories', 'getServices', 'getReservations', 'getCompanies'])]
     private ?string $name = null;
 
     #[ORM\Column(length: 6)]
-    #[Groups(['getCategories', 'getServices', 'getReservations'])]
+     #[Groups(['getCategories', 'getServices', 'getReservations', 'getCompanies'])]
     private ?string $color = null;
 
     /**
@@ -44,9 +44,16 @@ class CsCategory
     #[Groups(['getCategories'])]
     private Collection $services;
 
+    /**
+     * @var Collection<int, CsCompany>
+     */
+    #[ORM\ManyToMany(targetEntity: CsCompany::class, mappedBy: 'categories')]
+    private Collection $csCompanies;
+
     public function __construct()
     {
         $this->services = new ArrayCollection();
+        $this->csCompanies = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -103,6 +110,33 @@ class CsCategory
             if ($service->getCategory() === $this) {
                 $service->setCategory(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, CsCompany>
+     */
+    public function getCsCompanies(): Collection
+    {
+        return $this->csCompanies;
+    }
+
+    public function addCsCompany(CsCompany $csCompany): static
+    {
+        if (!$this->csCompanies->contains($csCompany)) {
+            $this->csCompanies->add($csCompany);
+            $csCompany->addCategory($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCsCompany(CsCompany $csCompany): static
+    {
+        if ($this->csCompanies->removeElement($csCompany)) {
+            $csCompany->removeCategory($this);
         }
 
         return $this;

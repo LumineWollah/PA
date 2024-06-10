@@ -1,0 +1,155 @@
+.pageContent {
+    position: absolute;
+    top: 8vh;
+    padding: 2%;
+}
+
+h1 {
+    font-family: 'Antonio';
+    font-size: 700;
+    margin-bottom: 2%;
+}
+
+.h1span {
+    color: #A594F9;
+}
+
+.imgContainer {
+    height: 20vh;
+    width: 100%;
+}
+
+.imgContainer img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.companyContainer {
+    text-decoration: none;
+    color: black;
+    font-family: 'Quicksand';
+}
+
+.medium {
+    font-weight: 500;
+}
+
+.light {
+    font-weight: 300;
+} 
+
+.apartName {
+    font-size: 1.3vw;
+    font-family: 'Roboto Condensed';
+    font-weight: 300;
+    margin-top: 2%;
+    margin-bottom: 0;
+}
+
+.apartName {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.apartInfos {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin-top: 2%;
+    margin-bottom: 0;
+    font-size: 1vw;
+}
+
+.apsRow {
+    height: 40vh;
+}
+
+.companyContainer {
+    padding: 5px;
+    margin: 0.5%;
+    overflow: hidden;
+    width: 24%;
+    height: 36vh;
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 12px 28px 0px, rgba(0, 0, 0, 0.1) 0px 2px 4px 0px, rgba(255, 255, 255, 0.05) 0px 0px 0px 1px inset;
+}
+
+.categoryContainer {
+    border-radius: 10px; 
+    width: fit-content;
+    border: 2px solid;
+}
+
+.categoryName {
+    font-size: 0.8vw;
+    margin: 0;
+    font-weight: bold;
+}
+
+.companyContainer a {
+    color: black;
+    text-decoration: none;
+}
+
+.apsRowLessor {
+    height: 45vh;
+}
+
+.apartContainerLessor {
+    height: 41vh;
+}
+
+.deleteApBtn {
+    background-color: #DB3B3B;
+    border-radius: 5px;
+    color: white !important;
+    padding: 5px;
+    width: 7vw;
+    margin-left: 0.3vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: #DB3B3B 2px solid;
+    font-weight: bold;
+}
+
+.deleteApBtn:hover {
+    background-color: white;
+    color: #DB3B3B !important;
+}
+
+.companyContainer form button {
+    background-color: #3D2F44;
+    border-radius: 5px;
+    color: white !important;
+    padding: 5px;
+    width: 7vw;
+    border: #3D2F44 2px solid;
+    font-weight: bold;
+}
+
+.companyContainer form button:hover {
+    background-color: white;
+    color: #3D2F44 !important;
+}
+
+.apartNumbers {
+    margin-top: 2%;
+    height: 8%;
+    display: flex;
+    align-items: center;
+    font-size: 0.9vw;
+}
+
+.apartNumbers img {
+    height: 80%;
+    margin-right: 2%;
+}
+
+.companyContainer:hover .imgContainer img {
+    transform: scale(1.1);
+}
