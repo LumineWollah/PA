@@ -156,10 +156,10 @@ class connectionController extends AbstractController
             if ($response['user']['roles'][0] == "ROLE_LESSOR"){
                 return $this->redirectToRoute('myApartmentsList');
             }elseif ($response['user']['roles'][0] == "ROLE_ADMIN"){
-                return $this->redirectToRoute('apartmentList');
+                return $this->redirectToRoute('apartmentCrud');
             }
 
-            return $this->redirectToRoute('apartmentsList');
+            return $this->redirectToRoute('apartmentsCrud');
         }      
 
         return $this->render('frontend/login_register/login.html.twig', [
