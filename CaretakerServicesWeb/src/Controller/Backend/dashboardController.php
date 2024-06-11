@@ -13,8 +13,6 @@ use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
-use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
-use Symfony\UX\Chartjs\Model\Chart;
 
 class dashboardController extends AbstractController
 {
@@ -30,104 +28,22 @@ class dashboardController extends AbstractController
         $role = $request->cookies->get('roles');
         return $role !== null && $role == 'ROLE_ADMIN';
     }
-
-    #[Route('/admin-panel/dashboard/dashboard', name: 'dashboard')]
-    public function dashboard(Request $request, ChartBuilderInterface $chartBuilder)
+#[Route('/admin-panel/dashboard', name: 'dashboard')]
+    public function dashboard(Request $request)
     {
         if (!$this->checkUserRole($request)) {return $this->redirectToRoute('login');}
 
-        $client = $this->apiHttpClient->getClient($request->cookies->get('token'));
+        $usersList = $this->fetchData($request, 'cs_users');
+        $reservationsList = $this->fetchData($request, 'cs_reservations', ['unavailability' => 'false']);
+        $apartments = count($this->fetchData($request, 'cs_apartments'));
+        $companies = count($this->fetchData($request, 'cs_companies'));
+        $services = count($this->fetchData($request, 'cs_services'));
 
-        $response = $client->request('GET', 'cs_users', [
-            'query' => [
-                'page' => 1,
-            ]
-        ]);
+        $dateLabels = $this->generateDateLabels(7);
 
-        $usersList = $response->toArray();
+        $chartUsers = $this->createChart($dateLabels, 'Users');
+        $chartReservations = $this->createChart($dateLabels, 'Reservations');
 
-        $response = $client->request('GET', 'cs_reservations', [
-            'query' => [
-                'page' => 1,
-                'unavailability' => 'false',
-            ]
-        ]);
-
-        $reservationsList = $response->toArray();
-        
-        $response = $client->request('GET', 'cs_apartments', [
-            'query' => [
-                'page' => 1,
-            ]
-        ]);
-
-        $apartments = count($response->toArray());
-
-        $response = $client->request('GET', 'cs_companies', [
-            'query' => [
-                'page' => 1,
-            ]
-        ]);
-
-        $companies = count($response->toArray());
-
-        $response = $client->request('GET', 'cs_services', [
-            'query' => [
-                'page' => 1,
-            ]
-        ]);
-
-        $services = count($response->toArray());
-
-        $year = date("Y");
-        $month = date("m");
-        $day = date("d");
-        $chartUsers = $chartBuilder->createChart(Chart::TYPE_LINE);
-
-        $chartUsers->setData([
-            'labels' => [$day-1 . "/" . $month . "/" . $year, $day-2 . "/" . $month . "/" . $year, $day-3 . "/" . $month . "/" . $year, $day-4 . "/" . $month . "/" . $year, $day-5 . "/" . $month . "/" . $year, $day-6 . "/" . $month . "/" . $year, $day-7 . "/" . $month . "/" . $year],
-            'datasets' => [
-                [
-                    'label' => 'Users',
-                    'backgroundColor' => 'rgb(128, 128, 128)',
-                    'borderColor' => 'rgb(128, 128, 128)',
-                    'data' => [0, 10, 5, 2, 20, 30, 45],
-                ],
-            ],
-        ]);
-
-        $chartUsers->setOptions([
-            'scales' => [
-                'y' => [
-                    'suggestedMin' => 0,
-                    'suggestedMax' => 100,
-                ],
-            ],
-        ]);
-
-        $chartReservations = $chartBuilder->createChart(Chart::TYPE_LINE);
-
-        $chartReservations->setData([
-            'labels' => [$day-1 . "/" . $month . "/" . $year, $day-2 . "/" . $month . "/" . $year, $day-3 . "/" . $month . "/" . $year, $day-4 . "/" . $month . "/" . $year, $day-5 . "/" . $month . "/" . $year, $day-6 . "/" . $month . "/" . $year, $day-7 . "/" . $month . "/" . $year],
-            'datasets' => [
-                [
-                    'label' => 'Reservations',
-                    'backgroundColor' => 'rgb(128, 128, 128)',
-                    'borderColor' => 'rgb(128, 128, 128)',
-                    'data' => [0, 10, 5, 2, 20, 30, 45],
-                ],
-            ],
-        ]);
-
-        $chartReservations->setOptions([
-            'scales' => [
-                'y' => [
-                    'suggestedMin' => 0,
-                    'suggestedMax' => 100,
-                ],
-            ],
-        ]);
-        // dd($usersList['hydra:member'], $reservationsList['hydra:member'], $apartments, $companies, $services, $chartUsers, $chartReservations);
         return $this->render('backend/dashboard/dashboard.html.twig', [
             'users' => $usersList['hydra:member'],
             'reservations' => $reservationsList['hydra:member'],
@@ -137,5 +53,51 @@ class dashboardController extends AbstractController
             'chartUsers' => $chartUsers,
             'chartReservations' => $chartReservations,
         ]);
+    }
+
+    private function fetchData(Request $request, string $endpoint, array $query = ['page' => 1]): array
+    {
+        $client = $this->apiHttpClient->getClient($request->cookies->get('token'));
+
+        $response = $client->request('GET', $endpoint, [
+            'query' => $query,
+        ]);
+
+        return $response->toArray();
+    }
+
+    private function generateDateLabels(int $days): array
+    {
+        $labels = [];
+        $now = new \DateTime();
+
+        for ($i = 1; $i <= $days; $i++) {
+            $labels[] = $now->modify('-1 day')->format('d/m/Y');
+        }
+
+        return array_reverse($labels);
+    }
+
+    private function createChart(array $labels, string $label): array
+    {
+        return [
+            'labels' => $labels,
+            'datasets' => [
+                [
+                    'label' => $label,
+                    'backgroundColor' => 'rgb(128, 128, 128)',
+                    'borderColor' => 'rgb(128, 128, 128)',
+                    'data' => [0, 10, 5, 2, 20, 30, 45], // Example data, replace with real data as needed
+                ],
+            ],
+            'options' => [
+                'scales' => [
+                    'y' => [
+                        'suggestedMin' => 0,
+                        'suggestedMax' => 100,
+                    ],
+                ],
+            ],
+        ];
     }
 }
