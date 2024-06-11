@@ -1,0 +1,28 @@
+h1, h3 {
+    font-family: 'Roboto Condensed', sans-serif;
+}
+
+h3 {
+    font-size: 1.5em;
+    font-weight: 400;
+    margin-bottom: 20px;
+    margin-top: 20px;
+    color: #A594F9;
+}
+
+.seeAppart {
+    background-color: #A594F9;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    text-decoration: none;
+    border-radius: 10px;
+}
+
+.seeAppart:hover {
+    background-color: #3D2F44;
+}
+
+p {
+    font-family: 'QuickSand', sans-serif;
+} 

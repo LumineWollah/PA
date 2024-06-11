@@ -20,7 +20,7 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 
-#[ApiResource(security: "is_granted('ROLE_USER')", normalizationContext: ['groups' => ['getDocuments']])]
+#[ApiResource(normalizationContext: ['groups' => ['getDocuments']])]
 #[Get(security: "is_granted('ROLE_ADMIN') or object.getOwner() == user")]
 #[Patch(security: "is_granted('ROLE_ADMIN') or object.getOwner() == user")]
 #[GetCollection(security: "is_granted('ROLE_ADMIN')")]

@@ -1,0 +1,56 @@
+{% extends 'frontend/user/base.html.twig' %}
+
+{% block stylesheets %}<link rel="stylesheet" href={{ asset('styles/frontend/user/reservDetail.css') }}>{% endblock %}
+
+{% block activeRese %}active{% endblock %}
+{% block activePast %}active{% endblock %}
+
+{% block title %}Detail - Reservation{% endblock %}
+
+{% block body %}
+    <div class="col-10 p-3">
+        <h1>Détail de votre réservation</h1>
+        <div class="row">
+            <div class="col-4">
+                <h3>Votre logement</h3>
+                <div class="card">
+                    <img src="{{ reservation.apartment.mainPict }}">
+                    <div class="card-body">
+                        <h5 class="card-text mb-4">{{ reservation.apartment.name }}</h5>
+                        <a href="{{ path('apartmentsDetail', {'id': reservation.apartment.id}) }}" class="seeAppart mb-1">Voir le logement</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+                <h3>Le détail</h3>
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-text mb-1">Vos dates :</h5>
+                        <p class="card-text mb-4">{{ reservation.startingDate|date('d/m/Y') }} - {{ reservation.endingDate|date('d/m/Y') }}</p>
+                        <h5 class="card-text mb-1">Prix total :</h5>
+                        <p class="card-text mb-4">{{ reservation.price }} €</p>
+                        <h5 class="card-text mb-1">Voyageurs :</h5>
+                        <p class="card-text mb-1">Adultes : {{ reservation.adultTravelers }} | Enfants : {{ reservation.childTravelers }} | Bébés : {{ reservation.babyTravelers }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+                <h3>Vos services</h3>
+                <div class="card">
+                    <div class="card-body">
+                        {% if reservation.services is empty %}
+                            <p class="card-text mb-1">Aucun service demandé</p>
+                        {% else %}
+                            {% for service in reservation.services %}
+                                <p class="card-text mb-2"><a href="{{ path('providersDetail', {'id':service.id}) }}" style="color: black;">{{ service.name }}</a> : {{ service.price }} €</p>
+                            {% endfor %}
+                            <hr>
+                            <a href="{{ path('apartmentsDetail', {'id': reservation.apartment.id}) }}" class="seeAppart mb-1">Voir mes documents</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

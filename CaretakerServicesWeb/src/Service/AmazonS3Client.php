@@ -37,12 +37,16 @@ class AmazonS3Client
         $file_type = $object->guessExtension();
         $file_name = 'doc-'.uniqid().'.'.$file_type;
         $mime_type = finfo_file(finfo_open(FILEINFO_MIME_TYPE), $object);
+        return $this->finalInsert($file_name, $object, $mime_type);
+    }
+
+    public function finalInsert($file_name, $file, $mime_type) {
 
         try { 
             $result = $this->amazonS3Client->putObject([ 
                 'Bucket' => $this->bucket, 
                 'Key'    => $file_name, 
-                'SourceFile' => $object,
+                'SourceFile' => $file,
                 'ContentType' => $mime_type
             ]); 
             $result_arr = $result->toArray(); 
