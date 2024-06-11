@@ -11,6 +11,7 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use App\Repository\CsReservationRepository;
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -89,9 +90,22 @@ class CsReservation
     #[Groups(["getReservations"])]
     private Collection $services;
 
+    /**
+     * @var Collection<int, CsDocument>
+     */
+    #[ORM\OneToMany(targetEntity: CsDocument::class, mappedBy: 'reservation')]
+    #[Groups(["getReservations"])]
+    private Collection $documents;
+
+    #[ORM\Column]
+    #[Groups(["getReservations", "getUsers", "getApartments"])]
+    private ?DateTime $dateCreation = null;
+
     public function __construct()
     {
         $this->services = new ArrayCollection();
+        $this->documents = new ArrayCollection();
+        $this->dateCreation = new DateTime();
     }
 
     public function getId(): ?int
@@ -277,6 +291,48 @@ class CsReservation
     public function setPayementId($payementId)
     {
         $this->payementId = $payementId;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, CsDocument>
+     */
+    public function getDocuments(): Collection
+    {
+        return $this->documents;
+    }
+
+    public function addDocument(CsDocument $document): static
+    {
+        if (!$this->documents->contains($document)) {
+            $this->documents->add($document);
+            $document->setReservation($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDocument(CsDocument $document): static
+    {
+        if ($this->documents->removeElement($document)) {
+            // set the owning side to null (unless already changed)
+            if ($document->getReservation() === $this) {
+                $document->setReservation(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getDateCreation(): ?\DateTimeInterface
+    {
+        return $this->dateCreation;
+    }
+
+    public function setDateCreation(\DateTimeInterface $dateCreation): static
+    {
+        $this->dateCreation = $dateCreation;
 
         return $this;
     }

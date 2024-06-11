@@ -33,33 +33,37 @@ class CsDocument
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(["getUsers", "getDocuments"])]
+    #[Groups(["getUsers", "getDocuments", "getReservations"])]
     private ?int $id = null;
 
     #[ORM\Column(length: 300)]
-    #[Groups(["getUsers", "getDocuments"])]
+    #[Groups(["getUsers", "getDocuments", "getReservations"])]
     private ?string $name = null;
 
     #[ORM\Column(length: 50)]
-    #[Groups(["getUsers", "getDocuments"])]
+    #[Groups(["getUsers", "getDocuments", "getReservations"])]
     private ?string $type = null;
 
     #[ORM\Column(length: 300)]
-    #[Groups(["getUsers", "getDocuments"])]
+    #[Groups(["getUsers", "getDocuments", "getReservations"])]
     private ?string $url = null;
 
     #[ORM\Column]
-    #[Groups(["getUsers", "getDocuments"])]
+    #[Groups(["getUsers", "getDocuments", "getReservations"])]
     private ?DateTime $dateCreation = null;
 
     #[ORM\Column]
-    #[Groups(["getUsers", "getDocuments"])]
+    #[Groups(["getUsers", "getDocuments", "getReservations"])]
     private ?bool $visibility = true;
 
     #[ORM\ManyToOne(inversedBy: 'documents')]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(["getDocuments"])]
     private ?CsUser $owner = null;
+
+    #[ORM\ManyToOne(inversedBy: 'documents')]
+    #[Groups(["getDocuments"])]
+    private ?CsReservation $attachedReserv = null;
 
     public function __construct()
     {
@@ -147,6 +151,18 @@ class CsDocument
     public function setVisibility($visibility)
     {
         $this->visibility = $visibility;
+
+        return $this;
+    }
+
+    public function getReservation(): ?CsReservation
+    {
+        return $this->attachedReserv;
+    }
+
+    public function setReservation(?CsReservation $reservation): static
+    {
+        $this->attachedReserv = $reservation;
 
         return $this;
     }
