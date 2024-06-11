@@ -29,9 +29,10 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Constraints\File;
+use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\PositiveOrZero;
 use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\Mime\Email;
+use Symfony\Component\Mime\Email as EmailMime;
 
 class providersController extends AbstractController
 {
@@ -61,16 +62,81 @@ class providersController extends AbstractController
     }
 
     #[Route('/providers/{id}', name: 'providersDetail')]
-    public function providersDetail(Request $request)
+    public function providersDetail(Request $request, int $id, MailerInterface $mailer)
     {
         $client = $this->apiHttpClient->getClientWithoutBearer();
 
-        $responseCompanies = $client->request('GET', 'cs_companies');
+        $responseCompany = $client->request('GET', 'cs_companies/'.$id);
 
-        $companies = $responseCompanies->toArray()['hydra:member'];
+        $company = $responseCompany->toArray();
+        
+        $id = $request->cookies->get('id');
+        $default = [];
 
-        return $this->render('frontend/companies/companiesList.html.twig', [
-            'companies'=>$companies
-        ]); 
+        if ($id != null) {
+            $default['name'] = $request->cookies->get('lastname').' '.$request->cookies->get('firstname');
+            $default['email'] = $request->cookies->get('email');
+        }
+
+        $form = $this->createFormBuilder($default)
+        ->add("name", TextType::class, [
+            'constraints'=>[
+                new NotBlank(),
+                new Length([
+                    'min' => 2,
+                    'max' => 50,
+                    'minMessage' => 'Votre nom doit contenir au moins 2 caractères',
+                    'maxMessage' => 'Votre nom doit contenir au maximum 50 caractères'
+                ])
+            ],
+            'attr' => ['class' => 'form-control'],
+        ])
+        ->add("email", EmailType::class, [
+            'constraints'=>[
+                new NotBlank(),
+                new Email(),
+            ],
+            'attr' => ['class' => 'form-control'],
+        ])
+        ->add("message", TextareaType::class, [
+            'constraints'=>[
+                new NotBlank(),
+                new Length([
+                    'min' => 10,
+                    'max' => 500,
+                    'minMessage' => 'Votre message doit contenir au moins 10 caractères',
+                    'maxMessage' => 'Votre message doit contenir au maximum 500 caractères'
+                ])
+            ],
+            'attr' => ['class' => 'form-control'],
+        ])
+        ->getForm()->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()){
+            $data = $form->getData();
+
+            $email = (new EmailMime())
+                ->from('ne-pas-repondre@caretakerservices.fr')
+                ->to($company['companyEmail'])
+                ->subject('Demande d\'aide')
+                ->html('
+                    <html>
+                        <body>
+                            <p>Nom: '.$data['name'].'</p>
+                            <p>Email: '.$data['email'].'</p>
+                            <p>Message: '.$data['message'].'</p>
+                        </body>
+                    </html>
+                ');
+
+            $mailer->send($email);
+
+            $this->addFlash('success', 'Your message has been sent successfully.');
+        }
+
+        return $this->render('frontend/companies/companiesDetail.html.twig', [
+            'company'=>$company,
+            'form'=>$form
+        ]);
     }
 }

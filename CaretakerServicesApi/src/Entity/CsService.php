@@ -62,7 +62,7 @@ class CsService
 
     #[ORM\ManyToOne(inversedBy: 'services')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(["getServices", "getReservations"])]
+    #[Groups(["getServices", "getReservations", "getCompanies"])]
     private ?CsCategory $category = null;
 
     #[ORM\OneToMany(targetEntity: CsReservation::class, mappedBy: 'service')]

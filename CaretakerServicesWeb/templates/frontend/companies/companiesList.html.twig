@@ -16,7 +16,7 @@
                     <a class="col-3 companyContainer" href={{ path('providersDetail', {'id': companies[j].id}) }}>               
                         <div class="imgContainer">
                             {% if companies[j].coverImage is not defined or companies[j].coverImage is null %}
-                                <img src={{ asset('icons/profile_pict_default_white.png') }}>
+                                <img src={{ asset('icons/profile_pict_default_company.png') }}>
                             {% else %}
                                 {% set coverImage = companies[j].coverImage %}
                                 <img src="{{ coverImage }}">

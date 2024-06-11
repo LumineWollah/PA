@@ -30,11 +30,16 @@
                                         {% for j in range(i, i+3) %}
                                             {% if value|length > j %}
                                                 <div class="card {% if j != i %}d-none d-md-block{% endif %}" style="border-color: #{{ categoryColor }};">
-                                                    <img src="{{ value[j].coverImage }}" class="card-img-top">
+                                                    {% if value[j].coverImage is not defined or value[j].coverImage is null %}
+                                                        <img src={{ asset('icons/profile_pict_default_company.png') }}>
+                                                    {% else %}
+                                                        {% set coverImage = value[j].coverImage %}
+                                                        <img src="{{ coverImage }}">
+                                                    {% endif %}
                                                     <div class="card-body">
                                                         <h5 class="card-title title">{{ value[j].name }}</h5>
                                                         <p class="card-text desc">{{ value[j].description }}</p>
-                                                        <a href="#" class="btn contactBtn">CONTACTER</a>
+                                                        <a href="#" class="btn contactBtn">RÉSERVER</a>
                                                     </div>
                                                 </div>
                                             {% endif %}
