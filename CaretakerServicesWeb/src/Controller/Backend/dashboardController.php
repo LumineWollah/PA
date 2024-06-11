@@ -2,17 +2,10 @@
 
 namespace App\Controller\Backend;
 
-use App\Security\CustomAccessManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Service\ApiHttpClient;
-use Exception;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
-use Symfony\Component\Form\Extension\Core\Type\NumberType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
 
 class dashboardController extends AbstractController
 {
@@ -40,22 +33,20 @@ class dashboardController extends AbstractController
         $services = count($this->fetchData($request, 'cs_services'));
 
         $dateLabels = $this->generateDateLabels(7);
+
         $userData = [];
+        $reservationData = [];
         for ($j = 0; $j < count($dateLabels); $j++) {
             $userData[$j] = 0;
-            $formattedDate = date('Y-m-d', strtotime($dateLabels[$j]));
+            $reservationData[$j] = 0;
+            $formattedDate = date('Y-d-m', strtotime($dateLabels[$j]));
             for ($i = 0; $i < $usersList['hydra:totalItems']; $i++) {
-                if (substr($usersList['hydra:member'][$i]['dateInscription'], 0, 9) == date('Y-m-d')) {
+                if (substr($usersList['hydra:member'][$i]['dateInscription'], 0, 10) == $formattedDate) {
                     $userData[$j] += 1;
                 }
             }
-        }
-
-        $reservationData = [];
-        for ($j = 0; $j < count($dateLabels); $j++) {
-            $formattedDate = date('Y-m-d', strtotime($dateLabels[$j]));
             for ($i = 0; $i < $reservationsList['hydra:totalItems']; $i++) {
-                if (substr($reservationsList['hydra:member'][$i]['dateCreation'], 0, 9) == date('Y-m-d')) {
+                if (substr($reservationsList['hydra:member'][$i]['dateCreation'], 0, 10) == $formattedDate) {
                     $reservationData[$j] += 1;
                 }
             }
@@ -90,6 +81,7 @@ class dashboardController extends AbstractController
     {
         $labels = [];
         $now = new \DateTime();
+        $now = $now->modify('+1 day');
 
         for ($i = 1; $i <= $days; $i++) {
             $labels[] = $now->modify('-1 day')->format('d/m/Y');
