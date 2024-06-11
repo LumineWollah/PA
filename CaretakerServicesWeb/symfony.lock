@@ -236,6 +236,9 @@
             "./templates/base.html.twig"
         ]
     },
+    "symfony/ux-chartjs": {
+        "version": "v2.18.0"
+    },
     "symfony/ux-turbo": {
         "version": "v2.16.0"
     },

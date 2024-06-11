@@ -5,7 +5,6 @@
     <link rel="stylesheet" href={{ asset('styles/dashboard.css') }}>
 {% endblock %}
 
-
 {% block activeDash %}active{% endblock %}
 
 {% block title %}Dashboard{% endblock %}
@@ -60,9 +59,11 @@
             </div>
             <div class="graphandlist">
                 <div class="graphs">
-                    <div class="graph">         
+                    <div class="graph">  
+                        {{ render_chart(chartUsers) }}       
                     </div>
                     <div class="graph">
+                        {{ render_chart(chartReservations) }}       
                     </div>
                 </div>
                 <div class="lists">
