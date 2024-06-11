@@ -1,0 +1,48 @@
+{% extends 'backend/base.html.twig' %}
+
+{% block activeGest %}active{% endblock %}
+
+{% block title %}Afficher un utilisateur{% endblock %}
+
+{% block body %}
+    <div class="col-10 p-0">
+        <div class="p-3">
+            <h1>Afficher un utilisateur</h1>
+            <div class="row">
+                <div class="col-6">
+                    <img src={% if user['profilePict'] is defined and user['profilePict'] is not empty %}{{ user.profilePict }}{% else %}{{asset('icons/profile_pict_default.png')}}{% endif %} style="width:30%;"> 
+                    <p><strong>Id :</strong> {{ user.id }}</p>
+                    <p><strong>Nom :</strong> {{ user.lastname }}</p>
+                    <p><strong>Prénom :</strong> {{ user.firstname }}</p>
+                    <p><strong>Email :</strong> {{ user.email }}</p>
+                    <p><strong>Numéro de téléphone :</strong> {{ user.telNumber|split('', 2)|join('.') }}</p>
+                    <p><strong>Dernière connexion :</strong> {{ user.lastConnection|date('d/m/Y H:i:s') }}</p>
+                    <p><strong>Inscrit le :</strong> {{ user.dateInscription|date('d/m/Y H:i:s') }}</p>
+                    {% if user['company'] is defined and user['company'] is not empty %}
+                        <p><strong>Entreprise :</strong></p>
+                        <form action="{{ path('companyShow') }}" method="post" style="display: inline;">
+                            <input type="hidden" name="company" value="{{ user.company|json_encode }}">
+                            <button type="submit" class="container" style="background-color: #A594F9;">
+                                <p>{{ user.company.companyName }}</p>
+                            </button>
+                        </form>
+                    {% endif %}
+                    <p><strong>Rôles :</strong> 
+                    {% for role in user.roles %}
+                        {{ role }}
+                    {% endfor %}
+                    </p>
+                    {% if user['documents'] is defined and user['documents'] is not empty %}
+                        <div class"container"><strong>Documents :</strong>
+                            <ul>
+                                {% for document in user.documents %}
+                                    <li><a href={{ document.url }} target="blank_" class="btn" style="background-color: #A594F9;">{{ document.name }}</a></li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+                
+                
+        </div>
+    </div>
+{% endblock %}

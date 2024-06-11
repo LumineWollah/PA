@@ -1,0 +1,36 @@
+{% extends 'backend/base.html.twig' %}
+
+{% block activeGest %}active{% endblock %}
+{% block activeAddo %}active{% endblock %}
+
+{% block title %}Afficher un addon{% endblock %}
+
+{% block body %}
+    <div class="col-10 p-0">
+        <div class="p-3">
+            <h1>Afficher un addon</h1>
+            <div class="row">
+                <div class="col-6">
+                    <p><strong>Id :</strong> {{ addon.id }}</p>
+                    <p><strong>Nom :</strong> {{ addon.name }}</p>
+
+                    {% if addon['apartments'] is defined and addon['apartments'] is not empty %}
+                        <p><strong>Nombre d'appartements :</strong> {{ addon.apartments|length }}</p>
+                        <div class"container"><strong>Appartements :</strong>
+                            {% for apartment in addon.apartments %}
+                                <form action="{{ path('apartmentShow') }}" method="post" style="display: inline;">
+                                    <input type="hidden" name="apartment" value="{{ apartment|json_encode }}">
+                                    <button type="submit" class="container" style="background-color: #A594F9;">
+                                        <div class="container">
+                                            <p><strong>Nom:</strong> {{ apartment.name|capitalize }}</p>
+                                        </div>
+                                    </button>
+                                </form>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

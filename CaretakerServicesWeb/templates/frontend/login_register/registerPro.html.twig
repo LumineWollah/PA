@@ -1,0 +1,116 @@
+{% extends 'frontend/login_register/base.html.twig' %}
+
+{% block stylesheets %}
+    <link href={{ asset('styles/frontend/login_register/register.css') }} rel="stylesheet">
+    <link href="https://api.mapbox.com/mapbox-gl-js/v3.2.0/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v3.2.0/mapbox-gl.js"></script>
+
+    <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.min.js"></script>
+    <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.css" type="text/css">
+{% endblock %}
+
+{% block pageContent %}
+<div class="registerCard">
+    <div class="titleCard">
+        <h2>Inscription</h2>
+        <p class="titleDesc">Entrez vos informations pour vous inscrire</p>
+    </div>
+    {{form_start(formPro)}}
+        <div class="inputDivRow">
+            <div class="errors">{%if errorMessages %}<ul>{% for errorMessage in errorMessages %}<li>{{errorMessage}}</li>{% endfor %}</ul>{% endif %}{{form_errors(formPro.firstname)}}</div>
+            <div class="inputDiv">
+                <img src="{{ asset('icons/login/email.png') }}" alt="Firstname" class="inputLogo">
+                {{form_widget(formPro.firstname)}}
+            </div>
+            <div class="errors">{{form_errors(formPro.lastname)}}</div>
+            <div class="inputDiv"> 
+                <img src="{{ asset('icons/login/lock.png') }}" alt="Lastname" class="inputLogo">
+                {{form_widget(formPro.lastname)}}
+            </div>
+        </div>
+        <div class="inputDivRow">
+            <div class="errors">{{form_errors(formPro.email)}}</div>
+            <div class="inputDiv">
+                <img src="{{ asset('icons/login/email.png') }}" alt="Firstname" class="inputLogo">
+                {{form_widget(formPro.email)}}
+            </div>
+            <div class="errors">{{form_errors(formPro.telNumber)}}</div>
+            <div class="inputDiv"> 
+                <img src="{{ asset('icons/login/lock.png') }}" alt="Lastname" class="inputLogo">
+                {{form_widget(formPro.telNumber)}}
+            </div>
+        </div>
+        <div class="inputDivRow">
+            <div class="errors">{{form_errors(formPro.password)}}</div>
+            <div class="inputDiv">
+                <img src="{{ asset('icons/login/email.png') }}" alt="Firstname" class="inputLogo">
+                {{form_widget(formPro.password)}}
+            </div>
+            <div class="errors">{{form_errors(formPro.confirmation)}}</div>
+            <div class="inputDiv"> 
+                <img src="{{ asset('icons/login/lock.png') }}" alt="Lastname" class="inputLogo">
+                {{form_widget(formPro.confirmation)}}
+            </div>
+        </div>  
+        <div class="inputDivRow">
+            <div class="errors">{%if errorMessages %}<ul>{% for errorMessage in errorMessages %}<li>{{errorMessage}}</li>{% endfor %}</ul>{% endif %}{{form_errors(formPro.companyName)}}</div>
+            <div class="inputDiv">
+                <img src="{{ asset('icons/login/email.png') }}" alt="Firstname" class="inputLogo">
+                {{form_widget(formPro.companyName)}}
+            </div>
+            <div class="errors">{{form_errors(formPro.companyEmail)}}</div>
+            <div class="inputDiv"> 
+                <img src="{{ asset('icons/login/lock.png') }}" alt="Lastname" class="inputLogo">
+                {{form_widget(formPro.companyEmail)}}
+            </div>
+        </div>
+        <div class="inputDivRow">
+            <div class="errors">{{form_errors(formPro.siretNumber)}}</div>
+            <div class="inputDiv">
+                <img src="{{ asset('icons/login/email.png') }}" alt="Firstname" class="inputLogo">
+                {{form_widget(formPro.siretNumber)}}
+            </div>
+            <div class="errors">{{form_errors(formPro.companyPhone)}}</div>
+            <div class="inputDiv"> 
+                <img src="{{ asset('icons/login/lock.png') }}" alt="Lastname" class="inputLogo">
+                {{form_widget(formPro.companyPhone)}}
+            </div>
+        </div>
+        <div class="inputDivRow">
+            <div class="errors">{{form_errors(formPro.address)}}</div>
+            <div class="inputDivCenter"> 
+                <div id="geocoder"><img src="{{ asset('icons/login/lock.png') }}" alt="Lastname" class="inputLogoAdress"></div>
+                {{form_widget(formPro.address)}}
+            </div>
+        </div>
+        <button type="submit" class="btn registerBtn mt-3">Se connecter</button>
+    {{form_end(formPro)}}
+</div>
+<a href={{ path("login") }} class="noAccount">Vous avez un compte ? <span style="color: #3D2F44;">Connectez vous</span></a>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+    mapboxgl.accessToken = 'pk.eyJ1IjoibGVvLXVyYWhhcmEiLCJhIjoiY2x2MTJrcHJ4MDIwdzJrdXNhcDhjazF4MSJ9.ZJjs_hvEVTuHKAe2CeDGbQ';
+    const geocoder = new MapboxGeocoder({
+        accessToken: mapboxgl.accessToken,
+        countries: 'fr',
+        types: 'address',
+        placeholder: "Addresse",
+    });
+    geocoder.addTo('#geocoder');
+
+    const results = document.getElementById('form_address');
+    geocoder.on('result', (e) => {
+        results.value = JSON.stringify(e.result, null, 2);
+    });
+
+    geocoder.on('clear', () => {
+        results.value = '';
+    });
+
+    var inputElement = document.querySelector('.mapboxgl-ctrl-geocoder--input');
+    inputElement.setAttribute('autocomplete', 'off');
+    inputElement.setAttribute('required', 'true');
+</script>
+{% endblock %}

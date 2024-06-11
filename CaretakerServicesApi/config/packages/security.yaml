@@ -7,7 +7,7 @@ security:
         # used to reload user from session & other features (e.g. switch_user)
         app_user_provider:
             entity:
-                class: App\Entity\CSUser
+                class: App\Entity\CsUser
                 property: email
     firewalls:
         dev:
@@ -41,7 +41,7 @@ security:
     # Note: Only the *first* access control that matches will be used
     access_control:
             - { path: ^/api/login, roles: PUBLIC_ACCESS }
-            - { path: ^/api/, roles: IS_AUTHENTICATED_FULLY }
+            # - { path: ^/api/, roles: IS_AUTHENTICATED_FULLY }
             - { path: ^/api, roles: PUBLIC_ACCESS }
 
 when@test:

@@ -1,0 +1,31 @@
+{% extends 'frontend/login_register/base.html.twig' %}
+
+{% block stylesheets %}<link href={{ asset('styles/frontend/login_register/register.css') }} rel="stylesheet">{% endblock %}
+
+{% block pageContent %}
+<div class="registerCard">
+    <div class="titleCard">
+        <h2>Inscription</h2>
+        <p class="titleDesc">Choisissez sous quel statut vous voulez vous inscire</p>
+    </div>
+    {{form_start(form)}}
+        <div class="inputDivRow mt-3">
+            <div class="inputDiv">
+                {{form_widget(form.traveler)}}
+            </div>
+            <div class="inputDiv"> 
+                {{form_widget(form.provider)}}
+            </div>
+        </div>
+        <div class="inputDivRow mt-3">
+            <div class="inputDiv">
+                {{form_widget(form.lessorPro)}}
+            </div>
+            <div class="inputDiv"> 
+                {{form_widget(form.lessorPerso)}}
+            </div>
+        </div>
+    {{form_end(form)}}
+</div>
+<a href={{ path("login") }} class="noAccount">Vous avez un compte ? <span style="color: #3D2F44;">Connectez vous</span></a>
+{% endblock %}

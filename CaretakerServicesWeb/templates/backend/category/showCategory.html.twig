@@ -1,0 +1,35 @@
+{% extends 'backend/base.html.twig' %}
+
+{% block activeGest %}active{% endblock %}
+{% block activeCate %}active{% endblock %}
+
+{% block title %}Afficher une catégorie{% endblock %}
+
+{% block body %}
+    <div class="col-10 p-0">
+        <div class="p-3">
+            <h1>Afficher une catégorie</h1>
+            <div class="row">
+                <div class="col-6">
+                    <p><strong>Id :</strong> {{ category.id }}</p>
+                    <p><strong>Nom :</strong> {{ category.name }}</p>
+                    <p style="color:#{{ category.color }};"><strong style="color:black;">Couleur :</strong> {{ category.color }}</p>
+                    <span style="display:inline-block;border-radius:50%;width:20vh;height:20vh;background-color:#{{ category.color }};"></span>
+                    {% if category['services'] is defined and category['services'] is not empty %}
+                        <div class"container"><strong>Services :</strong>
+                            <ul>
+                                {% for service in category.services %}
+                                    <form action="{{ path('serviceShow') }}" method="post" style="display: inline;">
+                                        <input type="hidden" name="service" value="{{ service|json_encode }}">
+                                        <button type="submit" class="container" style="background-color: #A594F9;">
+                                            <div class="container">
+                                            <p><strong>Nom:</strong> {{ service.name|capitalize }}</p>
+                                        </button>
+                                    </form>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+        </div>
+    </div>
+{% endblock %}

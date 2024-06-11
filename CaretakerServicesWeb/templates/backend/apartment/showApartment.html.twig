@@ -1,0 +1,78 @@
+{% extends 'backend/base.html.twig' %}
+
+{% block stylesheets %}<link rel="stylesheet" href={{ asset('styles/show.css') }}>{% endblock %}
+
+{% block activeGest %}active{% endblock %}
+{% block activeApar %}active{% endblock %}
+
+{% block title %}Afficher un appartement{% endblock %}
+
+{% block body %}
+    <div class="col-10 p-0">
+        <div class="p-3">
+            <h1>Afficher un appartement</h1>
+            <div class="row">
+                <div class="col-6">
+                    <p><strong>Id :</strong> {{ apartment.id }}</p>
+                    <p><strong>Nom :</strong> {{ apartment.name }}</p>
+                    <p><strong>Description :</strong> {{ apartment.description }}</p>
+                    {% if apartment['addons'] is defined and apartment['addons'] is not empty %}
+                        <div class"container"><strong>Addons :</strong>
+                            <ul>
+                                {% for addon in apartment.addons %}
+                                    <form action="{{ path('addonShow') }}" method="post" style="display: inline;">
+                                        <input type="hidden" name="addon" value="{{ addon|json_encode }}">
+                                        <button type="submit" class="container" style="background-color: #A594F9;">
+                                            <div class="container">
+                                            <p><strong>Addon:</strong> {{ addon.name|capitalize }}</p>
+                                        </button>
+                                    </form>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+                    <p><strong>Chambres :</strong> {{ apartment.bedrooms }}</p>
+                    <p><strong>Voyageurs max :</strong> {{ apartment.travelersMax }}</p>
+                    <p><strong>Créé le :</strong> {{ apartment.dateCreation|date('d/m/Y H:i:s') }}</p>
+                    <p><strong>Superficie :</strong> {{ apartment.area }}</p>
+                    {% if apartment.isHouse == true %}
+                        <p><strong>Type :</strong> Maison</p>
+                    {% else %}
+                        <p><strong>Type :</strong> Appartement</p>
+                        <p><strong>Numéro :</strong> {{ apartment.apartNumber }}</p>
+                    {% endif %}
+                    <p><strong>Adresse :</strong> {{ apartment.address }}</p>
+                    <p><strong>Code postal :</strong> {{ apartment.postalCode }}</p>
+                    <p><strong>Ville :</strong> {{ apartment.city }}</p>
+                    <p><strong>Pays :</strong> {{ apartment.country }}</p>
+                    <p><strong>Prix :</strong> {{ apartment.price }}€</p>
+                        <p><strong>Photos :</strong></p>
+                        <a href="{{ apartment.mainPict }}" target="_blank">
+                        <img src={{ apartment.mainPict }} alt="{{ apartment.name }}" class="img-fluid images">
+                        </a>
+                    <div class="col-6">
+                        {% for picture in apartment.pictures %}
+                        <a href="{{ picture }}" target="_blank">
+                            <img src={{ picture }} class="img-fluid images">
+                        </a>
+                        {% endfor %}
+                    </div>
+                    {% if apartment['mandatoryServices'] is defined and apartment['mandatoryServices'] is not empty %}
+                        <div class"container"><strong>Services obligatoires :</strong>
+                            <ul>
+                                {% for service in apartment.mandatoryServices %}
+                                    <form action="{{ path('serviceShow') }}" method="post" style="display: inline;">
+                                        <input type="hidden" name="service" value="{{ service|json_encode }}">
+                                        <button type="submit" class="container" style="background-color: #A594F9;">
+                                            <div class="container">
+                                            <p><strong>Nom:</strong> {{ service.name|capitalize }}</p>
+                                        </button>
+                                    </form>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+             </div>
+        </div>
+    </div>
+{% endblock %}

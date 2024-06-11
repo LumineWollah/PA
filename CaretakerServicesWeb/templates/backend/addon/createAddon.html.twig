@@ -1,0 +1,20 @@
+{% extends 'backend/base.html.twig' %}
+
+{% block activeGest %}active{% endblock %}
+{% block activeAddo %}active{% endblock %}
+
+{% block title %}Créer un addon{% endblock %}
+
+{% block body %}
+    <div class="col-10 p-0">
+        <div class="p-3">
+            <h1>Créer un addon</h1>
+            {{form_start(form)}}
+                <div class="inputDiv" style="position: relative;">
+                    {{form_widget(form.name)}}
+                </div>
+                <button type="submit" class="btn">Créer</button>
+            {{form_end(form)}}
+        </div>
+    </div>
+{% endblock %}
