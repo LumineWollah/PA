@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20240609093255 extends AbstractMigration
+final class Version20240611211317 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -51,11 +51,17 @@ final class Version20240609093255 extends AbstractMigration
         $this->addSql('ALTER TABLE cs_service ADD CONSTRAINT FK_E0838CD312469DE2 FOREIGN KEY (category_id) REFERENCES cs_category (id)');
         $this->addSql('ALTER TABLE cs_ticket ADD CONSTRAINT FK_52C7AAE2F675F31B FOREIGN KEY (author_id) REFERENCES cs_user (id)');
         $this->addSql('ALTER TABLE cs_user ADD CONSTRAINT FK_BC10A726979B1AD6 FOREIGN KEY (company_id) REFERENCES cs_company (id)');
+        $this->addSql('ALTER TABLE csdocument DROP FOREIGN KEY FK_AD3F7D0A7E3C61F9');
+        $this->addSql('DROP TABLE csdocument');
+        $this->addSql('DROP TABLE csuser');
     }
 
     public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs
+        $this->addSql('CREATE TABLE csdocument (id INT AUTO_INCREMENT NOT NULL, owner_id INT NOT NULL, name VARCHAR(300) CHARACTER SET utf8mb4 NOT NULL COLLATE `utf8mb4_unicode_ci`, type VARCHAR(50) CHARACTER SET utf8mb4 NOT NULL COLLATE `utf8mb4_unicode_ci`, url VARCHAR(300) CHARACTER SET utf8mb4 NOT NULL COLLATE `utf8mb4_unicode_ci`, date_creation DATETIME NOT NULL, INDEX IDX_AD3F7D0A7E3C61F9 (owner_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB COMMENT = \'\' ');
+        $this->addSql('CREATE TABLE csuser (id INT AUTO_INCREMENT NOT NULL, email VARCHAR(180) CHARACTER SET utf8mb4 NOT NULL COLLATE `utf8mb4_unicode_ci`, firstname VARCHAR(150) CHARACTER SET utf8mb4 NOT NULL COLLATE `utf8mb4_unicode_ci`, lastname VARCHAR(255) CHARACTER SET utf8mb4 NOT NULL COLLATE `utf8mb4_unicode_ci`, password VARCHAR(255) CHARACTER SET utf8mb4 NOT NULL COLLATE `utf8mb4_unicode_ci`, last_connection DATETIME NOT NULL, date_inscription DATETIME NOT NULL, profile_pict VARCHAR(500) CHARACTER SET utf8mb4 DEFAULT NULL COLLATE `utf8mb4_unicode_ci`, roles JSON NOT NULL COMMENT \'(DC2Type:json)\', tel_number VARCHAR(10) CHARACTER SET utf8mb4 NOT NULL COLLATE `utf8mb4_unicode_ci`, UNIQUE INDEX UNIQ_IDENTIFIER_EMAIL (email), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB COMMENT = \'\' ');
+        $this->addSql('ALTER TABLE csdocument ADD CONSTRAINT FK_AD3F7D0A7E3C61F9 FOREIGN KEY (owner_id) REFERENCES csuser (id)');
         $this->addSql('ALTER TABLE cs_apartment DROP FOREIGN KEY FK_A0B1ED5A7E3C61F9');
         $this->addSql('ALTER TABLE cs_apartment_cs_service DROP FOREIGN KEY FK_2E974C9850DC604D');
         $this->addSql('ALTER TABLE cs_apartment_cs_service DROP FOREIGN KEY FK_2E974C98A094B64');
