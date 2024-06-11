@@ -40,9 +40,29 @@ class dashboardController extends AbstractController
         $services = count($this->fetchData($request, 'cs_services'));
 
         $dateLabels = $this->generateDateLabels(7);
+        $userData = [];
+        for ($j = 0; $j < count($dateLabels); $j++) {
+            $userData[$j] = 0;
+            $formattedDate = date('Y-m-d', strtotime($dateLabels[$j]));
+            for ($i = 0; $i < $usersList['hydra:totalItems']; $i++) {
+                if (substr($usersList['hydra:member'][$i]['dateInscription'], 0, 9) == date('Y-m-d')) {
+                    $userData[$j] += 1;
+                }
+            }
+        }
 
-        $chartUsers = $this->createChart($dateLabels, 'Users');
-        $chartReservations = $this->createChart($dateLabels, 'Reservations');
+        $reservationData = [];
+        for ($j = 0; $j < count($dateLabels); $j++) {
+            $formattedDate = date('Y-m-d', strtotime($dateLabels[$j]));
+            for ($i = 0; $i < $reservationsList['hydra:totalItems']; $i++) {
+                if (substr($reservationsList['hydra:member'][$i]['dateCreation'], 0, 9) == date('Y-m-d')) {
+                    $reservationData[$j] += 1;
+                }
+            }
+        }
+
+        $chartUsers = $this->createChart($dateLabels, $userData);
+        $chartReservations = $this->createChart($dateLabels, $reservationData);
 
         return $this->render('backend/dashboard/dashboard.html.twig', [
             'users' => $usersList['hydra:member'],
@@ -78,26 +98,11 @@ class dashboardController extends AbstractController
         return array_reverse($labels);
     }
 
-    private function createChart(array $labels, string $label): array
+    private function createChart(array $labels, array $data): array
     {
         return [
             'labels' => $labels,
-            'datasets' => [
-                [
-                    'label' => $label,
-                    'backgroundColor' => 'rgb(128, 128, 128)',
-                    'borderColor' => 'rgb(128, 128, 128)',
-                    'data' => [0, 10, 5, 2, 20, 30, 45], // Example data, replace with real data as needed
-                ],
-            ],
-            'options' => [
-                'scales' => [
-                    'y' => [
-                        'suggestedMin' => 0,
-                        'suggestedMax' => 100,
-                    ],
-                ],
-            ],
+            'data' => $data
         ];
     }
 }

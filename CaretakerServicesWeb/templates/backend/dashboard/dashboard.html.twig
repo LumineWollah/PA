@@ -13,8 +13,6 @@
 {% block body %}
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<p> {{ chartUsers.labels.0|json_encode }}, {{ chartUsers.labels.1|json_encode }}, {{ chartUsers.labels.2|json_encode }}, {{ chartUsers.labels.3|json_encode }}, {{ chartUsers.labels.4|json_encode }}, {{ chartUsers.labels.5|json_encode }}, {{ chartUsers.labels.6|json_encode }}</p>
-
     <div class="col-10 p-0">
             <div class="p-3">
             <h1>Dashboard</h1>
@@ -68,14 +66,7 @@
                         <canvas id="chartUsers"></canvas>     
                     </div>
                     <div class="graph">
-                        <div>
-                            <canvas id="chartReservations"></canvas>
-                        </div>      
-                    </div>
-                    <div class="graph">
-                        <div>
-                            <canvas id="myChart"></canvas>
-                        </div>     
+                        <canvas id="chartReservations"></canvas>     
                     </div>
                 </div>
                 <div class="lists">
@@ -91,8 +82,7 @@
                         <h1>Dernières réservations</h1>
                         {% for reservation in reservations|slice(0, 10) %}
                             <div class="reservation">      
-                                {# <p class="name"> {{ reservation.user.firstname|capitalize }} {{ reservation.user.lastname|capitalize }} </p><p class="date"> {{ reservation.dateReservation | date('d/m/Y H:i:s') }} </p> #}
-                                <p class="name"> {{ reservation.user.firstname|capitalize }} {{ reservation.user.lastname|capitalize }} </p><p class="date"> 18/03/2005 15:00:00 </p>
+                                <p class="name"> {{ reservation.user.firstname|capitalize }} {{ reservation.user.lastname|capitalize }} </p><p class="date"> {{ reservation.dateCreation | date('d/m/Y H:i:s') }} </p>
                             </div>
                         {% endfor %}
                     </div>
@@ -102,37 +92,62 @@
     </div>
 
     <script>
-        const xValues = [50,60,70,80,90,100,110,120,130,140,150];
-        const yValues = [7,8,8,9,9,9,10,11,14,14,15];
-
-        new Chart("myChart", {
-            type: "line",
-            data: {
-                labels: xValues,
-                datasets: [{
-                backgroundColor:"rgba(0,0,255,1.0)",
-                borderColor: "rgba(0,0,255,0.1)",
-                data: yValues
-                }]
-            },
-            options:{}
-        });
-
-        const chartUsers = '{{ chartUsers.labels|json_encode|raw }}';
-        console.log(chartUsers[2]);
-        for (const chartUser of chartUsers) {
-            console.log(chartUser[2]);
+        const userLabels = {{ chartUsers.labels|json_encode|raw }};
+        
+        let cuLabels = new Array();
+        for (let j = 0; j < 7; j++) {
+            cuLabels[j] = userLabels[j];
         }
-        const cuLabels = [chartUsers[2] + chartUsers[3] + "/" + chartUsers[5] + chartUsers[6],chartUsers[2] + chartUsers[3] + "/" + chartUsers[5] + chartUsers[6],chartUsers[2] + chartUsers[3] + "/" + chartUsers[5] + chartUsers[6],chartUsers[2] + chartUsers[3] + "/" + chartUsers[5] + chartUsers[6],chartUsers[2] + chartUsers[3] + "/" + chartUsers[5] + chartUsers[6],chartUsers[2] + chartUsers[3] + "/" + chartUsers[5] + chartUsers[6],chartUsers[2] + chartUsers[3] + "/" + chartUsers[5] + chartUsers[6],];
-        const cuData = [0, 5, 10, 15, 20, 30, 40];
+        console.log(cuLabels);
+        
+        const userData = {{ chartUsers.data|json_encode|raw }};
+        
+        let cuData = new Array();
+        for (let j = 0; j < 7; j++) {
+            cuData[j] = userData[j];
+        }
+
         new Chart("chartUsers", {
             type: 'line',
             data: {
               labels: cuLabels,
               datasets: [{
+                label: 'Users',
                 backgroundColor: 'rgba(0, 0, 255, 0.5)',
                 borderColor: 'rgba(0, 0, 255, 1)',
                 data: cuData,
+              }]
+            },
+            options: {},
+          });
+
+
+
+
+        const reservationLabels = {{ chartReservations.labels|json_encode|raw }};
+        
+        let crLabels = new Array();
+        for (let j = 0; j < 7; j++) {
+            crLabels[j] = reservationLabels[j];
+        }
+        console.log(crLabels);
+        
+        const reservationData = {{ chartReservations.data|json_encode|raw }};
+        
+        let crData = new Array();
+        for (let j = 0; j < 7; j++) {
+            crData[j] = reservationData[j];
+        }
+
+        new Chart("chartReservations", {
+            type: 'line',
+            data: {
+              labels: crLabels,
+              datasets: [{
+                label: 'Reservations',
+                backgroundColor: 'rgba(0, 0, 255, 0.5)',
+                borderColor: 'rgba(0, 0, 255, 1)',
+                data: crData,
               }]
             },
             options: {},
