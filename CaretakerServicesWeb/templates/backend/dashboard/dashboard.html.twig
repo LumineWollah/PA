@@ -81,7 +81,7 @@
                     <div class="list">
                         <h1>Dernières réservations</h1>
                         {% for reservation in reservations|slice(0, 10) %}
-                            <div class="reservation">      
+                            <div class="user">      
                                 <p class="name"> {{ reservation.user.firstname|capitalize }} {{ reservation.user.lastname|capitalize }} </p><p class="date"> {{ reservation.dateCreation | date('d/m/Y H:i:s') }} </p>
                             </div>
                         {% endfor %}

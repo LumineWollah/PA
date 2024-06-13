@@ -39,14 +39,13 @@ class dashboardController extends AbstractController
         for ($j = 0; $j < count($dateLabels); $j++) {
             $userData[$j] = 0;
             $reservationData[$j] = 0;
-            $formattedDate = date('Y-d-m', strtotime($dateLabels[$j]));
             for ($i = 0; $i < $usersList['hydra:totalItems']; $i++) {
-                if (substr($usersList['hydra:member'][$i]['dateInscription'], 0, 10) == $formattedDate) {
+                if (substr($usersList['hydra:member'][$i]['dateInscription'], 0, 10) == $dateLabels[$j]) {
                     $userData[$j] += 1;
                 }
             }
             for ($i = 0; $i < $reservationsList['hydra:totalItems']; $i++) {
-                if (substr($reservationsList['hydra:member'][$i]['dateCreation'], 0, 10) == $formattedDate) {
+                if (substr($reservationsList['hydra:member'][$i]['dateCreation'], 0, 10) == $dateLabels[$j]) {
                     $reservationData[$j] += 1;
                 }
             }
@@ -84,11 +83,12 @@ class dashboardController extends AbstractController
         $now = $now->modify('+1 day');
 
         for ($i = 1; $i <= $days; $i++) {
-            $labels[] = $now->modify('-1 day')->format('d/m/Y');
+            $labels[] = $now->modify('-1 day')->format('Y-m-d');
         }
 
         return array_reverse($labels);
     }
+
 
     private function createChart(array $labels, array $data): array
     {
