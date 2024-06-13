@@ -81,7 +81,7 @@
                     <div class="list">
                         <h1>Dernières réservations</h1>
                         {% for reservation in reservations|slice(0, 10) %}
-                            <div class="reservation">      
+                            <div class="user">      
                                 <p class="name"> {{ reservation.user.firstname|capitalize }} {{ reservation.user.lastname|capitalize }} </p><p class="date"> {{ reservation.dateCreation | date('d/m/Y H:i:s') }} </p>
                             </div>
                         {% endfor %}
@@ -113,8 +113,8 @@
               labels: cuLabels,
               datasets: [{
                 label: 'Users',
-                backgroundColor: 'rgba(0, 0, 255, 0.5)',
-                borderColor: 'rgba(0, 0, 255, 1)',
+                backgroundColor: 'rgba(200, 0, 0, 0.5)',
+                borderColor: 'rgba(200, 0, 0, 1)',
                 data: cuData,
               }]
             },
@@ -145,8 +145,8 @@
               labels: crLabels,
               datasets: [{
                 label: 'Reservations',
-                backgroundColor: 'rgba(0, 0, 255, 0.5)',
-                borderColor: 'rgba(0, 0, 255, 1)',
+                backgroundColor: 'rgba(0, 0, 200, 0.5)',
+                borderColor: 'rgba(0, 0, 200, 1)',
                 data: crData,
               }]
             },
