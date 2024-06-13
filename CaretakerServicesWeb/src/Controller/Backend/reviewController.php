@@ -19,7 +19,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\File;
 
-class apartmentController extends AbstractController
+class reviewController extends AbstractController
 {
     private $apiHttpClient;
     private $amazonS3Client;
@@ -45,36 +45,28 @@ class apartmentController extends AbstractController
         return $role !== null && $role == 'ROLE_ADMIN';
     }
 
-    #[Route('/admin-panel/apartment/list', name: 'apartmentCrud')]
-    public function apartmentCrud(Request $request)
+    #[Route('/admin-panel/review/list', name: 'reviewList')]
+    public function reviewList(Request $request)
     {
         if (!$this->checkUserRole($request)) {return $this->redirectToRoute('login');}
 
         $client = $this->apiHttpClient->getClient($request->cookies->get('token'));
 
-        $response = $client->request('GET', 'cs_apartments', [
+        $response = $client->request('GET', 'cs_reviewss', [
             'query' => [
                 'page' => 1
             ]
         ]);
 
-        $apartmentsList = $response->toArray();
-        
-        $verifiedApartments = array();
-        $unverifiedApartments = array();
+        $reviewsList = $response->toArray(); 
 
-        foreach ($apartmentsList['hydra:member'] as $apartment) {
-            $apartment['isVerified'] == 1 ? $verifiedApartments[] = $apartment : $unverifiedApartments[] = $apartment;
-        }
-        
-        return $this->render('backend/apartment/apartments.html.twig', [
-            'verifiedApartments' => $verifiedApartments,
-            'unverifiedApartments' => $unverifiedApartments
+        return $this->render('backend/review/reviews.html.twig', [
+            'reviews' => $reviewsList['hydra:member'],
         ]);
     }
     
-    #[Route('/admin-panel/apartment/delete', name: 'apartmentDelete')]
-    public function apartmentDelete(Request $request)
+    #[Route('/admin-panel/review/delete', name: 'reviewDelete')]
+    public function reviewDelete(Request $request)
     {
         if (!$this->checkUserRole($request)) {return $this->redirectToRoute('login');}
 
@@ -82,55 +74,55 @@ class apartmentController extends AbstractController
 
         $id = $request->query->get('id');
 
-        $response = $client->request('DELETE', 'cs_apartments/'.$id, [
+        $response = $client->request('DELETE', 'cs_reviewss/'.$id, [
             'query' => [
                 'id' => $id
             ]
         ]);
         
-        return $this->redirectToRoute('apartmentCrud');
+        return $this->redirectToRoute('reviewList');
     }
 
-    #[Route('/admin-panel/apartment/edit', name: 'apartmentEdit')]
-    public function apartmentEdit(Request $request)
+    #[Route('/admin-panel/review/edit', name: 'reviewEdit')]
+    public function reviewEdit(Request $request)
     {
         if (!$this->checkUserRole($request)) {return $this->redirectToRoute('login');}
 
-        $apartmentData = $request->request->get('apartment');
-        $apartment = json_decode($apartmentData, true);
+        $reviewData = $request->request->get('review');
+        $review = json_decode($reviewData, true);
 
-        $storedApartment = $request->getSession()->get('apartmentId');
+        $storedReview = $request->getSession()->get('reviewId');
 
-        if (!$storedApartment) {
-            $request->getSession()->set('apartmentId', $apartment['id']);
+        if (!$storedReview) {
+            $request->getSession()->set('reviewId', $review['id']);
         }
 
         try {
             $defaults = [
-                'name' => $apartment['name'],
-                'description' => $apartment['description'],
-                'bedrooms' => $apartment['bedrooms'],
-                'bathrooms' => $apartment['bathrooms'],
-                'travelersMax' => $apartment['travelersMax'],
-                'price' => $apartment['price'],
-                'mainPict' => $apartment['mainPict'], 
+                'content' => $review['content'],
+                'rate' => $review['rate'],
+                'author' => $review['author']['firstname'] . ' ' . $review['author']['lastname'],
+                'service' => $review['service']['name'],
+                'apartment' => $review['apartment']['name'],
             ];
         } catch (Exception $e) {
-            $defaults = [];
-        }
-
-        try {
-            $defaultValues = [
-                'owner' => $apartment['owner']['firstname'] . ' ' . $apartment['owner']['lastname'],
-                'address' => $apartment['address'],
-            ];
-            
-            for ($i = 0; $i < count($apartment['addons']); $i++) {
-                $defaultValues['addons'][$i] = $apartment['addons'][$i]['name'];
+            if ($e->getMessage() == 'Warning: Undefined array key "apartment"') {
+                $defaults = [
+                    'content' => $review['content'],
+                    'rate' => $review['rate'],
+                    'author' => $review['author']['firstname'] . ' ' . $review['author']['lastname'],
+                    'service' => $review['service']['name'],
+                ];
+            } else if ($e->getMessage() == 'Warning: Undefined array key "service"') {
+                $defaults = [
+                    'content' => $review['content'],
+                    'rate' => $review['rate'],
+                    'author' => $review['author']['firstname'] . ' ' . $review['author']['lastname'],
+                    'apartment' => $review['apartment']['name'],
+                ];
+            } else {
+                dd($e);
             }
-    
-        } catch (Exception $e) {
-            $defaultValues = [];
         }
         
         $client = $this->apiHttpClient->getClient($request->cookies->get('token'));
@@ -138,7 +130,6 @@ class apartmentController extends AbstractController
         $response = $client->request('GET', 'cs_users', [
             'query' => [
                 'page' => 1,
-                'role' => 'ROLE_LESSOR',
             ]
         ]);
 
@@ -149,126 +140,93 @@ class apartmentController extends AbstractController
             $userChoice += [ $user['firstname'].' '.$user['lastname'] => $user['id'] ];
         }
 
-        $response = $client->request('GET', 'cs_addonss', [
+        $response = $client->request('GET', 'cs_services', [
             'query' => [
                 'page' => 1,
             ]
         ]);
 
-        $addonsList = $response->toArray();
-        $addonChoice = array();
+        $servicesList = $response->toArray();
+        $serviceChoice = array();
+        $serviceChoice += [ 'Aucun' => null ];
 
-        foreach ($addonsList['hydra:member'] as $addon) {
-            $addonChoice += [ $addon['name'] => $addon['id'] ];
+        foreach ($servicesList['hydra:member'] as $service) {
+            $serviceChoice += [ $service['name'] => $service['id'] ];
+        }
+        
+        $response = $client->request('GET', 'cs_apartments', [
+            'query' => [
+                'page' => 1,
+            ]
+        ]);
+
+        $apartmentsList = $response->toArray();
+        $apartmentChoice = array();
+        $apartmentChoice += [ 'Aucun' => null ];
+
+        foreach ($apartmentsList['hydra:member'] as $apartment) {
+            $apartmentChoice += [ $apartment['name'] => $apartment['id'] ];
         }
 
         $form = $this->createFormBuilder($defaults)
-        ->add("name", TextType::class, [
+        ->add("content", TextType::class, [
             "attr"=>[
-                "placeholder"=>"Name",
+                "placeholder"=>"Contenu",
             ],
             "required"=>false,
         ])
-        ->add("description", TextType::class, [
+        ->add("rate", IntegerType::class, [
             "attr"=>[
-                "placeholder"=>"Description",
-            ], 
-            "required"=>false,
-        ])
-        ->add("bedrooms", IntegerType::class, [
-            "attr"=>[
-                "placeholder"=>"Chambres",
-            ],
-            "required"=>false,
-        ])
-        ->add("bathrooms", IntegerType::class, [
-            "attr"=>[
-                "placeholder"=>"Salles de bain",
-            ],
-            "required"=>false,
-        ])
-        ->add("travelersMax", IntegerType::class, [
-            "attr"=>[
-                "placeholder"=>"Nombre maximum de voyageurs",
-            ],
-            "required"=>false,
-        ])
-        ->add("price", IntegerType::class, [
-            "attr"=>[
-                "placeholder"=>"Prix",
-            ],
-            "required"=>false,
-        ])
-        ->add("address", HiddenType::class, [
-            "constraints"=>[
-                new NotBlank([
-                    'message' => 'L\'adresse est obligatoire',
-                ]),
+                "placeholder"=>"Note",
             ],
         ])
-        ->add("owner", ChoiceType::class, [
+        ->add("author", ChoiceType::class, [
             "choices" => $userChoice,
         ])
-        ->add("addons", ChoiceType::class, [
-            "choices" => $addonChoice,
-            "multiple" => True,
-            "required"=>false,
+        ->add("service", ChoiceType::class, [
+            "choices" => $serviceChoice,
         ])
-        ->add("mainPict", UrlType::class, [
-            "attr"=>[
-                "placeholder"=>"URL",
-            ],
-            "required"=>false,
+        ->add("apartment", ChoiceType::class, [
+            "choices" => $apartmentChoice,
         ])
         ->getForm()->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()){
             $data = $form->getData();
 
-            $data['address'] = json_decode($data['address'], true);
-                
-            $data["country"] = $this->extractValueByPrefix($data["address"]['context'], 'country');
-            $data["city"] = $this->extractValueByPrefix($data["address"]['context'], 'place');
-            $data["postalCode"] = $this->extractValueByPrefix($data["address"]['context'], 'postcode');
-            $data["centerGps"] = $data['address']['center'];                
-            $data["address"] = $data['address']['place_name'];
-
-            $data['owner'] = 'api/cs_users/'.$data['owner'];
-            foreach ($data['addons'] as $key => $addon) {
-                $data['addons'][$key] = 'api/cs_addonss/'.$addon;
-            }
+            $data['author'] = 'api/cs_users/'.$data['author'];
             
             $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/merge-patch+json');
-            $response = $client->request('PATCH', 'cs_apartments/'.$storedApartment, [
+            $response = $client->request('PATCH', 'cs_reviewss/'.$storedReview, [
                 'json' => $data,
             ]);
 
             $response = json_decode($response->getContent(), true);
 
-            $request->getSession()->remove('apartmentId');
+            $request->getSession()->remove('reviewId');
 
-            return $this->redirectToRoute('apartmentCrud');
+            return $this->redirectToRoute('reviewList');
         }      
-        return $this->render('backend/apartment/editApartment.html.twig', [
-            'defaults' => $defaultValues,
+        return $this->render('backend/review/editReview.html.twig', [
+            'defaults' => $defaults,
             'form'=>$form,
             'errorMessage'=>null
         ]);
     }
 
-    #[Route('/admin-panel/apartment/show', name: 'apartmentShow')]
-    public function apartmentShow(Request $request)
+    #[Route('/admin-panel/review/show', name: 'reviewShow')]
+    public function reviewShow(Request $request)
     {
         if (!$this->checkUserRole($request)) {return $this->redirectToRoute('login');}
 
-        $apartmentData = $request->request->get('apartment');
-        $apartment = json_decode($apartmentData, true);
+        $reviewData = $request->request->get('review');
+        $review = json_decode($reviewData, true);
         
-        return $this->render('backend/apartment/showApartment.html.twig', [
-            'apartment'=>$apartment
+        return $this->render('backend/review/showReview.html.twig', [
+            'review'=>$review
         ]);
     }
     
-    #[Route('/admin-panel/apartment/create', name: 'apartmentCreateCrud')]
+    #[Route('/admin-panel/review/create', name: 'reviewCreate')]
     public function apartmentCreateCrud(Request $request)
     {
         if (!$this->checkUserRole($request)) {return $this->redirectToRoute('login');}

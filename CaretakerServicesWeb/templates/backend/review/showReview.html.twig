@@ -1,0 +1,56 @@
+{% extends 'backend/base.html.twig' %}
+
+{% block stylesheets %}<link rel="stylesheet" href={{ asset('styles/show.css') }}>{% endblock %}
+
+{% block activeGest %}active{% endblock %}
+{% block activeRev %}active{% endblock %}
+
+{% block title %}Afficher un avis{% endblock %}
+
+{% block body %}
+    <div class="col-10 p-0">
+        <div class="p-3">
+            <h1>Afficher un avis</h1>
+            <div class="row">
+                <div class="col-6">
+                    <p><strong>Id :</strong> {{ review.id }}</p>
+                    <p><strong>Note :</strong> {{ review.rate }}/5</p>
+                    <p><strong>Contenu :</strong> {{ review.content }}</p>
+                    <p><strong>Créée le :</strong> {{ review.postDate|date('d/m/Y H:i:s') }}</p>
+                    {% if review['author'] is defined and review['author'] is not empty %}
+                        <div class"container"><strong>Auteur :</strong>
+                            <form action="{{ path('userShow') }}" method="post" style="display: inline;">
+                                <input type="hidden" name="user" value="{{ review.author|json_encode }}">
+                                <button type="submit" class="container" style="background-color: #A594F9;">
+                                    <div class="container">
+                                        <p><strong>Nom:</strong> {{ review.author.firstname|capitalize }} {{ review.author.lastname|upper }}</p>
+                                </button>
+                            </form>
+                        </div>
+                    {% endif %}
+                    {% if review['service'] is defined and review['service'] is not empty %}
+                    <div class"container"><strong>Service :</strong>
+                        <form action="{{ path('serviceShow') }}" method="post" style="display: inline;">
+                            <input type="hidden" name="service" value="{{ review.service|json_encode }}">
+                            <button type="submit" class="container" style="background-color: #A594F9;">
+                                <div class="container">
+                                    <p><strong>Nom:</strong> {{ review.service.name }}</p>
+                            </button>
+                        </form>
+                    </div>
+                {% endif %}
+                {% if review['apartment'] is defined and review['apartment'] is not empty %}
+                <div class"container"><strong>Logement :</strong>
+                    <form action="{{ path('apartmentShow') }}" method="post" style="display: inline;">
+                        <input type="hidden" name="apartment" value="{{ review.apartment|json_encode }}">
+                        <button type="submit" class="container" style="background-color: #A594F9;">
+                            <div class="container">
+                                <p><strong>Nom:</strong> {{ review.apartment.name }}</p>
+                        </button>
+                    </form>
+                </div>
+            {% endif %}
+             </div>
+        </div>
+    </div>
+{% endblock %}

@@ -11,6 +11,7 @@ use App\Entity\CsDocument;
 use App\Entity\CsUser;
 use App\Entity\CsService;
 use App\Entity\CsReservation;
+use App\Entity\CsReviews;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -158,6 +159,7 @@ class AppFixtures extends Fixture
         $reservation = new CsReservation();
         $reservation->setStartingDate(new \DateTime ("now"));
         $reservation->setEndingDate(new \DateTime ("now + 5 days"));
+        $reservation->setDateCreation(new \DateTime);
         $reservation->setUser($user);
         $reservation->setAdultTravelers(2);
         $reservation->setChildTravelers(1);
@@ -169,6 +171,7 @@ class AppFixtures extends Fixture
         $reservation = new CsReservation();
         $reservation->setStartingDate(new \DateTime ("now"));
         $reservation->setEndingDate(new \DateTime ("now"));
+        $reservation->setDateCreation(new \DateTime);
         $reservation->setUser($user);
         $reservation->setService($service);
         $reservation->setPrice(50);
@@ -178,6 +181,22 @@ class AppFixtures extends Fixture
         $category->setName("Jardinage");
         $category->setColor("A00EE8");
         $manager->persist($category);
+
+        $review = new CsReviews();
+        $review->setRate(4);
+        $review->setContent("Super séjour");
+        $review->setPostDate(new \DateTime);
+        $review->setApartment($apartment);
+        $review->setAuthor($user);
+        $manager->persist($review);
+
+        $review = new CsReviews();
+        $review->setRate(5);
+        $review->setContent("Super séjour");
+        $review->setPostDate(new \DateTime);
+        $review->setService($service);
+        $review->setAuthor($user);
+        $manager->persist($review);
 
         $manager->flush();
     }
