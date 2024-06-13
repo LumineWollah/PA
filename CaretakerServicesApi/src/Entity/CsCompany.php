@@ -32,7 +32,7 @@ use App\Controller\CsCompanyController;
 #[GetCollection()]
 // #[Delete(security: "is_granted('ROLE_ADMIN') or user in object.getUsers().toArray()")]
 #[Post()]
-#[ApiFilter(SearchFilter::class, properties: ['siretNumber' => 'exact'])]
+#[ApiFilter(SearchFilter::class, properties: ['siretNumber' => 'exact', 'users' => 'partial'])]
 #[ORM\Entity(repositoryClass: CsCompanyRepository::class)]
 class CsCompany
 {
@@ -63,7 +63,7 @@ class CsCompany
     private ?string $address = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(["getUsers", "getCompanies", "getServices", "getReservations"])]
+    #[Groups(["getUsers", "getCompanies", "getServices", "getReservations", "getCategories"])]
     private ?string $city = null;
 
     #[ORM\Column(length: 5)]
@@ -75,7 +75,7 @@ class CsCompany
     private ?string $country = null;
 
     #[ORM\Column]
-    #[Groups(["getUsers", "getCompanies", "getServices", "getReservations"])]
+    #[Groups(["getUsers", "getCompanies", "getServices", "getReservations", "getCategories"])]
     private ?array $centerGps = null;
 
     #[ORM\OneToMany(targetEntity: CsService::class, mappedBy: 'company', orphanRemoval: true)]

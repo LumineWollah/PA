@@ -316,7 +316,6 @@ class CsReservation
     public function removeDocument(CsDocument $document): static
     {
         if ($this->documents->removeElement($document)) {
-            // set the owning side to null (unless already changed)
             if ($document->getReservation() === $this) {
                 $document->setReservation(null);
             }

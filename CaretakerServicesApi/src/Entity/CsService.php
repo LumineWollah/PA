@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Get;
@@ -30,6 +32,7 @@ operations: [
     new Delete(security: "is_granted('ROLE_ADMIN') or object.getProvider() == user")
 ])]
 #[ORM\Entity(repositoryClass: CsServiceRepository::class)]
+#[ApiFilter(SearchFilter::class, properties: ['company' => 'exact'])]
 // #[Patch(security: "is_granted('ROLE_ADMIN') or object.getProvider() == user")]
 // #[Get]
 // #[GetCollection]
@@ -40,24 +43,24 @@ class CsService
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(["getServices", "getUsers", "getReservations", "getApartments", "getCategories", "getCompanies"])]
+    #[Groups(["getServices", "getUsers", "getReservations", "getApartments", "getCategories", "getCompanies", "getReviews"])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(["getServices", "getUsers", "getReservations", "getApartments", "getCategories", "getCompanies"])]
+    #[Groups(["getServices", "getUsers", "getReservations", "getApartments", "getCategories", "getCompanies", "getReviews"])]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Groups(["getServices", "getUsers", "getReservations", "getApartments", "getCategories", "getCompanies"])]
+    #[Groups(["getServices", "getUsers", "getReservations", "getApartments", "getCategories", "getCompanies", "getReviews"])]
     private ?string $description = null;
 
     #[ORM\Column]
-    #[Groups(["getServices", "getUsers", "getReservations", "getApartments", "getCategories", "getCompanies"])]
+    #[Groups(["getServices", "getUsers", "getReservations", "getApartments", "getCategories", "getCompanies", "getReviews"])]
     private ?float $price = null;
 
     #[ORM\ManyToOne(inversedBy: 'services')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(["getServices", "getReservations"])]
+    #[Groups(["getServices", "getReservations", "getCategories"])]
     private ?CsCompany $company = null;
 
     #[ORM\ManyToOne(inversedBy: 'services')]
@@ -86,7 +89,7 @@ class CsService
     private Collection $reservationsForApart;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(["getServices", "getUsers", "getReservations", "getApartments", "getCategories", "getCompanies"])]
+    #[Groups(["getServices", "getUsers", "getReservations", "getApartments", "getCategories", "getCompanies", "getReviews"])]
     private ?string $coverImage = null;
 
     public function __construct()

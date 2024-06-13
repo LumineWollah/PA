@@ -65,21 +65,21 @@ class CsUser implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(["getUsers", "getDocuments", "getApartments", "getCompanies", "getReservations", "getTickets"])]
+    #[Groups(["getUsers", "getDocuments", "getApartments", "getCompanies", "getReservations", "getTickets", "getReviews"])]
     private ?int $id = null;
 
     #[ORM\Column(length: 180)]
-    #[Groups(["getUsers", "getDocuments", "getApartments", "getCompanies", "getReservations", "getTickets"])]
+    #[Groups(["getUsers", "getDocuments", "getApartments", "getCompanies", "getReservations", "getTickets", "getReviews"])]
     private ?string $email = null;
 
     #[ORM\Column(length: 150)]
-    #[Groups(["getUsers", "getDocuments", "getApartments", "getCompanies", "getReservations", "getTickets"])]
+    #[Groups(["getUsers", "getDocuments", "getApartments", "getCompanies", "getReservations", "getTickets", "getReviews"])]
     #[Assert\NotBlank(message: "Le prénom est obligaoire")]
     #[Assert\Length(min: 3, max: 150, minMessage: "Le prénom doit faire au moins {{ limit }} caractères", maxMessage: "Le prénom ne peut pas faire plus de {{ limit }} caractères")]
     private ?string $firstname = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(["getUsers", "getDocuments", "getApartments", "getCompanies", "getReservations", "getTickets"])]
+    #[Groups(["getUsers", "getDocuments", "getApartments", "getCompanies", "getReservations", "getTickets", "getReviews"])]
     private ?string $lastname = null;
 
     /**
@@ -89,39 +89,39 @@ class CsUser implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[ORM\Column]
-    #[Groups(["getUsers", "getDocuments", "getApartments", "getCompanies", "getReservations"])]
+    #[Groups(["getUsers", "getDocuments", "getApartments", "getCompanies", "getReservations", "getReviews"])]
     private ?DateTime $lastConnection = null;
 
     #[ORM\Column]
-    #[Groups(["getUsers", "getDocuments", "getApartments", "getCompanies", "getReservations"])]
+    #[Groups(["getUsers", "getDocuments", "getApartments", "getCompanies", "getReservations", "getReviews"])]
     private ?DateTime $dateInscription = null;
 
     #[ORM\Column(length: 500, nullable: true)]
-    #[Groups(["getUsers", "getDocuments", "getApartments", "getCompanies", "getReservations"])]
+    #[Groups(["getUsers", "getDocuments", "getApartments", "getCompanies", "getReservations", "getReviews"])]
     private ?string $profilePict = null;
 
     #[ORM\Column(type: 'json')]
-    #[Groups(["getUsers", "getDocuments", "getApartments", "getCompanies", "getReservations", "getTickets"])]
+    #[Groups(["getUsers", "getDocuments", "getApartments", "getCompanies", "getReservations", "getTickets", "getReviews"])]
     private $roles = [];
 
     #[ORM\Column(length: 10)]
-    #[Groups(["getUsers", "getDocuments", "getApartments", "getCompanies", "getReservations"])]
+    #[Groups(["getUsers", "getDocuments", "getApartments", "getCompanies", "getReservations", "getReviews"])]
     private ?string $telNumber = null;
 
     #[ORM\Column]
-    #[Groups(["getUsers", "getDocuments", "getApartments", "getCompanies", "getReservations"])]
+    #[Groups(["getUsers", "getDocuments", "getApartments", "getCompanies", "getReservations", "getReviews"])]
     private ?bool $isVerified = false;
 
     #[ORM\Column]
-    #[Groups(["getUsers", "getDocuments", "getApartments", "getCompanies", "getReservations"])]
+    #[Groups(["getUsers", "getDocuments", "getApartments", "getCompanies", "getReservations", "getReviews"])]
     private ?bool $professional = false;
 
     #[ORM\Column(nullable: true)]
-    #[Groups(["getUsers", "getDocuments", "getApartments", "getCompanies", "getReservations"])]
+    #[Groups(["getUsers", "getDocuments", "getApartments", "getCompanies", "getReservations", "getReviews"])]
     private ?int $subscription = null;
 
     #[ORM\Column]
-    #[Groups(["getUsers", "getDocuments", "getApartments", "getCompanies", "getReservations"])]
+    #[Groups(["getUsers", "getDocuments", "getApartments", "getCompanies", "getReservations", "getReviews"])]
     private ?bool $isBan = false;
 
     #[ORM\OneToMany(targetEntity: CsDocument::class, mappedBy: 'owner', orphanRemoval: true)]
