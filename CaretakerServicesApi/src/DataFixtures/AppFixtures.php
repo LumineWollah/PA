@@ -52,6 +52,11 @@ class AppFixtures extends Fixture
         $manager->persist($company);
 
         $category = new CsCategory();
+        $category->setName("Autres");
+        $category->setColor("6CC34D");
+        $manager->persist($category);
+
+        $category = new CsCategory();
         $category->setName("Bricolage");
         $category->setColor("2A04C5");
         $manager->persist($category);

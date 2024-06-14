@@ -86,7 +86,7 @@ input[type=file]::file-selector-button:hover {
     height: 12vh;
 }
 
-.inputName p, .inputDesc p {
+.inputName p, .inputDesc p, .inputServ p {
     margin: 0;
     font-size: 0.7vw;
 }
@@ -252,4 +252,12 @@ textarea {
 
 input::-webkit-input-placeholder {
     font-family: "Antonio";
+}
+
+.inputServ {
+    width: 15%;
+}
+
+.inputDescRow {
+    height: 28vh;
 }

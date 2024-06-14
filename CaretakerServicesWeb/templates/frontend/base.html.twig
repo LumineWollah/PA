@@ -37,10 +37,10 @@
                                 <a class="nav-link {% block activeMyApar %}{% endblock %} me-4" aria-current="page" href={{ path('myApartmentsList') }}>Mes logements</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link me-4" href={{ path('apartmentCreate') }}>Ajouter un logement</a>
+                                <a class="nav-link {% block activeCreaApar %}{% endblock %} me-4" href={{ path('apartmentCreate') }}>Ajouter un logement</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link me-4" href="#">Prestataires</a>
+                                <a class="nav-link {% block activeProvi %}{% endblock %} me-4" href={{ path('providersList') }}>Prestataires</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link me-4" href="#">Contact</a>
@@ -49,10 +49,10 @@
                     {% elseif role == 'ROLE_PROVIDER' %}
                         <ul class="navbar-nav">
                             <li class="nav-item">
-                                <a class="nav-link {% block activeMyPres %}{% endblock %} me-4" aria-current="page" href={{ path('apartmentsList') }}>Mes prestations</a>
+                                <a class="nav-link {% block activeMyServ %}{% endblock %} me-4" aria-current="page" href={{ path('myServicesList') }}>Mes prestations</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link me-4" href="#">Ajouter une prestation</a>
+                                <a class="nav-link {% block activeCreaServ %}{% endblock %} me-4" href={{ path('serviceCreate') }}>Ajouter une prestation</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link me-4" href="#">Mes intervention</a>

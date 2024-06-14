@@ -608,6 +608,17 @@ class apartmentsController extends AbstractController
 
         return $this->render('frontend/apartments/apartmentCreate.html.twig', [
             'form'=>$form,
+            'mainPict'=>null,
+            'pict1'=>null,
+            'pict2'=>null,
+            'pict3'=>null,
+            'pict4'=>null,
+            'pict5'=>null,
+            'pict6'=>null,
+            'pict7'=>null,
+            'pict8'=>null,
+            'pict9'=>null,
+            'pict10'=>null
         ]);
     }
 

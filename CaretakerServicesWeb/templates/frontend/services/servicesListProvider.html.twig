@@ -1,0 +1,51 @@
+{% extends 'frontend/base.html.twig' %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href={{ asset('styles/frontend/companies/companiesList.css') }}>
+{% endblock %}
+
+{% block activeMyServ %}active{% endblock %}
+
+{% block body %}
+<div class="container-fluid pageContent">
+    <h1>Vos <span class="h1span">services</span> proposés</h1>
+    {% for key, value in serv %}
+        {% set categoryName = key|split('-')[0] %}
+        {% set categoryColor = key|split('-')[1] %}
+        {% set categoryId = key|split('-')[2] %}
+        <div class="row rowServ">
+            <h2 style="color: #{{ categoryColor }};">{{ categoryName|upper }}</h2>
+            <hr class="persHr" style="border-color: #{{ categoryColor }};">
+            {% for i in range(0, (((value|length)/4)|round(0, 'ceil'))-1) %}
+                <div class="row">
+                    {% for j in range(i*4, (i*4)+3) %}
+                        {% if j < value|length %}
+                            <a class="col-3 companyContainer categoryServicesContainer" href={{ path('providersDetail', {'id': value[j].id}) }}>               
+                                <div class="imgContainer">
+                                    {% if value[j].coverImage is not defined or value[j].coverImage is null %}
+                                        <img src={{ asset('icons/profile_pict_default_company.png') }}>
+                                    {% else %}
+                                        {% set coverImage = value[j].coverImage %}
+                                        <img src="{{ coverImage }}">
+                                    {% endif %}
+                                </div>
+                                <p class="apartName"><b>{{ value[j].name }}</b></p>
+                                <p class="servDesc">{{ value[j].description }}</p>
+                                <p class="servPlace"><b>Siège :</b> {{ value[j].company.city }}</p>
+                                <span id="coords" style="display: none;">{{ value[j].company.centerGps|json_encode }}</span>
+                                {% if value[j].price is not defined or value[j].price is null %}
+                                    <p class="apartDesc"><b>Prix : -- €</b></p>
+                                    <span id="price" style="display: none;">{{ null }}</span>
+                                {% else %}
+                                    <p class="apartDesc"><b>Prix : ~{{ value[j].price }} €</b></p>
+                                    <span id="price" style="display: none;">{{ value[j].price }}</span>
+                                {% endif %}
+                            </a>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            {% endfor %}
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

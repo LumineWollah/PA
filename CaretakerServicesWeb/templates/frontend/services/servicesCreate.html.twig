@@ -12,7 +12,7 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 {% endblock %}
 
-{% block activeCreaApar %}active{% endblock %}
+{% block activeCreaServ %}active{% endblock %}
 
 {% block body %}
 <div class="container-fluid pageContent">
@@ -29,148 +29,46 @@
     <div class="mainInfos">
         <div class="row">
             <div class="col-12 inputs">
-                <div class="input inputName">
-                    <h4>Nom de votre location</h4>
+                <div class="input inputServ">
+                    <h4>Nom de votre service</h4>
                     <p>(Entre 0 et 50 caractères)</p>
                     {{ form_widget(form.name) }}
                 </div>
-                <div class="input inputNb">
-                    <h4>Chambres dispo.</h4>
-                    {{ form_widget(form.bedrooms) }}
+                <div class="input inputServ">
+                    <h4>Catégorie</h4>
+                    <p>Séléctionner parmi cette liste la catégorie à laquelle votre service correspond pour aider le client</p>
+                    {{ form_widget(form.category) }}
                 </div>
-                <div class="input inputNb">
-                    <h4>Salles de bain</h4>
-                    {{ form_widget(form.bathrooms) }}
+                <div class="input inputServ">
+                    <h4>Entrée d'adresse</h4>
+                    <p>Combien voulez vous que le client fournisse d'adresse (ex: déménagement, taxi ... nécessite 2 adresses)</p>
+                    {{ form_widget(form.addressInput) }}
                 </div>
-                <div class="input inputNb">
-                    <h4>Voyageurs max.</h4>
-                    {{ form_widget(form.travelersMax) }}
+                <div class="input inputServ">
+                    <h4>Prix</h4>
+                    <p>Indiquez le prix de votre service, si vous n'inscrivez rien, cela signiefera que le client devra faire une demande de devis</p>
+                    {{ form_widget(form.price) }}
                 </div>
             </div>
         </div>
         <div class="row mt-4">
-            <div class="col-12 inputs">
+            <div class="col-12 inputs inputDescRow">
                 <div class="input inputDesc">
-                    <h4>Description de votre location</h4>
+                    <h4>Description de votre service</h4>
                     <p>(Entre 50 et 500 caractères)</p>
                     {{ form_widget(form.description) }}
                 </div>
-                <div class="input inputNb">
-                    <h4>Surface (m²).</h4>
-                    {{ form_widget(form.area) }}
-                </div>
-                <div class="input inputNb">
-                    <h4>Type de bien</h4>
-                    {{ form_widget(form.isHouse) }}
-                </div>
-                <div class="input inputNb">
-                    <h4>Type de location</h4>
-                    {{ form_widget(form.isFullhouse) }}
-                </div>
             </div>
         </div>
-        <div class="row mt-4">
-            <div class="col-12 inputs">
-                <div class="input inputDesc">
-                    
-                </div>
-                <div class="input inputNb">
-                    <h4>Prix / nuit :</h4>
-                    <div class="input-group">
-                        {{ form_widget(form.price)  }}
-                        <span class="input-group-text" id="basic-addon2">€</span>
-                    </div>
-                </div>
-                <div class="input inputAdr">
-                    <h4>Adresse</h4>
-                    <div id="geocoder" style="position: relative; height: 3vh;"></div>
-                    {{form_widget(form.address)}}
-                </div>
-            </div>
-        </div>
-        <hr class="mt-5">
-        <div class="row">
+        {# <div class="row">
             <div class="col-3"> 
                 <h4 style="height: 3vh;">Date d'indisponibilité</h4>
                 <input type="text" name="daterange" value="" class="mt-3 inputIndispo">
                 <div id="selectedDates" style="height: 200px; overflow-y: scroll;"></div>
                 {{form_widget(form.indisponibilities)}}
             </div>
-            <div class="col-9">
-                <h4 style="height: 3vh;">Autres photos</h4>
-                <div class="row" style="height: calc(100% - 3vh);">
-                    <div class="col-4" style="display: flex; align-items: center;">
-                        <p>Vous pouvez poster jusqu'à 10 photos supplémentaires ...</p>
-                    </div>
-                    <div class="col-8" style="display: flex; justify-content: space-around; flex-direction: column;">
-                        <div class="row">
-                            <div class="pictDiv" id="preview1">
-                                <label for="form_pict1">
-                                    +
-                                    {{ form_widget(form.pict1) }}
-                                </label>
-                            </div>
-                            <div class="pictDiv" id="preview2">
-                                <label for="form_pict2">
-                                    +
-                                    {{ form_widget(form.pict2) }}
-                                </label>
-                            </div>
-                            <div class="pictDiv" id="preview3">
-                                <label for="form_pict3">
-                                    +
-                                    {{ form_widget(form.pict3) }}
-                                </label>
-                            </div>
-                            <div class="pictDiv" id="preview4">
-                                <label for="form_pict4">
-                                    +
-                                    {{ form_widget(form.pict4) }}
-                                </label>
-                            </div>
-                            <div class="pictDiv" id="preview5">
-                                <label for="form_pict5">
-                                    +
-                                    {{ form_widget(form.pict5) }}
-                                </label>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="pictDiv" id="preview6">
-                                <label for="form_pict6">
-                                    +
-                                    {{ form_widget(form.pict6) }}
-                                </label>
-                            </div>
-                            <div class="pictDiv" id="preview7">
-                                <label for="form_pict7">
-                                    +
-                                    {{ form_widget(form.pict7) }}
-                                </label>
-                            </div>
-                            <div class="pictDiv" id="preview8">
-                                <label for="form_pict8">
-                                    +
-                                    {{ form_widget(form.pict8) }}
-                                </label>
-                            </div>
-                            <div class="pictDiv" id="preview9">
-                                <label for="form_pict9">
-                                    +
-                                    {{ form_widget(form.pict9) }}
-                                </label>
-                            </div>
-                            <div class="pictDiv" id="preview10">
-                                <label for="form_pict10">
-                                    +
-                                    {{ form_widget(form.pict10) }}
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        </div> #}
+        <hr class="mt-5">
         <div class="col-12 d-flex mt-5" style="justify-content: center;">
             <button type="submit" class="validBtn">Valider</button>
         </div>
@@ -250,17 +148,7 @@
     ];
 
     var images = [
-        "{{ mainPict }}",
-        "{{ pict1 }}",
-        "{{ pict2 }}",
-        "{{ pict3 }}",
-        "{{ pict4 }}",
-        "{{ pict5 }}",
-        "{{ pict6 }}",
-        "{{ pict7 }}",
-        "{{ pict8 }}",
-        "{{ pict9 }}",
-        "{{ pict10 }}"
+        "{{ mainPict }}"
     ]
 
     images.forEach(function(img) {

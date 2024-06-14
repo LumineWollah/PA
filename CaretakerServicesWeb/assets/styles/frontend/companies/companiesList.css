@@ -153,3 +153,37 @@ h1 {
 .companyContainer:hover .imgContainer img {
     transform: scale(1.1);
 }
+
+.categoryServicesContainer {
+    height: 50vh;
+}
+
+.servDesc {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+}
+
+.servRow {
+    height: 54vh;
+}
+
+.rowServ {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    padding: 4vh 0 4vh 0;
+}
+
+h2 {
+    font-family: 'Roboto Condensed';
+    font-weight: bold;
+    font-size: 2vw;
+    text-align: center;
+}
+
+.persHr {
+    border-top: 3px solid;
+}
