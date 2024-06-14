@@ -68,6 +68,10 @@ class AppFixtures extends Fixture
         $service->setDescription("Test de description");
         $service->setPrice(85.5);
         $service->setCategory($category);
+        $service->setAddressInputs(2);
+        $service->setDaysOfWeek([1, 2, 3, 4, 5]);
+        $service->setStartTime("08:00");
+        $service->setEndTime("18:00");
         $manager->persist($service);
 
         $addon = new CsAddons();

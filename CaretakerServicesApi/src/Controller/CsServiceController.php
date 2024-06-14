@@ -25,6 +25,10 @@ class CsServiceController extends AbstractController
         $name = $data['name'] ?? null;
         $description = $data['description'] ?? null;
         $price = $data['price'] ?? null;
+        $daysOfWeek = $data['daysOfWeek'] ?? null;
+        $startTime = $data['startTime'] ?? null;
+        $endTime = $data['endTime'] ?? null;
+        $price = $data['price'] ?? null;
         $company = explode('/', $data['company']);
         $categoy = explode('/', $data['category']);
         $companyId = end($company) ?? null;
@@ -49,6 +53,9 @@ class CsServiceController extends AbstractController
         $service->setCompany($company);
         $service->setCategory($category);
         $service->setAddressInputs($addressInputs);
+        $service->setDaysOfWeek($daysOfWeek);
+        $service->setStartTime($startTime);
+        $service->setEndTime($endTime);
 
         if (!$company->getCategories()->contains($category)) {
             $company->addCategory($category);
