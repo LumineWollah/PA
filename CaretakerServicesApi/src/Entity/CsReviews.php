@@ -6,6 +6,7 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use App\Repository\CsReviewsRepository;
 use Doctrine\DBAL\Types\Types;
@@ -15,6 +16,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ApiResource(normalizationContext: ['groups' => ['getReviews']])]
 #[ORM\Entity(repositoryClass: CsReviewsRepository::class)]
 #[Get]
+#[Patch(security: "is_granted('ROLE_ADMIN') or object.getAuthor() == user")]
 #[GetCollection]
 #[Delete(security: "is_granted('ROLE_ADMIN') or object.getAuthor() == user")]
 #[Post]
