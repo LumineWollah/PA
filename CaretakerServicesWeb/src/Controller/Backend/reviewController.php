@@ -15,6 +15,7 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
+use Symfony\Component\Validator\Constraints\LessThanOrEqual;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\File;
@@ -220,7 +221,7 @@ class reviewController extends AbstractController
 
         $reviewData = $request->request->get('review');
         $review = json_decode($reviewData, true);
-        
+
         return $this->render('backend/review/showReview.html.twig', [
             'review'=>$review
         ]);
@@ -246,179 +247,93 @@ class reviewController extends AbstractController
             $userChoice += [ $user['firstname'].' '.$user['lastname'] => $user['id'] ];
         }
 
-        $response = $client->request('GET', 'cs_addonss', [
+        $response = $client->request('GET', 'cs_services', [
             'query' => [
                 'page' => 1,
             ]
         ]);
 
-        $addonsList = $response->toArray();
-        $addonChoice = array();
+        $servicesList = $response->toArray();
+        $serviceChoice = array();
+        $serviceChoice += [ 'Aucun' => null ];
 
-        foreach ($addonsList['hydra:member'] as $addon) {
-            $addonChoice += [ $addon['name'] => $addon['id'] ];
+        foreach ($servicesList['hydra:member'] as $service) {
+            $serviceChoice += [ $service['name'] => $service['id'] ];
+        }
+        
+        $response = $client->request('GET', 'cs_apartments', [
+            'query' => [
+                'page' => 1,
+            ]
+        ]);
+
+        $apartmentsList = $response->toArray();
+        $apartmentChoice = array();
+        $apartmentChoice += [ 'Aucun' => null ];
+
+        foreach ($apartmentsList['hydra:member'] as $apartment) {
+            $apartmentChoice += [ $apartment['name'] => $apartment['id'] ];
         }
 
         $form = $this->createFormBuilder()
-        ->add("name", TextType::class, [
+        ->add("content", TextType::class, [
             "attr"=>[
-                "placeholder"=>"Name",
+                "placeholder"=>"Contenu",
             ],
-            "constraints"=>[
-                new Length([
-                    'max' => 50,
-                    'maxMessage' => 'Le nom doit contenir au plus {{ limit }} caractères',
-                ]),
-            ],
+            "required"=>false,
         ])
-        ->add("description", TextType::class, [
+        ->add("rate", IntegerType::class, [
             "attr"=>[
-                "placeholder"=>"Description",
-            ], 
-        ])
-        ->add("bedrooms", IntegerType::class, [
-            "attr"=>[
-                "placeholder"=>"Chambres",
+                "placeholder"=>"Note",
             ],
             'constraints'=>[
                 new GreaterThanOrEqual([
-                    'value' => 1,
-                    'message' => 'Le nombre de chambres doit être égal ou supérieur à 1',
+                    'value' => 0,
+                    'message' => 'La note doit être comprise entre 0 et 5',
+                
+                ]),
+                new LessThanOrEqual([
+                    'value' => 5,
+                    'message' => 'La note doit être comprise entre 0 et 5',
                 
                 ]),
             ],
         ])
-        ->add("bathrooms", IntegerType::class, [
-            "attr"=>[
-                "placeholder"=>"Salles de bain",
-            ],
-            'constraints'=>[
-                new GreaterThanOrEqual([
-                    'value' => 1,
-                    'message' => 'Le nombre de toilettes doit être égal ou supérieur à 1',
-                
-                ]),
-            ],
-        ])
-        ->add("travelersMax", IntegerType::class, [
-            "attr"=>[
-                "placeholder"=>"Nombre maximum de voyageurs",
-            ],
-            'constraints'=>[
-                new GreaterThanOrEqual([
-                    'value' => 1,
-                    'message' => 'Le nombre maximum de voyageurs doit être égal ou supérieur à 1',
-                
-                ]),
-            ],
-        ])
-        ->add("area", IntegerType::class, [
-            "attr"=>[
-                "placeholder"=>"Superficie",
-            ],
-            'constraints'=>[
-                new GreaterThanOrEqual([
-                    'value' => 1,
-                    'message' => 'La superficie doit être égal ou supérieur à 1',
-                
-                ]),
-            ],
-        ])
-        ->add("isFullhouse", ChoiceType::class, [
-            'choices'  => [
-                'Logement Entier' => true,
-                'Chambre' => false,
-            ],
-        ])
-        ->add("isHouse", ChoiceType::class, [
-            'choices'  => [
-                'Maison' => true,
-                'Appartement' => false,
-            ],
-        ])
-        ->add("price", IntegerType::class, [
-            "attr"=>[
-                "placeholder"=>"Prix",
-            ],
-            'constraints'=>[
-                new GreaterThanOrEqual([
-                    'value' => 1,
-                    'message' => 'Le prix doit être égal ou supérieur à 1',
-                
-                ]),
-            ],
-        ])
-        ->add("apartNumber", TextType::class, [
-            "attr"=>[
-                "placeholder"=>"Numéro d'appartement (si appartement)",
-            ],
-            "required"=>false
-        ])
-        ->add("address", HiddenType::class, [
-            "constraints"=>[
-                new NotBlank([
-                    'message' => 'L\'adresse est obligatoire',
-                ]),
-            ],
-        ])
-        ->add("owner", ChoiceType::class, [
+        ->add("author", ChoiceType::class, [
             "choices" => $userChoice,
         ])
-        ->add("addons", ChoiceType::class, [
-            "choices" => $addonChoice,
-            "expanded" => True,
-            "multiple" => True,
+        ->add("service", ChoiceType::class, [
+            "choices" => $serviceChoice,
         ])
-        ->add("mainPict", FileType::class, [
-            "attr"=>[
-                "placeholder"=>"Image principale",
-            ], 
-            'constraints' => [
-                new File([
-                    'maxSize' => '10m',
-                    'mimeTypes' => [
-                        'image/png', 
-                        'image/jpeg', 
-                    ],
-                    'mimeTypesMessage' => 'Please upload a valid jpeg or png document',
-                ])
-            ],
+        ->add("apartment", ChoiceType::class, [
+            "choices" => $apartmentChoice,
         ])
         ->getForm()->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()){
             $data = $form->getData();
-            $results = $this->amazonS3Client->insertObject($data['mainPict']);
 
-            if ($results['success']) {
+            $data['author'] = 'api/cs_users/'.$data['author'];
 
-                $data['address'] = json_decode($data['address'], true);
-                
-                $data["country"] = $this->extractValueByPrefix($data["address"]['context'], 'country');
-                $data["city"] = $this->extractValueByPrefix($data["address"]['context'], 'place');
-                $data["postalCode"] = $this->extractValueByPrefix($data["address"]['context'], 'postcode');
-                $data["centerGps"] = $data['address']['center'];                
-                $data["address"] = $data['address']['place_name'];                
+            if ($data['service'] != null) {
+                $data['service'] = 'api/cs_servicess'.$data['service'];
+            } 
 
-                $data['mainPict'] = $results['link'];
-                $data['pictures'] = array($results['link']);
-                $data['owner'] = 'api/cs_users/'.$data['owner'];
+            if ($data['apartment'] != null) {
+                $data['apartment'] = 'api/cs_apartmentss'.$data['apartment'];
+            } 
 
-                foreach ($data['addons'] as $key => $addon) {
-                    $data['addons'][$key] = 'api/cs_addonss'.$addon;
-                }    
+            $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/ld+json');
 
-                $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/ld+json');
+            $response = $client->request('POST', 'cs_reviewss', [
+                'json' => $data,
+            ]);
 
-                $response = $client->request('POST', 'cs_apartments', [
-                    'json' => $data,
-                ]);
+            $response = json_decode($response->getContent(), true);
 
-                $response = json_decode($response->getContent(), true);
-
-                return $this->redirectToRoute('apartmentCrud');
-            }
-        }      
-        return $this->render('backend/apartment/createApartment.html.twig', [
+            return $this->redirectToRoute('reviewList');
+        }
+            
+        return $this->render('backend/review/createReview.html.twig', [
             'form'=>$form,
             'errorMessage'=>null,
         ]);
