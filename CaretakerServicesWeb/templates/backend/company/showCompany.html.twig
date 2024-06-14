@@ -29,7 +29,7 @@
                                         <input type="hidden" name="user" value="{{ user|json_encode }}">
                                         <button type="submit" class="container" style="background-color: #A594F9;">
                                             <div class="container">
-                                            <p><strong>Nom:</strong> {{ user.firstname|capitalize }} {{user.lastname|upper }} </p>
+                                            <p><strong>Nom:</strong> {{ user.firstname|capitalize }} {{ user.lastname|upper }} </p>
                                         </button>
                                     </form>
                                 {% endfor %}

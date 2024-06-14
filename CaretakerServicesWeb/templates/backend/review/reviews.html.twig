@@ -1,0 +1,94 @@
+{% extends 'backend/base.html.twig' %}
+
+{% block stylesheets %}<link rel="stylesheet" href={{ asset('styles/crud.css') }}>{% endblock %}
+
+{% block activeGest %}active{% endblock %}
+{% block activeRev %}active{% endblock %}
+
+{% block title %}Liste des avis{% endblock %}
+
+{% block body %}
+<script>
+    $(document).ready( function () {
+        $('#crudList').DataTable( {
+            buttons: true,
+            pageLength: 10,
+            layout: {
+                topStart: {
+                    search: {
+                        placeholder: "Rechercher...",
+                        search: ""
+                    }
+                },
+                topEnd: 'buttons',
+                bottomStart: 'paging',
+                bottomEnd: 'info',
+            },
+            language: {
+                search: "",
+                info: "Affichage des entrées _START_ à _END_ sur _TOTAL_ au total",
+            },
+            buttons: [
+                'pdf'
+            ],
+            columnDefs: [
+                {
+                    targets: 1,
+                    className: 'dt-body-left dt-head-left'
+                },
+                {
+                    targets: -1,
+                    orderable: false,
+                },
+                {
+                    targets: 0,
+                    orderable: false,
+                }      
+            ]
+        } );
+    } );
+</script>
+    <div class="col-10 p-0">
+        <div class="p-3">
+            <div class="btn-create-row">
+                <h1>Liste des avis</h1>
+                <a href="{{ path('reviewCreate') }}" class="btn btn-create"><div class="btnImage"><img style="height:20px;">Créer +</div></a>
+            </div>
+            <table id="crudList" class="table table-striped tableAps">
+                <thead>
+                    <tr>
+                        <th scope="col">Auteur</th>
+                        <th scope="col">Note</th>
+                        <th scope="col">Date d'ajout</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for review in reviews %}
+                        <tr>
+                            <td>
+                                <form action="{{ path('userShow') }}" method="post" style="display: inline;">
+                                    <input type="hidden" name="user" value="{{ review.author|json_encode }}">
+                                    <button type="submit" class="btn btn-light owner" style="height:40px"><p> {{ review.author.firstname ~ " " ~ review.author.lastname|capitalize }} </p></button>
+                                </form>
+                            </td>
+                            <td>{{ review.rate }}</td>
+                            <td>{{ review.postDate | date('d/m/Y H:i:s') }}</td>
+                            <td class="action">
+                                <a href="{{ path('reviewDelete', {'id': review.id }) }}" class="btn" style="background-color: #EE3939;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/bin.png') }}></div></a>
+                                <form action="{{ path('reviewEdit') }}" method="post" style="display: inline;">
+                                    <input type="hidden" name="review" value="{{ review|json_encode }}">
+                                    <button type="submit" class="btn" style="background-color: #18A0FB;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/pen.png') }}></div></button>
+                                </form>
+                                <form action="{{ path('reviewShow') }}" method="post" style="display: inline;">
+                                    <input type="hidden" name="review" value="{{ review|json_encode }}">
+                                    <button type="submit" class="btn" style="background-color: #A594F9;"><div class="btnImage"><img style="height:17px;" src={{ asset('icons/crud/chart.png') }}></div></button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
