@@ -17,7 +17,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 #[ApiResource]
 class CsServiceController extends AbstractController
 {
-    #[Route('/api/cs_services/', name: 'createService', methods: ['POST'])]
+    #[Route('/api/cs_services', name: 'createService', methods: ['POST'])]
     public function createService(Request $request, EntityManagerInterface $entityManager, CsCompanyRepository $companyRepository, CsCategoryRepository $categoryRepository, SerializerInterface $serializer): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
@@ -34,6 +34,7 @@ class CsServiceController extends AbstractController
         $companyId = end($company) ?? null;
         $categoryId = end($categoy) ?? null;
         $addressInputs = $data['addressInputs'] ?? null;
+        $coverImage = $data['coverImage'] ?? null;
 
         if (!$name || !$price || !$companyId || !$categoryId) {
             return new JsonResponse(['error' => 'Invalid data'], 400);
@@ -56,6 +57,7 @@ class CsServiceController extends AbstractController
         $service->setDaysOfWeek($daysOfWeek);
         $service->setStartTime($startTime);
         $service->setEndTime($endTime);
+        $service->setCoverImage($coverImage);
 
         if (!$company->getCategories()->contains($category)) {
             $company->addCategory($category);

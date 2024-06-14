@@ -20,6 +20,7 @@ use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RadioType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\TimeType;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -139,8 +140,8 @@ class servicesController extends AbstractController
         
     }
 
-    #[Route('/services/create', name: 'serviceCreate')]
-    public function serviceCreate(Request $request)
+    #[Route('/services/create', name: 'serviceCreateProvider')]
+    public function serviceCreateProvider(Request $request)
     {
         $role = $request->cookies->get('roles');
         $id = $request->cookies->get('id');
@@ -150,6 +151,9 @@ class servicesController extends AbstractController
 
         $client = $this->apiHttpClient->getClientWithoutBearer();
 
+        $companyResp = $client->request('GET', 'cs_companies?users[]='.$id);
+        $comp = $companyResp->toArray()['hydra:member'][0];
+
         $responseCat = $client->request('GET', 'cs_categories');
         $categories = $responseCat->toArray()['hydra:member'];
         $catChoice = array();
@@ -158,7 +162,11 @@ class servicesController extends AbstractController
             $catChoice += [ $categorie['name'] => $categorie['id'] ];
         }
 
-        $form = $this->createFormBuilder()
+        $defaults = [
+            'companyEmail' => $comp['companyEmail'],
+        ];
+
+        $form = $this->createFormBuilder($defaults)
         ->add("name", TextType::class, [
             "attr"=>[
                 "placeholder"=>"Nom de votre service",
@@ -172,7 +180,7 @@ class servicesController extends AbstractController
         ])
         ->add("description", TextareaType::class, [
             "attr"=>[
-                "placeholder"=>"Description de votre appartement",
+                "placeholder"=>"Description de votre service",
             ],
             "constraints"=>[
                 new Length([
@@ -184,7 +192,7 @@ class servicesController extends AbstractController
         ->add("price", NumberType::class, [
             'required' => false,
         ])
-        ->add("addressInput", ChoiceType::class, [
+        ->add("addressInputs", ChoiceType::class, [
             'choices' => [
                 0 => 0,
                 1 => 1,
@@ -207,16 +215,62 @@ class servicesController extends AbstractController
                 'mimeTypesMessage' => 'Please upload a valid jpeg or png document',
             ])
         ])
+        ->add("companyEmail", TextType::class, [
+            "disabled"=>true,
+        ])
+        ->add('daysOfWeek', ChoiceType::class, [
+            'choices' => [
+                'Lundi' => 0,
+                'Mardi' => 1,
+                'Mercredi' => 2,
+                'Jeudi' => 3,
+                'Vendredi' => 4,
+                'Samedi' => 5,
+                'Dimanche' => 6,
+            ],
+            'multiple' => true,
+            'expanded' => true,
+        ])
+        ->add('startTime', TimeType::class, [
+            'widget' => 'single_text',
+        ])
+        ->add('endTime', TimeType::class, [
+            'widget' => 'single_text',
+        ])
         ->getForm()->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
-            
+
             $results = $this->amazonS3Client->insertObject($data['mainPict']);
 
             if ($results['success']) {
 
-                
+                unset($data['companyEmail']);
+                unset($data['mainPict']);
+
+                $data['coverImage'] = $results['link'];
+                $data['company'] = '/api/cs_companies/'.$comp['id'];
+                $data['category'] = '/api/cs_categories/'.$data['category'];
+                $data['startTime'] = $data['startTime']->format('H:i:s');
+                $data['endTime'] = $data['endTime']->format('H:i:s');
+
+                $clientConnect = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/ld+json');
+
+                $response = $clientConnect->request('POST', 'cs_services', [
+                    'json' => $data
+                ]);
+
+                $content = json_decode($response->getContent(), true);
+
+
+                if ($response->getStatusCode() == 201) {
+                    return $this->redirectToRoute('myServicesList', ['showPopup'=>true, 'content'=>'Service créé avec succès', 'title'=>'Création de service']);
+                } else {
+                    return $this->redirectToRoute('myServicesList', ['showPopup'=>true, 'content'=>'Erreur lors de la création du service', 'title'=>'Création de service']);
+                }
+            } else {
+                return $this->redirectToRoute('myServicesList', ['showPopup'=>true, 'content'=>'Erreur lors de l\'upload de l\'image', 'title'=>'Création de service']);
             }
         }
 

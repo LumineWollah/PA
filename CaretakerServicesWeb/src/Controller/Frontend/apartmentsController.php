@@ -600,9 +600,9 @@ class apartmentsController extends AbstractController
                             "apartment" => "/api/cs_apartments/".$apId,
                             "unavailability" => true
                         ],
-                    ]);   
+                    ]);
                 }
-                return $this->redirectToRoute('apartmentList');
+                return $this->redirectToRoute('apartmentsList');
             }
         }
 

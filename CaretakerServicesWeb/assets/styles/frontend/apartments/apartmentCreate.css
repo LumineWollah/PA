@@ -261,3 +261,38 @@ input::-webkit-input-placeholder {
 .inputDescRow {
     height: 28vh;
 }
+
+#form_daysOfWeek {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+}
+
+#form_daysOfWeek input[type="checkbox"] {
+    display: none;
+}
+
+#form_daysOfWeek label {
+    display: flex;
+    align-items: center;
+    padding: 5px 10px;
+    border: 2px solid #A594F9;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+    font-size: 13px;
+}
+
+#form_daysOfWeek input[type="checkbox"]:checked + label {
+    background-color: #A594F9;
+    color: white;
+}
+
+#form_daysOfWeek input[type="checkbox"] + label:hover {
+    background-color: #3D2F44;
+    color: white;
+}
+
+#form_daysOfWeek label:not(:last-child) {
+    margin-right: 5px; /* Espacement entre les étiquettes */
+}

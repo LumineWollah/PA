@@ -42,11 +42,11 @@
                 <div class="input inputServ">
                     <h4>Entrée d'adresse</h4>
                     <p>Combien voulez vous que le client fournisse d'adresse (ex: déménagement, taxi ... nécessite 2 adresses)</p>
-                    {{ form_widget(form.addressInput) }}
+                    {{ form_widget(form.addressInputs) }}
                 </div>
                 <div class="input inputServ">
                     <h4>Prix</h4>
-                    <p>Indiquez le prix de votre service, si vous n'inscrivez rien, cela signiefera que le client devra faire une demande de devis</p>
+                    <p>Si vide : sur devis</p>
                     {{ form_widget(form.price) }}
                 </div>
             </div>
@@ -58,19 +58,29 @@
                     <p>(Entre 50 et 500 caractères)</p>
                     {{ form_widget(form.description) }}
                 </div>
+                <div class="input inputServ mt-3">
+                    <h4 class="mb-3">Disponibilités</h4>
+                    {{ form_widget(form.daysOfWeek) }}
+                </div>
+                <div class="input inputServ mt-3">
+                    <h4>Horaire de début</h4>
+                    {{ form_widget(form.startTime) }}
+                </div>
+                <div class="input inputServ mt-3">
+                    <h4>Horaire de fin</h4>
+                    {{ form_widget(form.endTime) }}
+                </div>
             </div>
         </div>
-        {# <div class="row">
-            <div class="col-3"> 
-                <h4 style="height: 3vh;">Date d'indisponibilité</h4>
-                <input type="text" name="daterange" value="" class="mt-3 inputIndispo">
-                <div id="selectedDates" style="height: 200px; overflow-y: scroll;"></div>
-                {{form_widget(form.indisponibilities)}}
-            </div>
-        </div> #}
         <hr class="mt-5">
-        <div class="col-12 d-flex mt-5" style="justify-content: center;">
-            <button type="submit" class="validBtn">Valider</button>
+        
+        <div class="col-12 d-flex mt-5" style="align-items: center;">
+            <div class="input inputServ" style="float: left; width: 20%;">
+                <h4>Mail de votre entreprise</h4>
+                <p>Nous vous rappelons que c'est à ce mail que vous recevrez réservations et devis</p>
+                {{ form_widget(form.companyEmail) }}
+            </div>
+            <button type="submit" class="validBtn" style="height: 6vh; margin-left: calc(30% - 31px); transform: translateX(-50%);">Valider</button>
         </div>
         {{form_end(form)}}
     </div>

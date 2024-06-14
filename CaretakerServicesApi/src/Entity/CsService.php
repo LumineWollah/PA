@@ -100,13 +100,13 @@ class CsService
     #[Groups(["getServices", "getUsers", "getReservations", "getApartments", "getCategories", "getCompanies", "getReviews"])]
     private array $daysOfWeek = [];
 
-    #[ORM\Column(type: Types::TIME_MUTABLE)]
+    #[ORM\Column]
     #[Groups(["getServices", "getUsers", "getReservations", "getApartments", "getCategories", "getCompanies", "getReviews"])]
-    private ?\DateTimeInterface $startTime = null;
+    private ?string $startTime = null;
 
-    #[ORM\Column(type: Types::TIME_MUTABLE)]
+    #[ORM\Column]
     #[Groups(["getServices", "getUsers", "getReservations", "getApartments", "getCategories", "getCompanies", "getReviews"])]
-    private ?\DateTimeInterface $endTime = null;
+    private ?string $endTime = null;
 
     public function __construct()
     {
@@ -312,24 +312,24 @@ class CsService
         return $this;
     }
 
-    public function getStartTime(): ?\DateTimeInterface
+    public function getStartTime(): ?string
     {
         return $this->startTime;
     }
 
-    public function setStartTime(\DateTimeInterface $startTime): static
+    public function setStartTime(string $startTime): static
     {
         $this->startTime = $startTime;
 
         return $this;
     }
 
-    public function getEndTime(): ?\DateTimeInterface
+    public function getEndTime(): ?string
     {
         return $this->endTime;
     }
 
-    public function setEndTime(\DateTimeInterface $endTime): static
+    public function setEndTime(string $endTime): static
     {
         $this->endTime = $endTime;
 
