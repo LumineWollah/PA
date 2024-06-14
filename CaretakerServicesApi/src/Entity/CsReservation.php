@@ -101,6 +101,9 @@ class CsReservation
     #[Groups(["getReservations", "getUsers", "getApartments"])]
     private ?DateTime $dateCreation = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?array $otherData = null;
+
     public function __construct()
     {
         $this->services = new ArrayCollection();
@@ -332,6 +335,18 @@ class CsReservation
     public function setDateCreation(\DateTimeInterface $dateCreation): static
     {
         $this->dateCreation = $dateCreation;
+
+        return $this;
+    }
+
+    public function getOtherData(): ?array
+    {
+        return $this->otherData;
+    }
+
+    public function setOtherData(?array $otherData): static
+    {
+        $this->otherData = $otherData;
 
         return $this;
     }

@@ -92,6 +92,22 @@ class CsService
     #[Groups(["getServices", "getUsers", "getReservations", "getApartments", "getCategories", "getCompanies", "getReviews"])]
     private ?string $coverImage = null;
 
+    #[ORM\Column(type: Types::SMALLINT)]
+    #[Groups(["getServices", "getUsers", "getReservations", "getApartments", "getCategories", "getCompanies", "getReviews"])]
+    private ?int $addressInputs = null;
+
+    #[ORM\Column]
+    #[Groups(["getServices", "getUsers", "getReservations", "getApartments", "getCategories", "getCompanies", "getReviews"])]
+    private array $daysOfWeek = [];
+
+    #[ORM\Column(type: Types::TIME_MUTABLE)]
+    #[Groups(["getServices", "getUsers", "getReservations", "getApartments", "getCategories", "getCompanies", "getReviews"])]
+    private ?\DateTimeInterface $startTime = null;
+
+    #[ORM\Column(type: Types::TIME_MUTABLE)]
+    #[Groups(["getServices", "getUsers", "getReservations", "getApartments", "getCategories", "getCompanies", "getReviews"])]
+    private ?\DateTimeInterface $endTime = null;
+
     public function __construct()
     {
         $this->reviews = new ArrayCollection();
@@ -268,6 +284,54 @@ class CsService
     public function setCoverImage(string $coverImage): static
     {
         $this->coverImage = $coverImage;
+
+        return $this;
+    }
+
+    public function getAddressInputs(): ?int
+    {
+        return $this->addressInputs;
+    }
+
+    public function setAddressInputs(int $addressInputs): static
+    {
+        $this->addressInputs = $addressInputs;
+
+        return $this;
+    }
+
+    public function getDaysOfWeek(): array
+    {
+        return $this->daysOfWeek;
+    }
+
+    public function setDaysOfWeek(array $daysOfWeek): static
+    {
+        $this->daysOfWeek = $daysOfWeek;
+
+        return $this;
+    }
+
+    public function getStartTime(): ?\DateTimeInterface
+    {
+        return $this->startTime;
+    }
+
+    public function setStartTime(\DateTimeInterface $startTime): static
+    {
+        $this->startTime = $startTime;
+
+        return $this;
+    }
+
+    public function getEndTime(): ?\DateTimeInterface
+    {
+        return $this->endTime;
+    }
+
+    public function setEndTime(\DateTimeInterface $endTime): static
+    {
+        $this->endTime = $endTime;
 
         return $this;
     }

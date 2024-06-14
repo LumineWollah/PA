@@ -9,6 +9,7 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use App\Repository\CsReviewsRepository;
+use DateTime;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -36,9 +37,9 @@ class CsReviews
     #[Groups(["getReviews", "getApartments", "getServices"])]
     private ?int $rate = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column]
     #[Groups(["getReviews", "getApartments", "getServices"])]
-    private ?\DateTimeInterface $postDate = null;
+    private ?DateTime $postDate = null;
 
     #[ORM\ManyToOne(inversedBy: 'reviews')]
     #[Groups(["getReviews"])]
@@ -52,6 +53,11 @@ class CsReviews
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(["getReviews", "getApartments", "getServices"])]
     private ?CsUser $author = null;
+
+    public function __construct()
+    {
+        $this->postDate = new DateTime();
+    }
 
     public function getId(): ?int
     {

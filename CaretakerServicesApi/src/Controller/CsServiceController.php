@@ -25,8 +25,11 @@ class CsServiceController extends AbstractController
         $name = $data['name'] ?? null;
         $description = $data['description'] ?? null;
         $price = $data['price'] ?? null;
-        $companyId = $data['company'] ?? null;
-        $categoryId = $data['category'] ?? null;
+        $company = explode('/', $data['company']);
+        $categoy = explode('/', $data['category']);
+        $companyId = end($company) ?? null;
+        $categoryId = end($categoy) ?? null;
+        $addressInputs = $data['addressInputs'] ?? null;
 
         if (!$name || !$price || !$companyId || !$categoryId) {
             return new JsonResponse(['error' => 'Invalid data'], 400);
@@ -45,6 +48,7 @@ class CsServiceController extends AbstractController
         $service->setPrice($price);
         $service->setCompany($company);
         $service->setCategory($category);
+        $service->setAddressInputs($addressInputs);
 
         if (!$company->getCategories()->contains($category)) {
             $company->addCategory($category);
