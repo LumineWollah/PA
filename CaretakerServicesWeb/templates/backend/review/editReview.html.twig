@@ -42,24 +42,3 @@
         </div>
     </div>
 {% endblock %}
-
-{% block javascripts %}
-<script>
-    mapboxgl.accessToken = 'pk.eyJ1IjoibGVvLXVyYWhhcmEiLCJhIjoiY2x2MTJrcHJ4MDIwdzJrdXNhcDhjazF4MSJ9.ZJjs_hvEVTuHKAe2CeDGbQ';
-    const geocoder = new MapboxGeocoder({
-        accessToken: mapboxgl.accessToken,
-        countries: 'fr',
-        types: 'address',
-    });
-    geocoder.addTo('#geocoder');
-
-    const results = document.getElementById('form_address');
-    geocoder.on('result', (e) => {
-        results.value = JSON.stringify(e.result, null, 2);
-    });
-
-    geocoder.on('clear', () => {
-        results.value = '';
-    });
-</script>
-{% endblock %}
