@@ -91,34 +91,34 @@ class reviewController extends AbstractController
         $reviewData = $request->request->get('review');
         $review = json_decode($reviewData, true);
 
-        $storedReview = $request->getSession()->get('reviewId');
+        $storedReview = $request->getSession()->get('review');
 
         if (!$storedReview) {
-            $request->getSession()->set('reviewId', $review['id']);
+            $request->getSession()->set('review', $review);
         }
 
         try {
             $defaults = [
-                'content' => $review['content'],
-                'rate' => $review['rate'],
-                'author' => $review['author']['firstname'] . ' ' . $review['author']['lastname'],
-                'service' => $review['service']['name'],
-                'apartment' => $review['apartment']['name'],
+                'content' => $storedReview['content'],
+                'rate' => $storedReview['rate'],
+                'author' => $storedReview['author']['firstname'] . ' ' . $storedReview['author']['lastname'],
+                'service' => $storedReview['service']['name'],
+                'apartment' => $storedReview['apartment']['name'],
             ];
         } catch (Exception $e) {
             if ($e->getMessage() == 'Warning: Undefined array key "apartment"') {
                 $defaults = [
-                    'content' => $review['content'],
-                    'rate' => $review['rate'],
-                    'author' => $review['author']['firstname'] . ' ' . $review['author']['lastname'],
-                    'service' => $review['service']['name'],
+                    'content' => $storedReview['content'],
+                    'rate' => $storedReview['rate'],
+                    'author' => $storedReview['author']['firstname'] . ' ' . $storedReview['author']['lastname'],
+                    'service' => $storedReview['service']['name'],
                 ];
             } else if ($e->getMessage() == 'Warning: Undefined array key "service"') {
                 $defaults = [
-                    'content' => $review['content'],
-                    'rate' => $review['rate'],
-                    'author' => $review['author']['firstname'] . ' ' . $review['author']['lastname'],
-                    'apartment' => $review['apartment']['name'],
+                    'content' => $storedReview['content'],
+                    'rate' => $storedReview['rate'],
+                    'author' => $storedReview['author']['firstname'] . ' ' . $storedReview['author']['lastname'],
+                    'apartment' => $storedReview['apartment']['name'],
                 ];
             } else {
                 dd($e);
@@ -196,7 +196,7 @@ class reviewController extends AbstractController
             $data['author'] = 'api/cs_users/'.$data['author'];
             
             $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/merge-patch+json');
-            $response = $client->request('PATCH', 'cs_reviewss/'.$storedReview, [
+            $response = $client->request('PATCH', 'cs_reviewss/'.$storedReview['id'], [
                 'json' => $data,
             ]);
 
