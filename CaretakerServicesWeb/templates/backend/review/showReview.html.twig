@@ -16,7 +16,7 @@
                     <p><strong>Id :</strong> {{ review.id }}</p>
                     <p><strong>Note :</strong> {{ review.rate }}/5</p>
                     <p><strong>Contenu :</strong> {{ review.content }}</p>
-                    <p><strong>Créée le :</strong> {{ review.postDate|date('d/m/Y H:i:s') }}</p>
+                    <p><strong>Créé le :</strong> {{ review.postDate|date('d/m/Y H:i:s') }}</p>
                     {% if review['author'] is defined and review['author'] is not empty %}
                         <div class"container"><strong>Auteur :</strong>
                             <form action="{{ path('userShow') }}" method="post" style="display: inline;">
