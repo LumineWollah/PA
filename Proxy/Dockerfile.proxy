@@ -14,8 +14,8 @@ COPY script.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/script.sh
 CMD ["/usr/local/bin/script.sh"]
 
-RUN a2ensite httpd
+RUN a2ensite httpd.conf
 
-RUN httpd -v
+# RUN httpd -v
 
 EXPOSE 80 443
