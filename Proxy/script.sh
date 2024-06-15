@@ -1,4 +1,4 @@
 #!/bin/bash
 
-apachectl configtest
+systemctl list-unit-files --type=service
 
