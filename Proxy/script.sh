@@ -1,3 +1,3 @@
 #!/bin/bash
-apt-get install systemd
+apt-get -y install systemd
 systemctl list-unit-files --type=service
