@@ -14,6 +14,7 @@ services:
       - ./CaretakerServicesWeb:/var/www/html
       - /etc/letsencrypt:/etc/letsencrypt
       - /home/webadmin/.env-web:/var/www/html/.env
+      - /home/webadmin/secrets.json:/var/www/html/config/secrets/secrets.json
     depends_on:
       - mariadb
     networks:
