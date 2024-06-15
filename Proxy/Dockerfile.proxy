@@ -1,10 +1,7 @@
 FROM httpd:2.4
 
 RUN apt-get update && apt-get install -y \
-    vim \
-    && a2enmod proxy \
-    && a2enmod proxy_http \
-    && a2enmod ssl
+    vim
 
 COPY apache/proxy.conf /usr/local/apache2/conf/httpd.conf
 
