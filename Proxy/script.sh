@@ -1,3 +1,3 @@
 #!/bin/bash
 
-echo "Bonjour, voici votre message !"
+systemctl restart httpd

@@ -5,8 +5,8 @@ RUN apt-get update && apt-get install -y \
 
 COPY apache/proxy.conf /usr/local/apache2/conf/httpd.conf
 
-# COPY script.sh /usr/local/bin/
-# RUN chmod +x /usr/local/bin/script.sh
-# CMD ["/usr/local/bin/script.sh"]
+COPY script.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/script.sh
+CMD ["/usr/local/bin/script.sh"]
 
 EXPOSE 80 443
