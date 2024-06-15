@@ -3,7 +3,9 @@ FROM httpd:2.4
 RUN apt-get update && apt-get install -y \
     vim
 
-COPY apache/proxy.conf /usr/local/apache2/conf/httpd.conf
+# COPY apache/proxy.conf /usr/local/apache2/conf/httpd.conf
+# COPY apache/proxy.conf /usr/local/apache2/sites-available/httpd.conf
+COPY apache/proxy.conf  /etc/httpd/sites-available/httpd.conf
 
 COPY script.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/script.sh
