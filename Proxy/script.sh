@@ -1,3 +1,3 @@
 #!/bin/bash
 
-service httpd restart
+service apache2 restart
