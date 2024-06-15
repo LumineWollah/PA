@@ -2,9 +2,9 @@ FROM httpd:2.4
 
 RUN apt-get update && apt-get install -y \
     vim \
-    apache2 \
-    libapache2-mod-wsgi \
-    python-dev
+    apache2 
+    # libapache2-mod-wsgi \
+    # python-dev
 
 # COPY apache/proxy.conf /usr/local/apache2/conf/httpd.conf
 # COPY apache/proxy.conf /usr/local/apache2/sites-available/httpd.conf
