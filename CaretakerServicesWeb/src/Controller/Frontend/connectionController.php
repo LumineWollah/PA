@@ -150,14 +150,11 @@ class connectionController extends AbstractController
             // $responseCookie->headers->setCookie($cookie);
             // $responseCookie->send();
             
-            // dd($responseCookie);
-
             if ($request->get('redirect')) {
                 // return $this->redirect($request->get('redirect'));
                 $redirectResponse = new RedirectResponse($this->generateUrl($request->get('redirect')));
             }
 
-            // dd($response['user']);
             if ($response['user']['roles'][0] == "ROLE_LESSOR"){
                 $redirectResponse = new RedirectResponse($this->generateUrl('myApartmentsList'));
                 // return $this->redirectToRoute('myApartmentsList');
@@ -182,8 +179,6 @@ class connectionController extends AbstractController
 
             return $redirectResponse;
         }      
-
-        // $responseCookie->send();
 
         return $this->render('frontend/login_register/login.html.twig', [
             'form'=>$form,
