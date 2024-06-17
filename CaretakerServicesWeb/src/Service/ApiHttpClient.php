@@ -15,7 +15,6 @@ class ApiHttpClient
 
     public function getClient($bearerToken, $contentType = false)
     {
-        var_dump($this->apiLink);
         $headers = [
             'Accept' => 'application/ld+json',
             'Authorization' => 'Bearer ' . $bearerToken
