@@ -7,6 +7,7 @@ FROM httpd:2.4
 #     # python-dev
 
 COPY apache/httpd.conf /usr/local/apache2/conf/httpd.conf
+COPY apache/httpd-ssl.conf /usr/local/apache2/conf/extra/httpd-ssl.conf
 # COPY apache/proxy.conf /usr/local/apache2/sites-available/caretakerservices.conf
 # COPY apache/proxy.conf  /etc/httpd/sites-available/caretakerservices.conf
 
