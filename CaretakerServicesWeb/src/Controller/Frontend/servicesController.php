@@ -110,25 +110,29 @@ class servicesController extends AbstractController
         $client = $this->apiHttpClient->getClientWithoutBearer();
 
         $companyResp = $client->request('GET', 'cs_companies?users[]='.$id);
-        $comp = $companyResp->toArray()['hydra:member'][0];
+        if (count($companyResp->toArray()['hydra:member']) > 0) {
+            $comp = $companyResp->toArray()['hydra:member'][0];
 
-        $responseServ = $client->request('GET', 'cs_services?company='.$comp['id']);
-        $services = $responseServ->toArray()['hydra:member'];
+            $responseServ = $client->request('GET', 'cs_services?company='.$comp['id']);
+            $services = $responseServ->toArray()['hydra:member'];
 
-        // $request->getSession()->set('serv', $serv['hydra:member']);
+            // $request->getSession()->set('serv', $serv['hydra:member']);
 
-        $sortedServices = [];
+            $sortedServices = [];
 
-        foreach ($services as $service) {
-            $categoryName = $service['category']['name'];
-            $categoryColor = $service['category']['color'];
-            $categoryId = $service['category']['id'];
-            $categoryKey = $categoryName . '-' . $categoryColor . '-' . $categoryId;
-            
-            if (!isset($sortedServices[$categoryKey])) {
-                $sortedServices[$categoryKey] = [];
+            foreach ($services as $service) {
+                $categoryName = $service['category']['name'];
+                $categoryColor = $service['category']['color'];
+                $categoryId = $service['category']['id'];
+                $categoryKey = $categoryName . '-' . $categoryColor . '-' . $categoryId;
+                
+                if (!isset($sortedServices[$categoryKey])) {
+                    $sortedServices[$categoryKey] = [];
+                }
+                $sortedServices[$categoryKey][] = $service;
             }
-            $sortedServices[$categoryKey][] = $service;
+        } else {
+            $sortedServices = [];
         }
 
         return $this->render('frontend/services/servicesListProvider.html.twig', [

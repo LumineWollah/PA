@@ -153,27 +153,34 @@ class connectionController extends AbstractController
             // dd($responseCookie);
 
             if ($request->get('redirect')) {
-                return $this->redirect($request->get('redirect'));
-            }
-            
-            if ($response['user']['roles'][0] == "ROLE_LESSOR"){
-                return $this->redirectToRoute('myApartmentsList');
-            }elseif ($response['user']['roles'][0] == "ROLE_ADMIN"){
-                $redirectResponse = new RedirectResponse($this->generateUrl('servicesList'));
-                $redirectResponse->headers->setCookie($cookie0);
-                $redirectResponse->headers->setCookie($cookie1);
-                $redirectResponse->headers->setCookie($cookie2);
-                $redirectResponse->headers->setCookie($cookie3);
-                $redirectResponse->headers->setCookie($cookie4);
-                $redirectResponse->headers->setCookie($cookie5);
-                $redirectResponse->headers->setCookie($cookie6);
-                return $redirectResponse;
-                // return $this->redirectToRoute('apartmentCrud');
-            }elseif ($response['user']['roles'][0] == "ROLE_PROVIDER"){
-                return $this->redirectToRoute('myServicesList');
+                // return $this->redirect($request->get('redirect'));
+                $redirectResponse = new RedirectResponse($this->generateUrl($request->get('redirect')));
             }
 
-            return $this->redirectToRoute('servicesList');
+            // dd($response['user']);
+            if ($response['user']['roles'][0] == "ROLE_LESSOR"){
+                $redirectResponse = new RedirectResponse($this->generateUrl('myApartmentsList'));
+                // return $this->redirectToRoute('myApartmentsList');
+            }elseif ($response['user']['roles'][0] == "ROLE_ADMIN"){
+                $redirectResponse = new RedirectResponse($this->generateUrl('apartmentCrud'));
+                // return $this->redirectToRoute('apartmentCrud');
+            }elseif ($response['user']['roles'][0] == "ROLE_PROVIDER"){
+                $redirectResponse = new RedirectResponse($this->generateUrl('myServicesList'));
+                // return $this->redirectToRoute('myServicesList');
+            }elseif ($response['user']['roles'][0] == "ROLE_TRAVELER"){
+                $redirectResponse = new RedirectResponse($this->generateUrl('apartmentsList'));
+                // return $this->redirectToRoute('apartmentsList');
+            }
+
+            $redirectResponse->headers->setCookie($cookie0);
+            $redirectResponse->headers->setCookie($cookie1);
+            $redirectResponse->headers->setCookie($cookie2);
+            $redirectResponse->headers->setCookie($cookie3);
+            $redirectResponse->headers->setCookie($cookie4);
+            $redirectResponse->headers->setCookie($cookie5);
+            $redirectResponse->headers->setCookie($cookie6);
+
+            return $redirectResponse;
         }      
 
         // $responseCookie->send();
