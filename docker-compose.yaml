@@ -58,7 +58,7 @@ services:
       - "443:443"
     volumes:
       - /etc/letsencrypt:/etc/letsencrypt
-      - /home/webadmin/certs:/usr/local/apache2/conf
+      # - /home/webadmin/certs:/usr/local/apache2/conf
     depends_on:
       - web
       - api
