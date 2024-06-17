@@ -12,6 +12,7 @@ use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Cookie;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\Constraints\NotBlank;
@@ -131,38 +132,51 @@ class connectionController extends AbstractController
             
             unset($response['user']['roles'][array_search('ROLE_USER', $response['user']['roles'])]);
 
-            $responseCookie = new Response();
+            // $responseCookie = new Response();
 
-            $cookie = Cookie::create('token', $response['token'], 0, '/', null, true, true);
-            $responseCookie->headers->setCookie($cookie);
-            $cookie = Cookie::create('roles', $response['user']['roles'][0], 0, '/', null, true, true);
-            $responseCookie->headers->setCookie($cookie);
-            $cookie = Cookie::create('id', $response['user']['id'], 0, '/', null, true, true);
-            $responseCookie->headers->setCookie($cookie);
-            $cookie = Cookie::create('profile_pict', $response['user']['profile_pict'], 0, '/', null, true, true);
-            $responseCookie->headers->setCookie($cookie);
-            $cookie = Cookie::create('lastname', $response['user']['lastname'], 0, '/', null, true, true);
-            $responseCookie->headers->setCookie($cookie);
-            $cookie = Cookie::create('firstname', $response['user']['firstname'], 0, '/', null, true, true);
-            $responseCookie->headers->setCookie($cookie);
-            $cookie = Cookie::create('email', $response['user']['email'], 0, '/', null, true, true);
-            $responseCookie->headers->setCookie($cookie);
-            $responseCookie->send();
+            $cookie0 = Cookie::create('token', $response['token'], 0, '/', null, true, true);
+            // $responseCookie->headers->setCookie($cookie);
+            $cookie1 = Cookie::create('roles', $response['user']['roles'][0], 0, '/', null, true, true);
+            // $responseCookie->headers->setCookie($cookie);
+            $cookie2 = Cookie::create('id', $response['user']['id'], 0, '/', null, true, true);
+            // $responseCookie->headers->setCookie($cookie);
+            $cookie3 = Cookie::create('profile_pict', $response['user']['profile_pict'], 0, '/', null, true, true);
+            // $responseCookie->headers->setCookie($cookie);
+            $cookie4 = Cookie::create('lastname', $response['user']['lastname'], 0, '/', null, true, true);
+            // $responseCookie->headers->setCookie($cookie);
+            $cookie5 = Cookie::create('firstname', $response['user']['firstname'], 0, '/', null, true, true);
+            // $responseCookie->headers->setCookie($cookie);
+            $cookie6 = Cookie::create('email', $response['user']['email'], 0, '/', null, true, true);
+            // $responseCookie->headers->setCookie($cookie);
+            // $responseCookie->send();
+            
+            // dd($responseCookie);
 
             if ($request->get('redirect')) {
                 return $this->redirect($request->get('redirect'));
             }
-
+            
             if ($response['user']['roles'][0] == "ROLE_LESSOR"){
                 return $this->redirectToRoute('myApartmentsList');
             }elseif ($response['user']['roles'][0] == "ROLE_ADMIN"){
-                return $this->redirectToRoute('apartmentCrud');
+                $redirectResponse = new RedirectResponse($this->generateUrl('servicesList'));
+                $redirectResponse->headers->setCookie($cookie0);
+                $redirectResponse->headers->setCookie($cookie1);
+                $redirectResponse->headers->setCookie($cookie2);
+                $redirectResponse->headers->setCookie($cookie3);
+                $redirectResponse->headers->setCookie($cookie4);
+                $redirectResponse->headers->setCookie($cookie5);
+                $redirectResponse->headers->setCookie($cookie6);
+                return $redirectResponse;
+                // return $this->redirectToRoute('apartmentCrud');
             }elseif ($response['user']['roles'][0] == "ROLE_PROVIDER"){
                 return $this->redirectToRoute('myServicesList');
             }
 
             return $this->redirectToRoute('servicesList');
         }      
+
+        // $responseCookie->send();
 
         return $this->render('frontend/login_register/login.html.twig', [
             'form'=>$form,
