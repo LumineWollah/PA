@@ -1,7 +1,7 @@
 {% extends 'backend/base.html.twig' %}
 
 {% block activeGest %}active{% endblock %}
-{% block activeApar %}active{% endblock %}
+{% block activeRev %}active{% endblock %}
 
 {% block title %}Créer un avis{% endblock %}
 
@@ -17,7 +17,7 @@
     <div class="col-10 p-0">
         <div class="p-3">
             <h1>Créer un avis</h1>
-            <div class="errors">{%if errorMessages is defined %}<ul>{% for errorMessage in errorMessages %}<li>{{errorMessage}}</li>{% endfor %}</ul>{% endif %}</div>
+            <div class="errors" style="color:red;">{%if errorMessage is defined %}<p>{{errorMessage}}</p>{% endif %}</div>
             {{form_start(form)}}
                 <div class="inputDiv" style="position: relative;">
                     {{form_widget(form.content)}}
