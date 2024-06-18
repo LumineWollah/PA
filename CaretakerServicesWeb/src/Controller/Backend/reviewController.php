@@ -314,16 +314,6 @@ class reviewController extends AbstractController
 
             $data['author'] = 'api/cs_users/'.$data['author'];
 
-            if ($data['service'] != null) {
-                $data['service'] = 'api/cs_services/'.$data['service'];
-                unset($data['apartment']);
-            } 
-
-            if ($data['apartment'] != null) {
-                $data['apartment'] = 'api/cs_apartments/'.$data['apartment'];
-                unset($data['service']);
-            } 
-
             $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/ld+json');
 
             $response = $client->request('POST', 'cs_reviewss', [
