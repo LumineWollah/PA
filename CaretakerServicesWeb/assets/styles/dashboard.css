@@ -31,11 +31,11 @@
     height: 200px;
     width: 200px;
     background-color: gray !important;
-    color: #000; 
+    color: #A594F9; 
 }
 
 .card-title {
-    color: #000;
+    color: #000 !important;
     font-size: 25px;
     font-weight: 700;
     text-align: center;
@@ -43,7 +43,6 @@
 
 .card-number {
     margin-top: 15%;
-    color: #A594F9;
     font-size: 50px;
     font-weight: 500;
     text-align: center;
