@@ -55,6 +55,10 @@
     color: white;
 }
 
+.card-number:hover {
+    color: #f3f3f3 !important;
+}
+
 .graph {
     height: 350px;
     width: 700px;
