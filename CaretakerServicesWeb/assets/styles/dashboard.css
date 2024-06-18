@@ -52,7 +52,7 @@
 
 .card:hover {
     background-color: #A594F9 !important;
-    color: white;
+    color: white !important;
 }
 
 .graph {
