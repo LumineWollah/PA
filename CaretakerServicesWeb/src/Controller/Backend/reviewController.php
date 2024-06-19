@@ -196,7 +196,26 @@ class reviewController extends AbstractController
 
             $data['author'] = 'api/cs_users/'.$data['author'];
             
+            if (isset($data['apartment']) && isset($data['service'])) {
+                $errorMessage = "Veuillez sélectionner un seul appartment ou service";
+                return $this->render('backend/review/createReview.html.twig', [
+                    'form'=>$form,
+                    'errorMessage'=>$errorMessage
+                ]);
+            }
+
+            if (isset($data['service'])) {
+                $data['service'] = 'api/cs_services/'.$data['service'];
+                unset($data['apartment']);
+            } 
+
+            if (isset($data['apartment'])) {
+                $data['apartment'] = 'api/cs_apartments/'.$data['apartment'];
+                unset($data['service']);
+            } 
+            
             $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/merge-patch+json');
+
             $response = $client->request('PATCH', 'cs_reviewss/'.$storedReview['id'], [
                 'json' => $data,
             ]);
@@ -206,7 +225,7 @@ class reviewController extends AbstractController
             $request->getSession()->remove('reviewId');
 
             return $this->redirectToRoute('reviewList');
-        }      
+        }
         return $this->render('backend/review/editReview.html.twig', [
             'defaults' => $defaults,
             'form'=>$form,
@@ -314,12 +333,20 @@ class reviewController extends AbstractController
 
             $data['author'] = 'api/cs_users/'.$data['author'];
 
-            if ($data['service'] != null) {
+            if (isset($data['apartment']) && isset($data['service'])) {
+                $errorMessage = "Veuillez sélectionner un seul appartment ou service";
+                return $this->render('backend/review/createReview.html.twig', [
+                    'form'=>$form,
+                    'errorMessage'=>$errorMessage
+                ]);
+            }
+
+            if (isset($data['service'])) {
                 $data['service'] = 'api/cs_services/'.$data['service'];
                 unset($data['apartment']);
             } 
 
-            if ($data['apartment'] != null) {
+            if (isset($data['apartment'])) {
                 $data['apartment'] = 'api/cs_apartments/'.$data['apartment'];
                 unset($data['service']);
             } 
