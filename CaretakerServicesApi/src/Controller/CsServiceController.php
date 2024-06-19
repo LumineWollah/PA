@@ -38,7 +38,7 @@ class CsServiceController extends AbstractController
         $addressInputs = $data['addressInputs'] ?? null;
         $coverImage = $data['coverImage'] ?? null;
 
-        if (!$name || !$price || !$companyId || !$categoryId) {
+        if (!$name || !$companyId || !$categoryId) {
             return new JsonResponse(['error' => 'Invalid data'], 400);
         }
 
