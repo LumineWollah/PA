@@ -587,20 +587,24 @@ class apartmentsController extends AbstractController
                 $apId = $response["id"];
 
                 for ($i=0; $i < count($indispo); $i++) { 
-                    $dates = explode(" ", trim($indispo[$i]));
+                    
+                    if (trim($indispo[$i]) != "") {
 
-                    $startDateTime = DateTime::createFromFormat('d/m/Y', trim($dates[0]));
-                    $endDateTime = DateTime::createFromFormat('d/m/Y', trim($dates[2]));
+                        $dates = explode(" ", trim($indispo[$i]));
 
-                    $response = $client->request('POST', 'cs_reservations', [
-                        'json' => [
-                            "startingDate" => $startDateTime->format('Y-m-d'),
-                            "endingDate" => $endDateTime->format('Y-m-d'),
-                            "price" => 0,
-                            "apartment" => "/api/cs_apartments/".$apId,
-                            "unavailability" => true
-                        ],
-                    ]);
+                        $startDateTime = DateTime::createFromFormat('d/m/Y', trim($dates[0]));
+                        $endDateTime = DateTime::createFromFormat('d/m/Y', trim($dates[2]));
+
+                        $response = $client->request('POST', 'cs_reservations', [
+                            'json' => [
+                                "startingDate" => $startDateTime->format('Y-m-d'),
+                                "endingDate" => $endDateTime->format('Y-m-d'),
+                                "price" => 0,
+                                "apartment" => "/api/cs_apartments/".$apId,
+                                "unavailability" => true
+                            ],
+                        ]);
+                    }
                 }
                 return $this->redirectToRoute('apartmentsList');
             }
