@@ -28,8 +28,50 @@ operations: [
         controller: CsServiceController::class,
         security: "is_granted('ROLE_PROVIDER') or is_granted('ROLE_ADMIN')"
     ),
-    new Patch(security: "is_granted('ROLE_ADMIN') or object.getProvider() == user"),
-    new Delete(security: "is_granted('ROLE_ADMIN') or object.getProvider() == user")
+    new Post(
+        name: 'checkAvailabilityService', 
+        uriTemplate: 'api/cs_services/availables/{id}', 
+        controller: CsServiceController::class,
+        deserialize: false,
+        openapiContext: [
+            'summary' => 'Check availability of a service for a given date range',
+            'parameters' => [
+                [
+                    'name' => 'id',
+                    'in' => 'path',
+                    'required' => true,
+                    'description' => 'ID of the service',
+                    'schema' => [
+                        'type' => 'integer',
+                    ],
+                ],
+            ],
+            'requestBody' => [
+                'description' => 'Check availability of a service for a given date range',
+                'content' => [
+                    'application/json' => [
+                        'schema' => [
+                            'type' => 'object',
+                            'properties' => [
+                                'starting_date' => [
+                                    'type' => 'string',
+                                    'format' => 'date',
+                                    'example' => 'YYYY-MM-DD',
+                                ],
+                                'ending_date' => [
+                                    'type' => 'string',
+                                    'format' => 'date',
+                                    'example' => 'YYYY-MM-DD',
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ]
+        ),
+    new Patch(security: "is_granted('ROLE_ADMIN') or user in object.getProviders().toArray()"),
+    new Delete(security: "is_granted('ROLE_ADMIN') or user in object.getProviders().toArray()"),
 ])]
 #[ORM\Entity(repositoryClass: CsServiceRepository::class)]
 #[ApiFilter(SearchFilter::class, properties: ['company' => 'exact'])]
@@ -53,10 +95,6 @@ class CsService
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     #[Groups(["getServices", "getUsers", "getReservations", "getApartments", "getCategories", "getCompanies", "getReviews"])]
     private ?string $description = null;
-
-    #[ORM\Column]
-    #[Groups(["getServices", "getUsers", "getReservations", "getApartments", "getCategories", "getCompanies", "getReviews"])]
-    private ?float $price = null;
 
     #[ORM\ManyToOne(inversedBy: 'services')]
     #[ORM\JoinColumn(nullable: false)]
@@ -108,6 +146,10 @@ class CsService
     #[Groups(["getServices", "getUsers", "getReservations", "getApartments", "getCategories", "getCompanies", "getReviews"])]
     private ?string $endTime = null;
 
+    #[ORM\Column(nullable: true)]
+    #[Groups(["getServices", "getUsers", "getReservations", "getApartments", "getCategories", "getCompanies", "getReviews"])]
+    private ?float $price = null;
+
     public function __construct()
     {
         $this->reviews = new ArrayCollection();
@@ -140,18 +182,6 @@ class CsService
     public function setDescription(?string $description): static
     {
         $this->description = $description;
-
-        return $this;
-    }
-
-    public function getPrice(): ?float
-    {
-        return $this->price;
-    }
-
-    public function setPrice(float $price): static
-    {
-        $this->price = $price;
 
         return $this;
     }
@@ -332,6 +362,23 @@ class CsService
     public function setEndTime(string $endTime): static
     {
         $this->endTime = $endTime;
+
+        return $this;
+    }
+
+    public function getProviders(): Collection
+    {
+        return $this->company->getUsers();
+    }
+
+    public function getPrice(): ?float
+    {
+        return $this->price;
+    }
+
+    public function setPrice(?float $price): static
+    {
+        $this->price = $price;
 
         return $this;
     }

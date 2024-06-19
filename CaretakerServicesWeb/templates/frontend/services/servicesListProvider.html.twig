@@ -2,6 +2,7 @@
 
 {% block stylesheets %}
     <link rel="stylesheet" href={{ asset('styles/frontend/companies/companiesList.css') }}>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
 {% endblock %}
 
 {% block activeMyServ %}active{% endblock %}
@@ -9,6 +10,23 @@
 {% block body %}
 <div class="container-fluid pageContent">
     <h1>Vos <span class="h1span">services</span> proposés</h1>
+
+    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Impossible de supprimer ce service</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="content">
+                    Vous ne pouvez pas supprimer un service qui a une réservation actuellement en cours
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Compris</button>
+                </div>
+            </div>
+        </div>
+    </div>   
     {% for key, value in serv %}
         {% set categoryName = key|split('-')[0] %}
         {% set categoryColor = key|split('-')[1] %}
@@ -20,7 +38,8 @@
                 <div class="row">
                     {% for j in range(i*4, (i*4)+3) %}
                         {% if j < value|length %}
-                            <a class="col-3 companyContainer categoryServicesContainer" href={{ path('providersDetail', {'id': value[j].id}) }}>               
+                            <div class="col-3 companyContainer categoryServicesContainer servicesContainerProvider">
+                            <a class="" href={{ path('providersDetail', {'id': value[j].id}) }}>               
                                 <div class="imgContainer">
                                     {% if value[j].coverImage is not defined or value[j].coverImage is null %}
                                         <img src={{ asset('icons/profile_pict_default_company.png') }}>
@@ -41,6 +60,14 @@
                                     <span id="price" style="display: none;">{{ value[j].price }}</span>
                                 {% endif %}
                             </a>
+                                <div class="apartActions mt-2 d-flex">
+                                    <form action="{{ path('serviceUpdate') }}" method="post" >
+                                        <input type="hidden" name="service" value="{{ value[j]|json_encode }}">
+                                        <button type="submit">Modifier</button>
+                                    </form>
+                                    <a href="{{ path('serviceDeleteProvider', {'id': value[j].id}) }}" class="deleteApBtn">Supprimer</a>
+                                </div>
+                            </div>
                         {% endif %}
                     {% endfor %}
                 </div>
@@ -48,4 +75,22 @@
         </div>
     {% endfor %}
 </div>
+{% endblock %}
+
+{% block javascripts %}
+<script type="text/javascript">   
+
+    $(function() {
+
+    var showPopup = {{ showPopup }};
+    if (showPopup == true){
+        var contentPopup = "{{ content }}";
+        var titlePopup = "{{ title }}";
+        $('#content').html(contentPopup);
+        $('#staticBackdropLabel').html(titlePopup);
+        $('#staticBackdrop').modal('show');
+    };
+    });
+
+</script>
 {% endblock %}

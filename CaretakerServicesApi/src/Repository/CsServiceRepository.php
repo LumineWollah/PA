@@ -45,4 +45,13 @@ class CsServiceRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+    public function findAvailableServices(array $idsToExclude)
+    {
+        return $this->createQueryBuilder('e')
+            ->andWhere('e.id NOT IN (:ids)')
+            ->setParameter('ids', $idsToExclude)
+            ->getQuery()
+            ->getResult();
+    }
 }

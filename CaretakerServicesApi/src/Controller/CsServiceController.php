@@ -5,12 +5,14 @@ namespace App\Controller;
 use ApiPlatform\Metadata\ApiResource;
 use App\Entity\CsService;
 use App\Entity\CsCompany;
+use App\Entity\CsReservation;
 use App\Repository\CsCompanyRepository;
 use App\Repository\CsCategoryRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
 
@@ -70,5 +72,19 @@ class CsServiceController extends AbstractController
         $jsonService = $serializer->serialize($service, 'json', ['groups' => 'getServices']);
 
         return new JsonResponse($jsonService, 201, [], true);
+    }
+
+    #[Route("api/cs_services/availables/{id}", name:"checkAvailabilityService", methods:["POST"])]
+    public function checkAvailabilityService(Request $request, EntityManagerInterface $entityManager, CsService $service): Response
+    {
+        $requestData = json_decode($request->getContent(), true);
+        $startingDate = new \DateTime($requestData['starting_date']);
+        $endingDate = new \DateTime($requestData['ending_date']);
+
+        $notAvailableServices = $entityManager->getRepository(CsReservation::class)->findReservationsForService($startingDate, $endingDate, $service);
+
+        return $this->json([
+            "available"=>count($notAvailableServices) == 0
+        ]);
     }
 }

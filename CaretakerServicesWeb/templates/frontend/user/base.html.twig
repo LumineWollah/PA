@@ -21,22 +21,60 @@
                 <a class="navbar-brand" href="#">
                     <img src="{{ asset('icons/logo/2_white_mode.png') }}" alt="Logo" width="40" height="40" class="d-inline-block align-text-center">
                 </a>
+                {% set role = app.request.cookies.get('roles') %}
                 <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav">
-                        <li class="nav-item">
-                            <a class="nav-link {% block activeApar %}{% endblock %} me-4" aria-current="page" href={{ path('apartmentsList') }}>Logements</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link me-4" href="#">Services</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link me-4" href="#">Prestataires</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link me-4" href="#">Contact</a>
-                        </li>
-                    </ul>
+                    {% if role == 'ROLE_TRAVELER' or role is not defined or role == null %}
+                        <ul class="navbar-nav">
+                            <li class="nav-item">
+                                <a class="nav-link {% block activeApar %}{% endblock %} me-4" aria-current="page" href={{ path('apartmentsList') }}>Logements</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link {% block activeServ %}{% endblock %} me-4" href={{ path('servicesList') }}>Services</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link {% block activeProv %}{% endblock %} me-4" href={{ path('providersList') }}>Prestataires</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link me-4" href="#">Contact</a>
+                            </li>
+                        </ul>
+                    {% elseif role == 'ROLE_LESSOR' %}
+                        <ul class="navbar-nav">
+                            <li class="nav-item">
+                                <a class="nav-link {% block activeMyApar %}{% endblock %} me-4" aria-current="page" href={{ path('myApartmentsList') }}>Mes logements</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link {% block activeCreaApar %}{% endblock %} me-4" href={{ path('apartmentCreate') }}>Ajouter un logement</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link {% block activeProvi %}{% endblock %} me-4" href={{ path('providersList') }}>Prestataires</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link me-4" href="#">Contact</a>
+                            </li>
+                        </ul>
+                    {% elseif role == 'ROLE_PROVIDER' %}
+                        <ul class="navbar-nav">
+                            <li class="nav-item">
+                                <a class="nav-link {% block activeMyServ %}{% endblock %} me-4" aria-current="page" href={{ path('myServicesList') }}>Mes prestations</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link {% block activeCreaServ %}{% endblock %} me-4" href={{ path('serviceCreateProvider') }}>Ajouter une prestation</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link me-4" href="#">Mes interventions</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link me-4" href="#">Contact</a>
+                            </li>
+                        </ul>
+                    {% else %}
+                        <ul class="navbar-nav">
+                            {# ROLE_ADMIN #}
+                        </ul>
+                    {% endif %}
                 </div>
+                
                 {% set id = app.request.cookies.get('id') %}
                 {% set pp = app.request.cookies.get('profile_pict') %}
 
@@ -47,9 +85,9 @@
                     <div class="d-flex align-items-center">
                         <span class="username">{{ app.request.cookies.get('firstname') }} {{ app.request.cookies.get('lastname') }}</span>
                         {% if pp is null %}
-                            <img src={{ asset('icons/profile_pict_default_white.png') }} alt="Profile Picture" width="40" height="40" class="rounded-circle me-2">
+                            <a href={{ path('myProfile') }}><img src={{ asset('icons/profile_pict_default_white.png') }} alt="Profile Picture" width="40" height="40" class="rounded-circle me-2"></a>
                         {% else %}
-                            <img src="{{ pp }}" alt="Profile Picture" width="40" height="40" class="rounded-circle me-2">
+                            <a href={{ path('myProfile') }}><img src="{{ pp }}" alt="Profile Picture" width="40" height="40" class="rounded-circle me-2"></a>
                         {% endif %}
                     </div>
                 {% endif %}
@@ -84,7 +122,7 @@
                             </div>
                         </li>
                         <li>
-                            <button class="btn btn-toggle border-0 gestionBtn collapsed {% block activeProv %}{% endblock %}" data-bs-toggle="collapse" data-bs-target="#prestations-collapse" aria-expanded="false">
+                            <button class="btn btn-toggle border-0 gestionBtn collapsed {% block activeProvList %}{% endblock %}" data-bs-toggle="collapse" data-bs-target="#prestations-collapse" aria-expanded="false">
                                 Mes prestations
                             </button>
                             <div class="collapse menuGestion" id="prestations-collapse" >
