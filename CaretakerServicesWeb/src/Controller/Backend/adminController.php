@@ -46,7 +46,7 @@ class adminController extends AbstractController
         $adminsList = $response->toArray();
 
         return $this->render('backend/admin/admins.html.twig', [
-            'admins' => $adminsList,
+            'admins' => $adminsList['hydra:member'],
         ]);
     }
     
@@ -113,7 +113,7 @@ class adminController extends AbstractController
             "multiple"=>true,
             "expanded"=>false,   
             "choices"=>[
-                "Admin"=>"ROLE_ADMIN",
+                "Admin"=>"ROLE_TRAVELER",
                 "Provider"=>"ROLE_PROVIDER",
                 "Traveler"=>"ROLE_TRAVELER",
                 "Admin"=>"ROLE_ADMIN",
@@ -182,23 +182,5 @@ class adminController extends AbstractController
             'form'=>$form,
             'errorMessage'=>null
         ]);
-    }
-
-    #[Route('/admin-panel/admin/accept', name: 'adminAccept')]
-    public function adminAccept(Request $request)
-    {
-        if (!$this->checkUserRole($request)) {return $this->redirectToRoute('login');}
-
-        $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/merge-patch+json');
-
-        $id = $request->query->get('id');
-
-        $response = $client->request('PATCH', 'cs_users/'.$id, [
-            'json' => [
-                'isVerified'=>true
-            ],
-        ]);
-        
-        return $this->redirectToRoute('adminList');
     }
 }

@@ -195,8 +195,10 @@ class actionUserController extends AbstractController
                 $route = 'lessorList';
             } elseif ($role[0] == 'ROLE_PROVIDER') {
                 $route = 'providerList';
-            } else {
+            } elseif ($role[0] == 'ROLE_TRAVELER') {
                 $route = 'travelerList';
+            } else {
+                $route = 'adminList';
             }
 
             return $this->redirectToRoute($route);
