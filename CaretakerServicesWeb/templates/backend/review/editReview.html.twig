@@ -3,7 +3,7 @@
 {% block activeGest %}active{% endblock %}
 {% block activeRev %}active{% endblock %}
 
-{% block title %}Modifier un appartement{% endblock %}
+{% block title %}Modifier un avis{% endblock %}
 
 {% block stylesheets %}
     <link href="https://api.mapbox.com/mapbox-gl-js/v3.2.0/mapbox-gl.css" rel="stylesheet">
@@ -16,7 +16,7 @@
 {% block body %}
     <div class="col-10 p-0">
         <div class="p-3">
-            <h1>Modifier un appartement</h1>
+            <h1>Modifier un avis</h1>
             <div class="errors">{%if errorMessages is defined %}<ul>{% for errorMessage in errorMessages %}<li>{{errorMessage}}</li>{% endfor %}</ul>{% endif %}</div>
             {{form_start(form)}}
                 <div class="inputDiv" style="position: relative;">

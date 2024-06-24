@@ -3,9 +3,9 @@
 {% block stylesheets %}<link rel="stylesheet" href={{ asset('styles/crud.css') }}>{% endblock %}
 
 {% block activeGest %}active{% endblock %}
-{% block activeTrav %}active{% endblock %}
+{% block activeAdm %}active{% endblock %}
 
-{% block title %}Liste des voyageurs{% endblock %}
+{% block title %}Liste des admins{% endblock %}
 
 {% block body %}
 <script>
@@ -47,8 +47,8 @@
     <div class="col-10 p-0">
         <div class="p-3">
             <div class="btn-create-row">
-                <h1>Liste des voyageurs</h1>
-                <a href="{{ path('userCreate', {'role':'ROLE_TRAVELER' }) }}" class="btn btn-create"><div class="btnImage"><img style="height:20px;">Créer +</div></a>
+                <h1>Liste des admins</h1>
+                <a href="{{ path('userCreate', {'role':'ROLE_ADMIN' }) }}" class="btn btn-create"><div class="btnImage"><img style="height:20px;">Créer +</div></a>
             </div>            
             <table id="crudList" class="table table-striped">
                 <thead>
@@ -62,33 +62,33 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for traveler in travelers %}
+                    {% for admin in admins %}
                         <tr>
-                            <td {% if traveler['isBan'] %} style="background-color: #FFB5B5;"{% endif %}>{{ traveler.firstname|capitalize }}</td>
-                            <td {% if traveler['isBan'] %} style="background-color: #FFB5B5;"{% endif %}>{{ traveler.lastname|upper }}</td>
-                            <td {% if traveler['isBan'] %} style="background-color: #FFB5B5;"{% endif %}>{{ traveler.email }}</td>
-                            <td {% if traveler['isBan'] %} style="background-color: #FFB5B5;"{% endif %}>{{ traveler.telNumber|split('', 2)|join('.') }}</td>
-                            <td {% if traveler['isBan'] %} style="background-color: #FFB5B5;"{% endif %}>{{ traveler.dateInscription | date('d/m/Y H:i:s') }}</td>
-                            <td class="action" {% if traveler['isBan'] %} style="background-color: #FFB5B5;"{% endif %}>
-                                <a href="{{ path('userDelete', {'id': traveler.id, 'origin': 'travelerList'}) }}" class="btn" style="background-color: #EE3939;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/bin.png') }}></div></a>
-                                <form action="{{ path('travelerEdit') }}" method="post" style="display: inline;">
-                                    <input type="hidden" name="traveler" value="{{ traveler|json_encode }}">
+                            <td {% if admin['isBan'] %} style="background-color: #FFB5B5;"{% endif %}>{{ admin.firstname|capitalize }}</td>
+                            <td {% if admin['isBan'] %} style="background-color: #FFB5B5;"{% endif %}>{{ admin.lastname|upper }}</td>
+                            <td {% if admin['isBan'] %} style="background-color: #FFB5B5;"{% endif %}>{{ admin.email }}</td>
+                            <td {% if admin['isBan'] %} style="background-color: #FFB5B5;"{% endif %}>{{ admin.telNumber|split('', 2)|join('.') }}</td>
+                            <td {% if admin['isBan'] %} style="background-color: #FFB5B5;"{% endif %}>{{ admin.dateInscription | date('d/m/Y H:i:s') }}</td>
+                            <td class="action" {% if admin['isBan'] %} style="background-color: #FFB5B5;"{% endif %}>
+                                <a href="{{ path('userDelete', {'id': admin.id, 'origin': 'adminList'}) }}" class="btn" style="background-color: #EE3939;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/bin.png') }}></div></a>
+                                <form action="{{ path('adminEdit') }}" method="post" style="display: inline;">
+                                    <input type="hidden" name="admin" value="{{ admin|json_encode }}">
                                     <button type="submit" class="btn" style="background-color: #18A0FB;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/pen.png') }}></div></button>
                                 </form>
                                 <form action="{{ path('userShow') }}" method="post" style="display: inline;">
-                                    <input type="hidden" name="user" value="{{ traveler|json_encode }}">
+                                    <input type="hidden" name="user" value="{{ admin|json_encode }}">
                                     <button type="submit" class="btn" style="background-color: #A594F9;"><div class="btnImage"><img style="height:17px;" src={{ asset('icons/crud/chart.png') }}></div></button>
                                 </form>
-                                {% if traveler['isBan'] %}
+                                {% if admin['isBan'] %}
                                     <form action="{{ path('userUnban') }}" method="post" style="display: inline;">
-                                    <input type="hidden" name="user" value="{{ traveler|json_encode }}">
-                                    <input type="hidden" name="origin" value="travelerList">
+                                    <input type="hidden" name="user" value="{{ admin|json_encode }}">
+                                    <input type="hidden" name="origin" value="adminList">
                                     <button type="submit" class="btn" style="background-color: #29b95f;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/ban.png') }}></div></button>
                                     </form>
                                 {% else %}
                                     <form action="{{ path('userBan') }}" method="post" style="display: inline;">
-                                    <input type="hidden" name="user" value="{{ traveler|json_encode }}">
-                                    <input type="hidden" name="origin" value="travelerList">
+                                    <input type="hidden" name="user" value="{{ admin|json_encode }}">
+                                    <input type="hidden" name="origin" value="adminList">
                                     <button type="submit" class="btn" style="background-color: #333333;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/ban.png') }}></div></button>
                                     </form>
                                 {% endif %}

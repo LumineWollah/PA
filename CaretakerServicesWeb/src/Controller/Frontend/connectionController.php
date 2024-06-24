@@ -277,11 +277,27 @@ class connectionController extends AbstractController
                 ]),
             ]
         ])
+        ->add("profilePict", FileType::class, [
+            'constraints' => [
+                new File([
+                    'maxSize' => '10m',
+                    'mimeTypes' => [
+                        'image/png', 
+                        'image/jpeg', 
+                    ],
+                    'mimeTypesMessage' => 'Please upload a valid jpeg or png document',
+                ])
+            ],
+        ])
         ->getForm()->handleRequest($request);
 
         if ($formForPerso->isSubmitted() && $formForPerso->isValid()) {
 
             $data = $formForPerso->getData();
+            
+            $results = $this->amazonS3Client->insertObject($data['profilePict']);
+            $data['profilePict'] = $results['link'];
+
             $errorMessages = [];
 
             if ($data['password'] != $data['confirmation']){
@@ -430,6 +446,18 @@ class connectionController extends AbstractController
                 new Length(exactly:10)
             ]
         ])
+        ->add("profilePict", FileType::class, [
+            'constraints' => [
+                new File([
+                    'maxSize' => '10m',
+                    'mimeTypes' => [
+                        'image/png', 
+                        'image/jpeg', 
+                    ],
+                    'mimeTypesMessage' => 'Please upload a valid jpeg or png document',
+                ])
+            ],
+        ])
         ->add("address", HiddenType::class, [
             "constraints"=>[
                 new NotBlank(),
@@ -440,6 +468,10 @@ class connectionController extends AbstractController
         if ($formForPro->isSubmitted() && $formForPro->isValid()) {
 
             $data = $formForPro->getData();
+            
+            $results = $this->amazonS3Client->insertObject($data['profilePict']);
+            $data['profilePict'] = $results['link'];
+            
             $errorMessages = [];
 
             if ($data['password'] != $data['confirmation']){

@@ -104,11 +104,19 @@
                                     <input type="hidden" name="user" value="{{ provider|json_encode }}">
                                     <button type="submit" class="btn" style="background-color: #A594F9;"><div class="btnImage"><img style="height:17px;" src={{ asset('icons/crud/chart.png') }}></div></button>
                                 </form>
-                                <form action="{{ path('userBan') }}" method="post" style="display: inline;">
+                                {% if provider['isBan'] %}
+                                    <form action="{{ path('userUnban') }}" method="post" style="display: inline;">
                                     <input type="hidden" name="user" value="{{ provider|json_encode }}">
                                     <input type="hidden" name="origin" value="providerList">
-                                    <button type="submit" class="btn" style="background-color: #18A0FB;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/ban.png') }}></div></button>
-                                </form>
+                                    <button type="submit" class="btn" style="background-color: #29b95f;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/ban.png') }}></div></button>
+                                    </form>
+                                {% else %}
+                                    <form action="{{ path('userBan') }}" method="post" style="display: inline;">
+                                    <input type="hidden" name="user" value="{{ provider|json_encode }}">
+                                    <input type="hidden" name="origin" value="providerList">
+                                    <button type="submit" class="btn" style="background-color: #333333;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/ban.png') }}></div></button>
+                                    </form>
+                                {% endif %}
                             </td>
                         </tr>
                     {% endfor %}
