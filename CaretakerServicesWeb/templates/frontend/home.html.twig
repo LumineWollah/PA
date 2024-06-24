@@ -1,0 +1,70 @@
+{% extends 'frontend/base.html.twig' %}
+
+{% block body %}
+   <div class="d-flex justify-content-center align-items-center" style=" margin: 100px; padding: 0px">
+      <br><br><br><h3 class="text-align-center" style="font-family: 'Antonio'; font-size: 48px;">Paris<span style="color: #a594f9;"> Caretaker</span> Services</h3> 
+    </div>
+
+    <div class="row mt-5" style="background-color: #D9D9D9; padding: 120px;">
+        <div class="col-5 d-flex align-items-center " style="justify-content: space-around;">
+            <img src="{{ asset('icons/logo/3_white_mode.png') }}"  width="50%">
+            <span style="display: inline-block; width: 1px; height: 80%; background-color: black; "></span>
+        </div>
+
+        <div class="col-7">
+            <h4 style="font-family: 'Quicksand';"><span style="color: #a594f9; ">Qui</span> sommes-nous ?<h4>
+            </br>
+            <p style="font-family: 'Quicksand'; font-size: 32px;">Paris Caretaker Services est une entreprise permettant de lier des bailleurs et des prestataires avec des clients, vous pourrez retrouvez sur la plateforme : </p>
+            <ul style="font-family: 'Quicksand'; font-size: 24px;">
+                <li>Des logements en location</li>
+                <li>Des prestations proposées par des pro</li>
+                <li>Un suivi de vos demandes (devis, factures, ...)</li>
+            </ul>
+        </div>  
+    </div>
+    <div class="d-flex justify-content-center align-items-center" style=" margin: 40px;">
+        <h3 style="font-family: 'Antonio'; font-size: 48px;">Nous <span style="color: #a594f9;"> rejoindre</span></h3>
+    </div>
+    <div class="d-flex justify-content-center align-items-center">
+         <p style="font-family: 'Quicksand'; font-size: 20px; "> Déja {{ userCount }} inscrits</p>
+    </div>
+    <div style=" height: 20vh;">
+        <div class="row" style="display: flex; justify-content: space-around; ">
+            <a href="{{ path('login') }}" class=" btn me-3" style="width: 8vw; background-color: #A594F9; color: white; font-family: 'Quicksand'; font-size: 24px;">Connexion</a>
+            <a href="{{ path('register') }}" class="btn " style="width: 8vw; background-color: #3D2F44;color: white; font-family: 'Quicksand'; font-size: 24px;">Inscription</a>
+        </div>
+    </div>
+    <div  style="background-color: #D9D9D9; padding: 120px;">
+        <div class="d-flex justify-content-center align-items-center">
+            <h3 class="text-align-center" style="font-family: 'Antonio'; font-size: 48px;">Nos<span style="color: #a594f9; "> Services</span> </h3>
+        </div>
+        <br>
+        <div>
+            <div class="d-flex" style="display: flex; justify-content: space-around; ">
+                <img src="{{ asset('icons/home/home_page_location_1.png') }}" style="width: 20%;">
+                <img src="{{ asset('icons/home/home_page_prestation.png') }}" style="width: 20%;">
+                <img src="{{ asset('icons/home/home_page_suivi.png') }}" style="width: 20%;">
+            </div>
+            <div class="d-flex" style="display: flex; justify-content: space-around; ">
+                <h5  style="font-family: 'Quicksand'; font-size: 24px;">Location de logements en France</h5>
+                <h5  style="font-family: 'Quicksand'; font-size: 24px; ">Prestations validées par nos soins</h5>
+                <h5  style="font-family: 'Quicksand'; font-size: 24px; ">Suivi de vos réservations, devis, ...</h5>
+            </div>
+            <div class="d-flex text-center" style="display: flex; justify-content: space-around; ">
+                <p class="text-align-center" style="font-family: 'Quicksand'; font-size: 20px; width: 20%">Nous vous proposons de mettre en location vos biens sur notre plateforme, que vous soyez un particulier ou un professionnel, vous bénéficirez de nos outils pour vous aider.</p>
+                <p class="text-align-center" style="font-family: 'Quicksand'; font-size: 20px; width: 20%">Que ce soit pour les voyageurs ou pour les loueurs, vous pouvez bénéficier de prestations de qualités, validées par nos équipes. Un système de devis vous aidera à choisir selon vos besoins.</p>
+                <p  class="text-align-center" style="font-family: 'Quicksand'; font-size: 20px; width: 20%">Que ce soit pour les voyageurs ou pour les loueurs, vous pouvez bénéficier de prestations de qualités, validées par nos équipes. Un système de devis vous aidera à choisir selon vos besoins.</p>
+            </div>
+            <div class="d-flex text-center" style="display: flex; justify-content: space-around;">
+                <a href="{{ path('apartmentsList') }}" class="btn" style="width: 8vw; background-color: white; font-family: 'Antonio'; font-size: 24px;">VOIR PLUS</a>
+                <a href="{{ path('servicesList') }}" class="btn " style="width: 8vw; background-color: white; font-family: 'Antonio'; font-size: 24px;">VOIR PLUS</a>
+                <a href="{{ path('myProfile') }}" class="btn " style="width: 8vw; background-color: white; font-family: 'Antonio'; font-size: 24px;">VOIR PLUS</a>
+            </div>
+        </div>
+    </div>
+    <div>
+    </div>
+
+
+
+{% endblock %}
