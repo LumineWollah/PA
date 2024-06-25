@@ -58,8 +58,6 @@ services:
       - "443:443"
     volumes:
       - /etc/letsencrypt:/etc/letsencrypt
-      # - /home/webadmin/certs/apache-selfsigned-web.key:/usr/local/apache2/conf/apache-selfsigned-web.key
-      # - /home/webadmin/certs/apache-selfsigned-web.crt:/usr/local/apache2/conf/apache-selfsigned-web.crt
     depends_on:
       - web
       - api

@@ -12,7 +12,7 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 {% endblock %}
 
-{% block activeApar %}active{% endblock %}
+{% block activeServ %}active{% endblock %}
 
 {% block body %}
 <div class="container-fluid pageContent">
@@ -53,25 +53,32 @@
                     LIRE PLUS
                 </button>
             </div>
-            {# <div class="col-5 caractColumn align-items-center">
-                <div class="caract">
+            <div class="col-5 caractColumn align-items-center">
+                <div class="caract" style="width: 100%;">
                     <h4>Caractéristiques</h4>
                     <ul>
-                        <li>Type de bien : <b>{{ (apartment.isHouse == 1) ? 'Maison' : 'Appartement' }}</b></li>
-                        <li>Type de location : <b>{{ (apartment.isFullhouse == 1) ? 'Logement entier' : 'Chambre privée' }}</b></li>
-                        <li>Nombre de chambre : <b>{{ apartment.bedrooms }} chambre{{ (apartment.bedrooms > 1) ? 's' : ''}}</b></li>
-                        <li>Nombre de voyageur : <b>{{ apartment.travelersMax }} voyageur{{ (apartment.travelersMax > 1) ? 's' : ''}}</b></li>
-                        <li>Surface : <b>{{ apartment.area }} m²</b></li>
+                        <li>Jours d'ouverture : <b>{{ service.daysOfWeek|join(', ') }}</b></li>
+                        <li>Horaires : <b>de {{ service.startTime|slice(0,5) }} à {{ service.endTime|slice(0,5) }}</b></li>
                     </ul>
                 </div>
-            </div> #}
+            </div>
         </div>
         <div class="row">
-            <div class="col-2 lessorTinyProfile">
+            <div class="col-3 lessorTinyProfile">
                 <img src={{ asset('icons/profile_pict_default.png') }}>
                 <div class="textName">
                     <p><b>Fournisseur :</b> <a href="{{ path('providersDetail', {'id':service.company.id}) }}">{{ service.company.companyName }}</a></p>
-                    <p class="inscription">Inscrit depuis 6 ans</p>
+                    {% set current_date = "now"|date('Y-m-d') %}
+                    {% set interval = date(current_date).diff(date(service.company.dateInscription)) %}
+                    {% if interval.y == 0 %}
+                        {% if interval.m == 0 %}
+                            <p class="inscription">Inscrit depuis {{ interval.d }} jours</p>
+                        {% else %}
+                            <p class="inscription">Inscrit depuis {{ interval.m }} mois</p>
+                        {% endif %}
+                    {% else %}
+                        <p class="inscription">Inscrit depuis {{ interval.y }} ans</p>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -103,7 +110,7 @@
                             </div>
                         {% endif %}
                         {% if service.addressInputs > 0 %}
-                            <p>Le fournisseur souhaite avoir l'information de {{ service.addressInputs }} adresse, veuillez lire la description pour savoir quelles sont les adresses à renseigner.</p>
+                            <p>Le fournisseur souhaite avoir l'information de {{ service.addressInputs }} adresse, veuillez lire la description pour savoir quelles sont les adresse{{ service.addressInputs > 1 ? 's' : '' }} à renseigner.</p>
                         {% endif %}
                         </div>
                     </div>
@@ -111,18 +118,26 @@
                 <div class="col-3">
                     <div class="rightForm">
                         <p class="reservTitle">Prix</p>
-                        <p class="totalText">{{ service.price }}€ pour cette intervention</p>
+                        {% if service.price is not defined or service.price is null %}                            
+                            <p class="totalText">Sur devis</p>
+                        {% else %}
+                            <p class="totalText">{{ service.price }}€ pour cette intervention</p>
+                        {% endif %}
                     </div>
                 </div>
                 <div class="col-3">
                     <div class="rightForm">
-                        <button type="submit" class="reservBtn" id="reservation" disabled>Réserver</button>
+                        {% if service.price is not defined or service.price is null %}                            
+                            <button type="submit" class="reservBtn" name="action" value="devis" id="reservation" disabled>Demander devis</button>
+                        {% else %}
+                            <button type="submit" class="reservBtn" name="action" value="reservation" id="reservation" disabled>Réserver</button>
+                        {% endif %}
                     </div>
                 </div>
             </div>
             {{form_end(form)}}
         </div>
-        <hr>
+        <hr class="mt-5">
         <div class="row localisation justify-content-center">
             <h2>Localisation</h2>
             <div id="map"></div>

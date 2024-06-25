@@ -494,7 +494,7 @@ class servicesController extends AbstractController
     }
 
     #[Route('/services/{id}', name: 'serviceDetail')]
-    public function serviceDetail(int $id, Request $request)
+    public function serviceDetail(int $id, Request $request, MailerInterface $mailer)
     {
         $client = $this->apiHttpClient->getClientWithoutBearer();
 
@@ -512,6 +512,25 @@ class servicesController extends AbstractController
                 'service' => $serv['id']
             ]
         ]);
+
+        $daysOfWeek = [
+            1 => 'Lundi',
+            2 => 'Mardi',
+            3 => 'Mercredi',
+            4 => 'Jeudi',
+            5 => 'Vendredi',
+            6 => 'Samedi',
+            7 => 'Dimanche'
+        ];
+
+        $result = [];
+        foreach ($serv["daysOfWeek"] as $number) {
+            if (isset($daysOfWeek[$number])) {
+                $result[] = $daysOfWeek[$number];
+            }
+        }
+
+        $serv["daysOfWeek"] = $result;
 
         $reservs = $responseReserv->toArray();
 
@@ -550,53 +569,79 @@ class servicesController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
             $id = $request->cookies->get('id');
+            $emailUser = $request->cookies->get('email');
+            $lastname = ucfirst($request->cookies->get('lastname'));
             
             if ($id == null) {
                 return $this->redirectToRoute('login', ['redirect'=>'serviceDetail', 'id'=>$serv['id']]);
             }
 
-            $data['otherData'] = [];
+            $action = $request->request->get('action');
 
-            for ($i=0; $i < $serv['addressInputs']; $i++) { 
-                $data['address'.$i] = json_decode($data['address'.$i], true);
+            if ($action === 'devis') {
+
+                $addresses = '';
+
+                for ($i=0; $i < $serv['addressInputs']; $i++) { 
+                    $data['address'.$i] = json_decode($data['address'.$i], true);
+                    $address = $data['address'.$i]['place_name'];
+                    $addresses .= '<p>Adresse n°'.($i+1).' : '.$address.'</p>';
+                }
+
+                $email = (new Email())
+                    ->from('ne-pas-repondre@caretakerservices.fr')
+                    ->to($serv['company']['companyEmail'])
+                    ->subject('Demande de devis')
+                    ->html('<p>Un client a demandé un devis pour votre service : '.$serv['name'].'</p><p>Voici les informations du client : </p><p>Nom : '.$lastname.'</p><p>Email : '.$emailUser.'</p><p>Date de l\'intervention : '.$data['date'].'</p>'.$addresses.'<p>Merci de le contacter pour plus d\'informations</p>');
+
+                $mailer->send($email);
+
+                return $this->redirectToRoute('myRequests');
+
+            } elseif ($action === 'reservation') {
+                $data['otherData'] = [];
+
+                for ($i=0; $i < $serv['addressInputs']; $i++) { 
+                    $data['address'.$i] = json_decode($data['address'.$i], true);
+                    
+                    $data['otherData']["address".$i] = [];
                 
-                $data['otherData']["address".$i] = [];
-            
-                $data['otherData']["address".$i]["country"] = $this->extractValueByPrefix($data["address".$i]['context'], 'country');
-                $data['otherData']["address".$i]["city"] = $this->extractValueByPrefix($data["address".$i]['context'], 'place');
-                $data['otherData']["address".$i]["postalCode"] = $this->extractValueByPrefix($data["address".$i]['context'], 'postcode');
-                $data['otherData']["address".$i]["centerGps"] = $data['address'.$i]['center'];                
-                $data['otherData']["address".$i]["address"] = $data['address'.$i]['place_name'];
+                    $data['otherData']["address".$i]["country"] = $this->extractValueByPrefix($data["address".$i]['context'], 'country');
+                    $data['otherData']["address".$i]["city"] = $this->extractValueByPrefix($data["address".$i]['context'], 'place');
+                    $data['otherData']["address".$i]["postalCode"] = $this->extractValueByPrefix($data["address".$i]['context'], 'postcode');
+                    $data['otherData']["address".$i]["centerGps"] = $data['address'.$i]['center'];                
+                    $data['otherData']["address".$i]["address"] = $data['address'.$i]['place_name'];
 
-                unset($data['address'.$i]);
-            }          
+                    unset($data['address'.$i]);
+                }          
 
-            $date = explode(" ", $data['date']);
-            $startDateTime = DateTime::createFromFormat('d/m/Y', trim($date[1]));
-            $startDateTime = $startDateTime->format('Y-m-d');
-            $data['startingDate'] = $startDateTime;
-            $data['endingDate'] = $startDateTime;
-            unset($data['date']);
+                $date = explode(" ", $data['date']);
+                $startDateTime = DateTime::createFromFormat('d/m/Y', trim($date[1]));
+                $startDateTime = $startDateTime->format('Y-m-d');
+                $data['startingDate'] = $startDateTime;
+                $data['endingDate'] = $startDateTime;
+                unset($data['date']);
 
-            $data['price'] = $serv['price'];
-            
-            $data['user'] = 'api/cs_users/'.$id;
-            $data['service'] = 'api/cs_services/'.$serv['id'];
+                $data['price'] = $serv['price'];
+                
+                $data['user'] = 'api/cs_users/'.$id;
+                $data['service'] = 'api/cs_services/'.$serv['id'];
 
-            $response = $client->request('POST', 'cs_services/availables/'.$serv['id'], [
-                'json' => [
-                    'starting_date' => $startDateTime,
-                    'ending_date' => $startDateTime
-                ]
-            ]);
+                $response = $client->request('POST', 'cs_services/availables/'.$serv['id'], [
+                    'json' => [
+                        'starting_date' => $startDateTime,
+                        'ending_date' => $startDateTime
+                    ]
+                ]);
 
-            if (!(($response->toArray())['available'])) {
-                return $this->redirectToRoute('servicesList', ['id' => $serv['id']]);
+                if (!(($response->toArray())['available'])) {
+                    return $this->redirectToRoute('servicesList', ['id' => $serv['id']]);
+                }
+
+                $request->getSession()->set('reservData', $data);
+                $request->getSession()->set('objName', $serv['name']);
+                return $this->redirectToRoute('reservPay', ['id'=>$serv['id']]);
             }
-
-            $request->getSession()->set('reservData', $data);
-            $request->getSession()->set('objName', $serv['name']);
-            return $this->redirectToRoute('reservPay', ['id'=>$serv['id']]);
         }
 
         return $this->render('frontend/services/servicesDetail.html.twig', [

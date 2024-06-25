@@ -120,4 +120,28 @@ class userController extends AbstractController
             'reservations'=>$reserv
         ]);
     }
+
+    #[Route('/profile/requests', name: 'myRequests')]
+    public function myRequests(Request $request)
+    {
+        $id = $request->cookies->get('id');
+            
+        if ($id == null) {
+            return $this->redirectToRoute('login', ['redirect'=>'myRequests']);
+        }
+
+        $client = $this->apiHttpClient->getClientWithoutBearer();
+
+        $response = $client->request('POST', 'cs_users/'.$id.'/reservations', [
+            'json' => [
+                'time' => 'FUTURE',
+            ]
+        ]);
+
+        $reserv = $response->toArray();
+
+        return $this->render('frontend/user/reservFuture.html.twig', [
+            'reservations'=>$reserv
+        ]);
+    }
 }

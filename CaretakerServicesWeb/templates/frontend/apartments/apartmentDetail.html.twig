@@ -60,11 +60,21 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-2 lessorTinyProfile">
+            <div class="col-3 lessorTinyProfile">
                 <img src={{ asset('icons/profile_pict_default.png') }}>
                 <div class="textName">
-                    <p><b>Hôte :</b> Francis Lalanne</p>
-                    <p class="inscription">Inscrit depuis 6 ans</p>
+                    <p><b>Hôte :</b> {{ apartment.owner.firstname|capitalize }} {{ apartment.owner.lastname|capitalize }}</p>
+                    {% set current_date = "now"|date('Y-m-d') %}
+                    {% set interval = date(current_date).diff(date(apartment.owner.dateInscription)) %}
+                    {% if interval.y == 0 %}
+                        {% if interval.m == 0 %}
+                            <p class="inscription">Inscrit depuis {{ interval.d }} jours</p>
+                        {% else %}
+                            <p class="inscription">Inscrit depuis {{ interval.m }} mois</p>
+                        {% endif %}
+                    {% else %}
+                        <p class="inscription">Inscrit depuis {{ interval.y }} ans</p>
+                    {% endif %}
                 </div>
             </div>
         </div>
