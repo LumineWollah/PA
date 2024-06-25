@@ -330,6 +330,7 @@ class connectionController extends AbstractController
                 "password"=>$data["password"],
                 "roles"=>$data["roles"],
                 "telNumber"=>$data["telNumber"],
+                "profilePict"=>$data['profilePict'],
             ];
 
             $response = $client->request('POST', 'cs_users', [
@@ -514,7 +515,8 @@ class connectionController extends AbstractController
                     "city"=>$data["city"],
                     "postalCode"=>$data["postalCode"],
                     "country"=>$data["country"],
-                    "centerGps"=>$data["centerGps"]
+                    "centerGps"=>$data["centerGps"],
+                    "profilePict"=>$results['link'],
                 ]
             ]);
             
