@@ -62,10 +62,14 @@
                     {% for document in documents %}
                         <tr>
                             <td>
-                                <form action="{{ path('myReservationDetail') }}" method="post" style="display: inline;">
-                                    <input type="hidden" name="reservation" value="{{ document.attachedReserv|json_encode }}">
-                                    <button type="submit" class="btn btn-light apartment" style="height:40px"><p>Reservation n°{{ document.attachedReserv.id|capitalize }} </p></button>
-                                </form>
+                                {% if document.attachedReserv is not defined or document.attachedReserv is null %}
+                                    <p>-</p>
+                                {% else %}
+                                    <form action="{{ path('myReservationDetail') }}" method="post" style="display: inline;">
+                                        <input type="hidden" name="reservation" value="{{ document.attachedReserv|json_encode }}">
+                                        <button type="submit" class="btn btn-light apartment" style="height:40px"><p>Reservation n°{{ document.attachedReserv.id|capitalize }} </p></button>
+                                    </form>
+                                {% endif %}
                             </td>
                             <td>{{ document.type }}</td>
                             <td>{{ document.name }}</td>
