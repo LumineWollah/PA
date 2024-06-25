@@ -19,6 +19,7 @@
                     <p><strong>Adresse :</strong> {{ company.address }}</p>
                     <p><strong>Code postal :</strong> {{ company.postalCode }}</p>
                     <p><strong>Ville :</strong> {{ company.city }}</p>
+                    <p><strong>Date d'inscription :</strong> {{ company.dateInscription | date('d/m/Y H:i:s') }}</p>
                     <p><strong>Pays :</strong> {{ company.country }}</p>
                     </p>
                     {% if company['users'] is defined and company['users'] is not empty %}
