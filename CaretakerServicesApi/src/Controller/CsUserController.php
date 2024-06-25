@@ -30,16 +30,17 @@ class CsUserController extends AbstractController
         $requestData = json_decode($request->getContent(), true);
         // PAST - PRESENT - FUTURE
         $time = $requestData['time'];
+        $obj = $requestData['obj'];
 
         switch($time){
             case 'PAST':
-                $reserv = $entityManager->getRepository(CsReservation::class)->getPastReserv(new \DateTime(), $user);
+                $reserv = $entityManager->getRepository(CsReservation::class)->getPastReserv(new \DateTime(), $user, $obj);
                 break;
             case 'PRESENT':
-                $reserv = $entityManager->getRepository(CsReservation::class)->getPresentReserv(new \DateTime(), $user);
+                $reserv = $entityManager->getRepository(CsReservation::class)->getPresentReserv(new \DateTime(), $user, $obj);
                 break;
             default:
-                $reserv = $entityManager->getRepository(CsReservation::class)->getFutureReserv(new \DateTime(), $user);
+                $reserv = $entityManager->getRepository(CsReservation::class)->getFutureReserv(new \DateTime(), $user, $obj);
         }
 
         return $this->json($reserv, 200, [], ['groups' => 'getReservations']);

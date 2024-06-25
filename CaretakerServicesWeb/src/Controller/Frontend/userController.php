@@ -61,6 +61,7 @@ class userController extends AbstractController
         $response = $client->request('POST', 'cs_users/'.$id.'/reservations', [
             'json' => [
                 'time' => 'PAST',
+                'obj' => 'apartment'
             ]
         ]);
 
@@ -86,6 +87,7 @@ class userController extends AbstractController
         $response = $client->request('POST', 'cs_users/'.$id.'/reservations', [
             'json' => [
                 'time' => 'PRESENT',
+                'obj' => 'apartment'
             ]
         ]);
 
@@ -111,12 +113,90 @@ class userController extends AbstractController
         $response = $client->request('POST', 'cs_users/'.$id.'/reservations', [
             'json' => [
                 'time' => 'FUTURE',
+                'obj' => 'apartment'
             ]
         ]);
 
         $reserv = $response->toArray();
 
         return $this->render('frontend/user/reservFuture.html.twig', [
+            'reservations'=>$reserv
+        ]);
+    }
+
+    #[Route('/profile/services/past', name: 'servicesPast')]
+    public function servicesPast(Request $request)
+    {
+        $id = $request->cookies->get('id');
+
+        if ($id == null) {
+            return $this->redirectToRoute('login', ['redirect'=>'myProfile']);
+        }
+
+        $client = $this->apiHttpClient->getClientWithoutBearer();
+
+        $response = $client->request('POST', 'cs_users/'.$id.'/reservations', [
+            'json' => [
+                'time' => 'PAST',
+                'obj' => 'service'
+            ]
+        ]);
+
+        $reserv = $response->toArray();
+
+        return $this->render('frontend/user/servPast.html.twig', [
+            'reservations'=>$reserv
+        ]);
+    }
+
+    #[Route('/profile/services/present', name: 'servicesPresent')]
+    public function servicesPresent(Request $request)
+    {
+
+        $id = $request->cookies->get('id');
+            
+        if ($id == null) {
+            return $this->redirectToRoute('login', ['redirect'=>'myProfile']);
+        }
+
+        $client = $this->apiHttpClient->getClientWithoutBearer();
+
+        $response = $client->request('POST', 'cs_users/'.$id.'/reservations', [
+            'json' => [
+                'time' => 'PRESENT',
+                'obj' => 'service'
+            ]
+        ]);
+
+        $reserv = $response->toArray();
+
+        return $this->render('frontend/user/servPresent.html.twig', [
+            'reservations'=>$reserv
+        ]);
+    }
+
+    #[Route('/profile/services/future', name: 'servicesFuture')]
+    public function servicesFuture(Request $request)
+    {
+
+        $id = $request->cookies->get('id');
+            
+        if ($id == null) {
+            return $this->redirectToRoute('login', ['redirect'=>'myProfile']);
+        }
+
+        $client = $this->apiHttpClient->getClientWithoutBearer();
+
+        $response = $client->request('POST', 'cs_users/'.$id.'/reservations', [
+            'json' => [
+                'time' => 'FUTURE',
+                'obj' => 'service'
+            ]
+        ]);
+
+        $reserv = $response->toArray();
+
+        return $this->render('frontend/user/servFuture.html.twig', [
             'reservations'=>$reserv
         ]);
     }
@@ -132,16 +212,38 @@ class userController extends AbstractController
 
         $client = $this->apiHttpClient->getClientWithoutBearer();
 
-        $response = $client->request('POST', 'cs_users/'.$id.'/reservations', [
-            'json' => [
-                'time' => 'FUTURE',
-            ]
+        $response = $client->request('GET', 'cs_reservations?user='.$id.'&active=false');
+
+        $requests = $response->toArray();
+        
+        foreach ($requests['hydra:member'] as $key => $value) {
+            if ($value['isRequest'] == false) {
+                unset($requests['hydra:member'][$key]);
+            }
+        }
+
+        return $this->render('frontend/user/requestsList.html.twig', [
+            'requests'=>$requests['hydra:member']
         ]);
+    }
 
-        $reserv = $response->toArray();
+    #[Route('/profile/documents', name: 'myDocuments')]
+    public function myDocuments(Request $request)
+    {
+        $id = $request->cookies->get('id');
+            
+        if ($id == null) {
+            return $this->redirectToRoute('login', ['redirect'=>'myRequests']);
+        }
 
-        return $this->render('frontend/user/reservFuture.html.twig', [
-            'reservations'=>$reserv
+        $client = $this->apiHttpClient->getClientWithoutBearer();
+
+        $response = $client->request('GET', 'cs_documents?owner='.$id);
+
+        $documents = $response->toArray();
+        
+        return $this->render('frontend/user/documentsList.html.twig', [
+            'documents'=>$documents['hydra:member']
         ]);
     }
 }

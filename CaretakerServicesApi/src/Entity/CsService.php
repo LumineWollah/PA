@@ -85,11 +85,11 @@ class CsService
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(["getServices", "getUsers", "getReservations", "getApartments", "getCategories", "getCompanies", "getReviews"])]
+    #[Groups(["getServices", "getUsers", "getReservations", "getApartments", "getCategories", "getCompanies", "getReviews", "getDocuments"])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(["getServices", "getUsers", "getReservations", "getApartments", "getCategories", "getCompanies", "getReviews"])]
+    #[Groups(["getServices", "getUsers", "getReservations", "getApartments", "getCategories", "getCompanies", "getReviews", "getDocuments"])]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -147,7 +147,7 @@ class CsService
     private ?string $endTime = null;
 
     #[ORM\Column(nullable: true)]
-    #[Groups(["getServices", "getUsers", "getReservations", "getApartments", "getCategories", "getCompanies", "getReviews"])]
+    #[Groups(["getServices", "getUsers", "getReservations", "getApartments", "getCategories", "getCompanies", "getReviews", "getDocuments"])]
     private ?float $price = null;
 
     public function __construct()

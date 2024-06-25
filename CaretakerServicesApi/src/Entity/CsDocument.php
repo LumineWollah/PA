@@ -23,10 +23,10 @@ use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 #[ApiResource(normalizationContext: ['groups' => ['getDocuments']])]
 #[Get(security: "is_granted('ROLE_ADMIN') or object.getOwner() == user")]
 #[Patch(security: "is_granted('ROLE_ADMIN') or object.getOwner() == user")]
-#[GetCollection(security: "is_granted('ROLE_ADMIN')")]
+#[GetCollection]
 #[Delete(security: "is_granted('ROLE_ADMIN')")]
 #[Post()]
-#[ApiFilter(SearchFilter::class, properties: ['type' => 'exact'])]
+#[ApiFilter(SearchFilter::class, properties: ['type' => 'exact', 'owner' => 'exact'])]
 #[ORM\Entity(repositoryClass: CsDocumentRepository::class)]
 class CsDocument
 {
@@ -62,7 +62,7 @@ class CsDocument
     private ?CsUser $owner = null;
 
     #[ORM\ManyToOne(inversedBy: 'documents')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     #[Groups(["getDocuments"])]
     private ?CsReservation $attachedReserv = null;
 
@@ -123,7 +123,6 @@ class CsDocument
         return $this;
     }
 
-    #[Groups(["getDocuments"])]
     public function getOwner(): ?CsUser
     {
         return $this->owner;
@@ -156,12 +155,12 @@ class CsDocument
         return $this;
     }
 
-    public function getReservation(): ?CsReservation
+    public function getattachedReserv(): ?CsReservation
     {
         return $this->attachedReserv;
     }
 
-    public function setReservation(?CsReservation $reservation): static
+    public function setattachedReserv(?CsReservation $reservation): static
     {
         $this->attachedReserv = $reservation;
 

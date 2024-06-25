@@ -25,25 +25,25 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[GetCollection]
 #[Delete(security: "is_granted('ROLE_ADMIN') or object.getUser() == user or object.getApartmentOwner() == user or object.getServiceOwner() == user")]
 #[Post]
-#[ApiFilter(SearchFilter::class, properties: ['apartment' => 'exact', 'service' => 'exact', 'user' => 'exact', 'unavailability' => 'exact'])]
+#[ApiFilter(SearchFilter::class, properties: ['apartment' => 'exact', 'service' => 'exact', 'user' => 'exact', 'unavailability' => 'exact', 'isRequest' => 'exact', 'active' => 'exact'])]
 class CsReservation
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(["getReservations", "getUsers", "getApartments"])]
+    #[Groups(["getReservations", "getUsers", "getApartments", "getDocuments"])]
     private ?int $id = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    #[Groups(["getReservations", "getUsers", "getApartments"])]
+    #[Groups(["getReservations", "getUsers", "getApartments", "getDocuments"])]
     private ?\DateTimeInterface $startingDate = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    #[Groups(["getReservations", "getUsers", "getApartments"])]
+    #[Groups(["getReservations", "getUsers", "getApartments", "getDocuments"])]
     private ?\DateTimeInterface $endingDate = null;
 
     #[ORM\Column()]
-    #[Groups(["getReservations", "getUsers", "getApartments"])]
+    #[Groups(["getReservations", "getUsers", "getApartments", "getDocuments"])]
     private ?float $price = null;
 
     #[ORM\Column(nullable: true)]
@@ -51,42 +51,42 @@ class CsReservation
     private ?string $payementId = null;
 
     #[ORM\Column()]
-    #[Groups(["getReservations", "getUsers", "getApartments"])]
+    #[Groups(["getReservations", "getUsers", "getApartments", "getDocuments"])]
     private ?bool $active = true;
 
     #[ORM\ManyToOne(inversedBy: 'reservations')]
-    #[Groups(["getReservations"])]
+    #[Groups(["getReservations", "getDocuments"])]
     public ?CsApartment $apartment = null;
 
     #[ORM\ManyToOne(inversedBy: 'reservations')]
-    #[Groups(["getReservations"])]
+    #[Groups(["getReservations", "getDocuments"])]
     public ?CsService $service = null;
 
     #[ORM\ManyToOne(inversedBy: 'reservations')]
     #[Groups(["getReservations"])]
     public ?CsUser $user = null;
 
-    #[ORM\Column(nullable: true)]
-    #[Groups(["getReservations", "getUsers", "getApartments"])]
-    private ?int $adultTravelers = null;
+    #[ORM\Column()]
+    #[Groups(["getReservations", "getUsers", "getApartments", "getDocuments"])]
+    private ?int $adultTravelers = 0;
 
-    #[ORM\Column(nullable: true)]
-    #[Groups(["getReservations", "getUsers", "getApartments"])]
-    private ?int $childTravelers = null;
+    #[ORM\Column()]
+    #[Groups(["getReservations", "getUsers", "getApartments", "getDocuments"])]
+    private ?int $childTravelers = 0;
 
-    #[ORM\Column(nullable: true)]
-    #[Groups(["getReservations", "getUsers", "getApartments"])]
-    private ?int $babyTravelers = null;
+    #[ORM\Column()]
+    #[Groups(["getReservations", "getUsers", "getApartments", "getDocuments"])]
+    private ?int $babyTravelers = 0;
 
     #[ORM\Column]
-    #[Groups(["getReservations", "getUsers", "getApartments"])]
+    #[Groups(["getReservations", "getUsers", "getApartments", "getDocuments"])]
     private bool $unavailability = false;
 
     /**
      * @var Collection<int, CsService>
      */
     #[ORM\ManyToMany(targetEntity: CsService::class, inversedBy: 'reservationsForApart')]
-    #[Groups(["getReservations"])]
+    #[Groups(["getReservations", "getDocuments"])]
     private Collection $services;
 
     /**
@@ -97,15 +97,15 @@ class CsReservation
     private Collection $documents;
 
     #[ORM\Column]
-    #[Groups(["getReservations", "getUsers", "getApartments"])]
+    #[Groups(["getReservations", "getUsers", "getApartments", "getDocuments"])]
     private ?DateTime $dateCreation = null;
 
     #[ORM\Column(nullable: true)]
-    #[Groups(["getReservations", "getUsers", "getApartments"])]
+    #[Groups(["getReservations", "getUsers", "getApartments", "getDocuments"])]
     private ?array $otherData = null;
 
     #[ORM\Column]
-    #[Groups(["getReservations", "getUsers", "getApartments"])]
+    #[Groups(["getReservations", "getUsers", "getApartments", "getDocuments"])]
     private ?bool $isRequest = false;
 
     public function __construct()
@@ -314,7 +314,7 @@ class CsReservation
     {
         if (!$this->documents->contains($document)) {
             $this->documents->add($document);
-            $document->setReservation($this);
+            $document->setattachedReserv($this);
         }
 
         return $this;
@@ -323,8 +323,8 @@ class CsReservation
     public function removeDocument(CsDocument $document): static
     {
         if ($this->documents->removeElement($document)) {
-            if ($document->getReservation() === $this) {
-                $document->setReservation(null);
+            if ($document->getattachedReserv() === $this) {
+                $document->setattachedReserv(null);
             }
         }
 

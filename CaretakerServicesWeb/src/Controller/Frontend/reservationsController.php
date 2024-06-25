@@ -212,7 +212,7 @@ class reservationsController extends AbstractController
                 "type" => "Facture",
                 "url" => $resultS3['link'],
                 "owner" => "api/cs_users/".$userId,
-                "reservation" => "api/cs_reservations/".$reservId
+                "attachedReserv" => "api/cs_reservations/".$reservId
             ],
         ]);
 

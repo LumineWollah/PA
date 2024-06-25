@@ -2,10 +2,10 @@
 
 {% block stylesheets %}<link rel="stylesheet" href={{ asset('styles/crud.css') }}>{% endblock %}
 
-{% block activeRese %}active{% endblock %}
-{% block activePres %}active{% endblock %}
+{% block activeProvList %}active{% endblock %}
+{% block activePast2 %}active{% endblock %}
 
-{% block title %}Liste des réservations en cours{% endblock %}
+{% block title %}Liste des services passés{% endblock %}
 
 {% block body %}
 <script>
@@ -47,13 +47,13 @@
     <div class="col-10 p-0">
         <div class="p-3">
             <div class="btn-create-row">
-                <h1>Liste des réservations en cours</h1>
+                <h1>Liste des services passés</h1>
             </div>
             <table id="crudList" class="table table-striped">
                 <thead>
                     <tr>
-                        <th scope="col">Logement</th>
-                        <th scope="col">Dates</th>
+                        <th scope="col">Service</th>
+                        <th scope="col">Date</th>
                         <th scope="col">Prix</th>
                         <th scope="col">Actions</th>
                     </tr>
@@ -62,20 +62,20 @@
                     {% for reservation in reservations %}
                         <tr>
                             <td>
-                                <form action="{{ path('apartmentsDetail', {'id':reservation.apartment.id}) }}" method="post" style="display: inline;">
-                                    <input type="hidden" name="apartment" value="{{ reservation.apartment|json_encode }}">
-                                    <button type="submit" class="btn btn-light apartment" style="height:40px"><p> {{ reservation.apartment.name|capitalize }} </p></button>
+                                <form action="{{ path('serviceDetail', {'id':reservation.service.id}) }}" method="post" style="display: inline;">
+                                    <input type="hidden" name="service" value="{{ reservation.service|json_encode }}">
+                                    <button type="submit" class="btn btn-light apartment" style="height:40px"><p> {{ reservation.service.name|capitalize }} </p></button>
                                 </form>
                             </td>
-                            <td>{{ reservation.startingDate|date('d/m/Y') }} - {{ reservation.endingDate|date('d/m/Y') }}</td>
+                            <td>{{ reservation.startingDate|date('d/m/Y') }}</td>
                             <td>{{ reservation.price }} €</td>
                             <td class="action">
-                                <a href="{{ path('reservationDelete', {'id': reservation.id }) }}" class="btn" style="background-color: #EE3939;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/bin.png') }}></div></a>
-                                <form action="{{ path('reservationEdit') }}" method="post" style="display: inline;">
+                                <form action="{{ path('myReservationDetail') }}" method="post" style="display: inline;">
                                     <input type="hidden" name="reservation" value="{{ reservation|json_encode }}">
-                                    <button type="submit" class="btn" style="background-color: #18A0FB;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/pen.png') }}></div></button>
+                                    <button type="submit" class="btn" style="background-color: #18A0FB;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/chart.png') }}></div></button>
                                 </form>
-                                <a {#href={{ reservation.url }}#} href="https://i.gifer.com/origin/28/282268c47ffc9391bf7ee0a1104ce1bd_w200.gif" target="blank_" class="btn" style="background-color: #A594F9;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/eye.png') }}></div></a>
+                                <a href="{{ path('myReservationDocuments', {'id': reservation.id }) }}" class="btn" style="background-color: #A594F9;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/documents.png') }}></div></a>
+                                <a href="{{ path('myReservationOpinion', {'id': reservation.id }) }}" class="btn" style="background-color: #4CBA78;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/star.png') }}></div></a>
                             </td>
                         </tr>
                     {% endfor %}

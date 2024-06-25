@@ -127,19 +127,19 @@
                             </button>
                             <div class="collapse menuGestion" id="prestations-collapse" >
                                 <ul class="btn-toggle-nav list-unstyled fw-normal small gestionUl">
-                                    <li><a href={{ path('lessorList') }} class="d-inline-flex text-decoration-none rounded mb-1 {% block activePast2 %}{% endblock %}">Passées</a></li>
-                                    <li><a href={{ path('providerList') }} class="d-inline-flex text-decoration-none rounded mb-1 {% block activePres2 %}{% endblock %}">En cours</a></li>
-                                    <li><a href={{ path('travelerList') }} class="d-inline-flex text-decoration-none rounded mb-1 {% block activeFutu2 %}{% endblock %}">Futures</a></li>
+                                    <li><a href={{ path('servicesPast') }} class="d-inline-flex text-decoration-none rounded mb-1 {% block activePast2 %}{% endblock %}">Passées</a></li>
+                                    <li><a href={{ path('servicesPresent') }} class="d-inline-flex text-decoration-none rounded mb-1 {% block activePres2 %}{% endblock %}">En cours</a></li>
+                                    <li><a href={{ path('servicesFuture') }} class="d-inline-flex text-decoration-none rounded mb-1 {% block activeFutu2 %}{% endblock %}">Futures</a></li>
                                 </ul>
                             </div>
                         </li>
                         <li class="nav-item">
-                            <a href="#" class="nav-link {% block activeDem %}{% endblock %}" aria-current="page">
+                            <a href="{{ path('myRequests') }}" class="nav-link {% block activeDem %}{% endblock %}" style="background-color: transparent !important;" aria-current="page">
                                 Mes demandes
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="#" class="nav-link {% block activeDoc %}{% endblock %}" aria-current="page">
+                            <a href="{{ path('myDocuments') }}" class="nav-link {% block activeDoc %}{% endblock %}" style="background-color: transparent !important;" aria-current="page">
                                 Mes documents
                             </a>
                         </li>

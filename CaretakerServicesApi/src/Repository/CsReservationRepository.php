@@ -82,34 +82,61 @@ class CsReservationRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function getPastReserv(\DateTimeInterface $todayDate, CsUser $user)
+    public function getPastReserv(\DateTimeInterface $todayDate, CsUser $user, $obj)
     {
-        return $this->createQueryBuilder('o')
-            ->andWhere('o.endingDate < :todayDate AND o.user = :user AND o.apartment IS NOT NULL')
-            ->setParameter('todayDate', $todayDate)
-            ->setParameter('user', $user)
-            ->getQuery()
-            ->getResult();
+        if ($obj == 'apartment') {
+            return $this->createQueryBuilder('o')
+                ->andWhere('o.endingDate < :todayDate AND o.user = :user AND o.apartment IS NOT NULL')
+                ->setParameter('todayDate', $todayDate)
+                ->setParameter('user', $user)
+                ->getQuery()
+                ->getResult();
+        } elseif ($obj == 'service') {
+            return $this->createQueryBuilder('o')
+                ->andWhere('o.endingDate < :todayDate AND o.user = :user AND o.isRequest = false AND o.service IS NOT NULL')
+                ->setParameter('todayDate', $todayDate)
+                ->setParameter('user', $user)
+                ->getQuery()
+                ->getResult();
+        }
     }
 
-    public function getPresentReserv(\DateTimeInterface $todayDate, CsUser $user)
+    public function getPresentReserv(\DateTimeInterface $todayDate, CsUser $user, $obj)
     {
-        return $this->createQueryBuilder('o')
-            ->andWhere('o.startingDate < :todayDate AND o.endingDate > :todayDate AND o.user = :user AND o.apartment IS NOT NULL')
-            ->setParameter('todayDate', $todayDate)
-            ->setParameter('user', $user)
-            ->getQuery()
-            ->getResult();
+        if ($obj == 'apartment') {
+            return $this->createQueryBuilder('o')
+                ->andWhere('o.startingDate < :todayDate AND o.endingDate > :todayDate AND o.user = :user AND o.apartment IS NOT NULL')
+                ->setParameter('todayDate', $todayDate)
+                ->setParameter('user', $user)
+                ->getQuery()
+                ->getResult();
+        } elseif ($obj == 'service') {
+            return $this->createQueryBuilder('o')
+                ->andWhere('o.startingDate < :todayDate AND o.endingDate > :todayDate AND o.user = :user AND o.isRequest = false AND o.service IS NOT NULL')
+                ->setParameter('todayDate', $todayDate)
+                ->setParameter('user', $user)
+                ->getQuery()
+                ->getResult();
+        }
     }
 
-    public function getFutureReserv(\DateTimeInterface $todayDate, CsUser $user)
+    public function getFutureReserv(\DateTimeInterface $todayDate, CsUser $user, $obj)
     {
-        return $this->createQueryBuilder('o')
-            ->andWhere('o.startingDate > :todayDate AND o.user = :user AND o.apartment IS NOT NULL')
-            ->setParameter('todayDate', $todayDate)
-            ->setParameter('user', $user)
-            ->getQuery()
-            ->getResult();
+        if ($obj == 'apartment') {
+            return $this->createQueryBuilder('o')
+                ->andWhere('o.startingDate > :todayDate AND o.user = :user AND o.apartment IS NOT NULL')
+                ->setParameter('todayDate', $todayDate)
+                ->setParameter('user', $user)
+                ->getQuery()
+                ->getResult();
+        } elseif ($obj == 'service') {
+            return $this->createQueryBuilder('o')
+                ->andWhere('o.startingDate > :todayDate AND o.user = :user AND o.isRequest = false AND o.service IS NOT NULL')
+                ->setParameter('todayDate', $todayDate)
+                ->setParameter('user', $user)
+                ->getQuery()
+                ->getResult();
+        }
     }
 }
 

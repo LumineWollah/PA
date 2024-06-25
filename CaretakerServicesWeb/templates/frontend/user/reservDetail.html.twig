@@ -42,10 +42,10 @@
                             <p class="card-text mb-1">Aucun service demandé</p>
                         {% else %}
                             {% for service in reservation.services %}
-                                <p class="card-text mb-2"><a href="{{ path('providersDetail', {'id':service.id}) }}" style="color: black;">{{ service.name }}</a> : {{ service.price }} €</p>
+                                <p class="card-text mb-2"><a href="{{ path('serviceDetail', {'id':service.id}) }}" style="color: black;">{{ service.name }}</a> : {{ service.price }} €</p>
                             {% endfor %}
                             <hr>
-                            <a href="{{ path('apartmentsDetail', {'id': reservation.apartment.id}) }}" class="seeAppart mb-1">Voir mes documents</a>
+                            <a href="{{ path('myDocuments') }}" class="seeAppart mb-1">Voir mes documents</a>
                         {% endif %}
                     </div>
                 </div>

@@ -109,75 +109,75 @@ class CsApartment
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(["getUsers", "getApartments", "getReservations", "getAddons", "getReviews"])]
+    #[Groups(["getUsers", "getApartments", "getReservations", "getAddons", "getReviews", "getDocuments"])]
     public ?int $id = null;
 
     #[ORM\Column(length: 50)]
-    #[Groups(["getUsers", "getApartments", "getReservations", "getAddons", "getReviews"])]
+    #[Groups(["getUsers", "getApartments", "getReservations", "getAddons", "getReviews", "getDocuments"])]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT)]
-    #[Groups(["getUsers", "getApartments", "getReservations", "getAddons", "getReviews"])]
+    #[Groups(["getUsers", "getApartments", "getReservations", "getAddons", "getReviews", "getDocuments"])]
     private ?string $description = null;
 
     #[ORM\Column(type: Types::SMALLINT)]
-    #[Groups(["getUsers", "getApartments", "getReservations", "getAddons", "getReviews"])]
+    #[Groups(["getUsers", "getApartments", "getReservations", "getAddons", "getReviews", "getDocuments"])]
     private ?int $bedrooms = null;
 
     #[ORM\Column(type: Types::SMALLINT)]
-    #[Groups(["getUsers", "getApartments", "getReservations", "getAddons", "getReviews"])]
+    #[Groups(["getUsers", "getApartments", "getReservations", "getAddons", "getReviews", "getDocuments"])]
     private ?int $bathrooms = null;
 
     #[ORM\Column(type: Types::SMALLINT)]
-    #[Groups(["getUsers", "getApartments", "getReservations", "getAddons", "getReviews"])]
+    #[Groups(["getUsers", "getApartments", "getReservations", "getAddons", "getReviews", "getDocuments"])]
     private ?int $travelersMax = null;
 
     #[ORM\Column]
-    #[Groups(["getUsers", "getApartments", "getReservations", "getAddons", "getReviews"])]
+    #[Groups(["getUsers", "getApartments", "getReservations", "getAddons", "getReviews", "getDocuments"])]
     private ?float $area = null;
 
     #[ORM\Column]
-    #[Groups(["getUsers", "getApartments", "getReservations", "getAddons", "getReviews"])]
+    #[Groups(["getUsers", "getApartments", "getReservations", "getAddons", "getReviews", "getDocuments"])]
     private ?bool $isFullhouse = null;
 
     #[ORM\Column]
-    #[Groups(["getUsers", "getApartments", "getReservations", "getAddons", "getReviews"])]
+    #[Groups(["getUsers", "getApartments", "getReservations", "getAddons", "getReviews", "getDocuments"])]
     private ?DateTime $dateCreation = null;
 
     #[ORM\Column]
-    #[Groups(["getUsers", "getApartments", "getReservations", "getAddons", "getReviews"])]
+    #[Groups(["getUsers", "getApartments", "getReservations", "getAddons", "getReviews", "getDocuments"])]
     private ?bool $isHouse = null;
 
     #[ORM\Column]
-    #[Groups(["getUsers", "getApartments", "getReservations", "getAddons", "getReviews"])]
+    #[Groups(["getUsers", "getApartments", "getReservations", "getAddons", "getReviews", "getDocuments"])]
     private ?float $price = null;
 
     #[ORM\Column]
-    #[Groups(["getUsers", "getApartments", "getReservations", "getAddons", "getReviews"])]
+    #[Groups(["getUsers", "getApartments", "getReservations", "getAddons", "getReviews", "getDocuments"])]
     private ?bool $isVerified = false;
 
     #[ORM\Column]
-    #[Groups(["getUsers", "getApartments", "getReservations", "getAddons", "getReviews"])]
+    #[Groups(["getUsers", "getApartments", "getReservations", "getAddons", "getReviews", "getDocuments"])]
     private ?bool $active = true;
 
     #[ORM\Column(length: 500)]
-    #[Groups(["getUsers", "getApartments", "getReservations", "getAddons", "getReviews"])]
+    #[Groups(["getUsers", "getApartments", "getReservations", "getAddons", "getReviews", "getDocuments"])]
     private ?string $address = null;
 
     #[ORM\Column]
-    #[Groups(["getUsers", "getApartments", "getReservations", "getAddons", "getReviews"])]
+    #[Groups(["getUsers", "getApartments", "getReservations", "getAddons", "getReviews", "getDocuments"])]
     private ?array $centerGps = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(["getUsers", "getApartments", "getReservations", "getAddons", "getReviews"])]
+    #[Groups(["getUsers", "getApartments", "getReservations", "getAddons", "getReviews", "getDocuments"])]
     private ?string $city = null;
 
     #[ORM\Column(length: 5)]
-    #[Groups(["getUsers", "getApartments", "getReservations", "getAddons", "getReviews"])]
+    #[Groups(["getUsers", "getApartments", "getReservations", "getAddons", "getReviews", "getDocuments"])]
     private ?string $postalCode = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(["getUsers", "getApartments", "getReservations", "getAddons", "getReviews"])]
+    #[Groups(["getUsers", "getApartments", "getReservations", "getAddons", "getReviews", "getDocuments"])]
     private ?string $country = null;
 
     #[ORM\ManyToOne(inversedBy: 'apartments')]
@@ -186,11 +186,11 @@ class CsApartment
     private ?CsUser $owner = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(["getUsers", "getApartments", "getReservations", "getAddons", "getReviews"])]
+    #[Groups(["getUsers", "getApartments", "getReservations", "getAddons", "getReviews", "getDocuments"])]
     private ?String $mainPict;
 
     #[ORM\Column(nullable: true)]
-    #[Groups(["getUsers", "getApartments", "getReservations", "getAddons", "getReviews"])]
+    #[Groups(["getUsers", "getApartments", "getReservations", "getAddons", "getReviews", "getDocuments"])]
     private ?array $pictures = null;
 
     #[ORM\OneToMany(targetEntity: CsReservation::class, mappedBy: 'apartment', orphanRemoval:true)]
