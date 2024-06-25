@@ -584,8 +584,19 @@ class servicesController extends AbstractController
 
                 for ($i=0; $i < $serv['addressInputs']; $i++) { 
                     $data['address'.$i] = json_decode($data['address'.$i], true);
-                    $address = $data['address'.$i]['place_name'];
-                    $addresses .= '<p>Adresse n°'.($i+1).' : '.$address.'</p>';
+                    
+                    $data['otherData']["address".$i] = [];
+                
+                    $data['otherData']["address".$i]["country"] = $this->extractValueByPrefix($data["address".$i]['context'], 'country');
+                    $data['otherData']["address".$i]["city"] = $this->extractValueByPrefix($data["address".$i]['context'], 'place');
+                    $data['otherData']["address".$i]["postalCode"] = $this->extractValueByPrefix($data["address".$i]['context'], 'postcode');
+                    $data['otherData']["address".$i]["centerGps"] = $data['address'.$i]['center'];                
+                    $data['otherData']["address".$i]["address"] = $data['address'.$i]['place_name'];
+
+                    $addresses .= '<p>Adresse n°'.($i+1).' : '.$data['otherData']["address".$i]["address"].'</p>';
+
+
+                    unset($data['address'.$i]);
                 }
 
                 $email = (new Email())
@@ -595,6 +606,17 @@ class servicesController extends AbstractController
                     ->html('<p>Un client a demandé un devis pour votre service : '.$serv['name'].'</p><p>Voici les informations du client : </p><p>Nom : '.$lastname.'</p><p>Email : '.$emailUser.'</p><p>Date de l\'intervention : '.$data['date'].'</p>'.$addresses.'<p>Merci de le contacter pour plus d\'informations</p>');
 
                 $mailer->send($email);
+
+                $response = $client->request('POST', 'cs_reservations', [
+                    'json' => [
+                        'request' => true,
+                        'user' => 'api/cs_users/'.$id,
+                        'service' => 'api/cs_services/'.$serv['id'],
+                        'startingDate' => $data['date'],
+                        'endingDate' => $data['date'],
+                        'otherData' => $data,
+                    ],
+                ]);
 
                 return $this->redirectToRoute('myRequests');
 

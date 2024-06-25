@@ -43,6 +43,8 @@ services:
       MYSQL_DATABASE: caretakerservicesdb
       MYSQL_USER: pcs
       MYSQL_PASSWORD: pass
+    ports:
+      - "3306:3306"
     volumes:
       - mariadb_data:/var/lib/mysql
     networks:
