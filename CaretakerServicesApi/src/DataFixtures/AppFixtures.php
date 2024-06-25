@@ -28,21 +28,9 @@ class AppFixtures extends Fixture
 
     public function load(ObjectManager $manager): void
     {
-        // Création d'un user "normal"
-        $user = new CsUser();
-        $user->setEmail("test@gmail.com");
-        $user->setFirstname("Test");
-        $user->setLastname("Test");
-        $user->setTelNumber("0606060606");
-        $user->setPassword($this->userPasswordHasher->hashPassword($user, "Test1234!"));
-        $user->setProfessional(false);
-        $user->setisVerified(false);
-        $user->setRoles(['ROLE_LESSOR']);
-        $manager->persist($user);
-
         $company = new CsCompany();
-        $company->setCompanyName("Boite de glands");
-        $company->setCompanyEmail("lesglands@gmail.com");
+        $company->setCompanyName("Philippe Électricité");
+        $company->setCompanyEmail("philippe.semloh@gmail.com");
         $company->setCompanyPhone("0606060606");
         $company->setSiretNumber("01022033304444");
         $company->setAddress("71, avenue d'Italie");
@@ -51,6 +39,18 @@ class AppFixtures extends Fixture
         $company->setCity("Paris");
         $company->setCountry("France");
         $manager->persist($company);
+
+        $user = new CsUser();
+        $user->setEmail("philippe.semloh@gmail.com");
+        $user->setFirstname("Philippe");
+        $user->setLastname("Semloh");
+        $user->setTelNumber("0606060606");
+        $user->setPassword($this->userPasswordHasher->hashPassword($user, "Test1234!"));
+        $user->setProfessional(true);
+        $user->setisVerified(true);
+        $user->setRoles(['ROLE_PROVIDER']);
+        $user->setCompany($company);
+        $manager->persist($user);
 
         $category = new CsCategory();
         $category->setName("Autres");
@@ -62,16 +62,21 @@ class AppFixtures extends Fixture
         $category->setColor("2A04C5");
         $manager->persist($category);
 
+        $category = new CsCategory();
+        $category->setName("Électricité");
+        $category->setColor("C2C538");
+        $manager->persist($category);
+
         $service = new CsService();
-        $service->setName("Francis Huster Ménage");
+        $service->setName("Dépannage électrique");
         $service->setCompany($company);
-        $service->setDescription("Test de description");
+        $service->setDescription("Nous venons réparer vos installations électriques à domicile en cas de panne. Nous intervenons rapidement et efficacement pour vous dépanner. Nous sommes disponibles 5j/7 et 12h/24.");
         $service->setPrice(85.5);
         $service->setCategory($category);
         $service->setAddressInputs(2);
         $service->setDaysOfWeek([1, 2, 3, 4, 5]);
-        $service->setStartTime("08:00");
-        $service->setEndTime("18:00");
+        $service->setStartTime("08:00:00");
+        $service->setEndTime("20:00:00");
         $manager->persist($service);
 
         $addon = new CsAddons();
@@ -80,9 +85,20 @@ class AppFixtures extends Fixture
 
         $images = ["https://tinyurl.com/ycyr8zdf", "https://tinyurl.com/9mmcfchx", "https://tinyurl.com/2ss5cam3", "https://tinyurl.com/6s9cpzhz", "https://tinyurl.com/bdeaxv7d", "https://tinyurl.com/mrxwuyy3", "https://tinyurl.com/mrxcrxfr", "https://tinyurl.com/5t4vwx47", "https://tinyurl.com/5bhk7a8f"];
 
-        for ($i=0; $i < 32; $i++) { 
+        $user = new CsUser();
+        $user->setEmail("leopoldg.discord@gmail.com");
+        $user->setFirstname("Léopold");
+        $user->setLastname("Goudier");
+        $user->setTelNumber("0606060606");
+        $user->setPassword($this->userPasswordHasher->hashPassword($user, "Test1234!"));
+        $user->setProfessional(false);
+        $user->setisVerified(true);
+        $user->setRoles(['ROLE_LESSOR']);
+        $manager->persist($user);
+
+        for ($i=0; $i < 20; $i++) { 
             $apartment = new CsApartment();
-            $apartment->setName("Mon super appart ".$i);
+            $apartment->setName("Bel appartement n°".$i);
             $apartment->setDescription("Contemplez le coucher de soleil sur les flots depuis la terrasse de cet appartement récemment rénové. Confortable et parfaitement aménagé, il possède une décoration soignée et des téléviseurs à écran plat dans chacune des deux chambres.\n\nDans le cadre de la pandémie de coronavirus (COVID-19), nous appliquons actuellement des mesures sanitaires supplémentaires.\n\nD'une superficie de 45 m2, l'appartement a été refait à neuf en 2018. J'ai choisi des matériaux et du mobilier \"comme si c'était pour moi\" : 2 chambres avec chacune sa petite salle d'eau, T.V écran plat au mur dans chaque chambre , séjour avec petite terrasse et vue mer magnifique, cuisine équipée d'un lave vaisselle, réfrigérateur/compartiment congélateur, four micro-onde et traditionnel, machine à laver le linge séchante, machine Nespresso et tout ce qu'il faut pour cuisiner :-)");
             $apartment->setBedrooms(4);
             $apartment->setBathrooms(4);
@@ -105,27 +121,51 @@ class AppFixtures extends Fixture
         }
 
         $user = new CsUser();
-        $user->setEmail("mathis.vareilles@yahoo.com");
-        $user->setFirstname("Mathis");
-        $user->setLastname("Vareilles");
-        $user->setTelNumber("0606060606");
-        $user->setPassword($this->userPasswordHasher->hashPassword($user, "Test1234!"));
-        $user->setProfessional(true);
-        $user->setisVerified(false);
-        $user->setRoles(['ROLE_PROVIDER']);
-        $user->setCompany($company);
-        $manager->persist($user);
-
-        $user = new CsUser();
-        $user->setEmail("test@yahoo.com");
-        $user->setFirstname("test");
-        $user->setLastname("test");
+        $user->setEmail("leopold.urahara@gmail.com");
+        $user->setFirstname("Leopold");
+        $user->setLastname("Urahara");
         $user->setTelNumber("0606060606");
         $user->setPassword($this->userPasswordHasher->hashPassword($user, "Test1234!"));
         $user->setProfessional(false);
         $user->setisVerified(true);
         $user->setRoles(['ROLE_TRAVELER']);
-        $manager->persist($user);     
+        $manager->persist($user);
+
+        $reservation = new CsReservation();
+        $reservation->setStartingDate(new \DateTime ("now"));
+        $reservation->setEndingDate(new \DateTime ("now + 5 days"));
+        $reservation->setUser($user);
+        $reservation->setAdultTravelers(2);
+        $reservation->setChildTravelers(1);
+        $reservation->addService($service);
+        $reservation->setApartment($apartment);
+        $reservation->setPrice(564);
+        $manager->persist($reservation);
+
+        $document = new CsDocument();
+        $document->setName("doc-667ac21af1ec5.pdf");
+        $document->setType("FACTURE");
+        $document->setUrl("https://caretakerservices.s3.eu-west-2.amazonaws.com/doc-667ac21af1ec5.pdf");
+        $document->setOwner($user);
+        $document->setReservation($reservation);
+        $manager->persist($document);
+
+        $document = new CsDocument();
+        $document->setName("doc-6fze51af1ec5.pdf");
+        $document->setType("FACTURE");
+        $document->setUrl("https://caretakerservices.s3.eu-west-2.amazonaws.com/doc-667ac21af1ec5.pdf");
+        $document->setOwner($user);
+        $document->setReservation($reservation);
+        $manager->persist($document);
+
+        $reservation = new CsReservation();
+        $reservation->setStartingDate(new \DateTime ("now"));
+        $reservation->setEndingDate(new \DateTime ("now"));
+        $reservation->setDateCreation(new \DateTime);
+        $reservation->setUser($user);
+        $reservation->setService($service);
+        $reservation->setPrice(50);
+        $manager->persist($reservation);
         
         for ($i=0; $i < 32; $i++) { 
             $user = new CsUser();
@@ -136,7 +176,7 @@ class AppFixtures extends Fixture
             $user->setPassword($this->userPasswordHasher->hashPassword($user, "Test1234!"));
             $user->setProfessional(false);
             $user->setisVerified(true);
-            $user->setRoles(['ROLE_LESSOR']);
+            $user->setRoles(['ROLE_TRAVELER']);
             $manager->persist($user);     
         }
         
@@ -151,45 +191,16 @@ class AppFixtures extends Fixture
         $userAdmin->setAdmin(true);
         $manager->persist($userAdmin);
 
-        $document = new CsDocument();
-        $document->setName("Facture Francis");
-        $document->setType("FACTURE");
-        $document->setUrl("test.s3");
-        $document->setOwner($userAdmin);
-        $manager->persist($document);
-
-        $document = new CsDocument();
-        $document->setName("Devis jean-pierre");
-        $document->setType("DEVIS");
-        $document->setUrl("test2.s3");
-        $document->setOwner($user);
-        $manager->persist($document);
-
-        $reservation = new CsReservation();
-        $reservation->setStartingDate(new \DateTime ("now"));
-        $reservation->setEndingDate(new \DateTime ("now + 5 days"));
-        $reservation->setDateCreation(new \DateTime);
-        $reservation->setUser($user);
-        $reservation->setAdultTravelers(2);
-        $reservation->setChildTravelers(1);
-        $reservation->addService($service);
-        $reservation->setApartment($apartment);
-        $reservation->setPrice(50);
-        $manager->persist($reservation);
-        
-        $reservation = new CsReservation();
-        $reservation->setStartingDate(new \DateTime ("now"));
-        $reservation->setEndingDate(new \DateTime ("now"));
-        $reservation->setDateCreation(new \DateTime);
-        $reservation->setUser($user);
-        $reservation->setService($service);
-        $reservation->setPrice(50);
-        $manager->persist($reservation);
-
-        $category = new CsCategory();
-        $category->setName("Jardinage");
-        $category->setColor("A00EE8");
-        $manager->persist($category);
+        $user = new CsUser();
+        $user->setEmail("mathis.vareilles@yahoo.com");
+        $user->setFirstname("Mathis");
+        $user->setLastname("Vareilles");
+        $user->setTelNumber("0606060606");
+        $user->setPassword($this->userPasswordHasher->hashPassword($user, "Test1234!"));
+        $user->setProfessional(true);
+        $user->setisVerified(false);
+        $user->setAdmin($company);
+        $manager->persist($user);
 
         $review = new CsReviews();
         $review->setRate(4);
@@ -201,7 +212,7 @@ class AppFixtures extends Fixture
 
         $review = new CsReviews();
         $review->setRate(5);
-        $review->setContent("Super séjour");
+        $review->setContent("Super intervention");
         $review->setPostDate(new \DateTime);
         $review->setService($service);
         $review->setAuthor($user);
