@@ -8,17 +8,17 @@ use App\Service\ApiHttpClient;
 use Symfony\Component\HttpFoundation\Request;
 
 
-
 class homeController extends AbstractController
 {
     private $apiHttpClient;
-    public function __construct(ApiHttpClient $apiHttpClient)
-        {
-            $this->apiHttpClient = $apiHttpClient;
-        }
 
-    #[Route("/" ,name: 'home')]
-    public function home(Request $request)
+    public function __construct(ApiHttpClient $apiHttpClient)
+    {
+        $this->apiHttpClient = $apiHttpClient;
+    }
+
+    #[Route("/" , name: 'home')]
+    public function home()
     {
         $client = $this->apiHttpClient->getClientWithoutBearer();
         $response = $client->request('GET', 'cs_users', [
