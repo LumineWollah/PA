@@ -360,7 +360,7 @@ class CsReservation
         return $this->isRequest;
     }
 
-    public function setRequest(bool $isRequest): static
+    public function setisRequest($isRequest) 
     {
         $this->isRequest = $isRequest;
 
