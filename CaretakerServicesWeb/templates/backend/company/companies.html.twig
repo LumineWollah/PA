@@ -57,6 +57,7 @@
                         <th scope="col">Email</th>
                         <th scope="col">Téléphone</th>
                         <th scope="col">Ville</th>
+                        <th scope="col">Date d'inscription</th>
                         <th scope="col">Actions</th>
                     </tr>
                 </thead>
@@ -67,6 +68,7 @@
                             <td>{{ company.companyEmail }}</td>
                             <td>{{ company.companyPhone|split('', 2)|join('.') }}</td>
                             <td>{{ company.city }}</td>
+                            <td>{{ company.dateInscription | date('d/m/Y H:i:s') }}</td>
                             <td class="action">
                                 <a href="{{ path('companyDelete', {'id': company.id}) }}" class="btn" style="background-color: #EE3939;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/bin.png') }}></div></a>
                                 <form action="{{ path('companyEdit') }}" method="post" style="display: inline;">
