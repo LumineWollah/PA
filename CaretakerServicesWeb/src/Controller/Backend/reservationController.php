@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
@@ -90,6 +91,7 @@ class reservationController extends AbstractController
                 'endingDate' => new \DateTime($reservation['endingDate']),
                 'price' => $reservation['price'],
                 'client' => $reservation['user']['id'],
+                'request' => $reservation['request']
             ];
 
             if (isset($reservation['service'])) {
@@ -184,6 +186,8 @@ class reservationController extends AbstractController
         ])
         ->add("client", ChoiceType::class, [
             "choices" => $userChoice,
+        ])
+        ->add("client", CheckboxType::class, [
         ])
         ->getForm()->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()){
@@ -315,6 +319,8 @@ class reservationController extends AbstractController
             ])
             ->add("client", ChoiceType::class, [
                 "choices" => $userChoice,
+            ])
+            ->add("client", CheckboxType::class, [
             ])
             ->getForm()->handleRequest($request);
 
