@@ -41,24 +41,28 @@ class connectionController extends AbstractController
     #[Route('/logout', name: 'logoutFunc')]
     public function logout()
     {
-        $expireTime = time() - 3600;
+        $expireTime = time() + 1;
 
         $responseCookie = new Response();
 
-        $cookie = Cookie::create('token', '', $expireTime, '/', null, true, true);
-        $responseCookie->headers->setCookie($cookie);
-        $cookie = Cookie::create('roles', '', $expireTime, '/', null, true, true);
-        $responseCookie->headers->setCookie($cookie);
-        $cookie = Cookie::create('id', '', $expireTime, '/', null, true, true);
-        $responseCookie->headers->setCookie($cookie);
-        $cookie = Cookie::create('profile_pict', '', $expireTime, '/', null, true, true);
-        $responseCookie->headers->setCookie($cookie);
-        $cookie = Cookie::create('lastname', '', $expireTime, '/', null, true, true);
-        $responseCookie->headers->setCookie($cookie);
-        $cookie = Cookie::create('firstname', '', $expireTime, '/', null, true, true);
-        $responseCookie->headers->setCookie($cookie);
+        $cookie0 = Cookie::create('token', '', $expireTime, '/', null, true, true);
+        $cookie1 = Cookie::create('roles', '', $expireTime, '/', null, true, true);
+        $cookie2 = Cookie::create('id', '', $expireTime, '/', null, true, true);
+        $cookie3 = Cookie::create('profile_pict', '', $expireTime, '/', null, true, true);
+        $cookie4 = Cookie::create('lastname', '', $expireTime, '/', null, true, true);
+        $cookie5 = Cookie::create('firstname', '', $expireTime, '/', null, true, true);
+        $cookie6 = Cookie::create('email', '', $expireTime, '/', null, true, true);
 
-        return $this->redirectToRoute('login');
+        $redirectResponse = new RedirectResponse($this->generateUrl('login'));
+        $redirectResponse->headers->setCookie($cookie0);
+        $redirectResponse->headers->setCookie($cookie1);
+        $redirectResponse->headers->setCookie($cookie2);
+        $redirectResponse->headers->setCookie($cookie3);
+        $redirectResponse->headers->setCookie($cookie4);
+        $redirectResponse->headers->setCookie($cookie5);
+        $redirectResponse->headers->setCookie($cookie6);
+
+        return $redirectResponse;    
     }
 
     #[Route('/login', name: 'login')]
@@ -132,41 +136,30 @@ class connectionController extends AbstractController
             
             unset($response['user']['roles'][array_search('ROLE_USER', $response['user']['roles'])]);
 
-            // $responseCookie = new Response();
-
             $cookie0 = Cookie::create('token', $response['token'], 0, '/', null, true, true);
-            // $responseCookie->headers->setCookie($cookie);
             $cookie1 = Cookie::create('roles', $response['user']['roles'][0], 0, '/', null, true, true);
-            // $responseCookie->headers->setCookie($cookie);
             $cookie2 = Cookie::create('id', $response['user']['id'], 0, '/', null, true, true);
-            // $responseCookie->headers->setCookie($cookie);
             $cookie3 = Cookie::create('profile_pict', $response['user']['profile_pict'], 0, '/', null, true, true);
-            // $responseCookie->headers->setCookie($cookie);
             $cookie4 = Cookie::create('lastname', $response['user']['lastname'], 0, '/', null, true, true);
-            // $responseCookie->headers->setCookie($cookie);
             $cookie5 = Cookie::create('firstname', $response['user']['firstname'], 0, '/', null, true, true);
-            // $responseCookie->headers->setCookie($cookie);
             $cookie6 = Cookie::create('email', $response['user']['email'], 0, '/', null, true, true);
-            // $responseCookie->headers->setCookie($cookie);
-            // $responseCookie->send();
             
             if ($request->get('redirect')) {
-                // return $this->redirect($request->get('redirect'));
-                $redirectResponse = new RedirectResponse($this->generateUrl($request->get('redirect')));
-            }
-
-            if ($response['user']['roles'][0] == "ROLE_LESSOR"){
-                $redirectResponse = new RedirectResponse($this->generateUrl('myApartmentsList'));
-                // return $this->redirectToRoute('myApartmentsList');
-            }elseif ($response['user']['roles'][0] == "ROLE_ADMIN"){
-                $redirectResponse = new RedirectResponse($this->generateUrl('apartmentCrud'));
-                // return $this->redirectToRoute('apartmentCrud');
-            }elseif ($response['user']['roles'][0] == "ROLE_PROVIDER"){
-                $redirectResponse = new RedirectResponse($this->generateUrl('myServicesList'));
-                // return $this->redirectToRoute('myServicesList');
-            }elseif ($response['user']['roles'][0] == "ROLE_TRAVELER"){
-                $redirectResponse = new RedirectResponse($this->generateUrl('apartmentsList'));
-                // return $this->redirectToRoute('apartmentsList');
+                if ($request->get('id') != null) {
+                    $redirectResponse = new RedirectResponse($this->generateUrl($request->get('redirect'), ['id'=>$request->get('id')]));
+                } else {
+                    $redirectResponse = new RedirectResponse($this->generateUrl($request->get('redirect')));
+                }
+            }else {
+                if ($response['user']['roles'][0] == "ROLE_LESSOR"){
+                    $redirectResponse = new RedirectResponse($this->generateUrl('myApartmentsList'));
+                }elseif ($response['user']['roles'][0] == "ROLE_ADMIN"){
+                    $redirectResponse = new RedirectResponse($this->generateUrl('apartmentCrud'));
+                }elseif ($response['user']['roles'][0] == "ROLE_PROVIDER"){
+                    $redirectResponse = new RedirectResponse($this->generateUrl('myServicesList'));
+                }elseif ($response['user']['roles'][0] == "ROLE_TRAVELER"){
+                    $redirectResponse = new RedirectResponse($this->generateUrl('apartmentsList'));
+                }
             }
 
             $redirectResponse->headers->setCookie($cookie0);

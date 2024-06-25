@@ -62,6 +62,7 @@ class CsDocument
     private ?CsUser $owner = null;
 
     #[ORM\ManyToOne(inversedBy: 'documents')]
+    #[ORM\JoinColumn(nullable: false)]
     #[Groups(["getDocuments"])]
     private ?CsReservation $attachedReserv = null;
 

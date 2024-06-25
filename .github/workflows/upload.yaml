@@ -29,3 +29,4 @@ jobs:
           git reset --hard origin/dev
 
           docker-compose up -d --build
+          docker exec -it web bash -c "php bin/console c:c && chmod -R 777 var/"

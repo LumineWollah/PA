@@ -31,7 +31,7 @@
         <div class="row servRow">
             {% for j in range(i*4, (i*4)+3) %}
                 {% if j < category.services|length %}
-                    <a class="col-3 companyContainer categoryServicesContainer" href={{ path('providersDetail', {'id': category.services[j].id}) }}>               
+                    <a class="col-3 companyContainer categoryServicesContainer" href={{ path('serviceDetail', {'id':value[j].id}) }}>               
                         <div class="imgContainer">
                             {% if category.services[j].coverImage is not defined or category.services[j].coverImage is null %}
                                 <img src={{ asset('icons/profile_pict_default_company.png') }}>

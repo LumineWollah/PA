@@ -38,7 +38,7 @@ class reservationsController extends AbstractController
     #[Route('/reservation/{id}/pay', 'reservPay')]
     public function reservPay(Request $request){
         $data = $request->getSession()->get('reservData');
-        $apName = $request->getSession()->get('apName');
+        $objName = $request->getSession()->get('objName');
 
         $success = $this->generateUrl('reservPaySucc', [], UrlGeneratorInterface::ABSOLUTE_URL);
         $failure = $this->generateUrl('reservPayFail');
@@ -51,7 +51,7 @@ class reservationsController extends AbstractController
         ]);
     
         $product = \Stripe\Product::create([
-            'name' => $apName,
+            'name' => $objName,
         ]);
 
         $price = \Stripe\Price::create([
@@ -106,13 +106,18 @@ class reservationsController extends AbstractController
         $data['payementId'] = $paymentIntent->id;
 
         $userId = explode('/', $data['user'])[2];
-        $apId = explode('/', $data['apartment'])[2];
+        if (isset($data['apartment'])){
+            $objId = explode('/', $data['apartment'])[2];
+            $apResp = $client->request('GET', 'cs_apartments/'.$objId);
+            $obj = $apResp->toArray();
+        } else {
+            $objId = explode('/', $data['service'])[2];
+            $servResp = $client->request('GET', 'cs_services/'.$objId);
+            $obj = $servResp->toArray();
+        }
 
         $userResp = $client->request('GET', 'cs_users/'.$userId);
         $user = $userResp->toArray();
-
-        $apResp = $client->request('GET', 'cs_apartments/'.$apId);
-        $ap = $apResp->toArray();
 
         $response = $client->request('POST', 'cs_reservations', [
             'json' => $data,
@@ -131,11 +136,13 @@ class reservationsController extends AbstractController
 
         $data['services'] = [];
 
-        for ($i=0; $i < count($data['services']); $i++) { 
-            $qteArray .= "<p>1</p>";
-            $servName .= "<p>".$data['services'][$i]['name']."</p>";
-            $servPrice .= "<p>".number_format($data['services'][$i]['price'], 2)."</p>";
-            $total += $data['services'][$i]['price'];
+        if (isset($data['services'])){
+            for ($i=0; $i < count($data['services']); $i++) { 
+                $qteArray .= "<p>1</p>";
+                $servName .= "<p>".$data['services'][$i]['name']."</p>";
+                $servPrice .= "<p>".number_format($data['services'][$i]['price'], 2)."</p>";
+                $total += $data['services'][$i]['price'];
+            }
         }
 
         $html = '
@@ -170,7 +177,7 @@ class reservationsController extends AbstractController
         </div>
         <div style="position: absolute; left: 20%; margin-top: 25px;">
             <p><b>DÉSIGNATION</b></p>
-            <p>'.$ap['name'].'</p>'.$servName.'
+            <p>'.$obj['name'].'</p>'.$servName.'
         </div>
         <div style="position: absolute; right: 25%; margin-top: 25px; text-align: right;">
             <p><b>PRIX UNIT. H.T.</b></p>
@@ -205,7 +212,7 @@ class reservationsController extends AbstractController
                 "type" => "Facture",
                 "url" => $resultS3['link'],
                 "owner" => "api/cs_users/".$userId,
-                "attachedReserv" => "api/cs_reservations/".$reservId
+                "reservation" => "api/cs_reservations/".$reservId
             ],
         ]);
 
@@ -217,7 +224,7 @@ class reservationsController extends AbstractController
 
         $mailer->send($email);
         
-        return $this->redirectToRoute('apartmentsList');
+        return $this->redirectToRoute('myProfile');
     }
 
     #[Route('/reservation/pay/failure', 'reservPayFail')]

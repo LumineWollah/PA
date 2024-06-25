@@ -48,6 +48,15 @@ class servicesController extends AbstractController
         Stripe::setApiKey($stripeKeyPrivate);
     }
 
+    private function extractValueByPrefix($data, $prefix) {
+        foreach ($data as $item) {
+            if (is_array($item) && strpos($item['id'], $prefix) === 0) {
+                return $item['text'];
+            }
+        }
+        return null;
+    }
+
     #[Route('/services', name: 'servicesList')]
     public function servicesList(Request $request)
     {
@@ -489,25 +498,18 @@ class servicesController extends AbstractController
     {
         $client = $this->apiHttpClient->getClientWithoutBearer();
 
-        $responseApart = $client->request('GET', 'cs_services/'.$id);
+        $responseServ = $client->request('GET', 'cs_services/'.$id);
         
-        if ($responseApart->getStatusCode() == 404) {
+        if ($responseServ->getStatusCode() == 404) {
             return $this->redirectToRoute('servicesList');
         }
 
-        $ap = $responseApart->toArray();
-
-        $defaults = [
-            "adultTravelers"=>0,
-            "childTravelers"=>0,
-            "babyTravelers"=>0,
-            "price"=>0
-        ];
+        $serv = $responseServ->toArray();
 
         $responseReserv = $client->request('GET', 'cs_reservations', [
             'query' => [
                 'page' => 1,
-                'apartment' => $ap['id']
+                'service' => $serv['id']
             ]
         ]);
 
@@ -517,14 +519,13 @@ class servicesController extends AbstractController
 
         foreach($reservs['hydra:member'] as $reserv) {
             $formattedStartingDate = substr($reserv["startingDate"], 0, 10);
-            $formattedEndingDate = substr($reserv["endingDate"], 0, 10);
-            $datesRangeReservs[] = [$formattedStartingDate, $formattedEndingDate];
+            $datesRangeReservs[] = [$formattedStartingDate];
         }
 
-        $form = $this->createFormBuilder($defaults)
-        ->add("dates", TextType::class, [
+        $form = $this->createFormBuilder()
+        ->add("date", TextType::class, [
             "attr"=>[
-                "placeholder"=>"Départ - Arrivée",
+                "placeholder"=>"Date de l'intervention",
                 'autocomplete'=>"off",
                 'readonly'=>'readonly',
                 'required'=>true
@@ -532,89 +533,74 @@ class servicesController extends AbstractController
             'constraints'=>[
                 new NotBlank(),
             ]
-        ])
-        ->add("adultTravelers", IntegerType::class, [
-            'constraints'=>[
-                new NotBlank(),
-                new PositiveOrZero()
-            ],
-            'attr' => [
-                'min' => 0,
-                'max' => $ap['travelersMax']
-            ]
-        ])
-        ->add("childTravelers", IntegerType::class, [
-            'constraints'=>[
-                new NotBlank(),
-                new PositiveOrZero()
-            ],
-            'attr' => [
-                'min' => 0,
-                'max' => $ap['travelersMax']
-            ]
-        ])
-        ->add("babyTravelers", IntegerType::class, [
-            'constraints'=>[
-                new NotBlank(),
-                new PositiveOrZero()
-            ],
-            'attr' => [
-                'min' => 0
-            ]
-        ])
-        ->getForm()->handleRequest($request);
+            ]);
+
+        for ($i=0; $i < $serv['addressInputs']; $i++) { 
+            $form = $form->add("address".$i, HiddenType::class, [
+                "constraints"=>[
+                    new NotBlank([
+                        'message' => 'L\'adresse est obligatoire',
+                    ]),
+                ],
+            ]);
+        }
+
+        $form = $form->getForm()->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
-
             $id = $request->cookies->get('id');
             
             if ($id == null) {
-                return $this->redirectToRoute('login', ['redirect'=>'/apartment/'.$ap['id']]);
+                return $this->redirectToRoute('login', ['redirect'=>'serviceDetail', 'id'=>$serv['id']]);
             }
 
-            $dates = explode(" ", $data['dates']);
+            $data['otherData'] = [];
 
-            $startDateTime = DateTime::createFromFormat('d/m/Y', trim($dates[1]));
-            $endDateTime = DateTime::createFromFormat('d/m/Y', trim($dates[3]));
+            for ($i=0; $i < $serv['addressInputs']; $i++) { 
+                $data['address'.$i] = json_decode($data['address'.$i], true);
+                
+                $data['otherData']["address".$i] = [];
+            
+                $data['otherData']["address".$i]["country"] = $this->extractValueByPrefix($data["address".$i]['context'], 'country');
+                $data['otherData']["address".$i]["city"] = $this->extractValueByPrefix($data["address".$i]['context'], 'place');
+                $data['otherData']["address".$i]["postalCode"] = $this->extractValueByPrefix($data["address".$i]['context'], 'postcode');
+                $data['otherData']["address".$i]["centerGps"] = $data['address'.$i]['center'];                
+                $data['otherData']["address".$i]["address"] = $data['address'.$i]['place_name'];
 
-            $duration = $endDateTime->diff($startDateTime)->format("%a");
+                unset($data['address'.$i]);
+            }          
 
+            $date = explode(" ", $data['date']);
+            $startDateTime = DateTime::createFromFormat('d/m/Y', trim($date[1]));
             $startDateTime = $startDateTime->format('Y-m-d');
-            $endDateTime = $endDateTime->format('Y-m-d');
-
             $data['startingDate'] = $startDateTime;
-            $data['endingDate'] = $endDateTime;
-            unset($data['dates']);
+            $data['endingDate'] = $startDateTime;
+            unset($data['date']);
 
-            $price = $duration * $ap['price'];
-            $data['price'] = $price + (0.03 * $price) + ($data['adultTravelers'] * (0.005 * $price));
+            $data['price'] = $serv['price'];
             
             $data['user'] = 'api/cs_users/'.$id;
-            $data['apartment'] = 'api/cs_apartments/'.$ap['id'];
+            $data['service'] = 'api/cs_services/'.$serv['id'];
 
-            if ($data['adultTravelers'] + $data['childTravelers'] > $ap['travelersMax']) {
-                return $this->redirectToRoute('apartmentsList', ['id' => $ap['id']]);
-            }
-
-            $response = $client->request('POST', 'cs_apartments/availables/'.$ap['id'], [
+            $response = $client->request('POST', 'cs_services/availables/'.$serv['id'], [
                 'json' => [
                     'starting_date' => $startDateTime,
-                    'ending_date' => $endDateTime
+                    'ending_date' => $startDateTime
                 ]
             ]);
 
             if (!(($response->toArray())['available'])) {
-                return $this->redirectToRoute('apartmentsList', ['id' => $ap['id']]);
+                return $this->redirectToRoute('servicesList', ['id' => $serv['id']]);
             }
 
             $request->getSession()->set('reservData', $data);
-            $request->getSession()->set('apName', $ap['name']);
-            return $this->redirectToRoute('reservPay', ['id'=>$ap['id']]);
+            $request->getSession()->set('objName', $serv['name']);
+            return $this->redirectToRoute('reservPay', ['id'=>$serv['id']]);
         }
 
-        return $this->render('frontend/apartments/apartmentDetail.html.twig', [
-            'apartment'=>$ap,
+        return $this->render('frontend/services/servicesDetail.html.twig', [
+            'service'=>$serv,
             'form'=>$form,
             'datesRangeReservs'=>$datesRangeReservs
         ]);

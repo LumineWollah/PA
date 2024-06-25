@@ -40,7 +40,7 @@
                                                     <div class="card-body">
                                                         <h5 class="card-title title">{{ value[j].name }}</h5>
                                                         <p class="card-text desc">{{ value[j].description }}</p>
-                                                        <a href="#" class="btn contactBtn">RÉSERVER</a>
+                                                        <a href="{{ path('serviceDetail', {'id':value[j].id}) }}" class="btn contactBtn">RÉSERVER</a>
                                                     </div>
                                                 </div>
                                             {% endif %}

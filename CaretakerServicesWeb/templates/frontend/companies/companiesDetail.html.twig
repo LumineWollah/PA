@@ -59,7 +59,7 @@
                                                     <div class="card-body">
                                                         <h5 class="card-title title">{{ company.services[j].name }}</h5>
                                                         <p class="card-text desc">{{ company.services[j].description }}</p>
-                                                        <a href="#" class="btn contactBtn">RÉSERVER</a>
+                                                        <a href="{{ path('serviceDetail', {'id':company.services[j].id}) }}" class="btn contactBtn">RÉSERVER</a>
                                                     </div>
                                                 </div>
                                             {% endif %}

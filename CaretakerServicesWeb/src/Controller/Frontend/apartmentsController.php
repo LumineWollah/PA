@@ -712,7 +712,7 @@ class apartmentsController extends AbstractController
             $id = $request->cookies->get('id');
             
             if ($id == null) {
-                return $this->redirectToRoute('login', ['redirect'=>'/apartment/'.$ap['id']]);
+                return $this->redirectToRoute('login', ['redirect'=>'apartmentsDetail', 'id'=>$ap['id']]);
             }
 
             $dates = explode(" ", $data['dates']);
@@ -751,7 +751,7 @@ class apartmentsController extends AbstractController
             }
 
             $request->getSession()->set('reservData', $data);
-            $request->getSession()->set('apName', $ap['name']);
+            $request->getSession()->set('objName', $ap['name']);
             return $this->redirectToRoute('reservPay', ['id'=>$ap['id']]);
         }
 
