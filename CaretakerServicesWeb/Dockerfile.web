@@ -9,7 +9,8 @@ RUN apt-get update && apt-get install -y \
     intl \
     pdo \
     pdo_mysql \
-    zip
+    zip \
+    gd
 
 COPY apache/vhost.conf /etc/apache2/sites-available/000-default.conf
 
