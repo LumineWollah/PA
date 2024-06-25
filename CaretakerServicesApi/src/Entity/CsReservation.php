@@ -40,7 +40,6 @@ class CsReservation
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[Groups(["getReservations", "getUsers", "getApartments"])]
-
     private ?\DateTimeInterface $endingDate = null;
 
     #[ORM\Column()]
@@ -102,7 +101,12 @@ class CsReservation
     private ?DateTime $dateCreation = null;
 
     #[ORM\Column(nullable: true)]
+    #[Groups(["getReservations", "getUsers", "getApartments"])]
     private ?array $otherData = null;
+
+    #[ORM\Column]
+    #[Groups(["getReservations", "getUsers", "getApartments"])]
+    private ?bool $isRequest = false;
 
     public function __construct()
     {
@@ -347,6 +351,18 @@ class CsReservation
     public function setOtherData(?array $otherData): static
     {
         $this->otherData = $otherData;
+
+        return $this;
+    }
+
+    public function isRequest(): ?bool
+    {
+        return $this->isRequest;
+    }
+
+    public function setRequest(bool $isRequest): static
+    {
+        $this->isRequest = $isRequest;
 
         return $this;
     }

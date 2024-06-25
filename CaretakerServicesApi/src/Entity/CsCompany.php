@@ -20,6 +20,7 @@ use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use App\Controller\CsCompanyController;
+use DateTime;
 
 #[ApiResource(operations: [
     new Delete(
@@ -97,8 +98,13 @@ class CsCompany
     #[Groups(["getCompanies"])]
     private Collection $categories;
 
+    #[ORM\Column]
+    #[Groups(["getUsers", "getCompanies", "getServices", "getReservations"])]
+    private ?DateTime $dateInscription = null;
+    
     public function __construct()
     {
+        $this->dateInscription = new DateTime();
         $this->users = new ArrayCollection();
         $this->categories = new ArrayCollection();
     }
@@ -308,6 +314,18 @@ class CsCompany
     public function removeCategory(CsCategory $category): static
     {
         $this->categories->removeElement($category);
+
+        return $this;
+    }
+
+    public function getDateInscription(): ?\DateTimeInterface
+    {
+        return $this->dateInscription;
+    }
+
+    public function setDateInscription(\DateTimeInterface $dateInscription): static
+    {
+        $this->dateInscription = $dateInscription;
 
         return $this;
     }
