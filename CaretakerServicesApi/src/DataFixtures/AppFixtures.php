@@ -158,7 +158,7 @@ class AppFixtures extends Fixture
         $document->setType("FACTURE");
         $document->setUrl("https://caretakerservices.s3.eu-west-2.amazonaws.com/doc-667ac21af1ec5.pdf");
         $document->setOwner($user);
-        $document->setReservation($reservation);
+        $document->setattachedReserv($reservation);
         $manager->persist($document);
 
         $document = new CsDocument();
@@ -166,7 +166,7 @@ class AppFixtures extends Fixture
         $document->setType("FACTURE");
         $document->setUrl("https://caretakerservices.s3.eu-west-2.amazonaws.com/doc-667ac21af1ec5.pdf");
         $document->setOwner($user);
-        $document->setReservation($reservation);
+        $document->setattachedReserv($reservation);
         $manager->persist($document);
 
         $reservation = new CsReservation();
