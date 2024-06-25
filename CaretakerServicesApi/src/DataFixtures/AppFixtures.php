@@ -68,6 +68,17 @@ class AppFixtures extends Fixture
         $manager->persist($category);
 
         $service = new CsService();
+        $service->setName("Installation électrique");
+        $service->setCompany($company);
+        $service->setDescription("Nous installons vos installations électriques à domicile. Nous intervenons rapidement et efficacement pour vous dépanner. Nous sommes disponibles 5j/7 et 12h/24.");
+        $service->setCategory($category);
+        $service->setAddressInputs(1);
+        $service->setDaysOfWeek([1, 2, 3, 4, 5]);
+        $service->setStartTime("08:00:00");
+        $service->setEndTime("20:00:00");
+        $manager->persist($service);
+
+        $service = new CsService();
         $service->setName("Dépannage électrique");
         $service->setCompany($company);
         $service->setDescription("Nous venons réparer vos installations électriques à domicile en cas de panne. Nous intervenons rapidement et efficacement pour vous dépanner. Nous sommes disponibles 5j/7 et 12h/24.");

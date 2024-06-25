@@ -595,7 +595,6 @@ class servicesController extends AbstractController
 
                     $addresses .= '<p>Adresse n°'.($i+1).' : '.$data['otherData']["address".$i]["address"].'</p>';
 
-
                     unset($data['address'.$i]);
                 }
 
@@ -607,15 +606,23 @@ class servicesController extends AbstractController
 
                 $mailer->send($email);
 
+                $date = explode(" ", $data['date']);
+                $startDateTime = DateTime::createFromFormat('d/m/Y', trim($date[1]));
+                $startDateTime = $startDateTime->format('Y-m-d');
+
+                $data = [
+                    'request' => true,
+                    'user' => 'api/cs_users/'.$id,
+                    'service' => 'api/cs_services/'.$serv['id'],
+                    'startingDate' => $startDateTime,
+                    'endingDate' => $startDateTime,
+                    'otherData' => $data['otherData'],
+                    'price' => 0,
+                    'active' => false,
+                ];
+
                 $response = $client->request('POST', 'cs_reservations', [
-                    'json' => [
-                        'request' => true,
-                        'user' => 'api/cs_users/'.$id,
-                        'service' => 'api/cs_services/'.$serv['id'],
-                        'startingDate' => $data['date'],
-                        'endingDate' => $data['date'],
-                        'otherData' => $data,
-                    ],
+                    'json' => $data
                 ]);
 
                 return $this->redirectToRoute('myRequests');

@@ -355,7 +355,7 @@ class CsReservation
         return $this;
     }
 
-    public function isRequest(): ?bool
+    public function getisRequest(): ?bool
     {
         return $this->isRequest;
     }
