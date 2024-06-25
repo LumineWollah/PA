@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller\Backend;
+namespace App\Controller\Frontend;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -20,7 +20,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\File;
 
-class reviewController extends AbstractController
+class reviewsController extends AbstractController
 {
     private $apiHttpClient;
     private $amazonS3Client;
