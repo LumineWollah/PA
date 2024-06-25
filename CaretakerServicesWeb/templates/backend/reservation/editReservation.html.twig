@@ -29,7 +29,8 @@
                     {{form_widget(form.client)}}
                 </div>
                 <div class="inputDiv" style="position: relative;">
-                    {{form_widget(form.request)}}
+                    {{ form_label(form.isRequest) }}
+                    {{form_widget(form.isRequest)}}
                 </div>
                 <button type="submit" class="btn">Modifier</button>
             {{form_end(form)}}

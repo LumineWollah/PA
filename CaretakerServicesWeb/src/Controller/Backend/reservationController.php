@@ -91,7 +91,7 @@ class reservationController extends AbstractController
                 'endingDate' => new \DateTime($reservation['endingDate']),
                 'price' => $reservation['price'],
                 'client' => $reservation['user']['id'],
-                'request' => $reservation['request']
+                'isRequest' => $reservation['isRequest']
             ];
 
             if (isset($reservation['service'])) {
@@ -187,10 +187,8 @@ class reservationController extends AbstractController
         ->add("client", ChoiceType::class, [
             "choices" => $userChoice,
         ])
-        ->add("request", CheckboxType::class, [
-            "attr" => [
-                "label" => "Demande",
-            ],
+        ->add("isRequest", CheckboxType::class, [
+            "label" => "Demande",
         ])
         ->getForm()->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()){
@@ -323,10 +321,8 @@ class reservationController extends AbstractController
             ->add("client", ChoiceType::class, [
                 "choices" => $userChoice,
             ])
-            ->add("request", CheckboxType::class, [
-                "att" => [
-                    "label" => "Demande",
-                ],
+            ->add("isRequest", CheckboxType::class, [
+                "label" => "Demande",
             ])
             ->getForm()->handleRequest($request);
 
