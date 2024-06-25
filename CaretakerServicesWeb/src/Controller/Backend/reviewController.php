@@ -367,22 +367,4 @@ class reviewController extends AbstractController
             'errorMessage'=>null,
         ]);
     }
-    
-    #[Route('/admin-panel/apartment/accept', name: 'apartmentAccept')]
-    public function apartmentAccept(Request $request)
-    {
-        if (!$this->checkUserRole($request)) {return $this->redirectToRoute('login');}
-
-        $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/merge-patch+json');
-
-        $id = $request->query->get('id');
-
-        $response = $client->request('PATCH', 'cs_apartments/'.$id, [
-            'json' => [
-                'isVerified'=>true
-            ],
-        ]);
-        
-        return $this->redirectToRoute('apartmentCrud');
-    }
 }

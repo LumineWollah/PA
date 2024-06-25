@@ -187,7 +187,10 @@ class reservationController extends AbstractController
         ->add("client", ChoiceType::class, [
             "choices" => $userChoice,
         ])
-        ->add("client", CheckboxType::class, [
+        ->add("request", CheckboxType::class, [
+            "attr" => [
+                "label" => "Demande",
+            ],
         ])
         ->getForm()->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()){
@@ -320,7 +323,10 @@ class reservationController extends AbstractController
             ->add("client", ChoiceType::class, [
                 "choices" => $userChoice,
             ])
-            ->add("client", CheckboxType::class, [
+            ->add("request", CheckboxType::class, [
+                "att" => [
+                    "label" => "Demande",
+                ],
             ])
             ->getForm()->handleRequest($request);
 
