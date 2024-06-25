@@ -20,7 +20,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\File;
 
-class reviewsController extends AbstractController
+class reviewController extends AbstractController
 {
     private $apiHttpClient;
     private $amazonS3Client;
