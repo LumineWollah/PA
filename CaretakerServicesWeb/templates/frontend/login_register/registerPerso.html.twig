@@ -45,6 +45,13 @@
                 {{form_widget(formPerso.confirmation)}}
             </div>
         </div>
+        <div class="inputDivRow">
+            <div class="errors">{{form_errors(formPerso.profilePict)}}</div>
+            <div class="inputDivCenter"> 
+                <img src="{{ asset('icons/login/lock.png') }}" alt="Lastname" class="inputLogo">
+                {{form_widget(formPerso.profilePict)}}
+            </div>
+        </div>
         <button type="submit" class="btn registerBtn">Se connecter</button>
     {{form_end(formPerso)}}
 </div>

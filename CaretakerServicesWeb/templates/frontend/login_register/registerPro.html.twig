@@ -78,9 +78,14 @@
         </div>
         <div class="inputDivRow">
             <div class="errors">{{form_errors(formPro.address)}}</div>
-            <div class="inputDivCenter"> 
+            <div class="inputDiv"> 
                 <div id="geocoder"><img src="{{ asset('icons/login/lock.png') }}" alt="Lastname" class="inputLogoAdress"></div>
                 {{form_widget(formPro.address)}}
+            </div>
+            <div class="errors">{{form_errors(formPro.profilePict)}}</div>
+            <div class="inputDiv"> 
+                <img src="{{ asset('icons/login/lock.png') }}" alt="Lastname" class="inputLogo">
+                {{form_widget(formPro.profilePict)}}
             </div>
         </div>
         <button type="submit" class="btn registerBtn mt-3">Se connecter</button>
