@@ -129,7 +129,7 @@ class connectionController extends AbstractController
             ]);
 
             
-            if ($responseBan->toArray()["hydra:member"][0]["isBan"] == true){
+            if ($responseBan->toArray()["hydra:member"][0]["isBan"] == true && $responseBan->toArray()["hydra:member"][0]["roles"][0] != "ROLE_ADMIN"){
                 $errorMessage = "Ce compte est banni";
                 return $this->render('frontend/login_register/login.html.twig', [
                     'form'=>$form,

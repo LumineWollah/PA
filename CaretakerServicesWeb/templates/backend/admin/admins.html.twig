@@ -64,34 +64,16 @@
                 <tbody>
                     {% for admin in admins %}
                         <tr>
-                            <td {% if admin['isBan'] %} style="background-color: #FFB5B5;"{% endif %}>{{ admin.firstname|capitalize }}</td>
-                            <td {% if admin['isBan'] %} style="background-color: #FFB5B5;"{% endif %}>{{ admin.lastname|upper }}</td>
-                            <td {% if admin['isBan'] %} style="background-color: #FFB5B5;"{% endif %}>{{ admin.email }}</td>
-                            <td {% if admin['isBan'] %} style="background-color: #FFB5B5;"{% endif %}>{{ admin.telNumber|split('', 2)|join('.') }}</td>
-                            <td {% if admin['isBan'] %} style="background-color: #FFB5B5;"{% endif %}>{{ admin.dateInscription | date('d/m/Y H:i:s') }}</td>
-                            <td class="action" {% if admin['isBan'] %} style="background-color: #FFB5B5;"{% endif %}>
-                                <a href="{{ path('userDelete', {'id': admin.id, 'origin': 'adminList'}) }}" class="btn" style="background-color: #EE3939;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/bin.png') }}></div></a>
-                                <form action="{{ path('adminEdit') }}" method="post" style="display: inline;">
-                                    <input type="hidden" name="admin" value="{{ admin|json_encode }}">
-                                    <button type="submit" class="btn" style="background-color: #18A0FB;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/pen.png') }}></div></button>
-                                </form>
+                            <td>{{ admin.firstname|capitalize }}</td>
+                            <td>{{ admin.lastname|upper }}</td>
+                            <td>{{ admin.email }}</td>
+                            <td>{{ admin.telNumber|split('', 2)|join('.') }}</td>
+                            <td>{{ admin.dateInscription | date('d/m/Y H:i:s') }}</td>
+                            <td class="action" >
                                 <form action="{{ path('userShow') }}" method="post" style="display: inline;">
                                     <input type="hidden" name="user" value="{{ admin|json_encode }}">
                                     <button type="submit" class="btn" style="background-color: #A594F9;"><div class="btnImage"><img style="height:17px;" src={{ asset('icons/crud/chart.png') }}></div></button>
                                 </form>
-                                {% if admin['isBan'] %}
-                                    <form action="{{ path('userUnban') }}" method="post" style="display: inline;">
-                                    <input type="hidden" name="user" value="{{ admin|json_encode }}">
-                                    <input type="hidden" name="origin" value="adminList">
-                                    <button type="submit" class="btn" style="background-color: #29b95f;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/ban.png') }}></div></button>
-                                    </form>
-                                {% else %}
-                                    <form action="{{ path('userBan') }}" method="post" style="display: inline;">
-                                    <input type="hidden" name="user" value="{{ admin|json_encode }}">
-                                    <input type="hidden" name="origin" value="adminList">
-                                    <button type="submit" class="btn" style="background-color: #333333;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/ban.png') }}></div></button>
-                                    </form>
-                                {% endif %}
                             </td>
                         </tr>
                     {% endfor %}
