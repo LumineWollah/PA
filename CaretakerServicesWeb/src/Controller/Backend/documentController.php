@@ -37,6 +37,7 @@ class documentController extends AbstractController
         if (!$this->checkUserRole($request)) {return $this->redirectToRoute('login');}
 
         $client = $this->apiHttpClient->getClient($request->cookies->get('token'));
+        $request->getSession()->remove('documentId');
 
         $response = $client->request('GET', 'cs_documents', [
             'query' => [
@@ -82,16 +83,26 @@ class documentController extends AbstractController
         if (!$storedDocument) {
             $request->getSession()->set('documentId', $document['id']);
         }
-        
+
         try {
             $defaults = [
                 'name' => $document['name'],
                 'type' => $document['type'],
                 'url' => $document['url'],
                 'owner' => $document['owner']['id'],
+                'attachedReserv' => $document['attachedReserv']['id'],
             ];
         } catch (Exception $e) {
-            $defaults = [];
+            if ($e->getMessage() == 'Warning: Undefined array key "attachedReserv"') {
+                $defaults = [
+                    'name' => $document['name'],
+                    'type' => $document['type'],
+                    'url' => $document['url'],
+                    'owner' => $document['owner']['id'],
+                ];
+            } else {
+                $defaults = [];
+            }
         }
         
         $client = $this->apiHttpClient->getClient($request->cookies->get('token'));
@@ -107,6 +118,20 @@ class documentController extends AbstractController
 
         foreach ($usersList['hydra:member'] as $user) {
             $userChoice += [ $user['firstname'].' '.$user['lastname'] => $user['id'] ];
+        }
+
+        $response = $client->request('GET', 'cs_reservations', [
+            'query' => [
+                'page' => 1,
+            ]
+        ]);
+
+        $reservationsList = $response->toArray();
+        $reservationChoice = array();
+        $reservationChoice += [ 'Aucune' => null ];
+
+        foreach ($reservationsList['hydra:member'] as $reservation) {
+            $reservationChoice += [ $reservation['id'] => $reservation['id'] ];
         }
 
         $form = $this->createFormBuilder($defaults)
@@ -131,11 +156,16 @@ class documentController extends AbstractController
         ->add("owner", ChoiceType::class, [
             "choices" => $userChoice,
         ])
+        ->add("attachedReserv", ChoiceType::class, [
+            "choices" => $reservationChoice,
+            "required"=>false,
+        ])
         ->getForm()->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()){
             $data = $form->getData();
             
             $data['owner'] = 'api/cs_users/'.$data['owner'];
+            $data['attachedReserv'] = 'api/cs_reservations/'.$data['attachedReserv'];
 
             $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/merge-patch+json');
 
@@ -150,6 +180,7 @@ class documentController extends AbstractController
             return $this->redirectToRoute('documentList');
         }      
         return $this->render('backend/document/editDocument.html.twig', [
+            'defaults' => $defaults,
             'form'=>$form,
             'errorMessage'=>null
         ]);
@@ -175,6 +206,21 @@ class documentController extends AbstractController
             $userChoice += [ $user['firstname'].' '.$user['lastname'] => $user['id'] ];
         }
 
+        $response = $client->request('GET', 'cs_reservations', [
+            'query' => [
+                'page' => 1,
+            ]
+        ]);
+
+        $reservationsList = $response->toArray();
+        $reservationChoice = array();
+        $reservationChoice += [ 'Aucun' => null ];
+
+        foreach ($reservationsList['hydra:member'] as $reservation) {
+            $reservationChoice += [ $reservation['id'] => $reservation['id'] ];
+        }
+
+
         $form = $this->createFormBuilder()
         ->add("name", TextType::class, [
             "attr"=>[
@@ -197,6 +243,10 @@ class documentController extends AbstractController
         ->add("owner", ChoiceType::class, [
             "choices" => $userChoice,
         ])
+        ->add("attachedReserv", ChoiceType::class, [
+            "choices" => $reservationChoice,
+            "required"=>false,
+        ])
         ->getForm()->handleRequest($request);
         
         if ($form->isSubmitted() && $form->isValid()){
@@ -205,6 +255,7 @@ class documentController extends AbstractController
             $results = $this->amazonS3Client->insertObject($data['url']);
             $data['url'] = $results['link'];
             $data['owner'] = 'api/cs_users/'.$data['owner'];
+            $data['attachedReserv'] = 'api/cs_reservations/'.$data['attachedReserv'];
             $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/ld+json');
 
             $response = $client->request('POST', 'cs_documents', [
