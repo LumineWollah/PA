@@ -62,7 +62,7 @@
                                 <a class="nav-link {% block activeCreaServ %}{% endblock %} me-4" href={{ path('serviceCreateProvider') }}>Ajouter une prestation</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link me-4" href="#">Mes interventions</a>
+                                <a class="nav-link {% block activeQuote %}{% endblock %} me-4" href={{ path('quoteRequests') }}>Demandes de devis</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link me-4" href="#">Contact</a>

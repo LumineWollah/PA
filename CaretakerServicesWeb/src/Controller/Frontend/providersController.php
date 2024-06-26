@@ -139,4 +139,88 @@ class providersController extends AbstractController
             'form'=>$form
         ]);
     }
+
+    #[Route('/quote-requests', name: 'quoteRequests')]
+    public function quoteRequests(Request $request)
+    {
+        $id = $request->cookies->get('id');
+            
+        if ($id == null) {
+            return $this->redirectToRoute('login', ['redirect'=>'myRequests']);
+        }
+
+        $client = $this->apiHttpClient->getClientWithoutBearer();
+
+        $response = $client->request('GET', 'cs_companies?users=['.$id.']');
+        $serv = $response->toArray()['hydra:member'][0]['services'];
+
+        $ids = [];
+
+        foreach ($serv as $service) {
+            $ids[] = $service['id'];
+        }
+
+        $response = $client->request('GET', 'cs_reservations?service[]='.implode('&service[]=', $ids).'&active=false');
+        $requests = $response->toArray();
+
+        foreach ($requests['hydra:member'] as $key => $value) {
+            if ($value['isRequest'] == false) {
+                unset($requests['hydra:member'][$key]);
+            }
+        }
+
+        return $this->render('frontend/services/quoteRequestsList.html.twig', [
+            'requests'=>$requests['hydra:member']
+        ]);
+    }
+
+    #[Route('/quote-requests/delete', name: 'quoteRequestDelete')]
+    public function quoteRequestDelete(Request $request, MailerInterface $mailer)
+    {
+        $userId = $request->cookies->get('id');
+        
+        if ($userId == null) {
+            return $this->redirectToRoute('login', ['redirect'=>'quoteRequestDelete']);
+        }
+
+        $client = $this->apiHttpClient->getClientWithoutBearer();
+
+        $reservation = $request->request->get('reservationContent');
+        $reservation = json_decode($reservation, true);
+
+        $emailCustomer = $reservation['user']['email'];
+        $lastnameCustomer = $reservation['user']['lastname'];
+        $firstnameCustomer = $reservation['user']['firstname'];
+        $dateCreation = (new DateTime($reservation['dateCreation']))->format('d/m/Y');
+        $serviceName = $reservation['service']['name'];
+
+        $email = (new EmailMime())
+            ->from('ne-pas-repondre@caretakerservices.fr')
+            ->to($emailCustomer)
+            ->subject('Votre demande de devis a été annulée')
+            ->html('<p>Bonjour '.$lastnameCustomer.' '.$firstnameCustomer.',</p><p>Votre demande de devis du '.$dateCreation.' pour le service '.$serviceName.' a été annulée.</p><p>Si vous avez des questions, n\'hésitez pas à nous contacter.</p><p>Cordialement,</p><p>L\'équipe Caretaker Services</p>');
+
+        $mailer->send($email);
+
+        $response = $client->request('DELETE', 'cs_reservations/'.$reservation['id']);
+
+        return $this->redirectToRoute('quoteRequests');
+    }
+
+    #[Route('/quote-requests/show', name: 'quoteRequestDetail')]
+    public function quoteRequestDetail(Request $request)
+    {
+        $id = $request->cookies->get('id');
+            
+        if ($id == null) {
+            return $this->redirectToRoute('login', ['redirect'=>'quoteRequestDetail']);
+        }
+
+        $reservation = $request->request->get('reservation');
+        $reservation = json_decode($reservation, true);
+
+        return $this->render('frontend/services/quoteRequestDetail.html.twig', [
+            'request'=>$request
+        ]);
+    }
 }

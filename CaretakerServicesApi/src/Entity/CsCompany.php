@@ -80,7 +80,7 @@ class CsCompany
     private ?array $centerGps = null;
 
     #[ORM\OneToMany(targetEntity: CsService::class, mappedBy: 'company', orphanRemoval: true)]
-    #[Groups(["getCompanies"])]
+    #[Groups(["getCompanies", "getUsers"])]
     private Collection $services;
 
     #[ORM\OneToMany(targetEntity: CsUser::class, mappedBy: 'company')]

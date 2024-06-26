@@ -20,10 +20,16 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ApiResource(normalizationContext: ['groups' => ['getReservations']])]
 #[ORM\Entity(repositoryClass: CsReservationRepository::class)]
-#[Patch(security: "is_granted('ROLE_ADMIN') or object.getUser() == user or object.getApartmentOwner() == user or object.getServiceOwner() == user")]
+#[Patch(security: "is_granted('ROLE_ADMIN') or 
+    (object.getUser() and object.getUser() == user) or 
+    (object.getApartmentOwner() != null and user in object.getApartmentOwner().toArray()) or
+    (object.getServiceOwner() != null and user in object.getServiceOwner().toArray())")]
 #[Get]
 #[GetCollection]
-#[Delete(security: "is_granted('ROLE_ADMIN') or object.getUser() == user or object.getApartmentOwner() == user or object.getServiceOwner() == user")]
+#[Delete(security: "is_granted('ROLE_ADMIN') or 
+    (object.getUser() and object.getUser() == user) or 
+    (object.getApartmentOwner() != null and user in object.getApartmentOwner().toArray()) or
+    (object.getServiceOwner() != null and user in object.getServiceOwner().toArray())")]
 #[Post]
 #[ApiFilter(SearchFilter::class, properties: ['apartment' => 'exact', 'service' => 'exact', 'user' => 'exact', 'unavailability' => 'exact', 'isRequest' => 'exact', 'active' => 'exact'])]
 class CsReservation
