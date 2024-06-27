@@ -165,6 +165,24 @@
             <div id="map"></div>
         </div>
         <hr>
+        <div class="row reviews justify-content-center">
+            <h2>Avis</h2>
+            <div class="reviewsContainer">
+                {% for review in apartment.reviews %}
+                    <div class="review">
+                        <div class="reviewHeader">
+                            <img style="width:50px" {% if review.author.profilePict is defined %} src={{ asset( review.author.profilePict ) }} {% else %} src={{ asset('icons/profile_pict_default.png') }} {% endif %}>
+                            <div class="reviewText">
+                                <p class="reviewName">{{ review.author.firstname|capitalize }} {{ review.author.lastname|capitalize }}</p>
+                                <p class="reviewDate">{{ review.postDate | date('d/m/Y') }}</p>
+                                <p class="reviewRate">{{ review.rate }}/5</p>
+                                <p class="reviewContent">{{ review.content }}</p>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}

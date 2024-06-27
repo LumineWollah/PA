@@ -174,6 +174,8 @@ class servicesController extends AbstractController
             $service = $request->getSession()->get('service');
         }
 
+        $serId = $service['id'];
+
         $client = $this->apiHttpClient->getClientWithoutBearer();
 
         $companyResp = $client->request('GET', 'cs_companies?users[]='.$id);
@@ -275,6 +277,8 @@ class servicesController extends AbstractController
         ->add('endTime', TimeType::class, [
             'widget' => 'single_text',
         ])
+        ->add("indisponibilities", HiddenType::class, [
+        ])
         ->getForm()->handleRequest($request);
 
         if ($service == null && !$form->isSubmitted()) {
@@ -296,6 +300,10 @@ class servicesController extends AbstractController
                     $data['coverImage'] = $service['coverImage'];
                 }
             }
+
+            $indispo = explode(",", $data['indisponibilities']);
+
+            unset($data['indisponibilities']);
 
             unset($data['companyEmail']);
             unset($data['mainPict']);
@@ -321,6 +329,29 @@ class servicesController extends AbstractController
 
             $client->request('PATCH', 'cs_services/' . $id, ['json' => $data]);
             
+            $client2 = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/ld+json');
+
+            for ($i=0; $i < count($indispo); $i++) { 
+                    
+                if (trim($indispo[$i]) != "") {
+
+                    $dates = explode(" ", trim($indispo[$i]));
+
+                    $startDateTime = DateTime::createFromFormat('d/m/Y', trim($dates[0]));
+                    $endDateTime = DateTime::createFromFormat('d/m/Y', trim($dates[2]));
+
+                    $data2['startingDate'] = $startDateTime->format('Y-m-d');
+                    $data2['endingDate'] = $endDateTime->format('Y-m-d');
+                    $data2['price'] = 0;
+                    $data2['service'] = '/api/cs_services/'.$serId;
+                    $data2['unavailability'] = true;
+                   
+                    $response = $client2->request('POST', 'cs_reservations', [
+                        'json' => $data2,
+                    ]);
+                }
+            }
+
             $request->getSession()->remove('service');
 
             return $this->redirectToRoute('myServicesList');
@@ -436,6 +467,8 @@ class servicesController extends AbstractController
         ->add('endTime', TimeType::class, [
             'widget' => 'single_text',
         ])
+        ->add("indisponibilities", HiddenType::class, [
+        ])
         ->getForm()->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -453,6 +486,10 @@ class servicesController extends AbstractController
                 $data['category'] = '/api/cs_categories/'.$data['category'];
                 $data['startTime'] = $data['startTime']->format('H:i:s');
                 $data['endTime'] = $data['endTime']->format('H:i:s');
+                
+                $indispo = explode(",", $data['indisponibilities']);
+
+                unset($data['indisponibilities']);
 
                 $clientConnect = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/ld+json');
 
@@ -461,9 +498,29 @@ class servicesController extends AbstractController
                 ]);
 
                 $content = json_decode($response->getContent(), true);
-
+                $serId = $content["id"];
 
                 if ($response->getStatusCode() == 201) {
+                    for ($i=0; $i < count($indispo); $i++) { 
+                    
+                        if (trim($indispo[$i]) != "") {
+    
+                            $dates = explode(" ", trim($indispo[$i]));
+    
+                            $startDateTime = DateTime::createFromFormat('d/m/Y', trim($dates[0]));
+                            $endDateTime = DateTime::createFromFormat('d/m/Y', trim($dates[2]));
+    
+                            $data['startingDate'] = $startDateTime->format('Y-m-d');
+                            $data['endingDate'] = $endDateTime->format('Y-m-d');
+                            $data['price'] = 0;
+                            $data['service'] = '/api/cs_services/'.$serId;
+                            $data['unavailability'] = true;
+                            
+                            $response = $client->request('POST', 'cs_reservations', [
+                                'json' => $data,
+                            ]);
+                        }
+                    }
                     return $this->redirectToRoute('myServicesList', ['showPopup'=>true, 'content'=>'Service créé avec succès', 'title'=>'Création de service']);
                 } else {
                     return $this->redirectToRoute('myServicesList', ['showPopup'=>true, 'content'=>'Erreur lors de la création du service', 'title'=>'Création de service']);
