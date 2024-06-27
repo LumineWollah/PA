@@ -89,3 +89,56 @@
 .date {
     text-align: end;
 }
+
+.title {
+    display: flex;
+    flex-direction: row;
+    font-size: 50px;
+}
+
+.account {
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+}
+
+.summaryandrevenue {
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+}
+
+.profilePict {
+    width: 100px;
+}
+
+.smallRow {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+}
+
+.name {
+    font-size: 40px;
+    font-weight: 500;
+    margin-left: 10px;
+}
+
+.checkmark {
+    width: 50px;
+    padding-left: 1%;
+}
+
+.userCard {
+    margin: 2%;
+    margin-bottom: 4%;
+}
+
+.summaryCard {
+    color: white;
+    background-color: #3D2F44;
+    padding: 2%;
+    margin-bottom: 6%;
+    margin-top: 6%;
+}

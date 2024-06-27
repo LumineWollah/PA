@@ -39,10 +39,130 @@ class userController extends AbstractController
         $this->apiHttpClient = $apiHttpClient;
     }
 
+    private function generateDateLabels(int $days): array
+    {
+        $labels = [];
+        $now = new \DateTime();
+        $now = $now->modify('+1 day');
+
+        for ($i = 1; $i <= $days; $i++) {
+            $labels[] = $now->modify('-1 day')->format('Y-m-d');
+        }
+
+        return array_reverse($labels);
+    }
+    
+    private function fetchData(Request $request, string $endpoint, array $query = ['page' => 1]): array
+    {
+        $client = $this->apiHttpClient->getClient($request->cookies->get('token'));
+
+        $response = $client->request('GET', $endpoint, [
+            'query' => $query,
+        ]);
+
+        return $response->toArray();
+    }
+
     #[Route('/profile/me', name: 'myProfile')]
     public function myProfile(Request $request)
     {
-        return $this->render('frontend/user/base.html.twig', [
+        $id = $request->cookies->get('id');
+
+        $reservationsList = $this->fetchData($request, 'cs_reservations');
+
+        $dateLabels = $this->generateDateLabels(7);
+
+        $dailyEarnings = [0,0,0,0,0,0,0];
+
+        if ($id == null) {
+            return $this->redirectToRoute('login', ['redirect'=>'myProfile']);
+        }
+
+        $client = $this->apiHttpClient->getClientWithoutBearer();
+
+        $response = $client->request('GET', 'cs_users/'.$id, [
+            'json' => [
+                'page' => 1,
+            ]
+        ]);
+
+        $user = $response->toArray();
+        
+        if ( in_array('ROLE_LESSOR', $user['roles'])) {
+            $user['apartmentsNumber'] = 0;
+            for ($i = 0; $i < sizeof($user['apartments']); $i++) {
+                if ($user['apartments'][$i]['active'] == true) {
+                    $user['apartmentsNumber']++;
+                }
+            }
+        }
+
+        $sum = 0;
+
+        for ($i = 0; $i < sizeof($user['roles']); $i++) {
+            if ($user['roles'][$i] == 'ROLE_LESSOR') {
+                $now = new \DateTime();
+
+                $client = $this->apiHttpClient->getClientWithoutBearer();
+        
+                $response = $client->request('GET', 'cs_apartments', [
+                    'json' => [
+                        'page' => 1,
+                        'owner' => '/api/cs_users/'.$id
+                    ]
+                ]);
+        
+                $apartments = $response->toArray();
+
+                for ($j = 0; $j < sizeof($apartments); $j++) {
+                    foreach ($apartments as $apartment) {
+                        if (isset($apartment['reservations'])) {
+                            foreach ($apartment['reservations'] as $reservation) {
+                                if ($reservation['endingDate'] < $now) {
+                                    $sum += $reservation['price'];
+                                }
+                                if (substr($reservation['dateCreation'], 0, 10) == $dateLabels[$j]) {
+                                    $dailyEarnings[$j] += $reservation['price'];
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            if ($user['roles'][$i] == 'ROLE_PROVIDER') {
+                $now = new \DateTime();
+
+                $client = $this->apiHttpClient->getClientWithoutBearer();
+        
+                $response = $client->request('GET', 'cs_services', [
+                    'json' => [
+                        'page' => 1,
+                        'company' => '/api/cs_companies/'.$user['company']['id']
+                    ]
+                ]);
+        
+                $services = $response->toArray();
+
+                for ($j = 0; $j < sizeof($services); $j++) {
+                    foreach ($services as $service) {
+                        foreach ($service['reservations'] as $reservation) {
+                            if ($reservation['endingDate'] < $now) {
+                                $sum += $reservation['price'];
+                            }
+                            if (substr($reservation['dateCreation'], 0, 10) == $dateLabels[$j]) {
+                                $dailyEarnings[$j] += $reservation['price'];
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        $user['earnings'] = $sum;
+        $user['dailyEarnings'] = ['labels' => $dateLabels, 'data' => $dailyEarnings];
+
+        return $this->render('frontend/user/dashboard.html.twig', [
+            'user'=>$user
         ]);
     }
 
