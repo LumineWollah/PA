@@ -7,6 +7,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use App\Service\ApiHttpClient;
 use App\Service\AmazonS3Client;
 use Exception;
+use DateTime;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
@@ -482,5 +483,67 @@ class apartmentController extends AbstractController
         ]);
         
         return $this->redirectToRoute('apartmentCrud');
+    }
+
+    #[Route('/admin-panel/apartment/unavailable', name: 'apartmentUnavailable')]
+    public function apartmentUnavailable(Request $request)
+    {
+        $role = $request->cookies->get('roles');
+        $id = $request->cookies->get('id');
+        if ($role == null || !($role == 'ROLE_ADMIN' || $role == 'ROLE_LESSOR')) {
+            return $this->redirectToRoute('login');
+        }
+        
+        $apartmentData = $request->request->get('apartment');
+        $apartment = json_decode($apartmentData, true);
+
+        $storedApartment = $request->getSession()->get('apartmentId');
+
+        if (!$storedApartment) {
+            $request->getSession()->set('apartmentId', $apartment['id']);
+        }
+
+        $apId = $storedApartment;
+        
+        $form = $this->createFormBuilder()
+        ->add("indisponibilities", HiddenType::class, [
+        ])
+        ->getForm()->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $data = $form->getData();
+
+                $indispo = explode(",", $data['indisponibilities']);
+
+                unset($data['indisponibilities']);
+
+                $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/ld+json');
+
+                for ($i=0; $i < count($indispo); $i++) { 
+                    
+                    if (trim($indispo[$i]) != "") {
+
+                        $dates = explode(" ", trim($indispo[$i]));
+
+                        $startDateTime = DateTime::createFromFormat('d/m/Y', trim($dates[0]));
+                        $endDateTime = DateTime::createFromFormat('d/m/Y', trim($dates[2]));
+
+                        $data['startingDate'] = $startDateTime->format('Y-m-d');
+                        $data['endingDate'] = $endDateTime->format('Y-m-d');
+                        $data['price'] = 0;
+                        $data['apartment'] = '/api/cs_apartments/'.$apId;
+                        $data['unavailability'] = true;
+
+                        $response = $client->request('POST', 'cs_reservations', [
+                            'json' => $data,
+                        ]);
+                    }
+                }
+                return $this->redirectToRoute('apartmentsCrud');
+            }
+
+        return $this->render('backend/apartment/apartmentUnavailable.html.twig', [
+            'form'=>$form
+        ]);
     }
 }
