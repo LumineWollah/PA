@@ -14,7 +14,7 @@
                     <p><strong>Id :</strong> {{ service.id }}</p>
                     <p><strong>Nom :</strong> {{ service.name }}</p>
                     <p><strong>Description :</strong> {{ service.description }}</p>
-                    <p><strong>Prix :</strong> {{ service.price }}€</p>
+                    {% if service.price is defined %}<p><strong>Prix :</strong> {{ service.price }}€</p>{% endif %}
 
                     {% if service['category'] is defined and service['category'] is not empty %}
                         <p><strong>Catégorie :</strong> {{ service.category.name }}</p>
