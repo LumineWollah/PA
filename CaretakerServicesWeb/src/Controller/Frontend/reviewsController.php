@@ -46,7 +46,7 @@ class reviewsController extends AbstractController
         return $role !== null && $role == 'ROLE_ADMIN';
     }
     
-    #[Route('/admin-panel/review/delete', name: 'reviewDelete')]
+    #[Route('/review/delete', name: 'reviewDeleteFE')]
     public function reviewDelete(Request $request)
     {
         if (!$this->checkUserRole($request)) {return $this->redirectToRoute('login');}
@@ -61,23 +61,23 @@ class reviewsController extends AbstractController
             ]
         ]);
         
-        return $this->redirectToRoute('reviewList');
+        return $this->redirectToRoute('reservationsPast');
     }
 
-    #[Route('/admin-panel/review/show', name: 'reviewShow')]
+    #[Route('/review/show', name: 'reviewShowFE')]
     public function reviewShow(Request $request)
     {
         if (!$this->checkUserRole($request)) {return $this->redirectToRoute('login');}
 
-        $reviewData = $request->request->get('review');
+        $reviewData = $request->query->get('review');
         $review = json_decode($reviewData, true);
-
-        return $this->render('backend/review/showReview.html.twig', [
+        
+        return $this->render('frontend/reviews/reviewsShow.html.twig', [
             'review'=>$review
         ]);
     }
     
-    #[Route('/admin-panel/review/create', name: 'reviewCreate')]
+    #[Route('review/create', name: 'myReservationOpinion')]
     public function apartmentCreateCrud(Request $request)
     {
         if (!$this->checkUserRole($request)) {return $this->redirectToRoute('login');}
@@ -136,10 +136,10 @@ class reviewsController extends AbstractController
 
             $response = json_decode($response->getContent(), true);
 
-            return $this->redirectToRoute('reviewList');
+            return $this->redirectToRoute('reservationsPast');
         }
             
-        return $this->render('backend/review/createReview.html.twig', [
+        return $this->render('frontend/reviews/reviewsCreate.html.twig', [
             'form'=>$form,
             'errorMessage'=>null,
         ]);

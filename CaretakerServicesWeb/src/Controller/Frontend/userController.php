@@ -66,6 +66,40 @@ class userController extends AbstractController
         ]);
 
         $reserv = $response->toArray();
+        
+        $response = $client->request('GET', 'cs_users/'.$id, [
+            'json' => [
+                'page' => 1,
+            ]
+        ]);
+
+        $user = $response->toArray();
+        $reviewsString = $user['reviews'];
+
+        // TEMPORAIRE
+
+        for ($i = 0; $i < sizeof($reviewsString); $i++) {
+                $response = $client->request('GET', $reviewsString[$i], [
+                    'json' => [
+                        'page' => 1,
+                    ]
+                ]);
+            
+            $review = $response->toArray();
+            $reviews[$i] = $review;
+        }
+
+        // TEMPORAIRE
+        // dd($reviews, $reserv);
+        for ($i = 0; $i < sizeof($reviews); $i++) {
+            if (isset($reviews[$i]['apartment'])) {
+                for ($j = 0; $j < sizeof($reserv); $j++) {
+                    if ($reserv[$j]['apartment']['id'] == $reviews[$i]['apartment']['id']) {
+                        $reserv[$j]['review'] = $reviews[$i];
+                    }
+                }
+            }
+        }
 
         return $this->render('frontend/user/reservPast.html.twig', [
             'reservations'=>$reserv

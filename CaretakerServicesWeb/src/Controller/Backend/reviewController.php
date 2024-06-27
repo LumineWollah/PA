@@ -97,7 +97,7 @@ class reviewController extends AbstractController
         if (!$storedReview) {
             $request->getSession()->set('review', $review);
         }
-
+        
         try {
             $defaults = [
                 'content' => $storedReview['content'],
@@ -247,7 +247,7 @@ class reviewController extends AbstractController
     }
     
     #[Route('/admin-panel/review/create', name: 'reviewCreate')]
-    public function apartmentCreateCrud(Request $request)
+    public function reviewCreate(Request $request)
     {
         if (!$this->checkUserRole($request)) {return $this->redirectToRoute('login');}
         
