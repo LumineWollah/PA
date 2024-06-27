@@ -182,7 +182,8 @@
                 }
                 for (var i = 0; i < rangesTab.length; i++) {
                     var startDate = moment(rangesTab[i][0], 'YYYY-MM-DD');
-                    if (date.isBetween(startDate, startDate, null, '[]')) {
+                    var endDate = moment(rangesTab[i][1], 'YYYY-MM-DD');
+                    if (date.isBetween(startDate, endDate, null, '[]')) {
                         return true;
                     }
                 }

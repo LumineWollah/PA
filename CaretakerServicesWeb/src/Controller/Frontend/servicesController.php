@@ -538,7 +538,8 @@ class servicesController extends AbstractController
 
         foreach($reservs['hydra:member'] as $reserv) {
             $formattedStartingDate = substr($reserv["startingDate"], 0, 10);
-            $datesRangeReservs[] = [$formattedStartingDate];
+            $formattedEndingDate = substr($reserv["endingDate"], 0, 10);
+            $datesRangeReservs[] = [$formattedStartingDate, $formattedEndingDate];
         }
 
         $form = $this->createFormBuilder()
@@ -619,6 +620,7 @@ class servicesController extends AbstractController
                     'otherData' => $data['otherData'],
                     'price' => 0,
                     'active' => false,
+                    'status' => 0
                 ];
 
                 $response = $client->request('POST', 'cs_reservations', [
