@@ -78,7 +78,7 @@
                                 </form>
                             </td>
 
-                            <td>{{ service.price }} €</td>
+                            <td>{% if service.price is defined %}{{ service.price }} €{% endif %}</td>
                             <td class="action">
                                 <a href="{{ path('serviceDelete', {'id': service.id }) }}" class="btn" style="background-color: #EE3939;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/bin.png') }}></div></a>
                                 <form action="{{ path('serviceEdit') }}" method="post" style="display: inline;">
@@ -88,6 +88,10 @@
                                 <form action="{{ path('serviceShow') }}" method="post" style="display: inline;">
                                     <input type="hidden" name="service" value="{{ service|json_encode }}">
                                     <button type="submit" class="btn" style="background-color: #A594F9;"><div class="btnImage"><img style="height:17px;" src={{ asset('icons/crud/chart.png') }}></div></button>
+                                </form>
+                                <form action="{{ path('serviceUnavailable') }}" method="post" style="display: inline;">
+                                    <input type="hidden" name="service" value="{{ service|json_encode }}">
+                                    <button type="submit" class="btn" style="background-color: #18A0FB;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/pen.png') }}></div></button>
                                 </form>
                             </td>
                         </tr>

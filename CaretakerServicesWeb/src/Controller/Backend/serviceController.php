@@ -7,11 +7,13 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Service\ApiHttpClient;
 use Exception;
+use DateTime;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
 
 class serviceController extends AbstractController
@@ -264,6 +266,68 @@ class serviceController extends AbstractController
         return $this->render('backend/service/createService.html.twig', [
             'form'=>$form,
             'errorMessage'=>null
+        ]);
+    }
+    
+    #[Route('/admin-panel/service/unavailable', name: 'serviceUnavailable')]
+    public function serviceUnavailable(Request $request)
+    {
+        $role = $request->cookies->get('roles');
+        $id = $request->cookies->get('id');
+        if ($role == null || !($role == 'ROLE_ADMIN' || $role == 'ROLE_LESSOR')) {
+            return $this->redirectToRoute('login');
+        }
+        
+        $serviceData = $request->request->get('service');
+        $service = json_decode($serviceData, true);
+
+        $storedService = $request->getSession()->get('serviceId');
+
+        if (!$storedService) {
+            $request->getSession()->set('serviceId', $service['id']);
+        }
+
+        $serId = $storedService;
+        
+        $form = $this->createFormBuilder()
+        ->add("indisponibilities", HiddenType::class, [
+        ])
+        ->getForm()->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $data = $form->getData();
+
+                $indispo = explode(",", $data['indisponibilities']);
+
+                unset($data['indisponibilities']);
+      
+                $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/ld+json');
+
+                for ($i=0; $i < count($indispo); $i++) { 
+                    
+                    if (trim($indispo[$i]) != "") {
+
+                        $dates = explode(" ", trim($indispo[$i]));
+
+                        $startDateTime = DateTime::createFromFormat('d/m/Y', trim($dates[0]));
+                        $endDateTime = DateTime::createFromFormat('d/m/Y', trim($dates[2]));
+
+                        $data['startingDate'] = $startDateTime->format('Y-m-d');
+                        $data['endingDate'] = $endDateTime->format('Y-m-d');
+                        $data['price'] = 0;
+                        $data['service'] = '/api/cs_services/'.$serId;
+                        $data['unavailability'] = true;
+                        
+                        $response = $client->request('POST', 'cs_reservations', [
+                            'json' => $data,
+                        ]);
+                    }
+                }
+                return $this->redirectToRoute('serviceList');
+            }
+
+        return $this->render('backend/service/serviceUnavailable.html.twig', [
+            'form'=>$form
         ]);
     }
 
