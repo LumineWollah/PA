@@ -26,19 +26,19 @@ class CsReviews
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(["getReviews", "getApartments", "getServices"])]
+    #[Groups(["getReviews", "getApartments", "getServices", "getUsers"])]
     private ?int $id = null;
 
     #[ORM\Column(type: Types::TEXT)]
-    #[Groups(["getReviews", "getApartments", "getServices"])]
+    #[Groups(["getReviews", "getApartments", "getServices", "getUsers"])]
     private ?string $content = null;
 
     #[ORM\Column(type: Types::SMALLINT)]
-    #[Groups(["getReviews", "getApartments", "getServices"])]
+    #[Groups(["getReviews", "getApartments", "getServices", "getUsers"])]
     private ?int $rate = null;
 
     #[ORM\Column]
-    #[Groups(["getReviews", "getApartments", "getServices"])]
+    #[Groups(["getReviews", "getApartments", "getServices", "getUsers"])]
     private ?DateTime $postDate = null;
 
     #[ORM\ManyToOne(inversedBy: 'reviews')]
