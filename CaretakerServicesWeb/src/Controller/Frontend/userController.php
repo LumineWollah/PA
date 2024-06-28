@@ -5,6 +5,7 @@ namespace App\Controller\Frontend;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Service\ApiHttpClient;
+use App\Service\AmazonS3Client;
 use DateTime;
 use Stripe\Stripe;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -18,6 +19,7 @@ use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RadioType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -34,17 +36,139 @@ use Symfony\Component\Validator\Constraints\PositiveOrZero;
 class userController extends AbstractController
 {
     private $apiHttpClient;
+    private $amazonS3Client;
 
     public function __construct(ApiHttpClient $apiHttpClient, string $stripeKeyPrivate)
     {
         $this->apiHttpClient = $apiHttpClient;
+        $this->amazonS3Client = $amazonS3Client;
+    }
+
+    private function generateDateLabels(int $days): array
+    {
+        $labels = [];
+        $now = new \DateTime();
+        $now = $now->modify('+1 day');
+
+        for ($i = 1; $i <= $days; $i++) {
+            $labels[] = $now->modify('-1 day')->format('Y-m-d');
+        }
+
+        return array_reverse($labels);
+    }
+    
+    private function fetchData(Request $request, string $endpoint, array $query = ['page' => 1]): array
+    {
+        $client = $this->apiHttpClient->getClient($request->cookies->get('token'));
+
+        $response = $client->request('GET', $endpoint, [
+            'query' => $query,
+        ]);
+
+        return $response->toArray();
         Stripe::setApiKey($stripeKeyPrivate);
     }
 
     #[Route('/profile/me', name: 'myProfile')]
     public function myProfile(Request $request)
     {
-        return $this->render('frontend/user/base.html.twig', [
+        $id = $request->cookies->get('id');
+
+        $reservationsList = $this->fetchData($request, 'cs_reservations');
+
+        $dateLabels = $this->generateDateLabels(7);
+
+        $dailyEarnings = [0,0,0,0,0,0,0];
+
+        if ($id == null) {
+            return $this->redirectToRoute('login', ['redirect'=>'myProfile']);
+        }
+
+        $client = $this->apiHttpClient->getClientWithoutBearer();
+
+        $response = $client->request('GET', 'cs_users/'.$id, [
+            'json' => [
+                'page' => 1,
+            ]
+        ]);
+
+        $user = $response->toArray();
+        
+        if ( in_array('ROLE_LESSOR', $user['roles'])) {
+            $user['apartmentsNumber'] = 0;
+            for ($i = 0; $i < sizeof($user['apartments']); $i++) {
+                if ($user['apartments'][$i]['active'] == true) {
+                    $user['apartmentsNumber']++;
+                }
+            }
+        }
+
+        $sum = 0;
+
+        for ($i = 0; $i < sizeof($user['roles']); $i++) {
+            if ($user['roles'][$i] == 'ROLE_LESSOR') {
+                $now = new \DateTime();
+
+                $client = $this->apiHttpClient->getClientWithoutBearer();
+        
+                $response = $client->request('GET', 'cs_apartments', [
+                    'json' => [
+                        'page' => 1,
+                        'owner' => '/api/cs_users/'.$id
+                    ]
+                ]);
+        
+                $apartments = $response->toArray();
+
+                for ($j = 0; $j < sizeof($apartments); $j++) {
+                    foreach ($apartments as $apartment) {
+                        if (isset($apartment['reservations'])) {
+                            foreach ($apartment['reservations'] as $reservation) {
+                                if ($reservation['endingDate'] < $now) {
+                                    $sum += $reservation['price'];
+                                }
+                                if (substr($reservation['dateCreation'], 0, 10) == $dateLabels[$j]) {
+                                    $dailyEarnings[$j] += $reservation['price'];
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            if ($user['roles'][$i] == 'ROLE_PROVIDER') {
+                $now = new \DateTime();
+
+                $client = $this->apiHttpClient->getClientWithoutBearer();
+        
+                $response = $client->request('GET', 'cs_services', [
+                    'json' => [
+                        'page' => 1,
+                        'company' => '/api/cs_companies/'.$user['company']['id']
+                    ]
+                ]);
+        
+                $services = $response->toArray();
+
+                for ($j = 0; $j < sizeof($services); $j++) {
+                    foreach ($services as $service) {
+                        foreach ($service['reservations'] as $reservation) {
+                            if ($reservation['endingDate'] < $now) {
+                                $sum += $reservation['price'];
+                            }
+                            if (substr($reservation['dateCreation'], 0, 10) == $dateLabels[$j]) {
+                                $dailyEarnings[$j] += $reservation['price'];
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        $user['earnings'] = $sum;
+        $user['dailyEarnings'] = ['labels' => $dateLabels, 'data' => $dailyEarnings];
+
+        return $this->render('frontend/user/dashboard.html.twig', [
+            'user'=>$user
         ]);
     }
 
@@ -68,6 +192,40 @@ class userController extends AbstractController
         ]);
 
         $reserv = $response->toArray();
+        
+        $response = $client->request('GET', 'cs_users/'.$id, [
+            'json' => [
+                'page' => 1,
+            ]
+        ]);
+
+        $user = $response->toArray();
+        $reviewsString = $user['reviews'];
+
+        // TEMPORAIRE
+
+        for ($i = 0; $i < sizeof($reviewsString); $i++) {
+                $response = $client->request('GET', $reviewsString[$i], [
+                    'json' => [
+                        'page' => 1,
+                    ]
+                ]);
+            
+            $review = $response->toArray();
+            $reviews[$i] = $review;
+        }
+
+        // TEMPORAIRE
+        // dd($reviews, $reserv);
+        for ($i = 0; $i < sizeof($reviews); $i++) {
+            if (isset($reviews[$i]['apartment'])) {
+                for ($j = 0; $j < sizeof($reserv); $j++) {
+                    if ($reserv[$j]['apartment']['id'] == $reviews[$i]['apartment']['id']) {
+                        $reserv[$j]['review'] = $reviews[$i];
+                    }
+                }
+            }
+        }
 
         return $this->render('frontend/user/reservPast.html.twig', [
             'reservations'=>$reserv
@@ -288,6 +446,137 @@ class userController extends AbstractController
         
         return $this->render('frontend/user/documentsList.html.twig', [
             'documents'=>$documents['hydra:member']
+        ]);
+    }
+
+    #[Route('/profile/edit', name: 'profileEdit')]
+    public function profileEdit(Request $request)
+    {
+        $userData = $request->query->get('user');
+        $user = json_decode($userData, true);
+
+        $storedUser = $request->getSession()->get('user');
+
+        if (!$storedUser) {
+            $request->getSession()->set('user', $user['id']);
+        }
+
+        if (!isset($user['profilePict'])) {
+            $user['profilePict'] = null;
+        }
+
+        try {
+            $defaults = [
+                'email' => $user['email'],
+                'firstname' => $user['firstname'],
+                'lastname' => $user['lastname'],
+                'telNumber' => $user['telNumber'],
+            ];
+        } catch (Exception $e) {
+            $defaults = [];
+        }
+        $form = $this->createFormBuilder($defaults)
+        ->add("email", EmailType::class, [
+            "attr"=>[
+                "placeholder"=>"E-mail",
+            ],
+            "required"=>false,
+        ])
+        ->add("firstname", TextType::class, [
+            "attr"=>[
+                "placeholder"=>"Prénom",
+            ], 
+            "constraints"=>[
+                new Length([
+                    'min' => 3,
+                    'minMessage' => 'Le prénom doit contenir au moins {{ limit }} caractères',
+                    'max' => 150,
+                    'maxMessage' => 'Le prénom doit contenir au plus {{ limit }} caractères',
+                ]),
+            ],
+            "required"=>false,
+        ])
+        ->add("lastname", TextType::class, [
+            "attr"=>[
+                "placeholder"=>"Nom",
+            ],
+            "constraints"=>[
+                new Length([
+                    'max' => 255,
+                    'maxMessage' => 'Le nom doit contenir au plus {{ limit }} caractères',
+                ]),
+            ],
+            "required"=>false,
+        ])
+        ->add("telNumber", TextType::class, [
+            "attr"=>[
+                "placeholder"=>"Numéro de Téléphone",
+            ],
+            "constraints"=>[
+                new Length([
+                    'max' => 10,
+                    'min' => 10,
+                    'exactMessage' => 'Le numéro de téléphone doit contenir {{ limit }} chiffres',
+                ]),
+                new Regex([
+                    'pattern' => '/^[0-9]+$/',
+                    'message' => 'Le numéro de téléphone doit contenir uniquement des chiffres',
+                ]),
+            ],
+            "required"=>false,
+        ])
+        ->add("profilePict", FileType::class, [
+            'constraints' => [
+                new File([
+                    'maxSize' => '10m',
+                    'mimeTypes' => [
+                        'image/png', 
+                        'image/jpeg', 
+                    ],
+                    'mimeTypesMessage' => 'Please upload a valid jpeg or png document',
+                ])
+            ],
+        ])
+        ->getForm()->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()){
+            $data = $form->getData();
+
+            $results = $this->amazonS3Client->insertObject($data['profilePict']);
+            $data['profilePict'] = $results['link'];
+
+            $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/ld+json');
+            
+            $response = $client->request('GET', 'cs_users', [
+                'query' => [
+                    'page' => 1,
+                    'email' => $data['email']
+                    ]
+                ]);
+            if ($response->toArray()["hydra:totalItems"] > 0 && $response->toArray()["hydra:member"][0]['id'] != $storedUser) {
+                $errorMessages[] = "Adresse mail déjà utilisée. Essayez en une autre.";
+
+                return $this->render('backend/user/editUser.html.twig', [
+                    'form'=>$form,
+                    'errorMessages'=>$errorMessages
+                ]);
+            }
+            
+            $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/merge-patch+json');
+            
+            $response = $client->request('PATCH', 'cs_users/'.$storedUser, [
+                'json' => $data,
+            ]);
+
+            $response = json_decode($response->getContent(), true);
+
+            $request->getSession()->remove('userId');
+
+            return $this->redirectToRoute('myProfile');
+        }      
+        return $this->render('frontend/user/editProfile.html.twig', [
+            'form'=>$form,
+            'errorMessage'=>null
         ]);
     }
 }

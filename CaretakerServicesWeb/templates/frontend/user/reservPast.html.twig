@@ -68,7 +68,7 @@
                                 </form>
                             </td>
                             <td>{{ reservation.startingDate|date('d/m/Y') }} - {{ reservation.endingDate|date('d/m/Y') }}</td>
-                            <td>{{ reservation.price }} €</td>
+                            <td>{{ reservation.price }}€</td>
                             <td class="action">
                                 <form action="{{ path('myReservationDetail') }}" method="post" style="display: inline;">
                                     <input type="hidden" name="reservation" value="{{ reservation|json_encode }}">
@@ -77,7 +77,11 @@
                                 {% if reservation.documents is not empty %}
                                     <a href="{{ reservation.documents[0].url }}" target="_blank" class="btn" style="background-color: #A594F9;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/documents.png') }}></div></a>
                                 {% endif %}                                
-                                <a href="{{ path('myReservationOpinion', {'id': reservation.id }) }}" class="btn" style="background-color: #4CBA78;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/star.png') }}></div></a>
+                                {% if reservation.review is defined %}
+                                    <a href="{{ path('reviewShowFE', {'review': reservation.review|json_encode }) }}" class="btn" style="background-color: #4CBA78;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/star.png') }}></div></a>
+                                {% else %}    
+                                    <a href="{{ path('myReservationOpinion', {'id': reservation.id, 'apartment': reservation.apartment.id }) }}" class="btn" style="background-color: #4CBA78;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/star.png') }}></div></a>
+                                {% endif %}                            
                             </td>
                         </tr>
                     {% endfor %}

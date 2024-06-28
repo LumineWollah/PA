@@ -67,7 +67,7 @@
                             </form>
                             <div class="validateBtns">
                                 <a href="{{ path('lessorAccept', {'id': lessor.id}) }}" class="validateBtn validBtn">Valider</a>
-                                <a href="{{ path('userDelete', {'id': lessor.id, 'origin':'lessorList' }) }}" class="validateBtn refuseBtn">Refuser</a>
+                                <a href="{{ path('userRefuse', {'id': lessor.id, 'origin':'lessorList', 'email': lessor.email }) }}" class="validateBtn refuseBtn">Refuser</a>
                             </div>
                         </div>
                     </div>

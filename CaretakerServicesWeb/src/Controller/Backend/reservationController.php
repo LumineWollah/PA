@@ -189,6 +189,7 @@ class reservationController extends AbstractController
         ])
         ->add("isRequest", CheckboxType::class, [
             "label" => "Demande",
+            "required" => false,
         ])
         ->getForm()->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()){
@@ -323,6 +324,7 @@ class reservationController extends AbstractController
             ])
             ->add("isRequest", CheckboxType::class, [
                 "label" => "Demande",
+                "required" => false,
             ])
             ->getForm()->handleRequest($request);
 

@@ -1,0 +1,47 @@
+{% extends 'frontend/base.html.twig' %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href={{ asset('styles/crud.css') }}>
+    <link rel="stylesheet" href={{ asset('styles/frontend/apartments/apartmentList.css') }}>
+{% endblock %}
+
+{% block title %}Afficher un avis{% endblock %}
+
+{% block body %}
+    <div class="col-10 p-0">
+        <div class="p-3">
+            <h1>Afficher un avis</h1>
+            <div class="row">
+                <div class="col-6">
+                    <p><strong>Note :</strong> {{ review.rate }}/5</p>
+                    <p><strong>Contenu :</strong> {{ review.content }}</p>
+                    <p><strong>Créé le :</strong> {{ review.postDate|date('d/m/Y H:i:s') }}</p>
+                    {% if review['service'] is defined and review['service'] is not empty %}
+                    <div class"container"><strong>Service :</strong>
+                        <form action="{{ path('serviceDetail') }}" method="post" style="display: inline;">
+                            <input type="hidden" name="service" value="{{ review.service|json_encode }}">
+                            <button type="submit" class="container" style="background-color: #A594F9;">
+                                <div class="container">
+                                    <p><strong>Nom:</strong> {{ review.service.name }}</p>
+                            </button>
+                        </form>
+                    </div>
+                {% endif %}
+                {% if review['apartment'] is defined and review['apartment'] is not empty %}
+                <a class="col-3 apartContainer" href={{ path('apartmentsDetail', {'id': review.apartment.id}) }}>               
+                        <div class="imgContainer">
+                            <img src={{ review.apartment.mainPict }}>
+                        </div>
+                        <p class="apartName"><b>{{ review.apartment.name }}</b></p>
+                        <p class="apartInfos"><span class="medium">{{ review.apartment.city }}, {{ review.apartment.country }} • {{ review.apartment.price }}€</span><span class="light"> / nuit</span></b></p>
+                        <div class="apartNumbers">
+                            <img src={{ asset('icons/bed.png') }}> {{ review.apartment.bedrooms }} chambres
+                            <img style="margin-left: 2%;" src={{ asset('icons/travelers.png') }}> {{ review.apartment.travelersMax }} voyageurs max.
+                        </div>
+                    </a>
+                <a href="{{ path('reviewDeleteFE', {'id': review.id }) }}" class="btn" style="background-color: #EE3939;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/bin.png') }}></div></a>
+            {% endif %}
+             </div>
+        </div>
+    </div>
+{% endblock %}

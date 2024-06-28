@@ -1,0 +1,88 @@
+{% extends 'frontend/user/base.html.twig' %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href={{ asset('styles/crud.css') }}>
+    <link rel="stylesheet" href={{ asset('styles/dashboard.css') }}>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.css" rel="stylesheet"/>
+{% endblock %}
+
+{% block body %}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <div class="col-10 p-0">
+        <div class="p-3">
+            <div class="row">
+                <div class="account">
+                    <h1 class="title"><p>Mon&nbsp</p><p style="color:#A594F9;">Compte</p></h1>
+                    <div class="smallRow userCard">
+                        {% if user.profilePict is defined %}
+                            <img src="{{ user.profilePict }}" alt="Photo de profil" class="profilePict">
+                        {% else %}
+                            <img src={{ asset('icons/profile_pict_default_white.png') }} alt="Photo de profil" class="profilePict">
+                        {% endif %}
+                        <p class="name">{{ user.firstname|capitalize }} {{ user.lastname|capitalize }}</p>
+                        {% if user.isVerified is defined %}
+                            <img src={{ asset('icons/checkmark.png') }} alt="Vérifié" class="checkmark">
+                        {% endif %}
+                    </div>
+                    <p><strong>Email: </strong>{{ user.email|capitalize }}</p>
+                    <p><strong>Téléphone: </strong>{{ user.telNumber }}</p>
+
+                    <a href="{{ path('profileEdit', {'user': user|json_encode}) }}" style="color:black;">Modifier mes informations</a>
+                </div>
+                <div class="summaryandrevenue">
+                    <div class="summary">
+                        <h1 class="title"><p>Mon&nbsp</p><p style="color:#A594F9;">Récapitulatif</p></h1>
+                        <div class="summaryCard">
+                            <ul>
+                                <li>Inscrit depuis le:<strong> {{ user.dateInscription | date('d/m/Y') }}</strong></li>
+                                {% if 'ROLE_LESSOR' in user.roles %}
+                                    <li>Annonces publiées:<strong> {{ user.apartments|length }}</strong></li>
+                                    <li>Annonces en cours:<strong> {{ user.apartmentsNumber }}</strong></li>
+                                        <li>Recette totale:<strong> {{ user.earnings }} €</strong></li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    {% if 'ROLE_LESSOR' in user.roles or 'ROLE_PROVIDER' in user.roles %}    
+                        <h1 class="title"><p>Mes derniers&nbsp</p><p style="color:#A594F9;">revenus</p></h1>
+                        <div class="graph">  
+                            <canvas id="chartEarnings"></canvas>     
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const earningLabels = {{ user.dailyEarnings.labels|json_encode|raw }};
+        
+        let ceLabels = new Array();
+        for (let j = 0; j < 7; j++) {
+            ceLabels[j] = earningLabels[j];
+        }
+        console.log(ceLabels);
+        
+        const earningData = {{ user.dailyEarnings.data|json_encode|raw }};
+        
+        let ceData = new Array();
+        for (let j = 0; j < 7; j++) {
+            ceData[j] = earningData[j];
+        }
+
+        new Chart("chartEarnings", {
+            type: 'line',
+            data: {
+              labels: ceLabels,
+              datasets: [{
+                label: 'Earnings',
+                backgroundColor: 'rgba(200, 0, 0, 0.5)',
+                borderColor: 'rgba(200, 0, 0, 1)',
+                data: ceData,
+              }]
+            },
+            options: {},
+          });
+    </script>
+{% endblock %}
+

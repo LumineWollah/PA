@@ -8,6 +8,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Service\ApiHttpClient;
 use Exception;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -269,5 +271,51 @@ class actionUserController extends AbstractController
         
         $response = $response->getStatusCode();
         return $this->redirectToRoute($origin);
+    }
+    
+    #[Route('/admin-panel/user/refuse', name: 'userRefuse')]
+    public function userRefuse(Request $request, MailerInterface $mailer)
+    {
+        if (!$this->checkUserRole($request)) {return $this->redirectToRoute('login');}
+
+        $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/merge-patch+json');
+
+        $id = $request->query->get('id');
+        $origin = $request->query->get('origin');
+        $emailAdr = $request->query->get('email');
+
+        $form = $this->createFormBuilder()
+        ->add("body", TextType::class, [
+            "attr"=>[
+                "placeholder"=>"Contenu du mail",
+            ], 
+            "constraints"=>[
+                new Length([
+                    'max' => 500,
+                    'maxMessage' => 'Le corps du mail doit contenir au plus {{ limit }} caractères',
+                ]),
+            ],
+        ])
+        ->getForm()->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()){
+            $data = $form->getData();
+
+            $email = (new Email())
+                ->from('ne-pas-repondre@caretakerservices.fr')
+                ->to($emailAdr)
+                ->subject('Votre réservation')
+                ->html($data['body']);
+
+            $mailer->send($email);
+
+            $response = $client->request('DELETE', 'cs_users/'.$id, []);
+
+            return $this->redirectToRoute($origin);
+        }      
+        return $this->render('backend/user/refuseMail.html.twig', [
+            'form'=>$form,
+            'errorMessage'=>null
+        ]);
     }
 }
