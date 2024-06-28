@@ -5,6 +5,7 @@ namespace App\Controller\Frontend;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Service\ApiHttpClient;
+use App\Service\AmazonS3Client;
 use DateTime;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -17,6 +18,7 @@ use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RadioType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -33,10 +35,12 @@ use Symfony\Component\Validator\Constraints\PositiveOrZero;
 class userController extends AbstractController
 {
     private $apiHttpClient;
+    private $amazonS3Client;
 
-    public function __construct(ApiHttpClient $apiHttpClient)
+    public function __construct(ApiHttpClient $apiHttpClient, AmazonS3Client $amazonS3Client)
     {
         $this->apiHttpClient = $apiHttpClient;
+        $this->amazonS3Client = $amazonS3Client;
     }
 
     private function generateDateLabels(int $days): array
@@ -398,6 +402,137 @@ class userController extends AbstractController
         
         return $this->render('frontend/user/documentsList.html.twig', [
             'documents'=>$documents['hydra:member']
+        ]);
+    }
+
+    #[Route('/profile/edit', name: 'profileEdit')]
+    public function profileEdit(Request $request)
+    {
+        $userData = $request->query->get('user');
+        $user = json_decode($userData, true);
+
+        $storedUser = $request->getSession()->get('user');
+
+        if (!$storedUser) {
+            $request->getSession()->set('user', $user['id']);
+        }
+
+        if (!isset($user['profilePict'])) {
+            $user['profilePict'] = null;
+        }
+
+        try {
+            $defaults = [
+                'email' => $user['email'],
+                'firstname' => $user['firstname'],
+                'lastname' => $user['lastname'],
+                'telNumber' => $user['telNumber'],
+            ];
+        } catch (Exception $e) {
+            $defaults = [];
+        }
+        $form = $this->createFormBuilder($defaults)
+        ->add("email", EmailType::class, [
+            "attr"=>[
+                "placeholder"=>"E-mail",
+            ],
+            "required"=>false,
+        ])
+        ->add("firstname", TextType::class, [
+            "attr"=>[
+                "placeholder"=>"Prénom",
+            ], 
+            "constraints"=>[
+                new Length([
+                    'min' => 3,
+                    'minMessage' => 'Le prénom doit contenir au moins {{ limit }} caractères',
+                    'max' => 150,
+                    'maxMessage' => 'Le prénom doit contenir au plus {{ limit }} caractères',
+                ]),
+            ],
+            "required"=>false,
+        ])
+        ->add("lastname", TextType::class, [
+            "attr"=>[
+                "placeholder"=>"Nom",
+            ],
+            "constraints"=>[
+                new Length([
+                    'max' => 255,
+                    'maxMessage' => 'Le nom doit contenir au plus {{ limit }} caractères',
+                ]),
+            ],
+            "required"=>false,
+        ])
+        ->add("telNumber", TextType::class, [
+            "attr"=>[
+                "placeholder"=>"Numéro de Téléphone",
+            ],
+            "constraints"=>[
+                new Length([
+                    'max' => 10,
+                    'min' => 10,
+                    'exactMessage' => 'Le numéro de téléphone doit contenir {{ limit }} chiffres',
+                ]),
+                new Regex([
+                    'pattern' => '/^[0-9]+$/',
+                    'message' => 'Le numéro de téléphone doit contenir uniquement des chiffres',
+                ]),
+            ],
+            "required"=>false,
+        ])
+        ->add("profilePict", FileType::class, [
+            'constraints' => [
+                new File([
+                    'maxSize' => '10m',
+                    'mimeTypes' => [
+                        'image/png', 
+                        'image/jpeg', 
+                    ],
+                    'mimeTypesMessage' => 'Please upload a valid jpeg or png document',
+                ])
+            ],
+        ])
+        ->getForm()->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()){
+            $data = $form->getData();
+
+            $results = $this->amazonS3Client->insertObject($data['profilePict']);
+            $data['profilePict'] = $results['link'];
+
+            $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/ld+json');
+            
+            $response = $client->request('GET', 'cs_users', [
+                'query' => [
+                    'page' => 1,
+                    'email' => $data['email']
+                    ]
+                ]);
+            if ($response->toArray()["hydra:totalItems"] > 0 && $response->toArray()["hydra:member"][0]['id'] != $storedUser) {
+                $errorMessages[] = "Adresse mail déjà utilisée. Essayez en une autre.";
+
+                return $this->render('backend/user/editUser.html.twig', [
+                    'form'=>$form,
+                    'errorMessages'=>$errorMessages
+                ]);
+            }
+            
+            $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/merge-patch+json');
+            
+            $response = $client->request('PATCH', 'cs_users/'.$storedUser, [
+                'json' => $data,
+            ]);
+
+            $response = json_decode($response->getContent(), true);
+
+            $request->getSession()->remove('userId');
+
+            return $this->redirectToRoute('myProfile');
+        }      
+        return $this->render('frontend/user/editProfile.html.twig', [
+            'form'=>$form,
+            'errorMessage'=>null
         ]);
     }
 }

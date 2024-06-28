@@ -28,7 +28,7 @@
                     <p><strong>Email: </strong>{{ user.email|capitalize }}</p>
                     <p><strong>Téléphone: </strong>{{ user.telNumber }}</p>
 
-                    <a href="{{ path('myProfile') }}" style="color:black;">Modifier mes informations</a>
+                    <a href="{{ path('profileEdit', {'user': user|json_encode}) }}" style="color:black;">Modifier mes informations</a>
                 </div>
                 <div class="summaryandrevenue">
                     <div class="summary">
