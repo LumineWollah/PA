@@ -3,6 +3,7 @@
 namespace App\Controller\Backend;
 
 use App\Security\CustomAccessManager;
+use App\Service\AmazonS3Client;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Service\ApiHttpClient;
@@ -14,15 +15,20 @@ use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\Extension\Core\Type\TimeType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
 
 class serviceController extends AbstractController
 {
     private $apiHttpClient;
+    private $amazonS3Client;
 
-    public function __construct(ApiHttpClient $apiHttpClient)
+    public function __construct(ApiHttpClient $apiHttpClient, AmazonS3Client $amazonS3Client)
     {
         $this->apiHttpClient = $apiHttpClient;
+        $this->amazonS3Client = $amazonS3Client;
     }
 
     private function checkUserRole(Request $request): bool
@@ -240,6 +246,47 @@ class serviceController extends AbstractController
             ],
             "required"=>false,
         ])
+        ->add("coverImage", FileType::class, [
+            'constraints' => [
+                new File([
+                    'maxSize' => '10m',
+                    'mimeTypes' => [
+                        'image/png', 
+                        'image/jpeg', 
+                    ],
+                    'mimeTypesMessage' => 'Please upload a valid jpeg or png document',
+                ])
+            ],
+        ])
+        ->add("addressInputs", IntegerType::class, [
+            "attr"=>[
+                "placeholder"=>"Nombre d'adresses",
+            ],
+            'constraints'=>[
+                new GreaterThanOrEqual(1),
+            ],
+        ])
+        ->add("daysOfWeek", ChoiceType::class, [
+            "choices" => [
+                "Lundi" => 0,
+                "Mardi" => 1,
+                "Mercredi" => 2,
+                "Jeudi" => 3,
+                "Vendredi" => 4,
+                "Samedi" => 5,
+                "Dimanche" => 6,
+            ],
+            "expanded" => True,
+            "multiple" => True,
+        ])
+        ->add('startTime', TimeType::class, [
+            'input'  => 'datetime',
+            'widget' => 'choice',
+        ])
+        ->add('endTime', TimeType::class, [
+            'input'  => 'datetime',
+            'widget' => 'choice',
+        ])
         ->add("category", ChoiceType::class, [
             "choices" => $categoryChoice,
         ])
@@ -250,11 +297,17 @@ class serviceController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()){
             $data = $form->getData();
 
+            $results = $this->amazonS3Client->insertObject($data['coverImage']);
+            $data['coverImage'] = $results['link'];
+
             $data['category'] = 'api/cs_categories/'.$data['category'];
             $data['company'] = 'api/cs_companies/'.$data['company'];
 
-            $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/ld+json');
+            $data['startTime'] = $data['startTime']->format('H:i');
+            $data['endTime'] = $data['endTime']->format('H:i');
 
+            $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/ld+json');
+            
             $response = $client->request('POST', 'cs_services', [
                 'json' => $data,
             ]);

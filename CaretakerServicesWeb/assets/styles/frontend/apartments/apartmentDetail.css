@@ -257,3 +257,13 @@ input::-webkit-input-placeholder {
     height: 8vh;
     margin-top: 2vh;
 }
+
+.vertical-scroll-panel {
+    display: flex;
+    flex-direction: column;
+}
+
+#form_services {
+    display: flex;
+    flex-direction: column;
+}
