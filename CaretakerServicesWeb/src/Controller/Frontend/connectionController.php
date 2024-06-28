@@ -175,6 +175,14 @@ class connectionController extends AbstractController
             $redirectResponse->headers->setCookie($cookie5);
             $redirectResponse->headers->setCookie($cookie6);
 
+            $client = $this->apiHttpClient->getClient($response['token'], 'application/merge-patch+json');
+            
+            $response = $client->request('PATCH', 'cs_users/'.$response['user']['id'], [
+                'json' => [
+                    "lastConnection"=> (new \DateTime())->format('Y-m-d H:i:s')
+                ],
+            ]);
+
             return $redirectResponse;
         }      
 

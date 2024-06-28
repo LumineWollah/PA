@@ -27,9 +27,67 @@
                 search: "",
                 info: "Affichage des entrées _START_ à _END_ sur _TOTAL_ au total",
             },
-            buttons: [
-                'pdf'
-            ],
+            buttons: [],
+            columnDefs: [
+                {
+                    targets: 3,
+                    className: 'dt-body-left dt-head-left'
+                },
+                {
+                    targets: -1,
+                    orderable: false,
+                },
+            ]
+        } );
+        $('#crudList2').DataTable( {
+            buttons: true,
+            pageLength: 10,
+            layout: {
+                topStart: {
+                    search: {
+                        placeholder: "Rechercher...",
+                        search: ""
+                    }
+                },
+                topEnd: 'buttons',
+                bottomStart: 'paging',
+                bottomEnd: 'info',
+            },
+            language: {
+                search: "",
+                info: "Affichage des entrées _START_ à _END_ sur _TOTAL_ au total",
+            },
+            buttons: [],
+            columnDefs: [
+                {
+                    targets: 3,
+                    className: 'dt-body-left dt-head-left'
+                },
+                {
+                    targets: -1,
+                    orderable: false,
+                },
+            ]
+        } );
+        $('#crudList3').DataTable( {
+            buttons: true,
+            pageLength: 10,
+            layout: {
+                topStart: {
+                    search: {
+                        placeholder: "Rechercher...",
+                        search: ""
+                    }
+                },
+                topEnd: 'buttons',
+                bottomStart: 'paging',
+                bottomEnd: 'info',
+            },
+            language: {
+                search: "",
+                info: "Affichage des entrées _START_ à _END_ sur _TOTAL_ au total",
+            },
+            buttons: [],
             columnDefs: [
                 {
                     targets: 3,
@@ -48,6 +106,7 @@
             <div class="btn-create-row">
                 <h1>Liste des demandes</h1>
             </div>
+            <h2 style="font-family: Quicksand; font-size:1.2vw !important; color: #A594F9;">Demandes en attente de réponse :</h2>
             <table id="crudList" class="table table-striped">
                 <thead>
                     <tr>
@@ -58,7 +117,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for request in requests %}
+                    {% for request in requestsPending %}
                         <tr>
                             <td>
                                 <form action="{{ path('serviceDetail', {'id':request.service.id}) }}" method="post" style="display: inline;">
@@ -69,12 +128,75 @@
                             <td>{{ request.startingDate|date('d/m/Y') }}</td>
                             <td>{{ request.dateCreation|date('d/m/Y') }}</td>
                             <td class="action">
-                                <form action="{{ path('myReservationDetail') }}" method="post" style="display: inline;">
-                                    <input type="hidden" name="reservation" value="{{ request|json_encode }}">
-                                    <button type="submit" class="btn" style="background-color: #18A0FB;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/chart.png') }}></div></button>
+                                <form action="{{ path('quoteRequestDelete') }}" method="post">
+                                    <input type="hidden" name="reservationContent" value="{{ request|json_encode }}">
+                                    <button type="submit" class="btn" style="background-color: #EE3939;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/bin.png') }}></div></button>
                                 </form>
-                                <a href="{{ path('myReservationDocuments', {'id': request.id }) }}" class="btn" style="background-color: #A594F9;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/documents.png') }}></div></a>
-                                <a href="{{ path('myReservationOpinion', {'id': request.id }) }}" class="btn" style="background-color: #4CBA78;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/star.png') }}></div></a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <h2 style="font-family: Quicksand; font-size:1.2vw !important; color: #A594F9;" class="mt-4" >Demandes en attente de votre validation :</h2>
+            <table id="crudList2" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">Service</th>
+                        <th scope="col">Date demandée</th>
+                        <th scope="col">Date de la demande</th>
+                        <th scope="col">Prix demandé</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for request in requestsAccepted %}
+                        <tr>
+                            <td style="background-color: #72D47C;">
+                                <form action="{{ path('serviceDetail', {'id':request.service.id}) }}" method="post" style="display: inline;">
+                                    <input type="hidden" name="service" value="{{ request.service|json_encode }}">
+                                    <button type="submit" class="btn btn-light apartment" style="height:40px"><p> {{ request.service.name|capitalize }} </p></button>
+                                </form>
+                            </td>
+                            <td style="background-color: #72D47C;">{{ request.startingDate|date('d/m/Y') }}</td>
+                            <td style="background-color: #72D47C;">{{ request.dateCreation|date('d/m/Y') }}</td>
+                            <td style="background-color: #72D47C;">{{ request.price }}€</td>
+                            <td style="background-color: #72D47C;" class="action">
+                                <form action="{{ path('requestPay', {'id':request.id}) }}" method="post" style="display: inline;">
+                                    <input type="hidden" name="reservation" value="{{ request|json_encode }}">
+                                    <button type="submit" class="btn" style="background-color: #18A0FB;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/accept.png') }}></div></button>
+                                </form>
+                                <a href="{{ request.documents[0].url }}" target="_blank" class="btn" style="background-color: #A594F9;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/documents.png') }}></div></a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <h2 style="font-family: Quicksand; font-size:1.2vw !important; color: #A594F9;" class="mt-4" >Demandes refusées par le fournisseur :</h2>
+            <table id="crudList3" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">Service</th>
+                        <th scope="col">Date demandée</th>
+                        <th scope="col">Date de la demande</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for request in requestsRejected %}
+                        <tr>
+                            <td style="background-color: #EE8888;">
+                                <form action="{{ path('serviceDetail', {'id':request.service.id}) }}" method="post" style="display: inline;">
+                                    <input type="hidden" name="service" value="{{ request.service|json_encode }}">
+                                    <button type="submit" class="btn btn-light apartment" style="height:40px"><p> {{ request.service.name|capitalize }} </p></button>
+                                </form>
+                            </td>
+                            <td style="background-color: #EE8888;">{{ request.startingDate|date('d/m/Y') }}</td>
+                            <td style="background-color: #EE8888;">{{ request.dateCreation|date('d/m/Y') }}</td>
+                            <td style="background-color: #EE8888;" class="action">
+                                <form action="{{ path('quoteRequestDelete') }}" method="post">
+                                    <input type="hidden" name="reservationContent" value="{{ request|json_encode }}">
+                                    <button type="submit" class="btn" style="background-color: #EE3939;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/bin.png') }}></div></button>
+                                </form>
                             </td>
                         </tr>
                     {% endfor %}

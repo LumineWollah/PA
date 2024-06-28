@@ -155,9 +155,22 @@
     var dates = document.getElementById("form_date");
 
     const rangesTab = {{ datesRangeReservs|json_encode|raw }};
+    var availableDays = {{ service.daysOfWeek|json_encode|raw }};
+    console.log(availableDays);
     const addressInputs = {{ service.addressInputs }};
     const address0 = document.getElementById("form_address0");
 
+    const mapDays = {
+        "Lundi": 0,
+        "Mardi": 1,
+        "Mercredi": 2,
+        "Jeudi": 3,
+        "Vendredi": 4,
+        "Samedi": 5,
+        "Dimanche": 6
+    };
+
+    availableDays = availableDays.map(day => mapDays[day]);
 
     function checkButtonStatus() {
         console.log(address0.value);
@@ -178,6 +191,9 @@
             },
             isInvalidDate: function(date) {
                 if (date.isBefore(moment(), 'day')) {
+                    return true;
+                }
+                if (!availableDays.includes(date.day())) {
                     return true;
                 }
                 for (var i = 0; i < rangesTab.length; i++) {
@@ -234,7 +250,9 @@
         const geocoder0 = new MapboxGeocoder({
             accessToken: mapboxgl.accessToken,
             countries: 'fr',
+            bbox: [-5.3173828125, 41.27780646738183, 9.84375, 51.12421275782688],
             types: 'address',
+            mapboxgl: mapboxgl
         });
         geocoder0.addTo('#geocoder0');
 
@@ -254,7 +272,9 @@
         const geocoder1 = new MapboxGeocoder({
             accessToken: mapboxgl.accessToken,
             countries: 'fr',
+            bbox: [-5.3173828125, 41.27780646738183, 9.84375, 51.12421275782688],
             types: 'address',
+            mapboxgl: mapboxgl
         });
         geocoder1.addTo('#geocoder1');
 

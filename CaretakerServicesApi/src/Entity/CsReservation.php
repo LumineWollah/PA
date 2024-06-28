@@ -22,16 +22,16 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity(repositoryClass: CsReservationRepository::class)]
 #[Patch(security: "is_granted('ROLE_ADMIN') or 
     (object.getUser() and object.getUser() == user) or 
-    (object.getApartmentOwner() != null and user in object.getApartmentOwner().toArray()) or
+    (object.getApartmentOwner() != null and object.getApartmentOwner() == user) or
     (object.getServiceOwner() != null and user in object.getServiceOwner().toArray())")]
 #[Get]
 #[GetCollection]
 #[Delete(security: "is_granted('ROLE_ADMIN') or 
     (object.getUser() and object.getUser() == user) or 
-    (object.getApartmentOwner() != null and user in object.getApartmentOwner().toArray()) or
+    (object.getApartmentOwner() != null and object.getApartmentOwner() == user) or
     (object.getServiceOwner() != null and user in object.getServiceOwner().toArray())")]
 #[Post]
-#[ApiFilter(SearchFilter::class, properties: ['apartment' => 'exact', 'service' => 'exact', 'user' => 'exact', 'unavailability' => 'exact', 'isRequest' => 'exact', 'active' => 'exact'])]
+#[ApiFilter(SearchFilter::class, properties: ['apartment' => 'exact', 'service' => 'exact', 'user' => 'exact', 'unavailability' => 'exact', 'isRequest' => 'exact', 'active' => 'exact', 'status' => 'exact'])]
 class CsReservation
 {
     #[ORM\Id]
@@ -113,6 +113,10 @@ class CsReservation
     #[ORM\Column]
     #[Groups(["getReservations", "getUsers", "getApartments", "getDocuments"])]
     private ?bool $isRequest = false;
+
+    #[ORM\Column(type: Types::SMALLINT, nullable: true)]
+    #[Groups(["getReservations", "getUsers", "getApartments", "getDocuments"])]
+    private ?int $status = null;
 
     public function __construct()
     {
@@ -369,6 +373,18 @@ class CsReservation
     public function setisRequest($isRequest) 
     {
         $this->isRequest = $isRequest;
+
+        return $this;
+    }
+
+    public function getStatus(): ?int
+    {
+        return $this->status;
+    }
+
+    public function setStatus(?int $status): static
+    {
+        $this->status = $status;
 
         return $this;
     }

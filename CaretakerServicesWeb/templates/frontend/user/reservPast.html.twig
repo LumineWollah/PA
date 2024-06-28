@@ -74,7 +74,9 @@
                                     <input type="hidden" name="reservation" value="{{ reservation|json_encode }}">
                                     <button type="submit" class="btn" style="background-color: #18A0FB;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/chart.png') }}></div></button>
                                 </form>
-                                <a href="{{ path('myReservationDocuments', {'id': reservation.id }) }}" class="btn" style="background-color: #A594F9;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/documents.png') }}></div></a>
+                                {% if reservation.documents is not empty %}
+                                    <a href="{{ reservation.documents[0].url }}" target="_blank" class="btn" style="background-color: #A594F9;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/documents.png') }}></div></a>
+                                {% endif %}                                
                                 <a href="{{ path('myReservationOpinion', {'id': reservation.id }) }}" class="btn" style="background-color: #4CBA78;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/star.png') }}></div></a>
                             </td>
                         </tr>

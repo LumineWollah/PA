@@ -102,7 +102,7 @@ use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 #[GetCollection()]
 #[Delete(security: "is_granted('ROLE_ADMIN') or object.getOwner() == user")]
 #[Post(security: "is_granted('ROLE_LESSOR') or is_granted('ROLE_ADMIN')")]
-#[ApiFilter(SearchFilter::class, properties: ['owner' => 'exact'])]
+#[ApiFilter(SearchFilter::class, properties: ['owner' => 'exact', 'city' => 'exact'])]
 #[ORM\Entity(repositoryClass: CsApartmentRepository::class)]
 class CsApartment
 {

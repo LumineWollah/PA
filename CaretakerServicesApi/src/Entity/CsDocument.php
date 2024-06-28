@@ -24,7 +24,7 @@ use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 #[Get(security: "is_granted('ROLE_ADMIN') or object.getOwner() == user")]
 #[Patch(security: "is_granted('ROLE_ADMIN') or object.getOwner() == user")]
 #[GetCollection]
-#[Delete(security: "is_granted('ROLE_ADMIN')")]
+#[Delete(security: "is_granted('ROLE_ADMIN') or object.getOwner() == user")]
 #[Post()]
 #[ApiFilter(SearchFilter::class, properties: ['type' => 'exact', 'owner' => 'exact'])]
 #[ORM\Entity(repositoryClass: CsDocumentRepository::class)]

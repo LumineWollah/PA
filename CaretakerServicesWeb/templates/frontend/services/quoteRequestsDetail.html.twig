@@ -1,54 +1,105 @@
 {% extends 'frontend/base.html.twig' %}
 
-{% block stylesheets %}<link rel="stylesheet" href={{ asset('styles/frontend/user/reservDetail.css') }}>{% endblock %}
+{% block stylesheets %}
+    <link rel="stylesheet" href={{ asset('styles/frontend/user/reservDetail.css') }}>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+{% endblock %}
 
 {% block activeRese %}active{% endblock %}
 {% block activePast %}active{% endblock %}
 
 {% block body %}
-<div class="container-fluid pageContent">
-        <h1>Détail de votre réservation</h1>
+    <div class="container-fluid pageContent">
+
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Réponse à la demande</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            {{ form_start(form) }}
+            <div class="modal-body">
+                <h5 class="card-text mb-2">Prix de votre intervention :</h5>
+                {{ form_widget(form.price) }}&nbsp;€
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                <button type="submit" class="btn btn-primary">Envoyer</button>
+            </div>
+            {{ form_end(form) }}
+            </div>
+        </div>
+        </div>
+        <h1>Détail de la demande</h1>
         <div class="row">
             <div class="col-4">
-                <h3>Votre logement</h3>
-                <div class="card">
-                    <img src="{{ reservation.apartment.mainPict }}">
-                    <div class="card-body">
-                        <h5 class="card-text mb-4">{{ reservation.apartment.name }}</h5>
-                        <a href="{{ path('apartmentsDetail', {'id': reservation.apartment.id}) }}" class="seeAppart mb-1">Voir le logement</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-4">
-                <h3>Le détail</h3>
+                <h3>La demande</h3>
                 <div class="card">
                     <div class="card-body">
-                        <h5 class="card-text mb-1">Vos dates :</h5>
-                        <p class="card-text mb-4">{{ reservation.startingDate|date('d/m/Y') }} - {{ reservation.endingDate|date('d/m/Y') }}</p>
-                        <h5 class="card-text mb-1">Prix total :</h5>
-                        <p class="card-text mb-4">{{ reservation.price }} €</p>
-                        <h5 class="card-text mb-1">Voyageurs :</h5>
-                        <p class="card-text mb-1">Adultes : {{ reservation.adultTravelers }} | Enfants : {{ reservation.childTravelers }} | Bébés : {{ reservation.babyTravelers }}</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-4">
-                <h3>Vos services</h3>
-                <div class="card">
-                    <div class="card-body">
-                        {% if reservation.services is empty %}
-                            <p class="card-text mb-1">Aucun service demandé</p>
-                        {% else %}
-                            {% for service in reservation.services %}
-                                <p class="card-text mb-2"><a href="{{ path('serviceDetail', {'id':service.id}) }}" style="color: black;">{{ service.name }}</a> : {{ service.price }} €</p>
-                            {% endfor %}
-                            <hr>
-                            <a href="{{ path('myDocuments') }}" class="seeAppart mb-1">Voir mes documents</a>
+                        <h5 class="card-text mb-4">Demande pour le service : {{ request.service.name }}</h5>
+                        <p class="card-text mb-1">Cette demande a été faite le : {{ request.dateCreation|date('d/m/Y') }}</p>
+                        <p class="card-text mb-4">Pour le : {{ request.startingDate|date('d/m/Y') }}</p>
+                        {% if request.otherData is defined and request.otherData is not null %}
+                            <h5 class="card-text mb-1">Autres informations</h5>
+                            {% if request.otherData.address0 is defined and request.otherData.address0 is not null %}
+                                <p class="card-text">Adresse d'intervention n°1 : {{ request.otherData.address0.address }}</p>
+                            {% endif %}
+                            {% if request.otherData.address1 is defined and request.otherData.address1 is not null %}
+                                <p class="card-text">Adresse d'intervention n°2 : {{ request.otherData.address1.address }}</p>
+                            {% endif %}
                         {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+                <h3>Le client</h3>
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-text mb-4">{{ request.user.lastname|capitalize }} {{ request.user.firstname|capitalize }}</h5>
+                        <p class="card-text mb-1">Email : {{ request.user.email }}</p>
+                        <p class="card-text mb-1">Téléphone : {{ request.user.telNumber }}</p>
+                        <p class="card-text mb-1">Role : {{ request.user.roles[0] == 'ROLE_PROVIDER' ? 'Fournisseur' : (request.user.roles[0] == 'ROLE_LESSOR' ? 'Bailleur' : 'Voyageur') }}</p>
+                        {% set current_date = "now"|date('Y-m-d') %}
+                        {% set interval = date(current_date).diff(date(request.user.dateInscription)) %}
+                        {% if interval.y == 0 %}
+                            {% if interval.m == 0 %}
+                                <p class="inscription">Inscrit depuis {{ interval.d }} jour{{ interval.d > 1 ? s : null }}</p>
+                            {% else %}
+                                <p class="inscription">Inscrit depuis {{ interval.m }} mois</p>
+                            {% endif %}
+                        {% else %}
+                            <p class="inscription">Inscrit depuis {{ interval.y }} ans</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+                <h3>Vos choix</h3>
+                <div class="card">
+                    <div class="card-body actionDiv">
+                        <form action="{{ path('quoteRequestDelete') }}" method="post">
+                            <input type="hidden" name="reservationContent" value="{{ request|json_encode }}">
+                            <button type="submit" class="btn mb-4" style="background-color: #EE3939; width: 100% !important;"><div class="btnImage"><img style="height:20px;" class="me-2" src={{ asset('icons/crud/bin.png') }}> Supprimer la demande</div></button>
+                        </form>
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                            <div class="btnImage"><img style="height:20px;" class="me-2" src={{ asset('icons/crud/pen.png') }}> Répondre à la demande</div>
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
+{% endblock %}
+
+{% block javascripts %}
+<script type="text/javascript">    
+    $(function() {
+
+    
+
+    });
+</script>
 {% endblock %}

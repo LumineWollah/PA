@@ -16,7 +16,8 @@ class AppHome(customtkinter.CTk):
         self.width = 900
         self.height = 700
         self.resizable(False, False)
-        self.url = "http://127.0.0.1:8000/api/"
+        # self.url = "http://127.0.0.1:8000/api/"
+        self.url = "https://api.caretakerservices.fr/api/"
         self.update = False
 
         self.geometry(f"{self.width}x{self.height}")

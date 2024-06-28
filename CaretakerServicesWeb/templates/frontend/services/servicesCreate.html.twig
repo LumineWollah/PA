@@ -231,7 +231,9 @@
     const geocoder = new MapboxGeocoder({
         accessToken: mapboxgl.accessToken,
         countries: 'fr',
+        bbox: [-5.3173828125, 41.27780646738183, 9.84375, 51.12421275782688],
         types: 'address',
+        mapboxgl: mapboxgl
     });
     geocoder.addTo('#geocoder');
 

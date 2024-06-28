@@ -53,7 +53,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasher;
         ]
     )], normalizationContext: ['groups' => ['getUsers']])]
 #[Get()]
-#[Patch(security: "is_granted('ROLE_ADMIN')")]
+#[Patch(security: "is_granted('ROLE_ADMIN') or object == user")]
 #[GetCollection()]
 #[Delete(security: "is_granted('ROLE_ADMIN')")]
 #[Post()]

@@ -6,6 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Service\ApiHttpClient;
 use DateTime;
+use Stripe\Stripe;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -34,9 +35,10 @@ class userController extends AbstractController
 {
     private $apiHttpClient;
 
-    public function __construct(ApiHttpClient $apiHttpClient)
+    public function __construct(ApiHttpClient $apiHttpClient, string $stripeKeyPrivate)
     {
         $this->apiHttpClient = $apiHttpClient;
+        Stripe::setApiKey($stripeKeyPrivate);
     }
 
     #[Route('/profile/me', name: 'myProfile')]
@@ -201,6 +203,35 @@ class userController extends AbstractController
         ]);
     }
 
+    #[Route('/profile/reservations/refund', name: 'reservationsRefund')]
+    public function reservationsRefund(Request $request)
+    {
+        $id = $request->cookies->get('id');
+        $reservation = $request->request->get('reservation');
+        $reservation = json_decode($reservation, true);
+            
+        if ($id == null) {
+            return $this->redirectToRoute('login', ['redirect'=>'myProfile']);
+        }
+
+        $paymentIntent = \Stripe\PaymentIntent::retrieve($reservation['payementId']);
+
+        $chargeId = $paymentIntent->latest_charge;
+
+        $refund = \Stripe\Refund::create([
+            'charge' => $chargeId,
+            'amount' => $reservation['price'] * 100,
+        ]);
+    
+        $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/merge-patch+json');
+
+        if ($refund->status == 'succeeded') {
+            $client->request('DELETE', 'cs_reservations/'.$id);
+        }
+
+        return $this->redirectToRoute('reservationsFuture');
+    }
+
     #[Route('/profile/requests', name: 'myRequests')]
     public function myRequests(Request $request)
     {
@@ -216,14 +247,27 @@ class userController extends AbstractController
 
         $requests = $response->toArray();
         
+        $requestsPending = [];
+        $requestsAccepted = [];
+        $requestsRejected = [];
+
         foreach ($requests['hydra:member'] as $key => $value) {
             if ($value['isRequest'] == false) {
                 unset($requests['hydra:member'][$key]);
             }
+            if ($value['status'] == 0) {
+                $requestsPending[] = $value;
+            } elseif ($value['status'] == 1) {
+                $requestsAccepted[] = $value;
+            } elseif ($value['status'] == 2) {
+                $requestsRejected[] = $value;
+            }
         }
 
         return $this->render('frontend/user/requestsList.html.twig', [
-            'requests'=>$requests['hydra:member']
+            'requestsPending'=>$requestsPending,
+            'requestsAccepted'=>$requestsAccepted,
+            'requestsRejected'=>$requestsRejected
         ]);
     }
 

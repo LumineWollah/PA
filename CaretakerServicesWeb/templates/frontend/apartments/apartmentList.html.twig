@@ -13,32 +13,101 @@
 {% block body %}
 <div class="container-fluid pageContent">
     <h1>Nos <span class="h1span">logements</span> à louer</h1>    
-    <input type="text" name="datefilter" value="" />
-    {% for i in range(0, (((aps|length)/4)|round(0, 'ceil'))-1) %}
-        <div class="row apsRow">
-            {% for j in range(i*4, (i*4)+3) %}
-                {% if j < aps|length %}
-                    <a class="col-3 apartContainer" href={{ path('apartmentsDetail', {'id': aps[j].id}) }}>               
-                        <div class="imgContainer">
-                            <img src={{ aps[j].mainPict }}>
-                        </div>
-                        <p class="apartName"><b>{{ aps[j].name }}</b></p>
-                        <p class="apartInfos"><span class="medium">{{ aps[j].city }}, {{ aps[j].country }} • {{ aps[j].price }}€</span><span class="light"> / nuit</span></b></p>
-                        <div class="apartNumbers">
-                            <img src={{ asset('icons/bed.png') }}> {{ aps[j].bedrooms }} chambres
-                            <img style="margin-left: 2%;" src={{ asset('icons/travelers.png') }}> {{ aps[j].travelersMax }} voyageurs max.
-                        </div>
-                    </a>
-                {% endif %}
-            {% endfor %}
+    <div class="bar">
+        <div class="location me-4">
+            <p>{{'Destination'|trans }}</p>
+            <input type="text" id="dest"    >
         </div>
-    {% endfor %}
+        <div class="dates me-4">
+            <p>{{'Vos dates'|trans}}</p>
+            <input type="text" name="datefilter" value="" />
+        </div>
+        <div class="price me-4">
+            <p>{{'Prix'|trans}}</p>
+            <input type="number" class="min-input" value=""><span class='t'> - </span><input type="number" class="max-input" value="">
+        </div>
+        <div class="travelers">
+            <p>{{"Voyageurs"|trans }}</p>
+            <div class="d-flex travelersFlex">
+                <span id="minus">-</span> <p id="travelersNb">0</p> <span id="plus">+</span>
+            </div>
+        </div>
+        <img src="{{ asset('icons/search.png') }}">
+    </div>
+    <div id="rowContainer">
+    </div>
 </div>
 {% endblock %}
 
 {% block javascripts %}
 <script type="text/javascript">
     $(function() {
+    
+    var url = "http://127.0.0.1:8000/api/cs_apartments";
+    var first = true;
+
+    $("#minus").click(function() {
+        var nb = parseInt($("#travelersNb").text());
+        if (nb > 0) {
+            $("#travelersNb").text(nb-1);
+        }
+    });
+
+    $("#plus").click(function() {
+        var nb = parseInt($("#travelersNb").text());
+        $("#travelersNb").text(nb+1);
+    });
+
+    if ($("#dest").val() != ""){
+        if (first) {
+            url += "?city=" + $("#dest").val();
+            first = false;
+        } else {
+            url += "&city=" + $("#dest").val();
+        }
+    }
+    if ($("#startdate").val() != "") {
+        // TODO
+    }
+
+    $.ajax({
+        url: url,
+        type: 'GET',
+        success: function(data) {
+            data = data['hydra:member'];
+            for (var i = 0; i < Math.ceil(data.length/4)-1; i++) {
+                $("#rowContainer").append("<div class='row apsRow'></div>");
+                for (var j = i*4; j < (i*4)+4; j++) {
+                    if (j < data.length) {
+                        var apart = data[j];
+
+                        let route = "{{ path('apartmentsDetail', { id: '0000' }) }}";
+                        route = route.replace('0000', apart.id);
+
+                        let asset1 = "{{ asset('icons/bed.png') }}";
+                        let asset2 = "{{ asset('icons/travelers.png') }}";
+
+                        var apartHtml = `
+                        <a class='col-3 apartContainer' href="${route}">            
+                            <div class='imgContainer'>
+                                <img src=`+apart.mainPict+`>
+                            </div>
+                            <p class='apartName'><b>`+apart.name+`</b></p>
+                            <p class='apartInfos'><span class='medium'>`+apart.city+`, `+apart.country+` • `+apart.price+`€</span><span class='light'> / nuit</span></b></p>
+                            <div class='apartNumbers'>
+                                <img src={{ asset('icons/bed.png') }}> `+apart.bedrooms+` chambres
+                                <img style='margin-left: 2%;' src={{ asset('icons/travelers.png') }}> `+apart.travelersMax+` voyageurs max.
+                            </div>
+                        </a>
+                        `;
+
+                        $(".apsRow").last().append(apartHtml);
+                    }
+                }
+            }
+            
+        }
+    });
 
     $('input[name="datefilter"]').daterangepicker({
         autoUpdateInput: false,
