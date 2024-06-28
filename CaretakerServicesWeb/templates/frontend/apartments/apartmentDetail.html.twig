@@ -112,9 +112,16 @@
                         <div class="secondColRow"><p class="">Frais de services</p><p><b><span id="servicesValue">0</span> €</b></p></div>
                         <div class="secondColRow"><p class="">Taxes</p><p><b><span id="taxesValue">0</span> €</b></p></div>
                         <p class="reservTitle mt-4">Vos prestations</p>
-                        <button type="button" class="btn addPrestaBtn" data-bs-toggle="modal" data-bs-target="#exampleModalLive">
-                            Ajouter une prestation
-                        </button>
+                        <div class="inputDiv vertical-scroll-panel" style="position: relative;">
+                            {{form_widget(form.services)}}
+                            {% if defaults.services is defined and defaults.services is not empty %}
+                                <ul>
+                                    {% for service in defaults.services %}
+                                        <li>{{ service }}</li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
                 <div class="col-3">

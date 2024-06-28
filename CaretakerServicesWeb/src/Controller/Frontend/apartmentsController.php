@@ -652,6 +652,21 @@ class apartmentsController extends AbstractController
                 'apartment' => $ap['id']
             ]
         ]);
+        
+        $client = $this->apiHttpClient->getClient($request->cookies->get('token'));
+        
+        $response = $client->request('GET', 'cs_services', [
+            'query' => [
+                'page' => 1,
+            ]
+        ]);
+
+        $servicesList = $response->toArray();
+        $serviceChoice = array();
+
+        foreach ($servicesList['hydra:member'] as $service) {
+            $serviceChoice += [ $service['name'] => $service['id'] ];
+        }
 
         $reservs = $responseReserv->toArray();
 
@@ -704,6 +719,11 @@ class apartmentsController extends AbstractController
                 'min' => 0
             ]
         ])
+        ->add("services", ChoiceType::class, [
+            "choices" => $serviceChoice,
+            "expanded" => True,
+            "multiple" => True,
+        ])
         ->getForm()->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -713,6 +733,16 @@ class apartmentsController extends AbstractController
             
             if ($id == null) {
                 return $this->redirectToRoute('login', ['redirect'=>'apartmentsDetail', 'id'=>$ap['id']]);
+            }
+
+            foreach ($data['services'] as $key => $service) {
+                $data['services'][$key] = 'api/cs_services/'.$service;
+            } 
+
+            foreach ($ap['mandatoryServices'] as $key => $mandatory) {
+                if (!array_key_exists($key, $data['services'])) {
+                    $data['services'] += array(array_last_key($data['services']+1) => 'api/cs_services/'.$mandatory);
+                }
             }
 
             $dates = explode(" ", $data['dates']);
