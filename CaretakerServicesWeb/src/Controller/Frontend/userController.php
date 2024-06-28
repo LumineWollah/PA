@@ -38,10 +38,11 @@ class userController extends AbstractController
     private $apiHttpClient;
     private $amazonS3Client;
 
-    public function __construct(ApiHttpClient $apiHttpClient, string $stripeKeyPrivate)
+    public function __construct(ApiHttpClient $apiHttpClient, AmazonS3Client $amazonS3Client, string $stripeKeyPrivate)
     {
         $this->apiHttpClient = $apiHttpClient;
         $this->amazonS3Client = $amazonS3Client;
+        Stripe::setApiKey($stripeKeyPrivate);
     }
 
     private function generateDateLabels(int $days): array
@@ -66,7 +67,6 @@ class userController extends AbstractController
         ]);
 
         return $response->toArray();
-        Stripe::setApiKey($stripeKeyPrivate);
     }
 
     #[Route('/profile/me', name: 'myProfile')]
