@@ -63,7 +63,9 @@
                         </ul>
                     {% else %}
                         <ul class="navbar-nav">
-                            {# ROLE_ADMIN #}
+                            <li class="nav-item">
+                                <a class="nav-link me-4" href={{ path('dashboard') }}>BackOffice</a>
+                            </li>
                         </ul>
                     {% endif %}
                 </div>
