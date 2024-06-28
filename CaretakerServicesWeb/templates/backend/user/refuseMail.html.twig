@@ -1,0 +1,21 @@
+{% extends 'backend/base.html.twig' %}
+
+{% block activeGest %}active{% endblock %}
+
+{% block title %}Refuser un utilisateur{% endblock %}
+
+{% block body %}
+    <div class="col-10 p-0">
+        <div class="p-3">
+            <h1>Refuser un utilisateur</h1>
+            <div class="errors">{%if errorMessages is defined %}<ul>{% for errorMessage in errorMessages %}<li>{{errorMessage}}</li>{% endfor %}</ul>{% endif %}</div>
+            {{form_start(form)}}
+                <div class="inputDiv" style="position: relative;">
+                    {{form_widget(form.body)}}
+                    <div class="errors">{{form_errors(form.body)}}</div>
+                </div>
+                <button type="submit" class="btn">Envoyer</button>
+            {{form_end(form)}}
+        </div>
+    </div>
+{% endblock %}
