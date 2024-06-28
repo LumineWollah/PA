@@ -7,6 +7,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use App\Service\ApiHttpClient;
 use App\Service\AmazonS3Client;
 use DateTime;
+use Exception;
 use Stripe\Stripe;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
