@@ -16,6 +16,19 @@ nav{
     margin-top: calc(8vh + 17px);
 }
 
+.btnSite {
+    background-color: #A594F9;
+    color: white;
+    font-family: 'Roboto Condensed';
+    font-size: 1vw;
+    border-radius: 10px;
+}
+
+.btnSite:hover {
+    background-color: white;
+    color: #A594F9;
+}
+
 .sideBar {
     width: 100%;
     height: calc(92vh - 65px);
