@@ -203,4 +203,5 @@ h1 {
     height: 3.5vw;
     margin-left: 1.5vw;
     margin-top: 1vh;
+    cursor: pointer;
 }
