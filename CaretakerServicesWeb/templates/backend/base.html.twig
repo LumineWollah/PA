@@ -18,14 +18,14 @@
         <nav class="navbar navbar-expand-lg mt-0" data-bs-theme="dark">
             <div class="container-fluid">
                 <a class="navbar-brand" href="#">
-                    <img src="{{ asset('icons/logo/2_white_mode.png') }}" alt="Logo" width="40" height="40" class="d-inline-block align-text-center">
+                    <img src="{{ asset('icons/logo/2_white_mode.png') }}" alt="Logo" width="40" height="40" class="d-inline-block align-text-center me-2">
                     Caretaker Services - Panel administrateur
                 </a>
-                <form class="d-flex" role="search">
-                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                    <button class="btn btn-outline-success" type="submit">Search</button>
-                </form>
-                </div>
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link me-1 btnSite" aria-current="page" href={{ path('home') }}>Aller sur le site</a>
+                    </li>
+                </ul>
             </div>
         </nav>
 

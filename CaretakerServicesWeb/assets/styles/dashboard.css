@@ -73,10 +73,12 @@
 }
 
 .list {
+    background-color: #c8c8c8;
     display: flex;
     flex-direction: column;
-    width: 30%;
+    width: 40%;
     margin: 2%;
+    padding: 10px;
 }
 
 .user {
@@ -88,6 +90,7 @@
 
 .date {
     text-align: end;
+
 }
 
 .title {
@@ -120,9 +123,8 @@
 }
 
 .name {
-    font-size: 40px;
+    font-size: 1.3vw;
     font-weight: 500;
-    margin-left: 10px;
 }
 
 .checkmark {
