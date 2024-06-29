@@ -721,7 +721,7 @@ class apartmentsController extends AbstractController
         ])
         ->add("services", ChoiceType::class, [
             "choices" => $serviceChoice,
-            "expanded" => True,
+            "expanded" => False,
             "multiple" => True,
         ])
         ->getForm()->handleRequest($request);
