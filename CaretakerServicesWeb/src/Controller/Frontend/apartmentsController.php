@@ -741,7 +741,7 @@ class apartmentsController extends AbstractController
 
             foreach ($ap['mandatoryServices'] as $key => $mandatory) {
                 if (!array_key_exists($key, $data['services'])) {
-                    $data['services'] += array(array_last_key($data['services']+1) => 'api/cs_services/'.$mandatory);
+                    $data['services'][] = 'api/cs_services/'.$mandatory;
                 }
             }
 
