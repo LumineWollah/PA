@@ -79,6 +79,12 @@
             </div>
         </div>
         <hr>
+            <ul style="list-style-type: circle; display: flex;">
+                {% for addon in apartment.addons %}
+                    <li style="margin-right: 1.8vw;">{{ addon.name }}</li>
+                {% endfor %}
+            </ul>
+        <hr>
         <div class="row reservation justify-content-center">
             <h2>{{ 'réservation'|trans({}, 'apartments') }}</h2>
             {{form_start(form)}}

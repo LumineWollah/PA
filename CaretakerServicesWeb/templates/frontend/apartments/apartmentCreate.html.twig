@@ -171,6 +171,24 @@
                 </div>
             </div>
         </div>
+        <hr class="mt-5">
+        <div class="inputDiv vertical-scroll-panel" style="position: relative;">
+            <div class="select-btn">
+                <span class="btn-text">{{ 'ajouterservices'|trans({}, 'apartments') }}</span>
+            </div>
+            {{ form_widget(form.addons) }}
+            <ul class="list-items" style="z-index: 10;">
+                {% for addon in addons %}
+                    <li class="item">
+                        <span class="checkbox">
+                            <i class="fa-solid fa-check check-icon"></i>
+                        </span>
+                        <span class="item-text">{{ addon.name }}</span>
+                        <span class="item-id" style="display: none;">{{ addon.id }}</span>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
         <div class="col-12 d-flex mt-5" style="justify-content: center;">
             <button type="submit" class="validBtn">{{ 'valider'|trans({}, 'apartments') }}</button>
         </div>
@@ -180,10 +198,9 @@
 {% endblock %}
 
 {% block javascripts %}
-
 <script>
-
     $(function() {
+
         var selectedDates = [];
         var indispo = document.getElementById('form_indisponibilities');
 
@@ -340,6 +357,39 @@
 
     geocoder.on('clear', () => {
         results.value = '';
+    });
+
+
+    const selectBtn = document.querySelector(".select-btn")
+    const items = document.querySelectorAll(".item");
+    const addonsInput = document.querySelector("#form_addons");
+    var addonsValue = Array();
+
+    selectBtn.addEventListener("click", () => {
+        selectBtn.classList.toggle("open");
+    });
+
+    items.forEach(item => {
+        item.addEventListener("click", () => {
+            const id = item.querySelector(".item-id").textContent;
+            console.log(addonsValue);
+            if (item.classList.contains("checked")) {
+                addonsValue = addonsValue.filter(e => e != id);
+                addonsInput.value = addonsValue.toString();
+            } else {
+                addonsValue.push(id);
+                addonsInput.value = addonsValue.toString();
+            }
+            item.classList.toggle("checked");
+            var checked = document.querySelectorAll(".checked"),
+                btnText = document.querySelector(".btn-text");
+                if(checked && checked.length > 0){
+                    const plurial = checked.length > 1 ? "s" : "";
+                    btnText.innerText = `${checked.length} complément${plurial} sélectionné${plurial}`;
+                }else{
+                    btnText.innerText = "Ajoutez des compléments";
+                }
+        });
     });
 </script>
 {% endblock %}

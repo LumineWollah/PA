@@ -150,6 +150,11 @@ class apartmentsController extends AbstractController
         $apartmentData = $request->request->get('apartment');
         $apartment = json_decode($apartmentData, true);
 
+        $client = $this->apiHttpClient->getClientWithoutBearer();
+
+        $response = $client->request('GET', 'cs_addonss');
+        $addons = $response->toArray()['hydra:member'];
+
         if ($apartment != null) {
             $request->getSession()->set('apartment', $apartment);
         }
@@ -266,6 +271,9 @@ class apartmentsController extends AbstractController
                 ]),
             ],
         ])
+        ->add("addons", HiddenType::class, [
+            'required'=>false,
+        ])
         ->add("mainPict", FileType::class, [
             "attr"=>[
                 "placeholder"=>"Image principale",
@@ -343,6 +351,12 @@ class apartmentsController extends AbstractController
             $data["centerGps"] = $data['address']['center'];
             $data["address"] = $data['address']['place_name'];
     
+            $data['addons'] = explode(",", $data['addons']);
+
+            foreach ($data['addons'] as $key => $addons) {
+                $data['addons'][$key] = '/api/cs_addonss/'.$addons;
+            }
+
             $pictures = array($data['mainPict']);
             for ($i = 1; $i <= 10; $i++) {
                 if (isset($data['pict' . $i])) {
@@ -371,6 +385,7 @@ class apartmentsController extends AbstractController
 
         return $this->render('frontend/apartments/apartmentCreate.html.twig', [
             'form'=>$form,
+            'addons'=>$addons,
             'mainPict'=>$apartment['mainPict'],
             'pict1'=>$apPict[1],
             'pict2'=>$apPict[2],
@@ -393,6 +408,11 @@ class apartmentsController extends AbstractController
         if ($role == null || !($role == 'ROLE_ADMIN' || $role == 'ROLE_LESSOR')) {
             return $this->redirectToRoute('login');
         }
+
+        $client = $this->apiHttpClient->getClientWithoutBearer();
+
+        $response = $client->request('GET', 'cs_addonss');
+        $addons = $response->toArray()['hydra:member'];
 
         $defaults = [
             "bedrooms"=>1,
@@ -492,6 +512,9 @@ class apartmentsController extends AbstractController
                 ]),
             ],
         ])
+        ->add("addons", HiddenType::class, [
+            'required'=>false,
+        ])
         ->add("mainPict", FileType::class, [
             "attr"=>[
                 "placeholder"=>"Image principale",
@@ -573,6 +596,12 @@ class apartmentsController extends AbstractController
 
                 $data['owner'] = 'api/cs_users/'.$id;
 
+                $data['addons'] = explode(",", $data['addons']);
+
+                foreach ($data['addons'] as $key => $addons) {
+                    $data['addons'][$key] = '/api/cs_addonss/'.$addons;
+                }
+
                 $indispo = explode(",", $data['indisponibilities']);
 
                 unset($data['indisponibilities']);
@@ -606,12 +635,13 @@ class apartmentsController extends AbstractController
                         ]);
                     }
                 }
-                return $this->redirectToRoute('apartmentsList');
+                return $this->redirectToRoute('myApartmentsList');
             }
         }
 
         return $this->render('frontend/apartments/apartmentCreate.html.twig', [
             'form'=>$form,
+            'addons'=>$addons,
             'mainPict'=>null,
             'pict1'=>null,
             'pict2'=>null,
