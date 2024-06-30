@@ -28,10 +28,10 @@ class dashboardController extends AbstractController
 
         $usersList = $this->fetchData($request, 'cs_users');
         $reservationsList = $this->fetchData($request, 'cs_reservations', ['unavailability' => 'false']);
-        $apartments = count($this->fetchData($request, 'cs_apartments'));
-        $companies = count($this->fetchData($request, 'cs_companies'));
-        $services = count($this->fetchData($request, 'cs_services'));
-
+        $apartments = $this->fetchData($request, 'cs_apartments')['hydra:totalItems'];
+        $companies = $this->fetchData($request, 'cs_companies')['hydra:totalItems'];
+        $services = $this->fetchData($request, 'cs_services')['hydra:totalItems'];
+        
         $dateLabels = $this->generateDateLabels(7);
 
         $userData = [];
