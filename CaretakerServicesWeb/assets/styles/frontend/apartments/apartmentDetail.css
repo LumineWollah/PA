@@ -268,8 +268,22 @@ input::-webkit-input-placeholder {
     flex-direction: column;
 }
 
-
-
+.reviewsFrame {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute; 
+    background-color: white;
+    height: 8vh;
+    width: 7vw;
+    font-size: 1.8vw;
+    font-family: 'Roboto Condensed';
+    font-weight: bold;
+    border-radius: 5px;
+    right: 2vh;
+    top: 2vh;
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
+}
 
 
 .select-btn{

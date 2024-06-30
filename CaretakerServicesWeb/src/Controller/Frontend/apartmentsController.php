@@ -669,6 +669,16 @@ class apartmentsController extends AbstractController
 
         $ap = $responseApart->toArray();
 
+        $stars = 0;
+        $nbReviews = 0;
+
+        foreach ($ap['reviews'] as $review) {
+            $stars += $review['rate'];
+            $nbReviews++;
+        }
+
+        $stars = ($nbReviews > 0) ? $stars / $nbReviews : null;
+
         $defaults = [
             "adultTravelers"=>0,
             "childTravelers"=>0,
@@ -826,6 +836,7 @@ class apartmentsController extends AbstractController
         }
 
         return $this->render('frontend/apartments/apartmentDetail.html.twig', [
+            'stars'=>$stars,
             'apartment'=>$ap,
             'services'=>$servicesList['hydra:member'],
             'form'=>$form,

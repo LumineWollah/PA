@@ -14,6 +14,11 @@
 
 {% block body %}
 <div class="container-fluid pageContent">
+    {% if stars is not null %}
+        <div class="reviewsFrame">
+            {{ stars }} ★
+        </div>
+    {% endif %}
     <div class="row">
         <div class="mainImg p-0">
             <img src={{ apartment.mainPict }}>
