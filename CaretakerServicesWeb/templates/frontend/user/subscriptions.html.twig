@@ -1,0 +1,159 @@
+{% extends 'frontend/user/base.html.twig' %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href={{ asset('styles/frontend/user/subscriptions.css') }}>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.css" rel="stylesheet"/>
+{% endblock %}
+
+{% block body %}
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="check" viewBox="0 0 16 16">
+    <title>Check</title>
+    <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"></path>
+  </symbol>
+</svg>
+<div class="col-10 p-0 d-flex">
+    <div class="container py-3">    
+        {% if subscription is not null %}
+            <header>
+                <div class="pricing-header p-3 pb-md-4 mx-auto text-center">
+                    <h1 class="display-4 fw-normal">Mon abonnement</h1>
+                    <p class="fs-5 text-muted">Consultez les informations de votre abonnement</p>
+                </div>
+            </header>
+            <main>
+                <div class="row row-cols-1 row-cols-md-3 mb-3 text-center" style="justify-content: center;">
+                    <div class="col">
+                        <div class="card mb-4 rounded-3 shadow-sm">
+                            <div class="card-header py-3">
+                                <h4 class="my-0 fw-normal">{{ (subscription == 1) ? 'Nomade' : 'Aventurier' }}</h4>
+                            </div>
+                            <div class="card-body">
+                                <h1 class="card-title pricing-card-title">{{ (subscription == 1) ? '9,90' : '19' }}€<small class="text-muted fw-light">/mois</small></h1>
+                                <ul class="list-unstyled mt-3 mb-4">
+                                    <li>Réservation de logements & services</li>
+                                    {{ (subscription > 0) ? '<li>Réduction de 5% sur les logements</li>' : '' }}
+                                    {{ (subscription == 2) ? '<li>Taxes CaretekerServices offerte</li>' : '' }}
+                                </ul>
+                                {% if subscription == 1 %}
+                                    <img src="{{ asset('icons/sub_silver.png') }}" class="img-fluid" style="width: 20%; margin-bottom: 3vh;" alt="Responsive image">
+                                {% else %}
+                                    <img src="{{ asset('icons/sub_gold.png') }}" class="img-fluid" style="width: 20%; margin-bottom: 3vh;" alt="Responsive image">
+                                {% endif %}
+                                <p class="text-muted">Votre abonnement est actif depuis le {{ subsDate|date('d/m/y') }}</p>
+                                <a href={{ path("unsubscribe", {"subsId":subsId}) }} class="w-100 btn btn-lg text-white" style="background-color: #A594F9; border-color: #A594F9;">Annuler</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        {% endif %}
+            <header>
+                <div class="pricing-header p-3 pb-md-4 mx-auto text-center">
+                    <h1 class="display-4 fw-normal">Abonnements</h1>
+                    <p class="fs-5 text-muted">Choisissez l'abonnement qui vous convient le mieux</p>
+                </div>
+            </header>
+            <main>
+                <div class="row row-cols-1 row-cols-md-3 mb-3 text-center">
+                    <div class="col">
+                        <div class="card mb-4 rounded-3 shadow-sm">
+                            <div class="card-header py-3">
+                                <h4 class="my-0 fw-normal">Gratuit</h4>
+                            </div>
+                            <div class="card-body">
+                                <h1 class="card-title pricing-card-title">0€<small class="text-muted fw-light">/mois</small></h1>
+                                <ul class="list-unstyled mt-3 mb-4">
+                                    <li>Réservation de logements & services</li>
+                                </ul>
+                                <img src="{{ asset('icons/sub_bronze.png') }}" class="img-fluid" style="width: 20%; margin-bottom: 3vh;" alt="Responsive image">
+                                {% if subscription is null %}
+                                    <a class="w-100 btn btn-lg" style="border-color: #A594F9; color: #A594F9;" disabled>Votre abonnement</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card mb-4 rounded-3 shadow-sm">
+                            <div class="card-header py-3">
+                                <h4 class="my-0 fw-normal">Nomade</h4>
+                            </div>
+                            <div class="card-body">
+                                <h1 class="card-title pricing-card-title">9,90€<small class="text-muted fw-light">/mois</small></h1>
+                                <ul class="list-unstyled mt-3 mb-4">
+                                    <li>Réservation de logements & services</li>
+                                    <li>Réduction de 5% sur les logements</li>
+                                </ul>
+                                <img src="{{ asset('icons/sub_silver.png') }}" class="img-fluid" style="width: 20%; margin-bottom: 3vh;" alt="Responsive image">
+                                {% if subscription is null %}
+                                    <a href={{ path("subscribe", {"subscription":1}) }} class="w-100 btn btn-lg text-white" style="background-color: #A594F9; border-color: #A594F9;">Souscrire</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card mb-4 rounded-3 shadow-sm" style="border-color: #3D2F44;">
+                            <div class="card-header py-3 text-white" style="background-color: #3D2F44; border-color: #3D2F44;">
+                                <h4 class="my-0 fw-normal">Aventurier</h4>
+                            </div>
+                            <div class="card-body">
+                                <h1 class="card-title pricing-card-title">19€<small class="text-muted fw-light">/mois</small></h1>
+                                <ul class="list-unstyled mt-3 mb-4">
+                                    <li>Réservation de logements & services</li>
+                                    <li>Réduction de 5% sur les logements</li>
+                                    <li>Taxes CaretekerServices offerte</li>
+                                </ul>
+                                <img src="{{ asset('icons/sub_gold.png') }}" class="img-fluid" style="width: 20%; margin-bottom: 3vh;" alt="Responsive image">
+                                {% if subscription is null %}
+                                    <a href={{ path("subscribe", {"subscription":2}) }} class="w-100 btn btn-lg text-white" style="background-color: #A594F9; border-color: #A594F9;">Souscrire</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <h2 class="display-6 text-center mb-4">Comparatif des avantages</h2>
+                <div class="table-responsive">
+                    <table class="table text-center">
+                        <thead>
+                            <tr>
+                                <th style="width: 34%;"></th>
+                                <th style="width: 22%;">Gratuit</th>
+                                <th style="width: 22%;">Nomade</th>
+                                <th style="width: 22%;">Aventurier</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th scope="row" class="text-start">Réserver des logements</th>
+                                <td><svg class="bi" width="24" height="24"><use xlink:href="#check"></use></svg></td>
+                                <td><svg class="bi" width="24" height="24"><use xlink:href="#check"></use></svg></td>
+                                <td><svg class="bi" width="24" height="24"><use xlink:href="#check"></use></svg></td>
+                            </tr>
+                            <tr>
+                                <th scope="row" class="text-start">Commenter, publier des avis</th>
+                                <td><svg class="bi" width="24" height="24"><use xlink:href="#check"></use></svg></td>
+                                <td><svg class="bi" width="24" height="24"><use xlink:href="#check"></use></svg></td>
+                                <td><svg class="bi" width="24" height="24"><use xlink:href="#check"></use></svg></td>
+                            </tr>
+                        </tbody>
+                        <tbody>
+                            <tr>
+                                <th scope="row" class="text-start">Réduction de 5% sur les logements</th>
+                                <td></td>
+                                <td><svg class="bi" width="24" height="24"><use xlink:href="#check"></use></svg></td>
+                                <td><svg class="bi" width="24" height="24"><use xlink:href="#check"></use></svg></td>
+                            </tr>
+                            <tr>
+                                <th scope="row" class="text-start">Suppression de la taxe PCS</th>
+                                <td></td>
+                                <td></td>
+                                <td><svg class="bi" width="24" height="24"><use xlink:href="#check"></use></svg></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </main>
+        </div>
+    
+</div>
+{% endblock %}

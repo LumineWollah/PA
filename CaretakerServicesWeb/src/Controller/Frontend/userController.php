@@ -61,7 +61,8 @@ class userController extends AbstractController
     
     private function fetchData(Request $request, string $endpoint, array $query = ['page' => 1]): array
     {
-        $client = $this->apiHttpClient->getClient($request->cookies->get('token'));
+        //$client = $this->apiHttpClient->getClient($request->cookies->get('token'));
+        $client = $this->apiHttpClient->getClientWithoutBearer();
 
         $response = $client->request('GET', $endpoint, [
             'query' => $query,
@@ -170,6 +171,43 @@ class userController extends AbstractController
 
         return $this->render('frontend/user/dashboard.html.twig', [
             'user'=>$user
+        ]);
+    }
+
+    #[Route('/profile/subscriptions', name: 'subscriptions')]
+    public function subscriptions(Request $request)
+    {
+        $id = $request->cookies->get('id');
+            
+        if ($id == null) {
+            return $this->redirectToRoute('login', ['redirect'=>'subscriptions']);
+        }
+
+        $client = $this->apiHttpClient->getClientWithoutBearer();
+
+        $response = $client->request('GET', 'cs_users/'.$id, [
+            'json' => [
+                'page' => 1,
+            ]
+        ]);
+
+        $user = $response->toArray();
+
+        if (array_key_exists('subsId', $user)) {
+            $subsId = $user['subsId'];
+            $subscription = $user['subscription'];
+            $subsDate = $user['subsDate'];
+        } else {
+            $subsId = null;
+            $subscription = null;
+            $subsDate = null;
+        }
+
+        return $this->render('frontend/user/subscriptions.html.twig', [
+            'user'=>$user,
+            'subsId'=>$subsId,
+            'subscription'=>$subscription,
+            'subsDate'=>$subsDate
         ]);
     }
 

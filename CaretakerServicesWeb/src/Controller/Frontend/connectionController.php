@@ -57,6 +57,8 @@ class connectionController extends AbstractController
         $cookie4 = Cookie::create('lastname', '', $expireTime, '/', null, true, true);
         $cookie5 = Cookie::create('firstname', '', $expireTime, '/', null, true, true);
         $cookie6 = Cookie::create('email', '', $expireTime, '/', null, true, true);
+        $cookie7 = Cookie::create('subscription', '', $expireTime, '/', null, true, true);
+
 
         $redirectResponse = new RedirectResponse($this->generateUrl('login'));
         $redirectResponse->headers->setCookie($cookie0);
@@ -66,6 +68,7 @@ class connectionController extends AbstractController
         $redirectResponse->headers->setCookie($cookie4);
         $redirectResponse->headers->setCookie($cookie5);
         $redirectResponse->headers->setCookie($cookie6);
+        $redirectResponse->headers->setCookie($cookie7);
 
         return $redirectResponse;    
     }
@@ -148,6 +151,7 @@ class connectionController extends AbstractController
             $cookie4 = Cookie::create('lastname', $response['user']['lastname'], 0, '/', null, true, true);
             $cookie5 = Cookie::create('firstname', $response['user']['firstname'], 0, '/', null, true, true);
             $cookie6 = Cookie::create('email', $response['user']['email'], 0, '/', null, true, true);
+            $cookie7 = Cookie::create('subscription', $response['user']['subscription'], 0, '/', null, true, true);
             
             if ($request->get('redirect')) {
                 if ($request->get('id') != null) {
@@ -174,6 +178,7 @@ class connectionController extends AbstractController
             $redirectResponse->headers->setCookie($cookie4);
             $redirectResponse->headers->setCookie($cookie5);
             $redirectResponse->headers->setCookie($cookie6);
+            $redirectResponse->headers->setCookie($cookie7);
 
             $client = $this->apiHttpClient->getClient($response['token'], 'application/merge-patch+json');
             

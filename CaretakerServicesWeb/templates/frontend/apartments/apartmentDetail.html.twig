@@ -108,19 +108,29 @@
                 <div class="col-3">
                     <div class="middleForm">
                         <p class="reservTitle">Montant</p>
-                        <div class="secondColRow"><p class="">{{ apartment.price }}€ x <span class="nightsNb">0</span> nuits</p><p><b><span id="priceForNights">0</span> €</b></p></div>
+                        <div class="secondColRow"><p class="">{{ apartment.price }}€ x <span class="nightsNb">0</span> nuits {{ (subscription is not null and subscription > 0) ? '(- 5%)' : '' }}</p><p><b><span id="priceForNights">0</span> €</b></p></div>
                         <div class="secondColRow"><p class="">Frais de services</p><p><b><span id="servicesValue">0</span> €</b></p></div>
-                        <div class="secondColRow"><p class="">Taxes</p><p><b><span id="taxesValue">0</span> €</b></p></div>
+                        <div class="secondColRow"><p class="">Taxes {{ (subscription is not null and subscription == 2) ? '(Offertes)' : '' }}</p><p><b>{{ (subscription is not null and subscription == 2) ? '<s>' : '' }}<span id="taxesValue">0</span>{{ (subscription is not null and subscription == 2) ? '</s>' : '' }} €</b></p></div>
                         <p class="reservTitle mt-4">Vos prestations</p>
                         <div class="inputDiv vertical-scroll-panel" style="position: relative;">
-                            {{form_widget(form.services)}}
-                            {% if defaults.services is defined and defaults.services is not empty %}
-                                <ul>
-                                    {% for service in defaults.services %}
-                                        <li>{{ service }}</li>
-                                    {% endfor %}
-                                </ul>
-                            {% endif %}
+                            <div class="select-btn">
+                                <span class="btn-text">Ajoutez des services</span>
+                            </div>
+                            {{ form_widget(form.services) }}
+                            <ul class="list-items" style="z-index: 10;">
+                                {% for service in services %}
+                                    {% if service.price is defined and service.price is not null %}
+                                        <li class="item">
+                                            <span class="checkbox">
+                                                <i class="fa-solid fa-check check-icon"></i>
+                                            </span>
+                                            <span class="item-text">{{ service.name }} - {{ service.price }}€</span>
+                                            <span class="item-price" style="display: none;">{{ service.price }}</span>
+                                            <span class="item-id" style="display: none;">{{ service.id }}</span>
+                                        </li>
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
                         </div>
                     </div>
                 </div>
@@ -134,7 +144,7 @@
             </div>
             {{form_end(form)}}
         </div>
-        <hr style="margin-top:10%;">
+        <hr style="margin-top:3%;">
         <div class="row photosCaroussel justify-content-center">
             <h2>Autres photos</h2>
             <div id="carouselExampleIndicators" class="carousel slide">
@@ -197,6 +207,46 @@
 {% block javascripts %}
 
 <script>
+    var subscription = {{ subscription }};
+    if (subscription == null) {
+        subscription = 0;
+    }
+    const selectBtn = document.querySelector(".select-btn")
+    const items = document.querySelectorAll(".item");
+    const servInput = document.querySelector("#form_services");
+    var servValue = Array();
+
+    selectBtn.addEventListener("click", () => {
+        selectBtn.classList.toggle("open");
+    });
+
+    items.forEach(item => {
+        item.addEventListener("click", () => {
+            const price = item.querySelector(".item-price").textContent;
+            const id = item.querySelector(".item-id").textContent;
+            console.log(servValue);
+            if (item.classList.contains("checked")) {
+                servValue = servValue.filter(e => e != id);
+                servInput.value = servValue.toString();
+                $('#servicesValue').text(parseFloat($('#servicesValue').text()) - parseFloat(price));
+                $('#totalValue').text(parseFloat($('#totalValue').text()) - parseFloat(price));
+            } else {
+                servValue.push(id);
+                servInput.value = servValue.toString();
+                $('#servicesValue').text(parseFloat($('#servicesValue').text()) + parseFloat(price));
+                $('#totalValue').text(parseFloat($('#totalValue').text()) + parseFloat(price));
+            }
+            item.classList.toggle("checked");
+            var checked = document.querySelectorAll(".checked"),
+                btnText = document.querySelector(".btn-text");
+                if(checked && checked.length > 0){
+                    const plurial = checked.length > 1 ? "s" : "";
+                    btnText.innerText = `${checked.length} service${plurial} sélectionné${plurial}`;
+                }else{
+                    btnText.innerText = "Ajoutez des services";
+                }
+        });
+    })
 
     const travelersMax = {{ apartment.travelersMax }};
     var input1 = document.getElementById("form_adultTravelers");
@@ -255,7 +305,11 @@
         }
         var travelersTaxes = parseFloat($(this).val()) * (0.005 * priceForNights);
         $('#taxesValue').text((parseFloat(taxesValue) + travelersTaxes).toFixed(2));
-        $('#totalValue').text((parseFloat(totalValue) + parseFloat(travelersTaxes)).toFixed(2));
+        if (subscription == 2){
+            $('#totalValue').text(parseFloat($('#totalValue').text()).toFixed(2));        
+        }else{
+            $('#totalValue').text((parseFloat($('#totalValue').text()) + parseFloat(travelersTaxes)).toFixed(2));
+        }
     })
     $("#form_childTravelers").on('change', function(){
         var childTravelers = $(this).val();
@@ -309,9 +363,17 @@
                 $('.nightsNb').text(duration);
                 $(this).val('');
             } else {
-                priceForNights = duration*nightPrice;
+                if (subscription > 0){
+                    priceForNights = ((duration*nightPrice)*0.95).toFixed(2);
+                }else{
+                    priceForNights = duration*nightPrice;
+                }
                 taxesValue = (priceForNights*0.03).toFixed(2);
-                totalValue = servicesValue + parseFloat(priceForNights) + parseFloat(taxesValue);
+                if (subscription == 2){
+                    totalValue = servicesValue + parseFloat(priceForNights);
+                }else{
+                    totalValue = servicesValue + parseFloat(priceForNights) + parseFloat(taxesValue);
+                }
                 for (var i = 0; i < rangesTab.length; i++) {
                     var rangeStartDate = moment(rangesTab[i][0], 'YYYY-MM-DD');
                     var rangeEndDate = moment(rangesTab[i][1], 'YYYY-MM-DD');
@@ -331,7 +393,7 @@
             $('.nightsNb').text(duration);
             $('#priceForNights').text(priceForNights);
             $('#taxesValue').text(taxesValue);
-            $('#totalValue').text(totalValue.toFixed(2));
+            $('#totalValue').text((parseFloat($('#totalValue').text()) + totalValue).toFixed(2));  
         }).on('cancel.daterangepicker', function(ev, picker) {
             $(this).val('');
         });

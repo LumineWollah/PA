@@ -9,6 +9,7 @@ use App\Repository\CsUserRepository;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -149,6 +150,14 @@ class CsUser implements UserInterface, PasswordAuthenticatedUserInterface
      */
     #[ORM\OneToMany(targetEntity: CsTicket::class, mappedBy: 'author', orphanRemoval: true)]
     private Collection $tickets;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(["getUsers"])]
+    private ?string $subsId = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[Groups(["getUsers"])]
+    private ?\DateTimeInterface $subsDate = null;
 
     public function __construct()
     {
@@ -600,6 +609,30 @@ class CsUser implements UserInterface, PasswordAuthenticatedUserInterface
                 $ticket->setAuthor(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getSubsId(): ?string
+    {
+        return $this->subsId;
+    }
+
+    public function setSubsId(?string $subsId): static
+    {
+        $this->subsId = $subsId;
+
+        return $this;
+    }
+
+    public function getSubsDate(): ?\DateTimeInterface
+    {
+        return $this->subsDate;
+    }
+
+    public function setSubsDate(?\DateTimeInterface $subsDate): static
+    {
+        $this->subsDate = $subsDate;
 
         return $this;
     }

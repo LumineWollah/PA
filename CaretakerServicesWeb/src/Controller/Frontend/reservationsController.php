@@ -60,30 +60,31 @@ class reservationsController extends AbstractController
             'currency' => 'eur',
         ]);
 
-        // \Stripe\InvoiceItem::create([
-        //     'customer' => $customer->id,
-        //     'price' => $price->id,
-        // ]);
+        $lineItems = [[
+            'price' => $price->id,
+            'quantity' => 1,
+        ]];
 
-        // $invoice = \Stripe\Invoice::create([
-        //     'customer' => $customer->id,
-        //     'auto_advance' => true,
-        // ]);
+        foreach($data['servicesCompletes'] as $service){
+            $product = \Stripe\Product::create([
+                'name' => $service['name'],
+            ]);
 
-        // $invoice->finalizeInvoice();
-        
-        // // $invoice = \Stripe\Invoice::retrieve($invoice->id);
-        // $pdfUrl = $invoice->invoice_pdf;
+            $price = \Stripe\Price::create([
+                'product' => $product->id,
+                'unit_amount' => intval(round($service['price'] * 100)),
+                'currency' => 'eur',
+            ]);
 
-        // $tempPdfPath = sys_get_temp_dir() . '/facture.pdf';
-        // file_put_contents($tempPdfPath, file_get_contents($pdfUrl));
+            $lineItems[] = [
+                'price' => $price->id,
+                'quantity' => 1,
+            ];
+        }
 
         $session = Session::create([
             'payment_method_types' => ['card'],
-            'line_items' => [[
-                'price' => $price->id,
-                'quantity' => 1,
-            ]],
+            'line_items' => $lineItems,
             'mode' => 'payment',
             'success_url' => $success,
             'cancel_url' => $success,
@@ -119,6 +120,22 @@ class reservationsController extends AbstractController
         $userResp = $client->request('GET', 'cs_users/'.$userId);
         $user = $userResp->toArray();
 
+        $qteArray = "";
+        $servName = "";
+        $servPrice = "";
+        $total = $data['price'];
+
+        if (isset($data['servicesCompletes'])){
+            for ($i=0; $i < count($data['servicesCompletes']); $i++) { 
+                $qteArray .= "<p>1</p>";
+                $servName .= "<p>".$data['servicesCompletes'][$i]['name']."</p>";
+                $servPrice .= "<p>".number_format($data['servicesCompletes'][$i]['price'], 2)."</p>";
+                $total += $data['servicesCompletes'][$i]['price'];
+            }
+        }
+
+        unset($data['servicesCompletes']);
+
         $response = $client->request('POST', 'cs_reservations', [
             'json' => $data,
         ]);
@@ -128,22 +145,6 @@ class reservationsController extends AbstractController
         $emailAdr = $request->cookies->get('email');
 
         $customerName = strtoupper($user['lastname']).' '.ucfirst($user['firstname']);
-
-        $qteArray = "";
-        $servName = "";
-        $servPrice = "";
-        $total = $data['price'];
-
-        $data['services'] = [];
-
-        if (isset($data['services'])){
-            for ($i=0; $i < count($data['services']); $i++) { 
-                $qteArray .= "<p>1</p>";
-                $servName .= "<p>".$data['services'][$i]['name']."</p>";
-                $servPrice .= "<p>".number_format($data['services'][$i]['price'], 2)."</p>";
-                $total += $data['services'][$i]['price'];
-            }
-        }
 
         $html = '
         <style>

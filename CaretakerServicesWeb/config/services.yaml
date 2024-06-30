@@ -36,6 +36,10 @@ services:
         arguments:
             $stripeKeyPrivate: '%stripe_key_private%'
 
+    App\Controller\Frontend\subscriptionsController:
+        arguments:
+            $stripeKeyPrivate: '%stripe_key_private%'
+
     App\Service\ApiHttpClient:
         arguments:
             $apiLink: '%api_link%'

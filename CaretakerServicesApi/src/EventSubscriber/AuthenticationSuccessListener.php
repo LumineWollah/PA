@@ -30,7 +30,8 @@ class AuthenticationSuccessListener implements EventSubscriberInterface
             'lastname' => $user->getLastname(),
             'profile_pict' => $user->getProfilePict(),
             'roles' => $user->getRoles(),
-            'email' => $user->getEmail()
+            'email' => $user->getEmail(),
+            'subscription' => $user->getSubscription()
         ];
 
         $data['user'] = $userData;

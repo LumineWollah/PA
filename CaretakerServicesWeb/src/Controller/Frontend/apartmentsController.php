@@ -652,9 +652,7 @@ class apartmentsController extends AbstractController
                 'apartment' => $ap['id']
             ]
         ]);
-        
-        $client = $this->apiHttpClient->getClient($request->cookies->get('token'));
-        
+                
         $response = $client->request('GET', 'cs_services', [
             'query' => [
                 'page' => 1,
@@ -662,11 +660,6 @@ class apartmentsController extends AbstractController
         ]);
 
         $servicesList = $response->toArray();
-        $serviceChoice = array();
-
-        foreach ($servicesList['hydra:member'] as $service) {
-            $serviceChoice += [ $service['name'] => $service['id'] ];
-        }
 
         $reservs = $responseReserv->toArray();
 
@@ -719,10 +712,8 @@ class apartmentsController extends AbstractController
                 'min' => 0
             ]
         ])
-        ->add("services", ChoiceType::class, [
-            "choices" => $serviceChoice,
-            "expanded" => False,
-            "multiple" => True,
+        ->add("services", HiddenType::class, [
+            'required'=>false,
         ])
         ->getForm()->handleRequest($request);
 
@@ -735,15 +726,11 @@ class apartmentsController extends AbstractController
                 return $this->redirectToRoute('login', ['redirect'=>'apartmentsDetail', 'id'=>$ap['id']]);
             }
 
-            foreach ($data['services'] as $key => $service) {
-                $data['services'][$key] = 'api/cs_services/'.$service;
-            } 
-
-            foreach ($ap['mandatoryServices'] as $key => $mandatory) {
-                if (!array_key_exists($key, $data['services'])) {
-                    $data['services'][] = 'api/cs_services/'.$mandatory;
-                }
-            }
+            // foreach ($ap['mandatoryServices'] as $key => $mandatory) {
+            //     if (!in_array($mandatory["@id"], $data['services'])) {
+            //         $data['services'][] = $mandatory["@id"];
+            //     }
+            // }
 
             $dates = explode(" ", $data['dates']);
 
@@ -759,9 +746,32 @@ class apartmentsController extends AbstractController
             $data['endingDate'] = $endDateTime;
             unset($data['dates']);
 
-            $price = $duration * $ap['price'];
-            $data['price'] = $price + (0.03 * $price) + ($data['adultTravelers'] * (0.005 * $price));
+            if ($request->cookies->get('subscription') > 0) {
+                $price = $duration * $ap['price'] * 0.95;
+            }else{
+                $price = $duration * $ap['price'];
+            }
+
+            if ($request->cookies->get('subscription') == 2) {
+                $data['price'] = $price;
+            }else{
+                $data['price'] = $price + (0.03 * $price) + ($data['adultTravelers'] * (0.005 * $price));
+            }
             
+            $data['services'] = explode(",", $data['services']);
+            $data['servicesCompletes'] = [];
+
+            foreach ($data['services'] as $key => $service) {
+                foreach ($servicesList['hydra:member'] as $serv) {
+                    if ($serv['id'] == $service) {
+                        $data['servicesCompletes'][] = $serv;
+                        $data['services'][$key] = '/api/cs_services/'.$service;
+                        $data['price'] += $serv['price'];
+                        break;
+                    }
+                }
+            } 
+
             $data['user'] = 'api/cs_users/'.$id;
             $data['apartment'] = 'api/cs_apartments/'.$ap['id'];
 
@@ -787,8 +797,10 @@ class apartmentsController extends AbstractController
 
         return $this->render('frontend/apartments/apartmentDetail.html.twig', [
             'apartment'=>$ap,
+            'services'=>$servicesList['hydra:member'],
             'form'=>$form,
-            'datesRangeReservs'=>$datesRangeReservs
+            'datesRangeReservs'=>$datesRangeReservs,
+            'subscription'=>$request->cookies->get('subscription')
         ]);
     }
 
