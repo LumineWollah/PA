@@ -12,20 +12,20 @@
 
 {% block body %}
 <div class="container-fluid pageContent">
-    <h1>Vos <span class="h1span">logements</span> en location</h1> 
+    <h1>{{ 'vos'|trans({}, 'apartments') }} <span class="h1span">{{ 'logements'|trans({}, 'apartments') }}</span> {{ 'enlocation'|trans({}, 'apartments') }}</h1> 
 
     <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Impossible de supprimer ce logement</h1>
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel">{{ 'impossible'|trans({}, 'apartments') }}</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body" id="content">
-                    Vous ne pouvez pas supprimer un logement qui a une réservation actuellement en cours
+                    {{ 'pouvezpas'|trans({}, 'apartments') }}
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Compris</button>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">{{ 'compris'|trans({}, 'apartments') }}</button>
                 </div>
             </div>
         </div>
@@ -43,19 +43,19 @@
                         <p class="apartName"><b>{{ aps[j].name }}</b></p>
                         <p class="apartInfos">
                             <span class="medium">{{ aps[j].city }}, {{ aps[j].country }} • {{ aps[j].price }}€</span>
-                            <span class="light"> / nuit</span>
+                            <span class="light">{{ 'nuit'|trans({}, 'apartments') }}</span>
                         </p>
                         <div class="apartNumbers">
-                            <img src={{ asset('icons/bed.png') }}> {{ aps[j].bedrooms }} chambres
-                            <img style="margin-left: 2%;" src={{ asset('icons/travelers.png') }}> {{ aps[j].travelersMax }} voyageurs max.
+                            <img src={{ asset('icons/bed.png') }}> {{ aps[j].bedrooms }} {{ 'chambres'|trans({}, 'apartments') }}
+                            <img style="margin-left: 2%;" src={{ asset('icons/travelers.png') }}> {{ aps[j].travelersMax }} {{ 'voyageurs'|trans({}, 'apartments') }}
                         </div>
                     </a>
                         <div class="apartActions mt-2 d-flex">
                             <form action="{{ path('apartmentUpdate') }}" method="post" >
                                 <input type="hidden" name="apartment" value="{{ aps[j]|json_encode }}">
-                                <button type="submit">Modifier</button>
+                                <button type="submit">{{ 'modifier'|trans({}, 'apartments') }}</button>
                             </form>
-                            <a href="{{ path('apartmentDeleteLessor', {'id': aps[j].id}) }}" class="deleteApBtn">Supprimer</a>
+                            <a href="{{ path('apartmentDeleteLessor', {'id': aps[j].id}) }}" class="deleteApBtn">{{ 'supprimer'|trans({}, 'apartments') }}</a>
                         </div>
                     </div>
                 {% endif %}

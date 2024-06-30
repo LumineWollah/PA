@@ -13,7 +13,7 @@
 
 {% block body %}
 <div class="container-fluid pageContent">
-    <h1>Nos <span class="h1span">logements</span> à louer</h1>    
+    <h1>{{ 'nos'|trans({}, 'apartments') }} <span class="h1span">{{ 'logements'|trans({}, 'apartments') }}</span> {{ 'enlocation'|trans({}, 'apartments') }}</h1>    
     <div class="bar">
         <div class="location me-4">
             <p>{{'Destination'|trans }}</p>

@@ -19,13 +19,13 @@
                     {% if role == 'ROLE_TRAVELER' or role is not defined or role == null %}
                         <ul class="navbar-nav">
                             <li class="nav-item">
-                                <a class="nav-link {% block activeApar %}{% endblock %} me-4" aria-current="page" href={{ path('apartmentsList') }}>Logements</a>
+                                <a class="nav-link {% block activeApar %}{% endblock %} me-4" aria-current="page" href={{ path('apartmentsList') }}>{{ 'logements'|trans({}, 'base') }}</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link {% block activeServ %}{% endblock %} me-4" href={{ path('servicesList') }}>Services</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link {% block activeProv %}{% endblock %} me-4" href={{ path('providersList') }}>Prestataires</a>
+                                <a class="nav-link {% block activeProv %}{% endblock %} me-4" href={{ path('providersList') }}>{{ 'prestataires'|trans({}, 'base') }}</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link me-4" href="#">Contact</a>
@@ -34,13 +34,13 @@
                     {% elseif role == 'ROLE_LESSOR' %}
                         <ul class="navbar-nav">
                             <li class="nav-item">
-                                <a class="nav-link {% block activeMyApar %}{% endblock %} me-4" aria-current="page" href={{ path('myApartmentsList') }}>Mes logements</a>
+                                <a class="nav-link {% block activeMyApar %}{% endblock %} me-4" aria-current="page" href={{ path('myApartmentsList') }}>{{ 'meslogements'|trans({}, 'base') }}</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link {% block activeCreaApar %}{% endblock %} me-4" href={{ path('apartmentCreate') }}>Ajouter un logement</a>
+                                <a class="nav-link {% block activeCreaApar %}{% endblock %} me-4" href={{ path('apartmentCreate') }}>{{ 'ajouterl'|trans({}, 'base') }}</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link {% block activeProvi %}{% endblock %} me-4" href={{ path('providersList') }}>Prestataires</a>
+                                <a class="nav-link {% block activeProvi %}{% endblock %} me-4" href={{ path('providersList') }}>{{ 'prestataires'|trans({}, 'base') }}</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link me-4" href="#">Contact</a>
@@ -49,13 +49,13 @@
                     {% elseif role == 'ROLE_PROVIDER' %}
                         <ul class="navbar-nav">
                             <li class="nav-item">
-                                <a class="nav-link {% block activeMyServ %}{% endblock %} me-4" aria-current="page" href={{ path('myServicesList') }}>Mes prestations</a>
+                                <a class="nav-link {% block activeMyServ %}{% endblock %} me-4" aria-current="page" href={{ path('myServicesList') }}>{{ 'mesprestations'|trans({}, 'base') }}</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link {% block activeCreaServ %}{% endblock %} me-4" href={{ path('serviceCreateProvider') }}>Ajouter une prestation</a>
+                                <a class="nav-link {% block activeCreaServ %}{% endblock %} me-4" href={{ path('serviceCreateProvider') }}>{{ 'ajouterp'|trans({}, 'base') }}</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link {% block activeQuote %}{% endblock %} me-4" href={{ path('quoteRequests') }}>Demandes de devis</a>
+                                <a class="nav-link {% block activeQuote %}{% endblock %} me-4" href={{ path('quoteRequests') }}>{{ 'demande'|trans({}, 'base') }}</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link me-4" href="#">Contact</a>
@@ -67,13 +67,13 @@
                                 <a class="nav-link me-4" href={{ path('dashboard') }}>BackOffice</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link {% block activeApar2 %}{% endblock %} me-4" aria-current="page" href={{ path('apartmentsList') }}>Logements</a>
+                                <a class="nav-link {% block activeApar2 %}{% endblock %} me-4" aria-current="page" href={{ path('apartmentsList') }}>{{ 'logements'|trans({}, 'base') }}</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link {% block activeServ2 %}{% endblock %} me-4" href={{ path('servicesList') }}>Services</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link {% block activeProv2 %}{% endblock %} me-4" href={{ path('providersList') }}>Prestataires</a>
+                                <a class="nav-link {% block activeProv2 %}{% endblock %} me-4" href={{ path('providersList') }}>{{ 'prestataires'|trans({}, 'base') }}</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link me-4" href="#">Contact</a>
@@ -87,8 +87,8 @@
                 {% set pp = app.request.cookies.get('profile_pict') %}
 
                 {% if id is not defined or id is null %}
-                    <a href="{{ path('login') }}" class="btn btn-primary me-3 btnConnect">Connexion</a>
-                    <a href="{{ path('register') }}" class="btn btn-primary btnRegister">Inscription</a>
+                    <a href="{{ path('login') }}" class="btn btn-primary me-3 btnConnect">{{ 'connexion'|trans({}, 'home') }}</a>
+                    <a href="{{ path('register') }}" class="btn btn-primary btnRegister">{{ 'inscription'|trans({}, 'home') }}</a>
                 {% else %}
                     <div class="d-flex align-items-center">
                         <span class="username">{{ app.request.cookies.get('firstname') }} {{ app.request.cookies.get('lastname') }}</span>

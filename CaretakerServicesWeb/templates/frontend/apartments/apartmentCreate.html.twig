@@ -20,8 +20,8 @@
     <div class="row">
         <div class="mainImg p-0" id="preview">
             <label for="form_mainPict" class="drop-container" id="dropcontainer">
-                <span class="drop-title">Déposer votre fichier ici</span>
-                ou
+                <span class="drop-title">{{ 'déposer'|trans({}, 'apartments') }}</span>
+                {{ 'ou'|trans({}, 'apartments') }}
                 {{ form_widget(form.mainPict) }}
             </label>
         </div>
@@ -30,20 +30,20 @@
         <div class="row">
             <div class="col-12 inputs">
                 <div class="input inputName">
-                    <h4>Nom de votre location</h4>
-                    <p>(Entre 0 et 50 caractères)</p>
+                    <h4>{{ 'nom'|trans({}, 'apartments') }}</h4>
+                    <p>({{ 'entre'|trans({}, 'apartments') }})</p>
                     {{ form_widget(form.name) }}
                 </div>
                 <div class="input inputNb">
-                    <h4>Chambres dispo.</h4>
+                    <h4>{{ 'chambresdispo'|trans({}, 'apartments') }}</h4>
                     {{ form_widget(form.bedrooms) }}
                 </div>
                 <div class="input inputNb">
-                    <h4>Salles de bain</h4>
+                    <h4>{{ 'sallesdebain'|trans({}, 'apartments') }}</h4>
                     {{ form_widget(form.bathrooms) }}
                 </div>
                 <div class="input inputNb">
-                    <h4>Voyageurs max.</h4>
+                    <h4>{{ 'voyageurs2'|trans({}, 'apartments') }}</h4>
                     {{ form_widget(form.travelersMax) }}
                 </div>
             </div>
@@ -51,8 +51,8 @@
         <div class="row mt-4">
             <div class="col-12 inputs">
                 <div class="input inputDesc">
-                    <h4>Description de votre location</h4>
-                    <p>(Entre 50 et 500 caractères)</p>
+                    <h4>{{ 'description'|trans({}, 'apartments') }}</h4>
+                    <p>({{ 'entre2'|trans({}, 'apartments') }})</p>
                     {{ form_widget(form.description) }}
                 </div>
                 <div class="input inputNb">
@@ -60,11 +60,11 @@
                     {{ form_widget(form.area) }}
                 </div>
                 <div class="input inputNb">
-                    <h4>Type de bien</h4>
+                    <h4>{{ 'type'|trans({}, 'apartments') }}</h4>
                     {{ form_widget(form.isHouse) }}
                 </div>
                 <div class="input inputNb">
-                    <h4>Type de location</h4>
+                    <h4>{{ 'type2'|trans({}, 'apartments') }}</h4>
                     {{ form_widget(form.isFullhouse) }}
                 </div>
             </div>
@@ -75,14 +75,14 @@
                     
                 </div>
                 <div class="input inputNb">
-                    <h4>Prix / nuit :</h4>
+                    <h4>{{ 'prix/nuit'|trans({}, 'apartments') }}</h4>
                     <div class="input-group">
                         {{ form_widget(form.price)  }}
                         <span class="input-group-text" id="basic-addon2">€</span>
                     </div>
                 </div>
                 <div class="input inputAdr">
-                    <h4>Adresse</h4>
+                    <h4>{{ 'adresse'|trans({}, 'apartments') }}</h4>
                     <div id="geocoder" style="position: relative; height: 3vh;"></div>
                     {{form_widget(form.address)}}
                 </div>
@@ -91,16 +91,16 @@
         <hr class="mt-5">
         <div class="row">
             <div class="col-3"> 
-                <h4 style="height: 3vh;">Date d'indisponibilité</h4>
+                <h4 style="height: 3vh;">{{ 'date'|trans({}, 'apartments') }}</h4>
                 <input type="text" name="daterange" value="" class="mt-3 inputIndispo">
                 <div id="selectedDates" style="height: 200px; overflow-y: scroll;"></div>
                 {{form_widget(form.indisponibilities)}}
             </div>
             <div class="col-9">
-                <h4 style="height: 3vh;">Autres photos</h4>
+                <h4 style="height: 3vh;">{{ 'autres'|trans({}, 'apartments') }}</h4>
                 <div class="row" style="height: calc(100% - 3vh);">
                     <div class="col-4" style="display: flex; align-items: center;">
-                        <p>Vous pouvez poster jusqu'à 10 photos supplémentaires ...</p>
+                        <p>{{ 'jusqua'|trans({}, 'apartments') }}</p>
                     </div>
                     <div class="col-8" style="display: flex; justify-content: space-around; flex-direction: column;">
                         <div class="row">
@@ -172,7 +172,7 @@
             </div>
         </div>
         <div class="col-12 d-flex mt-5" style="justify-content: center;">
-            <button type="submit" class="validBtn">Valider</button>
+            <button type="submit" class="validBtn">{{ 'valider'|trans({}, 'apartments') }}</button>
         </div>
         {{form_end(form)}}
     </div>

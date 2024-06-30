@@ -24,7 +24,7 @@
             <div class="col-7">
                 <h1>{{ apartment.name }}</h1>
                 <div class="apartDescDiv">
-                    <p class="apartDesc"><b>Description : </b>{{ apartment.description }}</p>
+                    <p class="apartDesc"><b>{{ 'description2'|trans({}, 'apartments') }}</b>{{ apartment.description }}</p>
                 </div>
                 <div class="modal fade" id="exampleModalLive" tabindex="-1" aria-labelledby="exampleModalLiveLabel" style="display: none;" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-scrollable .modal-dialog-centered">
@@ -43,17 +43,17 @@
                     </div>
                 </div>
                 <button type="button" class="btn readMoreBtn" data-bs-toggle="modal" data-bs-target="#exampleModalLive">
-                    LIRE PLUS
+                    {{ 'lire'|trans({}, 'apartments') }}
                 </button>
             </div>
             <div class="col-5 caractColumn align-items-center">
                 <div class="caract">
-                    <h4>Caractéristiques</h4>
+                    <h4>{{ 'caractéristiques'|trans({}, 'apartments') }}</h4>
                     <ul>
-                        <li>Type de bien : <b>{{ (apartment.isHouse == 1) ? 'Maison' : 'Appartement' }}</b></li>
-                        <li>Type de location : <b>{{ (apartment.isFullhouse == 1) ? 'Logement entier' : 'Chambre privée' }}</b></li>
-                        <li>Nombre de chambre : <b>{{ apartment.bedrooms }} chambre{{ (apartment.bedrooms > 1) ? 's' : ''}}</b></li>
-                        <li>Nombre de voyageur : <b>{{ apartment.travelersMax }} voyageur{{ (apartment.travelersMax > 1) ? 's' : ''}}</b></li>
+                        <li>{{ 'type3'|trans({}, 'apartments') }}<b>{{ (apartment.isHouse == 1) ? 'Maison' : 'Appartement' }}</b></li>
+                        <li>{{ 'type4'|trans({}, 'apartments') }}<b>{{ (apartment.isFullhouse == 1) ? 'Logement entier' : 'Chambre privée' }}</b></li>
+                        <li>{{ 'nombrechambre'|trans({}, 'apartments') }}<b>{{ apartment.bedrooms }} {{ 'chambres'|trans({}, 'apartments') }}{{ (apartment.bedrooms > 1) ? 's' : ''}}</b></li>
+                        <li>{{ 'nombrevoyageurs'|trans({}, 'apartments') }}<b>{{ apartment.travelersMax }} {{ 'voyageurs3'|trans({}, 'apartments') }}{{ (apartment.travelersMax > 1) ? 's' : ''}}</b></li>
                         <li>Surface : <b>{{ apartment.area }} m²</b></li>
                     </ul>
                 </div>
@@ -63,43 +63,43 @@
             <div class="col-3 lessorTinyProfile">
                 <img src={{ asset('icons/profile_pict_default.png') }}>
                 <div class="textName">
-                    <p><b>Hôte :</b> {{ apartment.owner.firstname|capitalize }} {{ apartment.owner.lastname|capitalize }}</p>
+                    <p><b>{{ 'hote'|trans({}, 'apartments') }}</b> {{ apartment.owner.firstname|capitalize }} {{ apartment.owner.lastname|capitalize }}</p>
                     {% set current_date = "now"|date('Y-m-d') %}
                     {% set interval = date(current_date).diff(date(apartment.owner.dateInscription)) %}
                     {% if interval.y == 0 %}
                         {% if interval.m == 0 %}
-                            <p class="inscription">Inscrit depuis {{ interval.d }} jours</p>
+                            <p class="inscription">{{ 'inscrit'|trans({}, 'apartments') }} {{ interval.d }} {{ 'jours'|trans({}, 'apartments') }}</p>
                         {% else %}
-                            <p class="inscription">Inscrit depuis {{ interval.m }} mois</p>
+                            <p class="inscription">{{ 'inscrit'|trans({}, 'apartments') }} {{ interval.m }} {{ 'mois'|trans({}, 'apartments') }}</p>
                         {% endif %}
                     {% else %}
-                        <p class="inscription">Inscrit depuis {{ interval.y }} ans</p>
+                        <p class="inscription">{{ 'inscrit'|trans({}, 'apartments') }} {{ interval.y }} {{ 'ans'|trans({}, 'apartments') }}</p>
                     {% endif %}
                 </div>
             </div>
         </div>
         <hr>
         <div class="row reservation justify-content-center">
-            <h2>Réservation</h2>
+            <h2>{{ 'réservation'|trans({}, 'apartments') }}</h2>
             {{form_start(form)}}
             <div class="row reservationRow">
                 <div class="col-6 leftFormContainer">
                     <div class="leftForm">
-                        <p class="reservTitle">Date de votre voyage</p>
+                        <p class="reservTitle">{{ 'date2'|trans({}, 'apartments') }}</p>
                         <div style="color: red;">{{ form_errors(form.dates) }}</div>
                         {{ form_widget(form.dates) }}
-                        <p class="reservTitle mt-4">Nombre de voyageurs</p>
+                        <p class="reservTitle mt-4">{{ 'nombrevoyageurs2'|trans({}, 'apartments') }}</p>
                         <div class="leftFormRow">
                             <div class="leftFormCol">
-                                <p class="reservSubtitle">Adultes (18+) :</p>
+                                <p class="reservSubtitle">{{ 'adultes'|trans({}, 'apartments') }} (18+) :</p>
                                 {{ form_widget(form.adultTravelers) }}
                             </div>
                             <div class="leftFormCol">
-                                <p class="reservSubtitle">Enfants (2+) :</p>
+                                <p class="reservSubtitle">{{ 'enfants'|trans({}, 'apartments') }} (2+) :</p>
                                 {{ form_widget(form.childTravelers) }}
                             </div>
                             <div class="leftFormCol">
-                                <p class="reservSubtitle">Bébé (0+) :</p>
+                                <p class="reservSubtitle">{{ 'bébés'|trans({}, 'apartments') }} (0+) :</p>
                                 {{ form_widget(form.babyTravelers) }} 
                             </div>
                         </div>
@@ -107,14 +107,14 @@
                 </div>
                 <div class="col-3">
                     <div class="middleForm">
-                        <p class="reservTitle">Montant</p>
-                        <div class="secondColRow"><p class="">{{ apartment.price }}€ x <span class="nightsNb">0</span> nuits {{ (subscription is not null and subscription > 0) ? '(- 5%)' : '' }}</p><p><b><span id="priceForNights">0</span> €</b></p></div>
-                        <div class="secondColRow"><p class="">Frais de services</p><p><b><span id="servicesValue">0</span> €</b></p></div>
-                        <div class="secondColRow"><p class="">Taxes {{ (subscription is not null and subscription == 2) ? '(Offertes)' : '' }}</p><p><b>{{ (subscription is not null and subscription == 2) ? '<s>' : '' }}<span id="taxesValue">0</span>{{ (subscription is not null and subscription == 2) ? '</s>' : '' }} €</b></p></div>
-                        <p class="reservTitle mt-4">Vos prestations</p>
+                        <p class="reservTitle">{{ 'montant'|trans({}, 'apartments') }}</p>
+                        <div class="secondColRow"><p class="">{{ apartment.price }}€ x <span class="nightsNb">0</span> {{ 'nights'|trans({}, 'apartments') }} {{ (subscription is not null and subscription > 0) ? '(- 5%)' : '' }}</p><p><b><span id="priceForNights">0</span> €</b></p></div>
+                        <div class="secondColRow"><p class="">{{ 'frais'|trans({}, 'apartments') }}</p><p><b><span id="servicesValue">0</span> €</b></p></div>
+                        <div class="secondColRow"><p class="">{{ 'taxes'|trans({}, 'apartments') }} {{ (subscription is not null and subscription == 2) ? '(Offertes)' : '' }}</p><p><b>{{ (subscription is not null and subscription == 2) ? '<s>' : '' }}<span id="taxesValue">0</span>{{ (subscription is not null and subscription == 2) ? '</s>' : '' }} €</b></p></div>
+                        <p class="reservTitle mt-4">{{ 'prestations'|trans({}, 'apartments') }}</p>
                         <div class="inputDiv vertical-scroll-panel" style="position: relative;">
                             <div class="select-btn">
-                                <span class="btn-text">Ajoutez des services</span>
+                                <span class="btn-text">{{ 'ajouterservices'|trans({}, 'apartments') }}</span>
                             </div>
                             {{ form_widget(form.services) }}
                             <ul class="list-items" style="z-index: 10;">
@@ -136,9 +136,9 @@
                 </div>
                 <div class="col-3">
                     <div class="rightForm">
-                        <p class="reservTitle">Total</p>
-                        <p class="totalText"><span id="totalValue">0</span>€ pour <span class="nightsNb">0</span> nuits</p>
-                        <button type="submit" class="reservBtn" id="reservation" disabled>Réserver</button>
+                        <p class="reservTitle">{{ 'total'|trans({}, 'apartments') }}</p>
+                        <p class="totalText"><span id="totalValue">0</span>€ {{ 'pour'|trans({}, 'apartments') }} <span class="nightsNb">0</span> {{ 'nuits'|trans({}, 'apartments') }}</p>
+                        <button type="submit" class="reservBtn" id="reservation" disabled>{{ 'réserver'|trans({}, 'apartments') }}</button>
                     </div>
                 </div>
             </div>
@@ -146,7 +146,7 @@
         </div>
         <hr style="margin-top:3%;">
         <div class="row photosCaroussel justify-content-center">
-            <h2>Autres photos</h2>
+            <h2>{{ 'autres'|trans({}, 'apartments') }}</h2>
             <div id="carouselExampleIndicators" class="carousel slide">
                 <div class="carousel-indicators">
                     <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
@@ -178,12 +178,12 @@
         </div>
         <hr>
         <div class="row localisation justify-content-center">
-            <h2>Localisation</h2>
+            <h2>{{ 'localisation'|trans({}, 'apartments') }}</h2>
             <div id="map"></div>
         </div>
         <hr>
         <div class="row reviews justify-content-center">
-            <h2>Avis</h2>
+            <h2>{{ 'avis'|trans({}, 'apartments') }}</h2>
             <div class="reviewsContainer">
                 {% for review in apartment.reviews %}
                     <div class="review">
