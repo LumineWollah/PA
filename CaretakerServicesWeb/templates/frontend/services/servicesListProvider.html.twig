@@ -39,7 +39,18 @@
                     {% for j in range(i*4, (i*4)+3) %}
                         {% if j < value|length %}
                             <div class="col-3 companyContainer categoryServicesContainer servicesContainerProvider">
-                            <a class="" href={{ path('providersDetail', {'id': value[j].id}) }}>               
+                            <a class="servCase" href={{ path('providersDetail', {'id': value[j].id}) }}>               
+                                {% set stars = 0 %}
+                                {% set revNb = 0 %}
+                                {% for review in value[j].reviews %}
+                                    {% set stars = stars + review.rate %}
+                                    {% set revNb = revNb + 1 %}
+                                {% endfor %}
+                                {% if revNb > 0 %}
+                                    <div class="reviewsFrame">
+                                        {{ stars / revNb }} ★
+                                    </div>
+                                {% endif %}
                                 <div class="imgContainer">
                                     {% if value[j].coverImage is not defined or value[j].coverImage is null %}
                                         <img src={{ asset('icons/profile_pict_default_company.png') }}>

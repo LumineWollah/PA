@@ -36,7 +36,18 @@
             {% for j in range(i*4, (i*4)+3) %}
                 {% if j < aps|length %}
                     <div class="col-3 apartContainer apartContainerLessor">
-                    <a class="" href={{ path('apartmentsDetail', {'id': aps[j].id}) }}>               
+                    <a class="apCase" href={{ path('apartmentsDetail', {'id': aps[j].id}) }}>               
+                        {% set stars = 0 %}
+                        {% set revNb = 0 %}
+                        {% for review in aps[j].reviews %}
+                            {% set stars = stars + review.rate %}
+                            {% set revNb = revNb + 1 %}
+                        {% endfor %}
+                        {% if revNb > 0 %}
+                            <div class="reviewsFrame">
+                                {{ stars / revNb }} ★
+                            </div>
+                        {% endif %}
                         <div class="imgContainer">
                             <img src={{ aps[j].mainPict }}>
                         </div>
