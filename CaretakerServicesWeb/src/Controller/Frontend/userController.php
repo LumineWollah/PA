@@ -243,6 +243,8 @@ class userController extends AbstractController
 
         // TEMPORAIRE
 
+        $reviews = [];
+
         for ($i = 0; $i < sizeof($reviewsString); $i++) {
                 $response = $client->request('GET', $reviewsString[$i], [
                     'json' => [
