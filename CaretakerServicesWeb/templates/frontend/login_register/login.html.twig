@@ -6,7 +6,7 @@
 <div class="loginCard">
     <div class="titleCard">
         <h2>Connexion</h2>
-        <p class="titleDesc">Entrez votre email et votre mot de passe pour vous connecter</p>
+        <p class="titleDesc">{{ 'entrez'|trans({}, 'login') }}</p>
     </div>
     {{form_start(form)}}
         <div class="errors">{%if errorMessage %}<ul><li>{{errorMessage}}</li></ul>{% endif %}{{form_errors(form.username)}}</div>
@@ -22,12 +22,12 @@
         <div class="otherOptions">
             <div class="checkboxDiv">
                 {{form_widget(form.remember_me)}}
-                <label for="remember_me" class="rememberMe">Se souvenir de moi</label>
+                <label for="remember_me" class="rememberMe">{{ 'souvenir'|trans({}, 'login') }}</label>
             </div>
-            <a href="#" class="forgetPwd">Mot de passe oublié?</a>
+            <a href="#" class="forgetPwd">{{ 'oublié'|trans({}, 'login') }}</a>
         </div>
-        <button type="submit" class="btn loginBtn">Se connecter</button>
+        <button type="submit" class="btn loginBtn">{{ 'connecter'|trans({}, 'login') }}</button>
     {{form_end(form)}}
 </div>
-<a href={{ path("register") }} class="noAccount">Vous n’avez pas de compte ? <span style="color: #3D2F44;">Inscrivez vous</span></a>
+<a href={{ path("register") }} class="noAccount">{{ 'pasdecompte'|trans({}, 'login') }}<span style="color: #3D2F44;">{{ 'inscrivez'|trans({}, 'login') }}</span></a>
 {% endblock %}
