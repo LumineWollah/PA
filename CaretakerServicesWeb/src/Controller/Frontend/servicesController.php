@@ -85,6 +85,94 @@ class servicesController extends AbstractController
         ]); 
     }
 
+    #[Route('/services/in-progress', name: 'servicesInProgress')]
+    public function servicesInProgress(Request $request)
+    {
+        $id = $request->cookies->get('id');
+            
+        if ($id == null) {
+            return $this->redirectToRoute('login', ['redirect'=>'servicesInProgress']);
+        }
+
+        $client = $this->apiHttpClient->getClientWithoutBearer();
+
+        $requestsPast = [];
+        $requestsPresent = [];
+        $requestsFuture = [];
+
+        $companyResp = $client->request('GET', 'cs_companies?users[]='.$id);
+        if (count($companyResp->toArray()['hydra:member']) > 0) {
+            $comp = $companyResp->toArray()['hydra:member'][0];
+
+            $responseServ = $client->request('GET', 'cs_services?company='.$comp['id']);
+            $services = $responseServ->toArray()['hydra:member'];
+
+            $reservation = [];
+
+            foreach ($services as $service) {
+                $responseReserv = $client->request('GET', 'cs_reservations?service='.$service['id'].'&active=1&isRequest=0&unavailability=0');
+                $reservs = $responseReserv->toArray()['hydra:member'];
+
+                foreach ($reservs as $reserv) {
+                    $reservation[] = $reserv;
+                }
+            }
+
+            foreach ($reservation as $key => $value) {
+                if (str_split($value['endingDate'], 10)[0] < date('Y-m-d')) {
+                    $requestsPast[] = $value;
+                } elseif (str_split($value['startingDate'], 10)[0] > date('Y-m-d')) {
+                    $requestsFuture[] = $value;
+                } else {
+                    $requestsPresent[] = $value;
+                }
+            }
+        
+        }
+
+        return $this->render('frontend/services/servicesInProg.html.twig', [
+            'requestsPast'=>$requestsPast,
+            'requestsPresent'=>$requestsPresent,
+            'requestsFuture'=>$requestsFuture
+        ]);
+    }
+
+    #[Route('/services/in-progress/delete', name: 'serviceProgDelete')]
+    public function serviceProgDelete(Request $request, MailerInterface $mailer)
+    {
+        $reserv = $request->request->get('reservation');
+        $reserv = json_decode($reserv, true);
+
+        $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/merge-patch+json');
+
+        $email = (new Email())
+            ->from('ne-pas-repondre@caretakerservices.fr')
+            ->to($reserv['user']['email'])
+            ->subject('Annulation de votre réservation')
+            ->html('<p>Votre réservation pour le service '.$reserv['service']['name'].' a été annulée.</p><p>Vous serez remboursé dans les prochains jours</p>');
+
+        $mailer->send($email);
+
+        $paymentIntent = \Stripe\PaymentIntent::retrieve($reserv['payementId']);
+
+        $chargeId = $paymentIntent->latest_charge;
+
+        $refund = \Stripe\Refund::create([
+            'charge' => $chargeId,
+            'amount' => $reserv['price'] * 100,
+        ]);
+    
+        if ($refund->status == 'succeeded') {
+            $client->request('PATCH', 'cs_reservations/'.$reserv['id'], [
+                'json' => [
+                    'active' => false
+                ]
+            ]);
+        }
+
+        return $this->redirectToRoute('servicesInProgress');
+    }
+
     #[Route('/services/delete', name: 'serviceDeleteProvider')]
     public function serviceDeleteProvider(Request $request, MailerInterface $mailer)
     { 

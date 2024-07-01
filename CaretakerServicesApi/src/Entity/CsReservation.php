@@ -216,7 +216,11 @@ class CsReservation
 
     public function getApartmentOwner(): ?CsUser
     {
-        return $this->apartment->getOwner();
+        if ($this->apartment !== null) {
+            return $this->apartment->getOwner();
+        }
+        
+        return null;
     }
 
     public function getServiceOwner()
