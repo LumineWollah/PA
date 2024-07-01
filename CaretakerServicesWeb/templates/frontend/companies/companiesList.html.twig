@@ -10,7 +10,7 @@
 
 {% block body %}
 <div class="container-fluid pageContent">
-    <h1>Nos <span class="h1span">prestataires</span> à consulter</h1>    
+    <h1>{{ 'nos'|trans({}, 'companies') }} <span class="h1span">{{ 'prestataires'|trans({}, 'companies') }}</span> {{ 'àconsulter'|trans({}, 'companies') }}</h1>    
     {% for i in range(0, (((companies|length)/4)|round(0, 'ceil'))-1) %}
         <div class="row apsRow">
             {% for j in range(i*4, (i*4)+3) %}
