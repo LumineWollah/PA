@@ -1,0 +1,206 @@
+{% extends 'frontend/base.html.twig' %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href={{ asset('styles/crud.css') }}>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdn.datatables.net/2.0.3/js/dataTables.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+    <script src="https://cdn.datatables.net/v/dt/dt-2.0.3/b-3.0.1/b-html5-3.0.1/sc-2.4.1/datatables.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.3/css/dataTables.dataTables.css">
+{% endblock %}
+
+{% block activeReseInProg %}active{% endblock %}
+
+{% block body %}
+<script>
+    $(document).ready( function () {
+        $('#crudList').DataTable( {
+            buttons: true,
+            pageLength: 10,
+            layout: {
+                topStart: {
+                    search: {
+                        placeholder: "Rechercher...",
+                        search: ""
+                    }
+                },
+                topEnd: 'buttons',
+                bottomStart: 'paging',
+                bottomEnd: 'info',
+            },
+            language: {
+                search: "",
+                info: "Affichage des entrées _START_ à _END_ sur _TOTAL_ au total",
+            },
+            buttons: [],
+            columnDefs: [
+                {
+                    targets: 3,
+                    className: 'dt-body-left dt-head-left'
+                },
+                {
+                    targets: -1,
+                    orderable: false,
+                },
+            ]
+        } );
+        $('#crudList2').DataTable( {
+            buttons: true,
+            pageLength: 10,
+            layout: {
+                topStart: {
+                    search: {
+                        placeholder: "Rechercher...",
+                        search: ""
+                    }
+                },
+                topEnd: 'buttons',
+                bottomStart: 'paging',
+                bottomEnd: 'info',
+            },
+            language: {
+                search: "",
+                info: "Affichage des entrées _START_ à _END_ sur _TOTAL_ au total",
+            },
+            buttons: [],
+            columnDefs: [
+                {
+                    targets: 3,
+                    className: 'dt-body-left dt-head-left'
+                },
+                {
+                    targets: -1,
+                    orderable: false,
+                },
+            ]
+        } );
+        $('#crudList3').DataTable( {
+            buttons: true,
+            pageLength: 10,
+            layout: {
+                topStart: {
+                    search: {
+                        placeholder: "Rechercher...",
+                        search: ""
+                    }
+                },
+                topEnd: 'buttons',
+                bottomStart: 'paging',
+                bottomEnd: 'info',
+            },
+            language: {
+                search: "",
+                info: "Affichage des entrées _START_ à _END_ sur _TOTAL_ au total",
+            },
+            buttons: [],
+            columnDefs: [
+                {
+                    targets: 4,
+                    className: 'dt-body-left dt-head-left'
+                },
+                {
+                    targets: -1,
+                    orderable: false,
+                },
+            ]
+        } );
+    } );
+</script>
+    <div class="col-12 p-0 mt-5">
+        <div class="p-3">
+            <div class="btn-create-row">
+                <h1 class="mt-3">Liste des demandes</h1>
+            </div>
+            <h2 style="font-family: Quicksand; font-size:1.2vw !important; color: #A594F9;">Réservations déjà effectuées :</h2>
+            <table id="crudList" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">Appartement</th>
+                        <th scope="col">Demandeur</th>
+                        <th scope="col">Date d'entrée</th>
+                        <th scope="col">Date de sortie</th>
+                        <th scope="col">Prix</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for request in requestsPast %}
+                        <tr>
+                            <td>{{ request.apartment.name|capitalize }}</td>
+                            <td>{{ request.user.lastname|capitalize }} {{ request.user.firstname|capitalize }}</td>
+                            <td>{{ request.startingDate|date('d/m/Y') }}</td>
+                            <td>{{ request.endingDate|date('d/m/Y') }}</td>
+                            <td>{{ request.price }}€</td>
+                            <td class="action">
+                                {% if request.documents is not empty %}
+                                    <a href="{{ request.documents[0].url }}" target="_blank" class="btn" style="background-color: #A594F9;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/documents.png') }}></div></a>
+                                {% endif %}                            
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <h2 style="font-family: Quicksand; font-size:1.2vw !important; color: #A594F9;" class="mt-4" >Réservations en cours :</h2>
+            <table id="crudList2" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">Appartement</th>
+                        <th scope="col">Demandeur</th>
+                        <th scope="col">Date d'entrée</th>
+                        <th scope="col">Date de sortie</th>
+                        <th scope="col">Prix</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for request in requestsPresent %}
+                        <tr>
+                            <td>{{ request.apartment.name|capitalize }}</td>
+                            <td>{{ request.user.lastname|capitalize }} {{ request.user.firstname|capitalize }}</td>
+                            <td>{{ request.startingDate|date('d/m/Y') }}</td>
+                            <td>{{ request.endingDate|date('d/m/Y') }}</td>
+                            <td>{{ request.price }}€</td>
+                            <td class="action">
+                                {% if request.documents is not empty %}
+                                    <a href="{{ request.documents[0].url }}" target="_blank" class="btn" style="background-color: #A594F9;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/documents.png') }}></div></a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <h2 style="font-family: Quicksand; font-size:1.2vw !important; color: #A594F9;" class="mt-4" >Réservations futures :</h2>
+            <table id="crudList3" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">Appartement</th>
+                        <th scope="col">Demandeur</th>
+                        <th scope="col">Date d'entrée</th>
+                        <th scope="col">Date de sortie</th>
+                        <th scope="col">Prix</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for request in requestsFuture %}
+                        <tr>
+                            <td>{{ request.apartment.name|capitalize }}</td>
+                            <td>{{ request.user.lastname|capitalize }} {{ request.user.firstname|capitalize }}</td>
+                            <td>{{ request.startingDate|date('d/m/Y') }}</td>
+                            <td>{{ request.endingDate|date('d/m/Y') }}</td>
+                            <td>{{ request.price }}€</td>
+                            <td class="action">
+                                <form action="{{ path('reservProgDelete') }}" method="post">
+                                    <input type="hidden" name="reservation" value="{{ request|json_encode }}">
+                                    <button type="submit" class="btn" style="background-color: #EE3939;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/bin.png') }}></div></button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

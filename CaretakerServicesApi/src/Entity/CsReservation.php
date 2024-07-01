@@ -37,19 +37,19 @@ class CsReservation
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(["getReservations", "getUsers", "getApartments", "getDocuments"])]
+    #[Groups(["getReservations", "getUsers", "getApartments", "getDocuments", "getCompanies", "getServices"])]
     private ?int $id = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    #[Groups(["getReservations", "getUsers", "getApartments", "getDocuments"])]
+    #[Groups(["getReservations", "getUsers", "getApartments", "getDocuments", "getCompanies", "getServices"])]
     private ?\DateTimeInterface $startingDate = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    #[Groups(["getReservations", "getUsers", "getApartments", "getDocuments"])]
+    #[Groups(["getReservations", "getUsers", "getApartments", "getDocuments", "getCompanies", "getServices"])]
     private ?\DateTimeInterface $endingDate = null;
 
     #[ORM\Column()]
-    #[Groups(["getReservations", "getUsers", "getApartments", "getDocuments"])]
+    #[Groups(["getReservations", "getUsers", "getApartments", "getDocuments", "getCompanies", "getServices"])]
     private ?float $price = null;
 
     #[ORM\Column(nullable: true)]
@@ -57,7 +57,7 @@ class CsReservation
     private ?string $payementId = null;
 
     #[ORM\Column()]
-    #[Groups(["getReservations", "getUsers", "getApartments", "getDocuments"])]
+    #[Groups(["getReservations", "getUsers", "getApartments", "getDocuments", "getCompanies", "getServices"])]
     private ?bool $active = true;
 
     #[ORM\ManyToOne(inversedBy: 'reservations')]
@@ -73,19 +73,19 @@ class CsReservation
     public ?CsUser $user = null;
 
     #[ORM\Column()]
-    #[Groups(["getReservations", "getUsers", "getApartments", "getDocuments"])]
+    #[Groups(["getReservations", "getUsers", "getApartments", "getDocuments", "getCompanies", "getServices"])]
     private ?int $adultTravelers = 0;
 
     #[ORM\Column()]
-    #[Groups(["getReservations", "getUsers", "getApartments", "getDocuments"])]
+    #[Groups(["getReservations", "getUsers", "getApartments", "getDocuments", "getCompanies", "getServices"])]
     private ?int $childTravelers = 0;
 
     #[ORM\Column()]
-    #[Groups(["getReservations", "getUsers", "getApartments", "getDocuments"])]
+    #[Groups(["getReservations", "getUsers", "getApartments", "getDocuments", "getCompanies", "getServices"])]
     private ?int $babyTravelers = 0;
 
     #[ORM\Column]
-    #[Groups(["getReservations", "getUsers", "getApartments", "getDocuments"])]
+    #[Groups(["getReservations", "getUsers", "getApartments", "getDocuments", "getCompanies", "getServices"])]
     private bool $unavailability = false;
 
     /**
@@ -103,19 +103,19 @@ class CsReservation
     private Collection $documents;
 
     #[ORM\Column]
-    #[Groups(["getReservations", "getUsers", "getApartments", "getDocuments"])]
+    #[Groups(["getReservations", "getUsers", "getApartments", "getDocuments", "getCompanies", "getServices"])]
     private ?DateTime $dateCreation = null;
 
     #[ORM\Column(nullable: true)]
-    #[Groups(["getReservations", "getUsers", "getApartments", "getDocuments"])]
+    #[Groups(["getReservations", "getUsers", "getApartments", "getDocuments", "getCompanies", "getServices"])]
     private ?array $otherData = null;
 
     #[ORM\Column]
-    #[Groups(["getReservations", "getUsers", "getApartments", "getDocuments"])]
+    #[Groups(["getReservations", "getUsers", "getApartments", "getDocuments", "getCompanies", "getServices"])]
     private ?bool $isRequest = false;
 
     #[ORM\Column(type: Types::SMALLINT, nullable: true)]
-    #[Groups(["getReservations", "getUsers", "getApartments", "getDocuments"])]
+    #[Groups(["getReservations", "getUsers", "getApartments", "getDocuments", "getCompanies", "getServices"])]
     private ?int $status = null;
 
     public function __construct()

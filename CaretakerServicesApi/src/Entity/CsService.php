@@ -107,7 +107,7 @@ class CsService
     private ?CsCategory $category = null;
 
     #[ORM\OneToMany(targetEntity: CsReservation::class, mappedBy: 'service')]
-    #[Groups(["getServices"])]
+    #[Groups(["getServices", "getCompanies"])]
     private Collection $reservations;
 
     #[ORM\OneToMany(targetEntity: CsReviews::class, mappedBy: 'service')]

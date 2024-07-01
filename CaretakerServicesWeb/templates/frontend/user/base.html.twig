@@ -103,46 +103,48 @@
                                 Mon compte
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a href="{{ path('subscriptions') }}" class="nav-link {% block activeSub %}{% endblock %}" aria-current="page">
-                                Mon abonnement
-                            </a>
-                        </li>
-                        <hr class="mx-auto opacity-100">
-                        <li>
-                            <button class="btn btn-toggle border-0 gestionBtn collapsed {% block activeRese %}{% endblock %}" data-bs-toggle="collapse" data-bs-target="#reservation-collapse" aria-expanded="false">
-                                Mes réservations
-                            </button>
-                            <div class="collapse menuGestion" id="reservation-collapse" >
-                                <ul class="btn-toggle-nav list-unstyled fw-normal small gestionUl">
-                                    <li><a href={{ path('reservationsPast') }} class="d-inline-flex text-decoration-none rounded mb-1 {% block activePast %}{% endblock %}">Passées</a></li>
-                                    <li><a href={{ path('reservationsPresent') }} class="d-inline-flex text-decoration-none rounded mb-1 {% block activePres %}{% endblock %}">En cours</a></li>
-                                    <li><a href={{ path('reservationsFuture') }} class="d-inline-flex text-decoration-none rounded mb-1 {% block activeFutu %}{% endblock %}">Futures</a></li>
-                                </ul>
-                            </div>
-                        </li>
-                        <li>
-                            <button class="btn btn-toggle border-0 gestionBtn collapsed {% block activeProvList %}{% endblock %}" data-bs-toggle="collapse" data-bs-target="#prestations-collapse" aria-expanded="false">
-                                Mes prestations
-                            </button>
-                            <div class="collapse menuGestion" id="prestations-collapse" >
-                                <ul class="btn-toggle-nav list-unstyled fw-normal small gestionUl">
-                                    <li><a href={{ path('servicesPast') }} class="d-inline-flex text-decoration-none rounded mb-1 {% block activePast2 %}{% endblock %}">Passées</a></li>
-                                    <li><a href={{ path('servicesPresent') }} class="d-inline-flex text-decoration-none rounded mb-1 {% block activePres2 %}{% endblock %}">En cours</a></li>
-                                    <li><a href={{ path('servicesFuture') }} class="d-inline-flex text-decoration-none rounded mb-1 {% block activeFutu2 %}{% endblock %}">Futures</a></li>
-                                </ul>
-                            </div>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ path('myRequests') }}" class="nav-link {% block activeDem %}{% endblock %}" style="background-color: transparent !important;" aria-current="page">
-                                Mes demandes
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ path('myDocuments') }}" class="nav-link {% block activeDoc %}{% endblock %}" style="background-color: transparent !important;" aria-current="page">
-                                Mes documents
-                            </a>
-                        </li>
+                        {% if role == 'ROLE_TRAVELER' %}
+                            <li class="nav-item">
+                                <a href="{{ path('subscriptions') }}" class="nav-link {% block activeSub %}{% endblock %}" aria-current="page">
+                                    Mon abonnement
+                                </a>
+                            </li>
+                            <hr class="mx-auto opacity-100">
+                            <li>
+                                <button class="btn btn-toggle border-0 gestionBtn collapsed {% block activeRese %}{% endblock %}" data-bs-toggle="collapse" data-bs-target="#reservation-collapse" aria-expanded="false">
+                                    Mes réservations
+                                </button>
+                                <div class="collapse menuGestion" id="reservation-collapse" >
+                                    <ul class="btn-toggle-nav list-unstyled fw-normal small gestionUl">
+                                        <li><a href={{ path('reservationsPast') }} class="d-inline-flex text-decoration-none rounded mb-1 {% block activePast %}{% endblock %}">Passées</a></li>
+                                        <li><a href={{ path('reservationsPresent') }} class="d-inline-flex text-decoration-none rounded mb-1 {% block activePres %}{% endblock %}">En cours</a></li>
+                                        <li><a href={{ path('reservationsFuture') }} class="d-inline-flex text-decoration-none rounded mb-1 {% block activeFutu %}{% endblock %}">Futures</a></li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <li>
+                                <button class="btn btn-toggle border-0 gestionBtn collapsed {% block activeProvList %}{% endblock %}" data-bs-toggle="collapse" data-bs-target="#prestations-collapse" aria-expanded="false">
+                                    Mes prestations
+                                </button>
+                                <div class="collapse menuGestion" id="prestations-collapse" >
+                                    <ul class="btn-toggle-nav list-unstyled fw-normal small gestionUl">
+                                        <li><a href={{ path('servicesPast') }} class="d-inline-flex text-decoration-none rounded mb-1 {% block activePast2 %}{% endblock %}">Passées</a></li>
+                                        <li><a href={{ path('servicesPresent') }} class="d-inline-flex text-decoration-none rounded mb-1 {% block activePres2 %}{% endblock %}">En cours</a></li>
+                                        <li><a href={{ path('servicesFuture') }} class="d-inline-flex text-decoration-none rounded mb-1 {% block activeFutu2 %}{% endblock %}">Futures</a></li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ path('myRequests') }}" class="nav-link {% block activeDem %}{% endblock %}" style="background-color: transparent !important;" aria-current="page">
+                                    Mes demandes
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ path('myDocuments') }}" class="nav-link {% block activeDoc %}{% endblock %}" style="background-color: transparent !important;" aria-current="page">
+                                    Mes documents
+                                </a>
+                            </li>
+                        {% endif %}
                         <li class="nav-item">
                             <a href={{ path('logoutFunc') }} class="logoutBtn nav-link btn btn-error" aria-current="page">
                                 Se déconnecter

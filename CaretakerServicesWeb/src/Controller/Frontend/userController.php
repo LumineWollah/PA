@@ -151,7 +151,7 @@ class userController extends AbstractController
                 ]);
         
                 $services = $response->toArray();
-
+                $services = $services['hydra:member'];
                 for ($j = 0; $j < sizeof($services); $j++) {
                     foreach ($services as $service) {
                         foreach ($service['reservations'] as $reservation) {

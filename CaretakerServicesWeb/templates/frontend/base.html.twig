@@ -43,6 +43,9 @@
                                 <a class="nav-link {% block activeProvi %}{% endblock %} me-4" href={{ path('providersList') }}>{{ 'prestataires'|trans({}, 'base') }}</a>
                             </li>
                             <li class="nav-item">
+                                <a class="nav-link {% block activeReseInProg %}{% endblock %} me-4" href={{ path('reservsInProgress') }}>{{ 'resaencours'|trans({}, 'base') }}</a>
+                            </li>
+                            <li class="nav-item">
                                 <a class="nav-link me-4" href="#">Contact</a>
                             </li>
                         </ul>
