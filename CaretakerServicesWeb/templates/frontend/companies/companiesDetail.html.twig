@@ -23,15 +23,15 @@
             </div>
             <div class="col-6 ms-5 desc">
                 <h1>{{ company.companyName }}</h1>
-                <p><strong>Numéro de SIRET:</strong> {{ company.siretNumber }}</p>
-                <p><strong>Email:</strong> {{ company.companyEmail }}</p>
-                <p><strong>Téléphone:</strong> {{ company.companyPhone }}</p>
-                <p><strong>Responsable:</strong> TODO</p>
+                <p><strong>{{ 'siret'|trans({}, 'companies') }}</strong> {{ company.siretNumber }}</p>
+                <p><strong>{{ 'email'|trans({}, 'companies') }}</strong> {{ company.companyEmail }}</p>
+                <p><strong>{{ 'téléphone'|trans({}, 'companies') }}</strong> {{ company.companyPhone }}</p>
+                <p><strong>{{ 'responsable'|trans({}, 'companies') }}</strong> TODO</p>
             </div>
         </div>
         <hr class="mt-5">
         <div class="my-4">
-            <h2><span class="h2span">Services</span> proposés :</h2>
+            <h2><span class="h2span">Services</span> {{ 'proposés'|trans({}, 'companies') }}</h2>
             <div class="row">
                 <div id="carouselControls" class="carousel slide" data-ride="carousel">
                     <div class="carousel-inner">
@@ -82,37 +82,37 @@
         </div>
         <hr class="mt-5">
         <div class="row localisation justify-content-center">
-            <h2><span class="h2span">Localisation</span></h2>
+            <h2><span class="h2span">{{ 'localisation'|trans({}, 'companies') }}</span></h2>
             <div id="map"></div>
             <p class="address text-center">{{ company.address }}, {{ company.postalCode }} {{ company.city }}</p>
         </div>
         <hr class="mt-5">
         <div class="row contactForm justify-content-center">
-            <h2><span class="h2span">Contactez-les</span></h2>
+            <h2><span class="h2span">{{ 'contact'|trans({}, 'companies') }}</span></h2>
             <div style="width: 50vw;">
                 {{ form_start(form) }}
                     <div class="mb-3">
-                        <label for="name" class="form-label">Nom</label>
+                        <label for="name" class="form-label">{{ 'nom'|trans({}, 'companies') }}</label>
                         {% if form_errors(form.name) %}
                             <div class="error" style="color: red;">{{ form_errors(form.name) }}</div>
                         {% endif %}
                         {{ form_widget(form.name) }}
                     </div>
                     <div class="mb-3">
-                        <label for="email" class="form-label">Email</label>
+                        <label for="email" class="form-label">{{ 'email2'|trans({}, 'companies') }}</label>
                         {% if form_errors(form.email) %}
                             <div class="error" style="color: red;">{{ form_errors(form.email) }}</div>
                         {% endif %}
                         {{ form_widget(form.email) }}
                     </div>
                     <div class="mb-3">
-                        <label for="message" class="form-label">Message</label>
+                        <label for="message" class="form-label">{{ 'message'|trans({}, 'companies') }}</label>
                         {% if form_errors(form.message) %}
                             <div class="error" style="color: red;">{{ form_errors(form.message) }}</div>
                         {% endif %}
                         {{ form_widget(form.message) }}
                     </div>
-                    <button type="submit" class="btn btn-primary btnSend">Envoyer</button>
+                    <button type="submit" class="btn btn-primary btnSend">{{ 'envoyer'|trans({}, 'companies') }}</button>
                 {{ form_end(form) }}
             </div>
         </div>
