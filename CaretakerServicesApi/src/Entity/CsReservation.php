@@ -118,6 +118,10 @@ class CsReservation
     #[Groups(["getReservations", "getUsers", "getApartments", "getDocuments", "getCompanies", "getServices"])]
     private ?int $status = null;
 
+    #[ORM\OneToOne(mappedBy: 'reservation', cascade: ['persist', 'remove'])]
+    #[Groups(["getReservations", "getUsers"])]
+    private ?CsReviews $reviews = null;
+
     public function __construct()
     {
         $this->services = new ArrayCollection();
@@ -389,6 +393,23 @@ class CsReservation
     public function setStatus(?int $status): static
     {
         $this->status = $status;
+
+        return $this;
+    }
+
+    public function getReviews(): ?CsReviews
+    {
+        return $this->reviews;
+    }
+
+    public function setReviews(CsReviews $reviews): static
+    {
+        // set the owning side of the relation if necessary
+        if ($reviews->getReservation() !== $this) {
+            $reviews->setReservation($this);
+        }
+
+        $this->reviews = $reviews;
 
         return $this;
     }

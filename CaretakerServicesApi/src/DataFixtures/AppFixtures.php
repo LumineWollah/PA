@@ -177,6 +177,15 @@ class AppFixtures extends Fixture
         $reservation->setService($service);
         $reservation->setPrice(50);
         $manager->persist($reservation);
+
+        $reservation2 = new CsReservation();
+        $reservation2->setStartingDate(new \DateTime ("now"));
+        $reservation2->setEndingDate(new \DateTime ("now"));
+        $reservation2->setDateCreation(new \DateTime);
+        $reservation2->setUser($user);
+        $reservation2->setService($service);
+        $reservation2->setPrice(50);
+        $manager->persist($reservation2);
         
         for ($i=0; $i < 32; $i++) { 
             $user = new CsUser();
@@ -219,6 +228,7 @@ class AppFixtures extends Fixture
         $review->setPostDate(new \DateTime);
         $review->setApartment($apartment);
         $review->setAuthor($user);
+        $review->setReservation($reservation);
         $manager->persist($review);
 
         $review = new CsReviews();
@@ -227,6 +237,7 @@ class AppFixtures extends Fixture
         $review->setPostDate(new \DateTime);
         $review->setService($service);
         $review->setAuthor($user);
+        $review->setReservation($reservation2);
         $manager->persist($review);
 
         $manager->flush();

@@ -54,6 +54,11 @@ class CsReviews
     #[Groups(["getReviews", "getApartments", "getServices"])]
     private ?CsUser $author = null;
 
+    #[ORM\OneToOne(inversedBy: 'reviews', cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(nullable: false)]
+    #[Groups(["getReviews"])]
+    private ?CsReservation $reservation = null;
+
     public function __construct()
     {
         $this->postDate = new DateTime();
@@ -132,6 +137,18 @@ class CsReviews
     public function setAuthor(?CsUser $author): static
     {
         $this->author = $author;
+
+        return $this;
+    }
+
+    public function getReservation(): ?CsReservation
+    {
+        return $this->reservation;
+    }
+
+    public function setReservation(CsReservation $reservation): static
+    {
+        $this->reservation = $reservation;
 
         return $this;
     }
