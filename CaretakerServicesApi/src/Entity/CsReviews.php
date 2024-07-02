@@ -42,11 +42,11 @@ class CsReviews
     private ?DateTime $postDate = null;
 
     #[ORM\ManyToOne(inversedBy: 'reviews')]
-    #[Groups(["getReviews", "getReservation"])]
+    #[Groups(["getReviews", "getReservation", "getUser"])]
     private ?CsService $service = null;
 
     #[ORM\ManyToOne(inversedBy: 'reviews')]
-    #[Groups(["getReviews", "getReservation"])]
+    #[Groups(["getReviews", "getReservation", "getUser"])]
     private ?CsApartment $apartment = null;
 
     #[ORM\ManyToOne(inversedBy: 'reviews')]
