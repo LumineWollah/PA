@@ -293,6 +293,21 @@ class reviewController extends AbstractController
         foreach ($apartmentsList['hydra:member'] as $apartment) {
             $apartmentChoice += [ $apartment['name'] => $apartment['id'] ];
         }
+        
+        $response = $client->request('GET', 'cs_reservations', [
+            'query' => [
+                'page' => 1,
+            ]
+        ]);
+
+        $reservationsList = $response->toArray();
+        $reservationChoice = array();
+        $reservationChoice += [ 'Aucun' => null ];
+
+        foreach ($reservationsList['hydra:member'] as $reservation) {
+            $reservationChoice += [ $reservation['id'] => $reservation['id'] ];
+        }
+
 
         $form = $this->createFormBuilder()
         ->add("content", TextType::class, [
@@ -327,6 +342,9 @@ class reviewController extends AbstractController
         ->add("apartment", ChoiceType::class, [
             "choices" => $apartmentChoice,
         ])
+        ->add("reservation", ChoiceType::class, [
+            "choices" => $reservationChoice,
+        ])
         ->getForm()->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()){
             $data = $form->getData();
@@ -350,6 +368,8 @@ class reviewController extends AbstractController
                 $data['apartment'] = 'api/cs_apartments/'.$data['apartment'];
                 unset($data['service']);
             } 
+
+            $data['reservation'] = 'api/cs_reservations/'.$data['reservation'];
 
             $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/ld+json');
 

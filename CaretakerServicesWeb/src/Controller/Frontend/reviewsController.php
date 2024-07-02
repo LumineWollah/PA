@@ -79,6 +79,7 @@ class reviewsController extends AbstractController
         $apartment = $request->query->get('apartment');
         $service = $request->query->get('service');
         $origin = $request->query->get('origin');
+        $reservation = $request->query->get('id');
 
         $form = $this->createFormBuilder()
         ->add("content", TextType::class, [
@@ -120,8 +121,10 @@ class reviewsController extends AbstractController
                 unset($data['service']);
             } 
             
-            $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/ld+json');
+            $data['reservation'] = 'api/cs_reservations/'.$reservation;
 
+            $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/ld+json');
+            
             $response = $client->request('POST', 'cs_reviewss', [
                 'json' => $data,
             ]);

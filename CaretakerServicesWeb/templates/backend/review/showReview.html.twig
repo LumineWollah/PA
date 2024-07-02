@@ -35,6 +35,7 @@
                             <button type="submit" class="container" style="background-color: #A594F9;">
                                 <div class="container">
                                     <p><strong>Nom:</strong> {{ review.service.name }}</p>
+                                </div>
                             </button>
                         </form>
                     </div>
@@ -46,7 +47,20 @@
                         <button type="submit" class="container" style="background-color: #A594F9;">
                             <div class="container">
                                 <p><strong>Nom:</strong> {{ review.apartment.name }}</p>
+                            </div>
                         </button>
+                    </form>
+                </div>
+            {% endif %}
+            {% if review['reservation'] is defined and review['reservation'] is not empty %}
+                <div class"container"><strong>Réservation :</strong>
+                    <form action="{{ path('reservationShow') }}" method="post" style="display: inline;">
+                        <input type="hidden" name="apartment" value="{{ review.reservation|json_encode }}">
+                        <button type="submit" class="container" style="background-color: #A594F9;">
+                        </button>
+                        <div class="container">
+                                <p><strong>ID:</strong> {{ review.reservation.id }}</p>
+                            </div>
                     </form>
                 </div>
             {% endif %}
