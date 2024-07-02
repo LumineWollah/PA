@@ -218,10 +218,11 @@
 {% block javascripts %}
 
 <script>
-    var subscription = {{ subscription }};
-    if (subscription == null) {
-        subscription = 0;
-    }
+    {% if subscription is defined and subscription is not null %}
+        var subscription = {{ subscription }};
+    {% else %}
+        var subscription = 0;
+    {% endif %}
     const selectBtn = document.querySelector(".select-btn")
     const items = document.querySelectorAll(".item");
     const servInput = document.querySelector("#form_services");
