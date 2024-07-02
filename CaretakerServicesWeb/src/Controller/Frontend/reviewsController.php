@@ -49,26 +49,19 @@ class reviewsController extends AbstractController
     #[Route('/review/delete', name: 'reviewDeleteFE')]
     public function reviewDelete(Request $request)
     {
-        if (!$this->checkUserRole($request)) {return $this->redirectToRoute('login');}
-
         $client = $this->apiHttpClient->getClient($request->cookies->get('token'));
 
         $id = $request->query->get('id');
+        $origin = $request->query->get('origin');
 
-        $response = $client->request('DELETE', 'cs_reviewss/'.$id, [
-            'query' => [
-                'id' => $id
-            ]
-        ]);
+        $response = $client->request('DELETE', 'cs_reviewss/'.$id);
         
-        return $this->redirectToRoute('reservationsPast');
+        return $this->redirectToRoute($origin);
     }
 
     #[Route('/review/show', name: 'reviewShowFE')]
     public function reviewShow(Request $request)
     {
-        if (!$this->checkUserRole($request)) {return $this->redirectToRoute('login');}
-
         $reviewData = $request->query->get('review');
         $review = json_decode($reviewData, true);
         
@@ -80,13 +73,12 @@ class reviewsController extends AbstractController
     #[Route('review/create', name: 'myReservationOpinion')]
     public function apartmentCreateCrud(Request $request)
     {
-        if (!$this->checkUserRole($request)) {return $this->redirectToRoute('login');}
-        
         $client = $this->apiHttpClient->getClient($request->cookies->get('token'));
 
         $id = $request->cookies->get('id');
         $apartment = $request->query->get('apartment');
         $service = $request->query->get('service');
+        $origin = $request->query->get('origin');
 
         $form = $this->createFormBuilder()
         ->add("content", TextType::class, [
@@ -127,7 +119,7 @@ class reviewsController extends AbstractController
                 $data['apartment'] = 'api/cs_apartments/'.$apartment;
                 unset($data['service']);
             } 
-
+            
             $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/ld+json');
 
             $response = $client->request('POST', 'cs_reviewss', [
@@ -136,7 +128,7 @@ class reviewsController extends AbstractController
 
             $response = json_decode($response->getContent(), true);
 
-            return $this->redirectToRoute('reservationsPast');
+            return $this->redirectToRoute($origin);
         }
             
         return $this->render('frontend/reviews/reviewsCreate.html.twig', [

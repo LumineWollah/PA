@@ -73,9 +73,12 @@
                                 <form action="{{ path('myReservationDetail') }}" method="post" style="display: inline;">
                                     <input type="hidden" name="reservation" value="{{ reservation|json_encode }}">
                                     <button type="submit" class="btn" style="background-color: #18A0FB;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/chart.png') }}></div></button>
-                                </form>
-                                <a href="{{ path('myReservationDocuments', {'id': reservation.id }) }}" class="btn" style="background-color: #A594F9;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/documents.png') }}></div></a>
-                                <a href="{{ path('myReservationOpinion', {'id': reservation.id }) }}" class="btn" style="background-color: #4CBA78;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/star.png') }}></div></a>
+                                </form>                        
+                                {% if reservation.review is defined %}
+                                    <a href="{{ path('reviewShowFE', {'review': reservation.review|json_encode, 'origin': 'servicesPast' }) }}" class="btn" style="background-color: #4CBA78;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/star.png') }}></div></a>
+                                {% else %}    
+                                    <a href="{{ path('myReservationOpinion', {'id': reservation.id, 'service': reservation.service.id, 'origin': 'servicesPast' }) }}" class="btn" style="background-color: #4CBA78;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/star.png') }}></div></a>
+                                {% endif %}             
                             </td>
                         </tr>
                     {% endfor %}
