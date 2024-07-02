@@ -39,6 +39,7 @@ class reservationController extends AbstractController
         if (!$this->checkUserRole($request)) {return $this->redirectToRoute('login');}
 
         $client = $this->apiHttpClient->getClient($request->cookies->get('token'));
+        $request->getSession()->remove('reservationId');
 
         $response = $client->request('GET', 'cs_reservations?unavailability=false', [
             'query' => [
@@ -47,7 +48,7 @@ class reservationController extends AbstractController
         ]);
 
         $reservationsList = $response->toArray();
-
+        
         return $this->render('backend/reservation/reservations.html.twig', [
             'reservations' => $reservationsList['hydra:member']
         ]);
@@ -62,11 +63,7 @@ class reservationController extends AbstractController
 
         $id = $request->query->get('id');
 
-        $response = $client->request('DELETE', 'cs_reservations/'.$id, [
-            'query' => [
-                'id' => $id
-            ]
-        ]);
+        $response = $client->request('DELETE', 'cs_reservations/'.$id);
 
         return $this->redirectToRoute('reservationList');
     }
