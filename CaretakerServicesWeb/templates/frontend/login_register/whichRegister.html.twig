@@ -5,8 +5,8 @@
 {% block pageContent %}
 <div class="registerCard">
     <div class="titleCard">
-        <h2>Inscription</h2>
-        <p class="titleDesc">Choisissez sous quel statut vous voulez vous inscire</p>
+        <h2>{{ 'inscription'|trans({}, 'login') }}</h2>
+        <p class="titleDesc">{{ 'choisirStatut'|trans({}, 'login') }}</p>
     </div>
     {{form_start(form)}}
         <div class="inputDivRow mt-3">
@@ -27,5 +27,5 @@
         </div>
     {{form_end(form)}}
 </div>
-<a href={{ path("login") }} class="noAccount">Vous avez un compte ? <span style="color: #3D2F44;">Connectez vous</span></a>
+<a href={{ path("login") }} class="noAccount">{{ 'auncompte'|trans({}, 'login') }}<span style="color: #3D2F44;">{{ 'connecter'|trans({}, 'login') }}</span></a>
 {% endblock %}

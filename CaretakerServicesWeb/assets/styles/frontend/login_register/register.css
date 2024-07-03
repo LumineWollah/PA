@@ -86,6 +86,11 @@ form {
     width: 100%;
     display: flex;
     justify-content: center;
+    height: 6vh;
+    flex-direction: column;
+    margin-bottom: 20px;
+    position: relative;
+    align-items: center;
 }
 
 .inputLogoAdress {

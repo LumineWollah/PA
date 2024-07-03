@@ -2,5 +2,15 @@
 'souvenir': 'Se souvenir de moi'
 'oublié': 'Mot de passe oublié?'
 'connecter': 'Se connecter'
+'inscrire': "S'inscrire"
 'pasdecompte': "Vous n’avez pas de compte ? "
 'inscrivez': 'Inscrivez vous'
+'connexion': 'Connexion'
+
+'inscription': 'Inscription'
+'entrezInfos': 'Entrez vos informations pour vous inscrire'
+'auncompte': 'Vous avez déjà un compte ?'
+'connectez': 'Connectez vous'
+'adresse': 'Adresse'
+
+'choisirStatut': 'Choisissez sous quel statut vous souhaitez vous inscrire'

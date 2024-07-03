@@ -12,8 +12,8 @@
 {% block pageContent %}
 <div class="registerCard">
     <div class="titleCard">
-        <h2>Inscription</h2>
-        <p class="titleDesc">Entrez vos informations pour vous inscrire</p>
+        <h2>{{ 'incsription'|trans({}, 'login') }}</h2>
+        <p class="titleDesc">{{ 'entrezInfos'|trans({}, 'login') }}</p>
     </div>
     {{form_start(formPro)}}
         <div class="inputDivRow">
@@ -84,14 +84,13 @@
             </div>
             <div class="errors">{{form_errors(formPro.profilePict)}}</div>
             <div class="inputDiv"> 
-                <img src="{{ asset('icons/login/lock.png') }}" alt="Lastname" class="inputLogo">
                 {{form_widget(formPro.profilePict)}}
             </div>
         </div>
-        <button type="submit" class="btn registerBtn mt-3">Se connecter</button>
+        <button type="submit" class="btn registerBtn mt-3">{{ 'inscrire'|trans({}, 'login') }}</button>
     {{form_end(formPro)}}
 </div>
-<a href={{ path("login") }} class="noAccount">Vous avez un compte ? <span style="color: #3D2F44;">Connectez vous</span></a>
+<a href={{ path("login") }} class="noAccount">{{ 'auncompte'|trans({}, 'login') }} <span style="color: #3D2F44;">{{ 'connectez'|trans({}, 'login') }}</span></a>
 {% endblock %}
 
 {% block javascripts %}
@@ -103,7 +102,7 @@
         bbox: [-5.3173828125, 41.27780646738183, 9.84375, 51.12421275782688],
         types: 'address',
         mapboxgl: mapboxgl,
-        placeholder: "Addresse",
+        placeholder: "Adresse",
     });
     geocoder.addTo('#geocoder');
 

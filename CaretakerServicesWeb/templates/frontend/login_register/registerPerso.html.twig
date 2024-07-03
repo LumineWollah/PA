@@ -5,8 +5,8 @@
 {% block pageContent %}
 <div class="registerCard">
     <div class="titleCard">
-        <h2>Inscription</h2>
-        <p class="titleDesc">Entrez vos informations pour vous inscrire</p>
+        <h2>{{ 'inscription'|trans({}, 'login') }}</h2>
+        <p class="titleDesc">{{ 'entrezInfos'|trans({}, 'login') }}</p>
     </div>
     {{form_start(formPerso)}}
         <div class="inputDivRow">
@@ -48,12 +48,11 @@
         <div class="inputDivRow">
             <div class="errors">{{form_errors(formPerso.profilePict)}}</div>
             <div class="inputDivCenter"> 
-                <img src="{{ asset('icons/login/lock.png') }}" alt="Lastname" class="inputLogo">
                 {{form_widget(formPerso.profilePict)}}
             </div>
         </div>
-        <button type="submit" class="btn registerBtn">Se connecter</button>
+        <button type="submit" class="btn registerBtn">{{ 'inscrire'|trans({}, 'login') }}</button>
     {{form_end(formPerso)}}
 </div>
-<a href={{ path("login") }} class="noAccount">Vous avez un compte ? <span style="color: #3D2F44;">Connectez vous</span></a>
+<a href={{ path("login") }} class="noAccount">{{ 'auncompte'|trans({}, 'login') }} <span style="color: #3D2F44;">{{ 'connectez'|trans({}, 'login') }}</span></a>
 {% endblock %}
