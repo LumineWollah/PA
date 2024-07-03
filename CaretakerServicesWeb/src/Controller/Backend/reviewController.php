@@ -336,12 +336,6 @@ class reviewController extends AbstractController
         ->add("author", ChoiceType::class, [
             "choices" => $userChoice,
         ])
-        ->add("service", ChoiceType::class, [
-            "choices" => $serviceChoice,
-        ])
-        ->add("apartment", ChoiceType::class, [
-            "choices" => $apartmentChoice,
-        ])
         ->add("reservation", ChoiceType::class, [
             "choices" => $reservationChoice,
         ])
@@ -351,6 +345,14 @@ class reviewController extends AbstractController
 
             $data['author'] = 'api/cs_users/'.$data['author'];
 
+            $response = $client->request('GET', 'cs_reservations/'.$data['reservation'], [
+                'query' => [
+                    'page' => 1,
+                ]
+            ]);
+
+            $reservationData = $response->toArray();
+
             if (isset($data['apartment']) && isset($data['service'])) {
                 $errorMessage = "Veuillez sélectionner un seul appartment ou service";
                 return $this->render('backend/review/createReview.html.twig', [
@@ -359,14 +361,14 @@ class reviewController extends AbstractController
                 ]);
             }
 
-            if (isset($data['service'])) {
-                $data['service'] = 'api/cs_services/'.$data['service'];
-                unset($data['apartment']);
+            if (isset($reservationData['service'])) {
+                $data['service'] = 'api/cs_services/'.$reservationData['service']['id'];
+                unset($reservationData['apartment']);
             } 
 
-            if (isset($data['apartment'])) {
-                $data['apartment'] = 'api/cs_apartments/'.$data['apartment'];
-                unset($data['service']);
+            if (isset($reservationData['apartment'])) {
+                $data['apartment'] = 'api/cs_apartments/'.$reservationData['apartment']['id'];
+                unset($reservationData['service']);
             } 
 
             $data['reservation'] = 'api/cs_reservations/'.$data['reservation'];
