@@ -232,25 +232,6 @@ class userController extends AbstractController
 
         $reserv = $response->toArray();
         
-        $response = $client->request('GET', 'cs_users/'.$id, [
-            'json' => [
-                'page' => 1,
-            ]
-        ]);
-
-        $user = $response->toArray();
-        $reviews = $user['reviews'];
-
-        for ($i = 0; $i < sizeof($reviews); $i++) {
-            if (isset($reviews[$i]['apartment'])) {
-                for ($j = 0; $j < sizeof($reserv); $j++) {
-                    if ($reserv[$j]['apartment']['id'] == $reviews[$i]['apartment']['id']) {
-                        $reserv[$j]['review'] = $reviews[$i];
-                    }
-                }
-            }
-        }
-        
         return $this->render('frontend/user/reservPast.html.twig', [
             'reservations'=>$reserv
         ]);
@@ -327,26 +308,6 @@ class userController extends AbstractController
         ]);
 
         $reserv = $response->toArray();
-
-        $response = $client->request('GET', 'cs_users/'.$id, [
-            'json' => [
-                'page' => 1,
-            ]
-        ]);
-
-        $user = $response->toArray();
-        
-        $reviews = $user['reviews'];
-
-        for ($i = 0; $i < sizeof($reviews); $i++) {
-            if (isset($reviews[$i]['service'])) {
-                for ($j = 0; $j < sizeof($reserv); $j++) {
-                    if ($reserv[$j]['service']['id'] == $reviews[$i]['service']['id']) {
-                        $reserv[$j]['review'] = $reviews[$i];
-                    }
-                }
-            }
-        }
 
         return $this->render('frontend/user/servPast.html.twig', [
             'reservations'=>$reserv
