@@ -5,7 +5,7 @@
 {% block pageContent %}
 <div class="loginCard">
     <div class="titleCard">
-        <h2>Connexion</h2>
+        <h2>{{ 'connexion'|trans({}, 'login') }}</h2>
         <p class="titleDesc">{{ 'entrez'|trans({}, 'login') }}</p>
     </div>
     {{form_start(form)}}
