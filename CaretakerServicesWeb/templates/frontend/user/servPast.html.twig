@@ -75,7 +75,7 @@
                                     <button type="submit" class="btn" style="background-color: #18A0FB;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/chart.png') }}></div></button>
                                 </form>                        
                                 {% if reservation.reviews is defined %}
-                                    <a href="{{ path('reviewShowFE', {'review': reservation.reviews|json_encode, 'origin': 'servicesPast' }) }}" class="btn" style="background-color: #4CBA78;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/star.png') }}></div></a>
+                                    <a href="{{ path('reviewShowFE', {'review': reservation.reviews|json_encode, 'origin': 'servicesPast', 'service': reservation.service|json_encode }) }}" class="btn" style="background-color: #4CBA78;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/star.png') }}></div></a>
                                 {% else %}    
                                     <a href="{{ path('myReservationOpinion', {'id': reservation.id, 'service': reservation.service.id, 'origin': 'servicesPast' }) }}" class="btn" style="background-color: #4CBA78;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/star.png') }}></div></a>
                                 {% endif %}             
