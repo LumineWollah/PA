@@ -1,5 +1,8 @@
 <?php
 
+namespace App\Controller;
+
+use Error;
 use Stripe\Stripe;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
