@@ -63,8 +63,16 @@ class reviewsController extends AbstractController
     public function reviewShow(Request $request)
     {
         $reviewData = $request->query->get('review');
+        $service = $request->query->get('service');
+        $apartment = $request->query->get('apartment');
         $review = json_decode($reviewData, true);
-        
+
+        if (isset($service)) {
+            $review['service'] = json_decode($service, true);
+        } elseif (isset($apartment)) {
+            $review['apartment'] = json_decode($apartment, true);
+        }
+
         return $this->render('frontend/reviews/reviewsShow.html.twig', [
             'review'=>$review
         ]);

@@ -5,7 +5,7 @@
 {% block body %}
     <div class="col-10 p-0">
         <div class="p-3">
-            <h1>Créer un avis</h1>
+            <h1>{{ 'créeravis'|trans({}, 'reviews') }}</h1>
             <div class="errors" style="color:red;">{%if errorMessage is defined %}<p>{{errorMessage}}</p>{% endif %}</div>
             {{form_start(form)}}
                 <div class="inputDiv" style="position: relative;">
@@ -16,7 +16,7 @@
                     {{form_widget(form.content)}}
                     <div class="errors">{{form_errors(form.content)}}</div>
                 </div>
-                <button type="submit" class="btn">Créer</button>
+                <button type="submit" class="btn">{{ 'créer'|trans({}, 'reviews') }}</button>
 
             {{form_end(form)}}
         </div>

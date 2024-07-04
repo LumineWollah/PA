@@ -6,27 +6,27 @@
     <link rel="stylesheet" href={{ asset('styles/frontend/services/servicesList.css') }}>
 {% endblock %}
 
-{% block title %}Afficher un avis{% endblock %}
+{% block title %}{{ 'afficheravis'|trans({}, 'reviews') }}{% endblock %}
 
 {% block body %}
     <div class="col-10 p-0">
         <div class="p-3">
-            <h1>Afficher un avis</h1>
+            <h1>{{ 'afficheravis'|trans({}, 'reviews') }}</h1>
             <div class="row">
                 <div class="col-6">
-                    <p><strong>Note :</strong> {{ review.rate }}/5</p>
-                    <p><strong>Contenu :</strong> {{ review.content }}</p>
-                    <p><strong>Créé le :</strong> {{ review.postDate|date('d/m/Y H:i:s') }}</p>
+                    <p><strong>{{ 'note'|trans({}, 'reviews') }}</strong> {{ review.rate }}/5</p>
+                    <p><strong>{{ 'contenu'|trans({}, 'reviews') }}</strong> {{ review.content }}</p>
+                    <p><strong>{{ 'crééle'|trans({}, 'reviews') }}</strong> {{ review.postDate|date('d/m/Y H:i:s') }}</p>
                     {% if review['apartment'] is defined and review['apartment'] is not empty %}
                         <a class="col-3 apartContainer" href={{ path('apartmentsDetail', {'id': review.apartment.id}) }}>               
                             <div class="imgContainer">
                                 <img src={{ review.apartment.mainPict }}>
                             </div>
                             <p class="apartName"><b>{{ review.apartment.name }}</b></p>
-                            <p class="apartInfos"><span class="medium">{{ review.apartment.city }}, {{ review.apartment.country }} • {{ review.apartment.price }}€</span><span class="light"> / nuit</span></b></p>
+                            <p class="apartInfos"><span class="medium">{{ review.apartment.city }}, {{ review.apartment.country }} • {{ review.apartment.price }}€</span><span class="light">{{ '/nuit'|trans({}, 'reviews') }}</span></b></p>
                             <div class="apartNumbers">
-                                <img src={{ asset('icons/bed.png') }}> {{ review.apartment.bedrooms }} chambres
-                                <img style="margin-left: 2%;" src={{ asset('icons/travelers.png') }}> {{ review.apartment.travelersMax }} voyageurs max.
+                                <img src={{ asset('icons/bed.png') }}> {{ review.apartment.bedrooms }}{{ 'chambres'|trans({}, 'reviews') }}
+                                <img style="margin-left: 2%;" src={{ asset('icons/travelers.png') }}> {{ review.apartment.travelersMax }}{{ 'voyageursmax'|trans({}, 'reviews') }}
                             </div>
                         </a>
                         <a href="{{ path('reviewDeleteFE', {'id': review.id, 'origin': 'reservationsPast' }) }}" class="btn" style="background-color: #EE3939;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/bin.png') }}></div></a>
