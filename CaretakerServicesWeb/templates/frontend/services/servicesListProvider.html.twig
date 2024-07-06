@@ -9,20 +9,20 @@
 
 {% block body %}
 <div class="container-fluid pageContent">
-    <h1>Vos <span class="h1span">services</span> proposés</h1>
+    <h1>{{ 'vos'|trans({}, 'services') }} <span class="h1span">services</span> {{ 'proposés'|trans({}, 'services') }}</h1>
 
     <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Impossible de supprimer ce service</h1>
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel">{{ 'impossible'|trans({}, 'services') }}</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body" id="content">
-                    Vous ne pouvez pas supprimer un service qui a une réservation actuellement en cours
+                    {{ 'encours'|trans({}, 'services') }}
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Compris</button>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">{{ 'compris'|trans({}, 'services') }}</button>
                 </div>
             </div>
         </div>
@@ -61,22 +61,22 @@
                                 </div>
                                 <p class="apartName"><b>{{ value[j].name }}</b></p>
                                 <p class="servDesc">{{ value[j].description }}</p>
-                                <p class="servPlace"><b>Siège :</b> {{ value[j].company.city }}</p>
+                                <p class="servPlace"><b>{{ 'siège'|trans({}, 'services') }}</b> {{ value[j].company.city }}</p>
                                 <span id="coords" style="display: none;">{{ value[j].company.centerGps|json_encode }}</span>
                                 {% if value[j].price is not defined or value[j].price is null %}
-                                    <p class="apartDesc"><b>Prix : -- €</b></p>
+                                    <p class="apartDesc"><b>{{ 'prix-'|trans({}, 'services') }} €</b></p>
                                     <span id="price" style="display: none;">{{ null }}</span>
                                 {% else %}
-                                    <p class="apartDesc"><b>Prix : ~{{ value[j].price }} €</b></p>
+                                    <p class="apartDesc"><b>{{ 'prix~'|trans({}, 'services') }}{{ value[j].price }} €</b></p>
                                     <span id="price" style="display: none;">{{ value[j].price }}</span>
                                 {% endif %}
                             </a>
                                 <div class="apartActions mt-2 d-flex">
                                     <form action="{{ path('serviceUpdate') }}" method="post" >
                                         <input type="hidden" name="service" value="{{ value[j]|json_encode }}">
-                                        <button type="submit">Modifier</button>
+                                        <button type="submit">{{ 'modifier'|trans({}, 'services') }}</button>
                                     </form>
-                                    <a href="{{ path('serviceDeleteProvider', {'id': value[j].id}) }}" class="deleteApBtn">Supprimer</a>
+                                    <a href="{{ path('serviceDeleteProvider', {'id': value[j].id}) }}" class="deleteApBtn">{{ 'supprimer'|trans({}, 'services') }}</a>
                                 </div>
                             </div>
                         {% endif %}

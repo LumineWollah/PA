@@ -10,7 +10,7 @@
 
 {% block body %}
 <div class="container-fluid pageContent">
-    <h1>Nos <span class="h1span">service</span> proposés</h1>    
+    <h1>{{ 'nos'|trans({}, 'services') }} <span class="h1span">services</span> {{ 'proposés'|trans({}, 'services') }}</h1>    
     {% for key, value in services %}
         {% set categoryName = key|split('-')[0] %}
         {% set categoryColor = key|split('-')[1] %}
@@ -41,7 +41,7 @@
                                                     <div class="card-body">
                                                         <h5 class="card-title title">{{ value[j].name }}</h5>
                                                         <p class="card-text desc">{{ value[j].description }}</p>
-                                                        <a href="{{ path('serviceDetail', {'id':value[j].id}) }}" class="btn contactBtn">RÉSERVER</a>
+                                                        <a href="{{ path('serviceDetail', {'id':value[j].id}) }}" class="btn contactBtn">{{ 'réserver2'|trans({}, 'services') }}</a>
                                                     </div>
                                                 </div>
                                             {% endif %}
@@ -61,7 +61,7 @@
                     </button>
                 </div>
             </div>
-            <a class="seeMore" style="color: #{{ categoryColor }};" href="{{ path('servicesCategoryList', {'id':categoryId}) }}">VOIR PLUS ➞</a> 
+            <a class="seeMore" style="color: #{{ categoryColor }};" href="{{ path('servicesCategoryList', {'id':categoryId}) }}">{{ 'voirplus'|trans({}, 'services') }}</a> 
         </div>
     {% endfor %}
 </div>

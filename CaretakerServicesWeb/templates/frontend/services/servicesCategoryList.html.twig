@@ -8,22 +8,22 @@
 
 {% block body %}
 <div class="container-fluid pageContent">
-    <h1>Nos <span class="h1span">services</span> de <span style="color: #{{ category.color }}; text-decoration: underline;">{{ category.name }}</span></h1>    
+    <h1>{{ 'nos'|trans({}, 'services') }} <span class="h1span">services</span> {{ 'de'|trans({}, 'services') }} <span style="color: #{{ category.color }}; text-decoration: underline;">{{ category.name }}</span></h1>    
 
     <div class="filters">
-        <label for="price-filter">Prix:</label>
+        <label for="price-filter">{{ 'prix'|trans({}, 'services') }}</label>
         <select id="price-filter">
-            <option value="all">Tous</option>
-            <option value="estimate">Sur devis</option>
-            <option value="low">Prix bas (- 50 €)</option>
-            <option value="medium">Prix moyen (- 100 €)</option>
-            <option value="high">Prix élevé</option>
+            <option value="all">{{ 'tous'|trans({}, 'services') }}</option>
+            <option value="estimate">{{ 'surdevis'|trans({}, 'services') }}</option>
+            <option value="low">{{ 'prixbas'|trans({}, 'services') }} (- 50 €)</option>
+            <option value="medium">{{ 'prixmoyen'|trans({}, 'services') }} (- 100 €)</option>
+            <option value="high">{{ 'prixélevé'|trans({}, 'services') }}</option>
         </select>
 
-        <label for="distance-filter">Distance:</label>
+        <label for="distance-filter">{{ 'distance'|trans({}, 'services') }}</label>
         <select id="distance-filter">
-            <option value="all">Tous</option>
-            <option value="near">Proche (- 20 km)</option>
+            <option value="all">{{ 'tous'|trans({}, 'services') }}</option>
+            <option value="near">{{ 'proche'|trans({}, 'services') }} (- 20 km)</option>
         </select>
     </div>
 
@@ -42,13 +42,13 @@
                         </div>
                         <p class="apartName"><b>{{ category.services[j].name }}</b></p>
                         <p class="servDesc">{{ category.services[j].description }}</p>
-                        <p class="servPlace"><b>Siège :</b> {{ category.services[j].company.city }}</p>
+                        <p class="servPlace"><b>{{ 'siège'|trans({}, 'services') }}</b> {{ category.services[j].company.city }}</p>
                         <span id="coords" style="display: none;">{{ category.services[j].company.centerGps|json_encode }}</span>
                         {% if category.services[j].price is not defined or category.services[j].price is null %}
-                            <p class="apartDesc"><b>Prix : -- €</b></p>
+                            <p class="apartDesc"><b>{{ 'prix-'|trans({}, 'services') }} €</b></p>
                             <span id="price" style="display: none;">{{ null }}</span>
                         {% else %}
-                            <p class="apartDesc"><b>Prix : ~{{ category.services[j].price }} €</b></p>
+                            <p class="apartDesc"><b>{{ 'prix~'|trans({}, 'services') }} ~{{ category.services[j].price }} €</b></p>
                             <span id="price" style="display: none;">{{ category.services[j].price }}</span>
                         {% endif %}
                     </a>

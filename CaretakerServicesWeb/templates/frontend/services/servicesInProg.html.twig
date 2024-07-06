@@ -128,17 +128,17 @@
                 </div>
             </div>
             <div class="btn-create-row">
-                <h1 class="mt-3">Liste des demandes</h1>
+                <h1 class="mt-3">{{ 'liste'|trans({}, 'services') }}</h1>
             </div>
-            <h2 style="font-family: Quicksand; font-size:1.2vw !important; color: #A594F9;">Prestations déjà effectuées :</h2>
+            <h2 style="font-family: Quicksand; font-size:1.2vw !important; color: #A594F9;">{{ 'prestations'|trans({}, 'services') }}</h2>
             <table id="crudList" class="table table-striped">
                 <thead>
                     <tr>
                         <th scope="col">Service</th>
-                        <th scope="col">Demandeur</th>
-                        <th scope="col">Date de la prestation</th>
-                        <th scope="col">Prix</th>
-                        <th scope="col">Note</th>
+                        <th scope="col">{{ 'demandeur'|trans({}, 'services') }}</th>
+                        <th scope="col">{{ 'dateprestation'|trans({}, 'services') }}</th>
+                        <th scope="col">{{ 'prix2'|trans({}, 'services') }}</th>
+                        <th scope="col">{{ 'note'|trans({}, 'services') }}</th>
                         <th scope="col">Actions</th>
                     </tr>
                 </thead>
@@ -152,7 +152,7 @@
                             {% if request.reviews is defined and request.reviews is not null %}
                                 <td>{{ request.reviews.rate }}/5</td>
                             {% else %}
-                                <td>Non noté</td>
+                                <td>{{ 'nonnoté'|trans({}, 'services') }}</td>
                             {% endif %}
                             <td class="action">
                                 {% if request.documents is not empty %}
@@ -163,14 +163,14 @@
                     {% endfor %}
                 </tbody>
             </table>
-            <h2 style="font-family: Quicksand; font-size:1.2vw !important; color: #A594F9;" class="mt-4" >Prestations en cours :</h2>
+            <h2 style="font-family: Quicksand; font-size:1.2vw !important; color: #A594F9;" class="mt-4" >{{ 'prestationsencours'|trans({}, 'services') }}</h2>
             <table id="crudList2" class="table table-striped">
                 <thead>
                     <tr>
                         <th scope="col">Service</th>
-                        <th scope="col">Demandeur</th>
-                        <th scope="col">Date de la prestation</th>
-                        <th scope="col">Prix</th>
+                        <th scope="col">{{ 'demandeur'|trans({}, 'services') }}</th>
+                        <th scope="col">{{ 'dateprestation'|trans({}, 'services') }}</th>
+                        <th scope="col">{{ 'prix2'|trans({}, 'services') }}</th>
                         <th scope="col">Actions</th>
                     </tr>
                 </thead>
@@ -190,14 +190,14 @@
                     {% endfor %}
                 </tbody>
             </table>
-            <h2 style="font-family: Quicksand; font-size:1.2vw !important; color: #A594F9;" class="mt-4" >Prestations à effectuer plus tard :</h2>
+            <h2 style="font-family: Quicksand; font-size:1.2vw !important; color: #A594F9;" class="mt-4" >{{ 'prestationstard'|trans({}, 'services') }}</h2>
             <table id="crudList3" class="table table-striped">
                 <thead>
                     <tr>
                         <th scope="col">Service</th>
-                        <th scope="col">Demandeur</th>
-                        <th scope="col">Date de la prestation</th>
-                        <th scope="col">Prix</th>
+                        <th scope="col">{{ 'demandeur'|trans({}, 'services') }}</th>
+                        <th scope="col">{{ 'dateprestation'|trans({}, 'services') }}</th>
+                        <th scope="col">{{ 'prix2'|trans({}, 'services') }}</th>
                         <th scope="col">Actions</th>
                     </tr>
                 </thead>

@@ -31,34 +31,34 @@
             <div class="col-7">
                 <h1>{{ service.name }}</h1>
                 <div class="apartDescDiv">
-                    <p class="apartDesc"><b>Description : </b>{{ service.description }}</p>
+                    <p class="apartDesc"><b>{{ 'description2'|trans({}, 'services') }} </b>{{ service.description }}</p>
                 </div>
                 <div class="modal fade" id="exampleModalLive" tabindex="-1" aria-labelledby="exampleModalLiveLabel" style="display: none;" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-scrollable .modal-dialog-centered">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h1 class="modal-title fs-5" id="exampleModalLiveLabel">Description</h1>
+                                <h1 class="modal-title fs-5" id="exampleModalLiveLabel">{{ 'description3'|trans({}, 'services') }}</h1>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
                             </div>
                             <div class="modal-body">
                                 <p>{{ service.description }}</p>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ 'fermer'|trans({}, 'services') }}</button>
                             </div>
                         </div>
                     </div>
                 </div>
                 <button type="button" class="btn readMoreBtn" data-bs-toggle="modal" data-bs-target="#exampleModalLive">
-                    LIRE PLUS
+                    {{ 'lireplus'|trans({}, 'services') }}
                 </button>
             </div>
             <div class="col-5 caractColumn align-items-center">
                 <div class="caract" style="width: 100%;">
-                    <h4>Caractéristiques</h4>
+                    <h4>{{ 'caractéristiques'|trans({}, 'services') }}</h4>
                     <ul>
-                        <li>Jours d'ouverture : <b>{{ service.daysOfWeek|join(', ') }}</b></li>
-                        <li>Horaires : <b>de {{ service.startTime|slice(0,5) }} à {{ service.endTime|slice(0,5) }}</b></li>
+                        <li>{{ 'jours'|trans({}, 'services') }} <b>{{ service.daysOfWeek|join(', ') }}</b></li>
+                        <li>{{ 'horaires'|trans({}, 'services') }} <b>{{ 'de'|trans({}, 'services') }} {{ service.startTime|slice(0,5) }} {{ 'à'|trans({}, 'services') }} {{ service.endTime|slice(0,5) }}</b></li>
                     </ul>
                 </div>
             </div>
@@ -67,35 +67,35 @@
             <div class="col-3 lessorTinyProfile">
                 <img src={{ asset('icons/profile_pict_default.png') }}>
                 <div class="textName">
-                    <p><b>Fournisseur :</b> <a href="{{ path('providersDetail', {'id':service.company.id}) }}">{{ service.company.companyName }}</a></p>
+                    <p><b>{{ 'fournisseur'|trans({}, 'services') }}</b> <a href="{{ path('providersDetail', {'id':service.company.id}) }}">{{ service.company.companyName }}</a></p>
                     {% set current_date = "now"|date('Y-m-d') %}
                     {% set interval = date(current_date).diff(date(service.company.dateInscription)) %}
                     {% if interval.y == 0 %}
                         {% if interval.m == 0 %}
-                            <p class="inscription">Inscrit depuis {{ interval.d }} jours</p>
+                            <p class="inscription">{{ 'inscrit'|trans({}, 'services') }} {{ interval.d }} {{ 'jour'|trans({}, 'services') }}{{ interval.d > 1 ? s : null }}</p>
                         {% else %}
-                            <p class="inscription">Inscrit depuis {{ interval.m }} mois</p>
+                            <p class="inscription">{{ 'inscrit'|trans({}, 'services') }} {{ interval.m }} {{ 'mois'|trans({}, 'services') }}</p>
                         {% endif %}
                     {% else %}
-                        <p class="inscription">Inscrit depuis {{ interval.y }} ans</p>
+                        <p class="inscription">{{ 'inscrit'|trans({}, 'services') }} {{ interval.y }} {{ 'ans'|trans({}, 'services') }}</p>
                     {% endif %}
                 </div>
             </div>
         </div>
         <hr>
         <div class="row reservation justify-content-center">
-            <h2>Réservation</h2>
+            <h2>{{ 'réservation'|trans({}, 'services') }}</h2>
             {{form_start(form)}}
             <div class="row reservationRow">
                 <div class="col-6 leftFormContainer">
                     <div class="leftForm">
-                        <p class="reservTitle">Date de l'intervention</p>
+                        <p class="reservTitle">{{ 'dateintervention'|trans({}, 'services') }}</p>
                         <div style="color: red;">{{ form_errors(form.date) }}</div>
                         {{ form_widget(form.date) }}
                         <div class="row d-flex mt-4">
                         {% if service.addressInputs > 0 %}
                             <div class="col-6">
-                                <p class="reservTitle mb-2">Adresse n°1</p>
+                                <p class="reservTitle mb-2">{{ 'adresse21'|trans({}, 'services') }}</p>
                                 <div id="geocoder0" style="position: relative; height: 3vh; margin-bottom: 4vh;"></div>
                                 <div style="color: red;">{{ form_errors(form.address0) }}</div>
                                 {{ form_widget(form.address0) }}
@@ -103,34 +103,34 @@
                         {% endif %}
                         {% if service.addressInputs > 1 %}
                             <div class="col-6">
-                                <p class="reservTitle mb-2">Adresse n°2</p>
+                                <p class="reservTitle mb-2">{{ 'adresse22'|trans({}, 'services') }}</p>
                                 <div id="geocoder1" style="position: relative; height: 3vh;"></div>
                                 <div style="color: red;">{{ form_errors(form.address1) }}</div>
                                 {{ form_widget(form.address1) }}
                             </div>
                         {% endif %}
                         {% if service.addressInputs > 0 %}
-                            <p>Le fournisseur souhaite avoir l'information de {{ service.addressInputs }} adresse, veuillez lire la description pour savoir quelles sont les adresse{{ service.addressInputs > 1 ? 's' : '' }} à renseigner.</p>
+                            <p>{{ 'infos1'|trans({}, 'services') }} {{ service.addressInputs }} {{ 'infos2'|trans({}, 'services') }}{{ service.addressInputs > 1 ? 's' : '' }} {{ 'infos3'|trans({}, 'services') }}</p>
                         {% endif %}
                         </div>
                     </div>
                 </div>
                 <div class="col-3">
                     <div class="rightForm">
-                        <p class="reservTitle">Prix</p>
+                        <p class="reservTitle">{{ 'prix2'|trans({}, 'services') }}</p>
                         {% if service.price is not defined or service.price is null %}                            
-                            <p class="totalText">Sur devis</p>
+                            <p class="totalText">{{ 'surdevis'|trans({}, 'services') }}</p>
                         {% else %}
-                            <p class="totalText">{{ service.price }}€ pour cette intervention</p>
+                            <p class="totalText">{{ service.price }}€ {{ 'pourcetteintervention'|trans({}, 'services') }}</p>
                         {% endif %}
                     </div>
                 </div>
                 <div class="col-3">
                     <div class="rightForm">
                         {% if service.price is not defined or service.price is null %}                            
-                            <button type="submit" class="reservBtn" name="action" value="devis" id="reservation" disabled>Demander devis</button>
+                            <button type="submit" class="reservBtn" name="action" value="devis" id="reservation" disabled>{{ 'demander'|trans({}, 'services') }}</button>
                         {% else %}
-                            <button type="submit" class="reservBtn" name="action" value="reservation" id="reservation" disabled>Réserver</button>
+                            <button type="submit" class="reservBtn" name="action" value="reservation" id="reservation" disabled>{{ 'réserver'|trans({}, 'services') }}</button>
                         {% endif %}
                     </div>
                 </div>
@@ -139,7 +139,7 @@
         </div>
         <hr class="mt-5">
         <div class="row localisation justify-content-center">
-            <h2>Localisation</h2>
+            <h2>{{ 'localisation'|trans({}, 'services') }}</h2>
             <div id="map"></div>
         </div>
         <hr>
