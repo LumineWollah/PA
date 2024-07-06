@@ -13,7 +13,7 @@
         <div class="p-3">
             <div class="row">
                 <div class="account">
-                    <h1 class="title"><p>Mon&nbsp</p><p style="color:#A594F9;">Compte</p></h1>
+                    <h1 class="title"><p>{{ 'mon'|trans({}, 'user') }}&nbsp</p><p style="color:#A594F9;">{{ 'compte'|trans({}, 'user') }}</p></h1>
                     <div class="smallRow userCard">
                         {% if user.profilePict is defined %}
                             <img src="{{ user.profilePict }}" alt="Photo de profil" class="profilePict">
@@ -25,26 +25,26 @@
                             <img src={{ asset('icons/checkmark.png') }} alt="Vérifié" class="checkmark">
                         {% endif %}
                     </div>
-                    <p><strong>Email: </strong>{{ user.email|capitalize }}</p>
-                    <p><strong>Téléphone: </strong>{{ user.telNumber }}</p>
+                    <p><strong>{{ 'email'|trans({}, 'user') }} </strong>{{ user.email|capitalize }}</p>
+                    <p><strong>{{ 'téléphone'|trans({}, 'user') }} </strong>{{ user.telNumber }}</p>
 
-                    <a href="{{ path('profileEdit', {'user': user|json_encode}) }}" style="color:black;">Modifier mes informations</a>
+                    <a href="{{ path('profileEdit', {'user': user|json_encode}) }}" style="color:black;">{{ 'modifier'|trans({}, 'user') }}</a>
                 </div>
                 <div class="summaryandrevenue">
                     <div class="summary">
-                        <h1 class="title"><p>Mon&nbsp</p><p style="color:#A594F9;">Récapitulatif</p></h1>
+                        <h1 class="title"><p>{{ 'mon'|trans({}, 'user') }}&nbsp</p><p style="color:#A594F9;">{{ 'récapitulatif'|trans({}, 'user') }}</p></h1>
                         <div class="summaryCard">
                             <ul>
-                                <li>Inscrit depuis le:<strong> {{ user.dateInscription | date('d/m/Y') }}</strong></li>
+                                <li>{{ 'inscrit'|trans({}, 'user') }}<strong> {{ user.dateInscription | date('d/m/Y') }}</strong></li>
                                 {% if 'ROLE_LESSOR' in user.roles %}
-                                    <li>Annonces publiées:<strong> {{ user.apartments|length }}</strong></li>
-                                    <li>Annonces en cours:<strong> {{ user.apartmentsNumber }}</strong></li>
-                                        <li>Recette totale:<strong> {{ user.earnings }} €</strong></li>
+                                    <li>{{ 'publiées'|trans({}, 'user') }}<strong> {{ user.apartments|length }}</strong></li>
+                                    <li>{{ 'encours'|trans({}, 'user') }}<strong> {{ user.apartmentsNumber }}</strong></li>
+                                        <li>{{ 'recette'|trans({}, 'user') }}<strong> {{ user.earnings }} €</strong></li>
                                 {% endif %}
                             </ul>
                         </div>
                     {% if 'ROLE_LESSOR' in user.roles or 'ROLE_PROVIDER' in user.roles %}    
-                        <h1 class="title"><p>Mes derniers&nbsp</p><p style="color:#A594F9;">revenus</p></h1>
+                        <h1 class="title"><p>{{ 'mesderniers'|trans({}, 'user') }}&nbsp</p><p style="color:#A594F9;">{{ 'revenus'|trans({}, 'user') }}</p></h1>
                         <div class="graph">  
                             <canvas id="chartEarnings"></canvas>     
                         </div>

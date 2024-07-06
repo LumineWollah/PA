@@ -4,7 +4,7 @@
 
 {% block activeDem %}active{% endblock %}
 
-{% block title %}Liste des demandes{% endblock %}
+{% block title %}{{ 'listedemandes'|trans({}, 'user') }}{% endblock %}
 
 {% block body %}
 <script>
@@ -104,15 +104,15 @@
     <div class="col-10 p-0">
         <div class="p-3">
             <div class="btn-create-row">
-                <h1>Liste des demandes</h1>
+                <h1>{{ 'listedemandes'|trans({}, 'user') }}</h1>
             </div>
-            <h2 style="font-family: Quicksand; font-size:1.2vw !important; color: #A594F9;">Demandes en attente de réponse :</h2>
+            <h2 style="font-family: Quicksand; font-size:1.2vw !important; color: #A594F9;">{{ 'demandesenattenteréponse'|trans({}, 'user') }}</h2>
             <table id="crudList" class="table table-striped">
                 <thead>
                     <tr>
                         <th scope="col">Service</th>
-                        <th scope="col">Date demandée</th>
-                        <th scope="col">Date de la demande</th>
+                        <th scope="col">{{ 'datedemandée'|trans({}, 'user') }}</th>
+                        <th scope="col">{{ 'datedemande'|trans({}, 'user') }}</th>
                         <th scope="col">Actions</th>
                     </tr>
                 </thead>
@@ -137,14 +137,14 @@
                     {% endfor %}
                 </tbody>
             </table>
-            <h2 style="font-family: Quicksand; font-size:1.2vw !important; color: #A594F9;" class="mt-4" >Demandes en attente de votre validation :</h2>
+            <h2 style="font-family: Quicksand; font-size:1.2vw !important; color: #A594F9;" class="mt-4" >{{ 'demandesenattentevalidation'|trans({}, 'user') }}</h2>
             <table id="crudList2" class="table table-striped">
                 <thead>
                     <tr>
                         <th scope="col">Service</th>
-                        <th scope="col">Date demandée</th>
-                        <th scope="col">Date de la demande</th>
-                        <th scope="col">Prix demandé</th>
+                        <th scope="col">{{ 'datedemandée'|trans({}, 'user') }}</th>
+                        <th scope="col">{{ 'datedemande'|trans({}, 'user') }}</th>
+                        <th scope="col">{{ 'prixdemandé'|trans({}, 'user') }}</th>
                         <th scope="col">Actions</th>
                     </tr>
                 </thead>
@@ -171,13 +171,13 @@
                     {% endfor %}
                 </tbody>
             </table>
-            <h2 style="font-family: Quicksand; font-size:1.2vw !important; color: #A594F9;" class="mt-4" >Demandes refusées par le fournisseur :</h2>
+            <h2 style="font-family: Quicksand; font-size:1.2vw !important; color: #A594F9;" class="mt-4" >{{ 'demandesrefusées'|trans({}, 'user') }}</h2>
             <table id="crudList3" class="table table-striped">
                 <thead>
                     <tr>
                         <th scope="col">Service</th>
-                        <th scope="col">Date demandée</th>
-                        <th scope="col">Date de la demande</th>
+                        <th scope="col">{{ 'datedemandée'|trans({}, 'user') }}</th>
+                        <th scope="col">{{ 'datedemande'|trans({}, 'user') }}</th>
                         <th scope="col">Actions</th>
                     </tr>
                 </thead>

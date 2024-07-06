@@ -17,8 +17,8 @@
         {% if subscription is not null %}
             <header>
                 <div class="pricing-header p-3 pb-md-4 mx-auto text-center">
-                    <h1 class="display-4 fw-normal">Mon abonnement</h1>
-                    <p class="fs-5 text-muted">Consultez les informations de votre abonnement</p>
+                    <h1 class="display-4 fw-normal">{{ 'monabonnement'|trans({}, 'user') }}</h1>
+                    <p class="fs-5 text-muted">{{ 'infosabonnement'|trans({}, 'user') }}</p>
                 </div>
             </header>
             <main>
@@ -29,9 +29,9 @@
                                 <h4 class="my-0 fw-normal">{{ (subscription == 1) ? 'Nomade' : 'Aventurier' }}</h4>
                             </div>
                             <div class="card-body">
-                                <h1 class="card-title pricing-card-title">{{ (subscription == 1) ? '9,90' : '19' }}€<small class="text-muted fw-light">/mois</small></h1>
+                                <h1 class="card-title pricing-card-title">{{ (subscription == 1) ? '9,90' : '19' }}€<small class="text-muted fw-light">{{ 'parmois'|trans({}, 'user') }}</small></h1>
                                 <ul class="list-unstyled mt-3 mb-4">
-                                    <li>Réservation de logements & services</li>
+                                    <li>{{ 'réservationlogementsetservices'|trans({}, 'user') }}</li>
                                     {{ (subscription > 0) ? '<li>Réduction de 5% sur les logements</li>' : '' }}
                                     {{ (subscription == 2) ? '<li>Taxes CaretekerServices offerte</li>' : '' }}
                                 </ul>
@@ -40,8 +40,8 @@
                                 {% else %}
                                     <img src="{{ asset('icons/sub_gold.png') }}" class="img-fluid" style="width: 20%; margin-bottom: 3vh;" alt="Responsive image">
                                 {% endif %}
-                                <p class="text-muted">Votre abonnement est actif depuis le {{ subsDate|date('d/m/y') }}</p>
-                                <a href={{ path("unsubscribe", {"subsId":subsId}) }} class="w-100 btn btn-lg text-white" style="background-color: #A594F9; border-color: #A594F9;">Annuler</a>
+                                <p class="text-muted">{{ 'actifdepuis'|trans({}, 'user') }} {{ subsDate|date('d/m/y') }}</p>
+                                <a href={{ path("unsubscribe", {"subsId":subsId}) }} class="w-100 btn btn-lg text-white" style="background-color: #A594F9; border-color: #A594F9;">{{ 'annuler'|trans({}, 'user') }}</a>
                             </div>
                         </div>
                     </div>
@@ -50,8 +50,8 @@
         {% endif %}
             <header>
                 <div class="pricing-header p-3 pb-md-4 mx-auto text-center">
-                    <h1 class="display-4 fw-normal">Abonnements</h1>
-                    <p class="fs-5 text-muted">Choisissez l'abonnement qui vous convient le mieux</p>
+                    <h1 class="display-4 fw-normal">{{ 'abonnements'|trans({}, 'user') }}</h1>
+                    <p class="fs-5 text-muted">{{ 'choixabonnement'|trans({}, 'user') }}</p>
                 </div>
             </header>
             <main>
@@ -59,16 +59,16 @@
                     <div class="col">
                         <div class="card mb-4 rounded-3 shadow-sm">
                             <div class="card-header py-3">
-                                <h4 class="my-0 fw-normal">Gratuit</h4>
+                                <h4 class="my-0 fw-normal">{{ 'gratuit'|trans({}, 'user') }}</h4>
                             </div>
                             <div class="card-body">
-                                <h1 class="card-title pricing-card-title">0€<small class="text-muted fw-light">/mois</small></h1>
+                                <h1 class="card-title pricing-card-title">0€<small class="text-muted fw-light">{{ 'parmois'|trans({}, 'user') }}</small></h1>
                                 <ul class="list-unstyled mt-3 mb-4">
-                                    <li>Réservation de logements & services</li>
+                                    <li>{{ 'réservationlogementsetservices'|trans({}, 'user') }}</li>
                                 </ul>
                                 <img src="{{ asset('icons/sub_bronze.png') }}" class="img-fluid" style="width: 20%; margin-bottom: 3vh;" alt="Responsive image">
                                 {% if subscription is null %}
-                                    <a class="w-100 btn btn-lg" style="border-color: #A594F9; color: #A594F9;" disabled>Votre abonnement</a>
+                                    <a class="w-100 btn btn-lg" style="border-color: #A594F9; color: #A594F9;" disabled>{{ 'votreabonnement'|trans({}, 'user') }}</a>
                                 {% endif %}
                             </div>
                         </div>
@@ -76,17 +76,17 @@
                     <div class="col">
                         <div class="card mb-4 rounded-3 shadow-sm">
                             <div class="card-header py-3">
-                                <h4 class="my-0 fw-normal">Nomade</h4>
+                                <h4 class="my-0 fw-normal">{{ 'nomade'|trans({}, 'user') }}</h4>
                             </div>
                             <div class="card-body">
-                                <h1 class="card-title pricing-card-title">9,90€<small class="text-muted fw-light">/mois</small></h1>
+                                <h1 class="card-title pricing-card-title">9,90€<small class="text-muted fw-light">{{ 'parmois'|trans({}, 'user') }}</small></h1>
                                 <ul class="list-unstyled mt-3 mb-4">
-                                    <li>Réservation de logements & services</li>
-                                    <li>Réduction de 5% sur les logements</li>
+                                    <li>{{ 'réservationlogementsetservices'|trans({}, 'user') }}</li>
+                                    <li>{{ 'réduction'|trans({}, 'user') }}</li>
                                 </ul>
                                 <img src="{{ asset('icons/sub_silver.png') }}" class="img-fluid" style="width: 20%; margin-bottom: 3vh;" alt="Responsive image">
                                 {% if subscription is null %}
-                                    <a href={{ path("subscribe", {"subscription":1}) }} class="w-100 btn btn-lg text-white" style="background-color: #A594F9; border-color: #A594F9;">Souscrire</a>
+                                    <a href={{ path("subscribe", {"subscription":1}) }} class="w-100 btn btn-lg text-white" style="background-color: #A594F9; border-color: #A594F9;">{{ 'souscrire'|trans({}, 'user') }}</a>
                                 {% endif %}
                             </div>
                         </div>
@@ -94,43 +94,43 @@
                     <div class="col">
                         <div class="card mb-4 rounded-3 shadow-sm" style="border-color: #3D2F44;">
                             <div class="card-header py-3 text-white" style="background-color: #3D2F44; border-color: #3D2F44;">
-                                <h4 class="my-0 fw-normal">Aventurier</h4>
+                                <h4 class="my-0 fw-normal">{{ 'aventurier'|trans({}, 'user') }}</h4>
                             </div>
                             <div class="card-body">
-                                <h1 class="card-title pricing-card-title">19€<small class="text-muted fw-light">/mois</small></h1>
+                                <h1 class="card-title pricing-card-title">19€<small class="text-muted fw-light">{{ 'parmois'|trans({}, 'user') }}</small></h1>
                                 <ul class="list-unstyled mt-3 mb-4">
-                                    <li>Réservation de logements & services</li>
-                                    <li>Réduction de 5% sur les logements</li>
-                                    <li>Taxes CaretekerServices offerte</li>
+                                    <li>{{ 'réservationlogementsetservices'|trans({}, 'user') }}</li>
+                                    <li>{{ 'réduction'|trans({}, 'user') }}</li>
+                                    <li>{{ 'taxesoffertes'|trans({}, 'user') }}</li>
                                 </ul>
                                 <img src="{{ asset('icons/sub_gold.png') }}" class="img-fluid" style="width: 20%; margin-bottom: 3vh;" alt="Responsive image">
                                 {% if subscription is null %}
-                                    <a href={{ path("subscribe", {"subscription":2}) }} class="w-100 btn btn-lg text-white" style="background-color: #A594F9; border-color: #A594F9;">Souscrire</a>
+                                    <a href={{ path("subscribe", {"subscription":2}) }} class="w-100 btn btn-lg text-white" style="background-color: #A594F9; border-color: #A594F9;">{{ 'souscrire'|trans({}, 'user') }}</a>
                                 {% endif %}
                             </div>
                         </div>
                     </div>
                 </div>
-                <h2 class="display-6 text-center mb-4">Comparatif des avantages</h2>
+                <h2 class="display-6 text-center mb-4">{{ 'comparatif'|trans({}, 'user') }}</h2>
                 <div class="table-responsive">
                     <table class="table text-center">
                         <thead>
                             <tr>
                                 <th style="width: 34%;"></th>
-                                <th style="width: 22%;">Gratuit</th>
-                                <th style="width: 22%;">Nomade</th>
-                                <th style="width: 22%;">Aventurier</th>
+                                <th style="width: 22%;">{{ 'gratuit'|trans({}, 'user') }}</th>
+                                <th style="width: 22%;">{{ 'nomade'|trans({}, 'user') }}</th>
+                                <th style="width: 22%;">{{ 'aventurier'|trans({}, 'user') }}</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <th scope="row" class="text-start">Réserver des logements</th>
+                                <th scope="row" class="text-start">{{ 'réserverlogements'|trans({}, 'user') }}</th>
                                 <td><svg class="bi" width="24" height="24"><use xlink:href="#check"></use></svg></td>
                                 <td><svg class="bi" width="24" height="24"><use xlink:href="#check"></use></svg></td>
                                 <td><svg class="bi" width="24" height="24"><use xlink:href="#check"></use></svg></td>
                             </tr>
                             <tr>
-                                <th scope="row" class="text-start">Commenter, publier des avis</th>
+                                <th scope="row" class="text-start">{{ 'avis'|trans({}, 'user') }}</th>
                                 <td><svg class="bi" width="24" height="24"><use xlink:href="#check"></use></svg></td>
                                 <td><svg class="bi" width="24" height="24"><use xlink:href="#check"></use></svg></td>
                                 <td><svg class="bi" width="24" height="24"><use xlink:href="#check"></use></svg></td>
@@ -138,13 +138,13 @@
                         </tbody>
                         <tbody>
                             <tr>
-                                <th scope="row" class="text-start">Réduction de 5% sur les logements</th>
+                                <th scope="row" class="text-start">{{ 'réduction'|trans({}, 'user') }}</th>
                                 <td></td>
                                 <td><svg class="bi" width="24" height="24"><use xlink:href="#check"></use></svg></td>
                                 <td><svg class="bi" width="24" height="24"><use xlink:href="#check"></use></svg></td>
                             </tr>
                             <tr>
-                                <th scope="row" class="text-start">Suppression de la taxe PCS</th>
+                                <th scope="row" class="text-start">{{ 'suppression'|trans({}, 'user') }}</th>
                                 <td></td>
                                 <td></td>
                                 <td><svg class="bi" width="24" height="24"><use xlink:href="#check"></use></svg></td>

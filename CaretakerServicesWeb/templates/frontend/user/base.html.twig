@@ -26,13 +26,13 @@
                     {% if role == 'ROLE_TRAVELER' or role is not defined or role == null %}
                         <ul class="navbar-nav">
                             <li class="nav-item">
-                                <a class="nav-link {% block activeApar %}{% endblock %} me-4" aria-current="page" href={{ path('apartmentsList') }}>Logements</a>
+                                <a class="nav-link {% block activeApar %}{% endblock %} me-4" aria-current="page" href={{ path('apartmentsList') }}>{{ 'logements'|trans({}, 'user') }}</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link {% block activeServ %}{% endblock %} me-4" href={{ path('servicesList') }}>Services</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link {% block activeProv %}{% endblock %} me-4" href={{ path('providersList') }}>Prestataires</a>
+                                <a class="nav-link {% block activeProv %}{% endblock %} me-4" href={{ path('providersList') }}>{{ 'prestataires'|trans({}, 'user') }}</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link me-4" href="#">Contact</a>
@@ -41,13 +41,13 @@
                     {% elseif role == 'ROLE_LESSOR' %}
                         <ul class="navbar-nav">
                             <li class="nav-item">
-                                <a class="nav-link {% block activeMyApar %}{% endblock %} me-4" aria-current="page" href={{ path('myApartmentsList') }}>Mes logements</a>
+                                <a class="nav-link {% block activeMyApar %}{% endblock %} me-4" aria-current="page" href={{ path('myApartmentsList') }}>{{ 'meslogements'|trans({}, 'user') }}</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link {% block activeCreaApar %}{% endblock %} me-4" href={{ path('apartmentCreate') }}>Ajouter un logement</a>
+                                <a class="nav-link {% block activeCreaApar %}{% endblock %} me-4" href={{ path('apartmentCreate') }}>{{ 'ajouterlogement'|trans({}, 'user') }}</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link {% block activeProvi %}{% endblock %} me-4" href={{ path('providersList') }}>Prestataires</a>
+                                <a class="nav-link {% block activeProvi %}{% endblock %} me-4" href={{ path('providersList') }}>{{ 'prestataires'|trans({}, 'user') }}</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link me-4" href="#">Contact</a>
@@ -56,13 +56,13 @@
                     {% elseif role == 'ROLE_PROVIDER' %}
                         <ul class="navbar-nav">
                             <li class="nav-item">
-                                <a class="nav-link {% block activeMyServ %}{% endblock %} me-4" aria-current="page" href={{ path('myServicesList') }}>Mes prestations</a>
+                                <a class="nav-link {% block activeMyServ %}{% endblock %} me-4" aria-current="page" href={{ path('myServicesList') }}>{{ 'mesprestations'|trans({}, 'user') }}</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link {% block activeCreaServ %}{% endblock %} me-4" href={{ path('serviceCreateProvider') }}>Ajouter une prestation</a>
+                                <a class="nav-link {% block activeCreaServ %}{% endblock %} me-4" href={{ path('serviceCreateProvider') }}>{{ 'ajouterprestation'|trans({}, 'user') }}</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link {% block activeQuote %}{% endblock %} me-4" href={{ path('quoteRequests') }}>Demandes de devis</a>
+                                <a class="nav-link {% block activeQuote %}{% endblock %} me-4" href={{ path('quoteRequests') }}>{{ 'demandedevis'|trans({}, 'user') }}</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link me-4" href="#">Contact</a>
@@ -79,8 +79,8 @@
                 {% set pp = app.request.cookies.get('profile_pict') %}
 
                 {% if id is not defined or id is null %}
-                    <a href="{{ path('login') }}" class="btn btn-primary me-3 btnConnect">Connexion</a>
-                    <a href="{{ path('register') }}" class="btn btn-primary btnRegister">Inscription</a>
+                    <a href="{{ path('login') }}" class="btn btn-primary me-3 btnConnect">{{ 'connexion'|trans({}, 'user') }}</a>
+                    <a href="{{ path('register') }}" class="btn btn-primary btnRegister">{{ 'inscription'|trans({}, 'user') }}</a>
                 {% else %}
                     <div class="d-flex align-items-center">
                         <span class="username">{{ app.request.cookies.get('firstname') }} {{ app.request.cookies.get('lastname') }}</span>
@@ -100,54 +100,54 @@
                     <ul class="nav nav-pills flex-column mb-auto navUl">
                         <li class="nav-item">
                             <a href="{{ path('myProfile') }}" class="nav-link {% block activeAcc %}{% endblock %}" aria-current="page">
-                                Mon compte
+                                {{ 'moncompte'|trans({}, 'user') }}
                             </a>
                         </li>
                         {% if role == 'ROLE_TRAVELER' %}
                             <li class="nav-item">
                                 <a href="{{ path('subscriptions') }}" class="nav-link {% block activeSub %}{% endblock %}" aria-current="page">
-                                    Mon abonnement
+                                    {{ 'monabonnement'|trans({}, 'user') }}
                                 </a>
                             </li>
                             <hr class="mx-auto opacity-100">
                             <li>
                                 <button class="btn btn-toggle border-0 gestionBtn collapsed {% block activeRese %}{% endblock %}" data-bs-toggle="collapse" data-bs-target="#reservation-collapse" aria-expanded="false">
-                                    Mes réservations
+                                    {{ 'mesréservations'|trans({}, 'user') }}
                                 </button>
                                 <div class="collapse menuGestion" id="reservation-collapse" >
                                     <ul class="btn-toggle-nav list-unstyled fw-normal small gestionUl">
-                                        <li><a href={{ path('reservationsPast') }} class="d-inline-flex text-decoration-none rounded mb-1 {% block activePast %}{% endblock %}">Passées</a></li>
-                                        <li><a href={{ path('reservationsPresent') }} class="d-inline-flex text-decoration-none rounded mb-1 {% block activePres %}{% endblock %}">En cours</a></li>
-                                        <li><a href={{ path('reservationsFuture') }} class="d-inline-flex text-decoration-none rounded mb-1 {% block activeFutu %}{% endblock %}">Futures</a></li>
+                                        <li><a href={{ path('reservationsPast') }} class="d-inline-flex text-decoration-none rounded mb-1 {% block activePast %}{% endblock %}">{{ 'passées'|trans({}, 'user') }}</a></li>
+                                        <li><a href={{ path('reservationsPresent') }} class="d-inline-flex text-decoration-none rounded mb-1 {% block activePres %}{% endblock %}">{{ 'encours'|trans({}, 'user') }}</a></li>
+                                        <li><a href={{ path('reservationsFuture') }} class="d-inline-flex text-decoration-none rounded mb-1 {% block activeFutu %}{% endblock %}">{{ 'futures'|trans({}, 'user') }}</a></li>
                                     </ul>
                                 </div>
                             </li>
                             <li>
                                 <button class="btn btn-toggle border-0 gestionBtn collapsed {% block activeProvList %}{% endblock %}" data-bs-toggle="collapse" data-bs-target="#prestations-collapse" aria-expanded="false">
-                                    Mes prestations
+                                    {{ 'mesprestations'|trans({}, 'user') }}
                                 </button>
                                 <div class="collapse menuGestion" id="prestations-collapse" >
                                     <ul class="btn-toggle-nav list-unstyled fw-normal small gestionUl">
-                                        <li><a href={{ path('servicesPast') }} class="d-inline-flex text-decoration-none rounded mb-1 {% block activePast2 %}{% endblock %}">Passées</a></li>
-                                        <li><a href={{ path('servicesPresent') }} class="d-inline-flex text-decoration-none rounded mb-1 {% block activePres2 %}{% endblock %}">En cours</a></li>
-                                        <li><a href={{ path('servicesFuture') }} class="d-inline-flex text-decoration-none rounded mb-1 {% block activeFutu2 %}{% endblock %}">Futures</a></li>
+                                        <li><a href={{ path('servicesPast') }} class="d-inline-flex text-decoration-none rounded mb-1 {% block activePast2 %}{% endblock %}">{{ 'passées'|trans({}, 'user') }}</a></li>
+                                        <li><a href={{ path('servicesPresent') }} class="d-inline-flex text-decoration-none rounded mb-1 {% block activePres2 %}{% endblock %}">{{ 'encours'|trans({}, 'user') }}</a></li>
+                                        <li><a href={{ path('servicesFuture') }} class="d-inline-flex text-decoration-none rounded mb-1 {% block activeFutu2 %}{% endblock %}">{{ 'futures'|trans({}, 'user') }}</a></li>
                                     </ul>
                                 </div>
                             </li>
                             <li class="nav-item">
                                 <a href="{{ path('myRequests') }}" class="nav-link {% block activeDem %}{% endblock %}" style="background-color: transparent !important;" aria-current="page">
-                                    Mes demandes
+                                    {{ 'mesdemandes'|trans({}, 'user') }}
                                 </a>
                             </li>
                             <li class="nav-item">
                                 <a href="{{ path('myDocuments') }}" class="nav-link {% block activeDoc %}{% endblock %}" style="background-color: transparent !important;" aria-current="page">
-                                    Mes documents
+                                    {{ 'mesdocuments'|trans({}, 'user') }}
                                 </a>
                             </li>
                         {% endif %}
                         <li class="nav-item">
                             <a href={{ path('logoutFunc') }} class="logoutBtn nav-link btn btn-error" aria-current="page">
-                                Se déconnecter
+                                {{ 'déconnecter'|trans({}, 'user') }}
                             </a>
                         </li>
                     </ul>

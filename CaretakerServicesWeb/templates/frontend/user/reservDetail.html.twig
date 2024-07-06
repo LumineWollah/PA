@@ -9,43 +9,43 @@
 
 {% block body %}
     <div class="col-10 p-3">
-        <h1>Détail de votre réservation</h1>
+        <h1>{{ 'détaileréservation'|trans({}, 'user') }}</h1>
         <div class="row">
             <div class="col-4">
-                <h3>Votre logement</h3>
+                <h3>{{ 'votrelogement'|trans({}, 'user') }}</h3>
                 <div class="card">
                     <img src="{{ reservation.apartment.mainPict }}">
                     <div class="card-body">
                         <h5 class="card-text mb-4">{{ reservation.apartment.name }}</h5>
-                        <a href="{{ path('apartmentsDetail', {'id': reservation.apartment.id}) }}" class="seeAppart mb-1">Voir le logement</a>
+                        <a href="{{ path('apartmentsDetail', {'id': reservation.apartment.id}) }}" class="seeAppart mb-1">{{ 'voirlogement'|trans({}, 'user') }}</a>
                     </div>
                 </div>
             </div>
             <div class="col-4">
-                <h3>Le détail</h3>
+                <h3>{{ 'détail'|trans({}, 'user') }}</h3>
                 <div class="card">
                     <div class="card-body">
-                        <h5 class="card-text mb-1">Vos dates :</h5>
+                        <h5 class="card-text mb-1">{{ 'vosdates'|trans({}, 'user') }}</h5>
                         <p class="card-text mb-4">{{ reservation.startingDate|date('d/m/Y') }} - {{ reservation.endingDate|date('d/m/Y') }}</p>
-                        <h5 class="card-text mb-1">Prix total :</h5>
+                        <h5 class="card-text mb-1">{{ 'prixtotal'|trans({}, 'user') }}</h5>
                         <p class="card-text mb-4">{{ reservation.price }} €</p>
-                        <h5 class="card-text mb-1">Voyageurs :</h5>
-                        <p class="card-text mb-1">Adultes : {{ reservation.adultTravelers }} | Enfants : {{ reservation.childTravelers }} | Bébés : {{ reservation.babyTravelers }}</p>
+                        <h5 class="card-text mb-1">{{ 'voyageurs'|trans({}, 'user') }}</h5>
+                        <p class="card-text mb-1">{{ 'adultes'|trans({}, 'user') }} {{ reservation.adultTravelers }} | {{ 'enfants'|trans({}, 'user') }} {{ reservation.childTravelers }} | {{ 'bébés'|trans({}, 'user') }} {{ reservation.babyTravelers }}</p>
                     </div>
                 </div>
             </div>
             <div class="col-4">
-                <h3>Vos services</h3>
+                <h3>{{ 'vosservices'|trans({}, 'user') }}</h3>
                 <div class="card">
                     <div class="card-body">
                         {% if reservation.services is empty %}
-                            <p class="card-text mb-1">Aucun service demandé</p>
+                            <p class="card-text mb-1">{{ 'aucunservice'|trans({}, 'user') }}</p>
                         {% else %}
                             {% for service in reservation.services %}
                                 <p class="card-text mb-2"><a href="{{ path('serviceDetail', {'id':service.id}) }}" style="color: black;">{{ service.name }}</a> : {{ service.price }} €</p>
                             {% endfor %}
                             <hr>
-                            <a href="{{ path('myDocuments') }}" class="seeAppart mb-1">Voir mes documents</a>
+                            <a href="{{ path('myDocuments') }}" class="seeAppart mb-1">{{ 'voirdocuments'|trans({}, 'user') }}</a>
                         {% endif %}
                     </div>
                 </div>

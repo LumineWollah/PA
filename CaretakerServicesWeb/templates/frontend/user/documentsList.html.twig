@@ -4,7 +4,7 @@
 
 {% block activeDoc %}active{% endblock %}
 
-{% block title %}Liste des documents{% endblock %}
+{% block title %}{{ 'listedocuments'|trans({}, 'user') }}{% endblock %}
 
 {% block body %}
 <script>
@@ -46,15 +46,15 @@
     <div class="col-10 p-0">
         <div class="p-3">
             <div class="btn-create-row">
-                <h1>Liste des documents</h1>
+                <h1>{{ 'listedocuments'|trans({}, 'user') }}</h1>
             </div>
             <table id="crudList" class="table table-striped">
                 <thead>
                     <tr>
-                        <th scope="col">Réservation</th>
+                        <th scope="col">{{ 'réservation'|trans({}, 'user') }}</th>
                         <th scope="col">Type</th>
-                        <th scope="col">Nom</th>
-                        <th scope="col">Date d'émission</th>
+                        <th scope="col">{{ 'nom'|trans({}, 'user') }}</th>
+                        <th scope="col">{{ 'dateémission'|trans({}, 'user') }}</th>
                         <th scope="col">Action</th>
                     </tr>
                 </thead>
@@ -67,7 +67,7 @@
                                 {% else %}
                                     <form action="{{ path('myReservationDetail') }}" method="post" style="display: inline;">
                                         <input type="hidden" name="reservation" value="{{ document.attachedReserv|json_encode }}">
-                                        <button type="submit" class="btn btn-light apartment" style="height:40px"><p>Reservation n°{{ document.attachedReserv.id|capitalize }} </p></button>
+                                        <button type="submit" class="btn btn-light apartment" style="height:40px"><p>{{ 'réservation'|trans({}, 'user') }} n°{{ document.attachedReserv.id|capitalize }} </p></button>
                                     </form>
                                 {% endif %}
                             </td>

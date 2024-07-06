@@ -5,7 +5,7 @@
 {% block activeRese %}active{% endblock %}
 {% block activePres %}active{% endblock %}
 
-{% block title %}Liste des réservations en cours{% endblock %}
+{% block title %}{{ 'réservationsencours'|trans({}, 'user') }}{% endblock %}
 
 {% block body %}
 <script>
@@ -47,14 +47,14 @@
     <div class="col-10 p-0">
         <div class="p-3">
             <div class="btn-create-row">
-                <h1>Liste des réservations en cours</h1>
+                <h1>{{ 'réservationsencours'|trans({}, 'user') }}</h1>
             </div>
             <table id="crudList" class="table table-striped">
                 <thead>
                     <tr>
-                        <th scope="col">Logement</th>
+                        <th scope="col">{{ 'logement'|trans({}, 'user') }}</th>
                         <th scope="col">Dates</th>
-                        <th scope="col">Prix</th>
+                        <th scope="col">{{ 'prix'|trans({}, 'user') }}</th>
                         <th scope="col">Actions</th>
                     </tr>
                 </thead>
