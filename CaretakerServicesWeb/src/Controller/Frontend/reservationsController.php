@@ -64,7 +64,7 @@ class reservationsController extends AbstractController
             'price' => $price->id,
             'quantity' => 1,
         ]];
-
+            
         foreach($data['servicesCompletes'] as $service){
             $product = \Stripe\Product::create([
                 'name' => $service['name'],

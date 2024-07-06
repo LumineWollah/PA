@@ -198,6 +198,9 @@
                             <td>{{ request.endingDate|date('d/m/Y') }}</td>
                             <td>{{ request.price }}€</td>
                             <td class="action">
+                                {% if request.documents is not empty %}
+                                    <a href="{{ request.documents[0].url }}" target="_blank" class="btn" style="background-color: #A594F9;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/documents.png') }}></div></a>
+                                {% endif %}
                                 <form action="{{ path('reservProgDelete') }}" method="post">
                                     <input type="hidden" name="reservation" value="{{ request|json_encode }}">
                                     <button type="submit" class="btn" style="background-color: #EE3939;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/bin.png') }}></div></button>

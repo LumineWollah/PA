@@ -803,6 +803,8 @@ class servicesController extends AbstractController
                 $data['user'] = 'api/cs_users/'.$id;
                 $data['service'] = 'api/cs_services/'.$serv['id'];
 
+                $data['servicesCompletes'] = [];
+
                 $response = $client->request('POST', 'cs_services/availables/'.$serv['id'], [
                     'json' => [
                         'starting_date' => $startDateTime,

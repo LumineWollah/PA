@@ -4,6 +4,7 @@
     <link rel="stylesheet" href={{ asset('styles/crud.css') }}>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://cdn.datatables.net/2.0.3/js/dataTables.js"></script>
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
     <script src="https://cdn.datatables.net/v/dt/dt-2.0.3/b-3.0.1/b-html5-3.0.1/sc-2.4.1/datatables.js"></script>
@@ -110,6 +111,22 @@
 </script>
     <div class="col-12 p-0 mt-5">
         <div class="p-3">
+            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Détail de la réservation</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body" id="modalContent">
+                        
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                    </div>
+                    </div>
+                </div>
+            </div>
             <div class="btn-create-row">
                 <h1 class="mt-3">Liste des demandes</h1>
             </div>
@@ -192,7 +209,17 @@
                             <td>{{ request.startingDate|date('d/m/Y') }}</td>
                             <td>{{ request.price }}€</td>
                             <td class="action">
-                                <form action="{{ path('serviceProgDelete') }}" method="post">
+                                {% if request.otherData is defined and request.otherData is not null %}
+                                    <div class="btn modal-btn" style="background-color: #A594F9;" data-bs-toggle="modal" data-bs-target="#exampleModal" data-request="{{ request.otherData|json_encode }}">
+                                {% else %}
+                                    <div class="btn modal-btn" style="background-color: #A594F9;" data-bs-toggle="modal" data-bs-target="#exampleModal" data-request="">
+                                {% endif %}
+                                        <div class="btnImage"><img style="height:20px;" src="{{ asset('icons/crud/eye.png') }}"></div>
+                                    </div>   
+                                {% if request.documents is not empty %}
+                                    <a href="{{ request.documents[0].url }}" target="_blank" class="btn" style="background-color: #A594F9;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/documents.png') }}></div></a>
+                                {% endif %}
+                                <form action="{{ path('serviceProgDelete') }}" method="post" style="display: inline;">
                                     <input type="hidden" name="reservation" value="{{ request|json_encode }}">
                                     <button type="submit" class="btn" style="background-color: #EE3939;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/bin.png') }}></div></button>
                                 </form>
@@ -203,4 +230,45 @@
             </table>
         </div>
     </div>
+{% endblock %}
+
+{% block javascripts %}
+<script>    
+
+    $(function() {
+
+        document.querySelectorAll('.modal-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var requestData = btn.getAttribute('data-request');
+                if (requestData == '') {
+                    html = "Pas de données supplémentaires";
+                }else{
+                    requestData = JSON.parse(requestData);
+                    html = '';
+                    for (var key in requestData) {
+                        if (requestData.hasOwnProperty(key)) {
+                            console.log(requestData[key]);
+                            var address = requestData[key];
+                            html += '<div class="address-block">';
+                            html += '<h5>Adresse ' + (parseInt(key.replace('address', ''))+1) + '</h5>';
+                            html += '<p><strong>Pays:</strong> ' + address.country + '</p>';
+                            html += '<p><strong>Ville:</strong> ' + address.city + '</p>';
+                            html += '<p><strong>Code postal:</strong> ' + address.postalCode + '</p>';
+                            html += '<p><strong>Adresse complète:</strong> ' + address.address + '</p>';
+                            html += '<p><strong>Coordonnées GPS:</strong> ' + address.centerGps.join(', ') + '</p>';
+                            html += '</div><hr>';
+                        }
+                    }
+                    html = html.slice(0, -4);
+                }
+                $('#modalContent').html(html);
+                $('#exampleModal').modal('show');
+            });
+        });
+
+        
+    });
+       
+
+</script>
 {% endblock %}

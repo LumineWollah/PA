@@ -28,7 +28,7 @@ tr {
     vertical-align: middle;
 }
 
-tr a, tr button{
+tr a, tr button, tr div{
     padding: 0 !important;
     
     width: 40px;

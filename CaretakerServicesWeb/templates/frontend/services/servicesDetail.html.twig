@@ -156,9 +156,9 @@
 
     const rangesTab = {{ datesRangeReservs|json_encode|raw }};
     var availableDays = {{ service.daysOfWeek|json_encode|raw }};
-    console.log(availableDays);
     const addressInputs = {{ service.addressInputs }};
     const address0 = document.getElementById("form_address0");
+    const address1 = document.getElementById("form_address1");
 
     const mapDays = {
         "Lundi": 0,
@@ -173,8 +173,11 @@
     availableDays = availableDays.map(day => mapDays[day]);
 
     function checkButtonStatus() {
-        console.log(address0.value);
-        if (dates.value.trim() != "" && (addressInputs == 0 || (addressInputs == 1 && address0.value.trim() != ""))) {
+        console.log(dates.value.trim() != "");
+        console.log(address0.value.trim() != "");
+        console.log(address1.value.trim() != "");
+        console.log(addressInputs);
+        if (dates.value.trim() != "" && (addressInputs == 0 || (addressInputs == 1 && address0.value.trim() != "") || (addressInputs == 2 && address0.value.trim() != "" && address1.value.trim() != ""))) {
             reservBtn.disabled = false;
         } else {
             reservBtn.disabled = true;
@@ -280,13 +283,13 @@
 
         const result1 = document.getElementById('form_address1');
         geocoder1.on('result', (e) => {
-            checkButtonStatus();
             result1.value = JSON.stringify(e.result, null, 2);
+            checkButtonStatus();
         });
 
         geocoder1.on('clear', () => {
-            checkButtonStatus();
             result1.value = '';
+            checkButtonStatus();
         });
     }
 
