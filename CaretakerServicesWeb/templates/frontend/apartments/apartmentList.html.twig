@@ -16,19 +16,19 @@
     <h1>{{ 'nos'|trans({}, 'apartments') }} <span class="h1span">{{ 'logements'|trans({}, 'apartments') }}</span> {{ 'enlocation'|trans({}, 'apartments') }}</h1>    
     <div class="bar">
         <div class="location me-4">
-            <p>{{'Destination'|trans }}</p>
+            <p>Destination</p>
             <input type="text" id="city">
         </div>
         <div class="dates me-4">
-            <p>{{'Vos dates'|trans}}</p>
+            <p>{{'vosdates'|trans({}, 'apartments') }}</p>
             <input type="text" name="datefilter" value="" id="datesRange">
         </div>
         <div class="price me-4">
-            <p>{{'Prix'|trans}}</p>
+            <p>{{'prix'|trans({}, 'apartments') }}</p>
             <input type="number" class="min-input" id="priceMin"><span class='t'> - </span><input type="number" class="max-input" id="priceMax">
         </div>
         <div class="travelers">
-            <p>{{"Voyageurs"|trans }}</p>
+            <p>{{"voyageurs"|trans({}, 'apartments') }}</p>
             <div class="d-flex travelersFlex">
                 <span id="minus">-</span> <p id="travelersNb">0</p> <span id="plus">+</span>
             </div>
