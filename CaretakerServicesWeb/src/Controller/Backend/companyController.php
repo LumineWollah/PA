@@ -55,6 +55,8 @@ class companyController extends AbstractController
     public function companyList(Request $request)
     {
         if (!$this->checkUserRole($request)) {return $this->redirectToRoute('login');}
+        
+        $request->getSession()->remove('companyId');
 
         $client = $this->apiHttpClient->getClient($request->cookies->get('token'));
 
@@ -224,7 +226,7 @@ class companyController extends AbstractController
                 ]),
             ],
         ])
-        ->add("companyEmail", TextType::class, [
+        ->add("companyEmail", EmailType::class, [
             "attr"=>[
                 "placeholder"=>"Email d'entreprise",
             ], 
