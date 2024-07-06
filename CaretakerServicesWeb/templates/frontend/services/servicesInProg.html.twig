@@ -121,6 +121,7 @@
                         <th scope="col">Demandeur</th>
                         <th scope="col">Date de la prestation</th>
                         <th scope="col">Prix</th>
+                        <th scope="col">Note</th>
                         <th scope="col">Actions</th>
                     </tr>
                 </thead>
@@ -131,6 +132,11 @@
                             <td>{{ request.user.lastname|capitalize }} {{ request.user.firstname|capitalize }}</td>
                             <td>{{ request.startingDate|date('d/m/Y') }}</td>
                             <td>{{ request.price }}€</td>
+                            {% if request.reviews is defined and request.reviews is not null %}
+                                <td>{{ request.reviews.rate }}/5</td>
+                            {% else %}
+                                <td>Non noté</td>
+                            {% endif %}
                             <td class="action">
                                 {% if request.documents is not empty %}
                                     <a href="{{ request.documents[0].url }}" target="_blank" class="btn" style="background-color: #A594F9;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/documents.png') }}></div></a>
