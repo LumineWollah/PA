@@ -25,7 +25,7 @@
 'nomdemandeur': 'Applicant name'
 'emaildemandeur': 'Applicant email'
 'datedemandée': 'Requested date'
-'datedemande': 'Request date'
+'datedemande2': 'Request date'
 'afficherdemande': 'Show the request'
 
 'nos': 'Our'
@@ -57,7 +57,7 @@
 'disponibilités': 'Availabilities'
 'horairedébut': 'Start time'
 'horairefin': 'End time'
-'email': 'Email address of your company'
+'emailcompany': 'Email address of your company'
 'rappel': 'We remind you that this address will be used to send you reservations and quotes'
 'indisponibilités': 'Unavailable dates'
 'valider': 'Validate'
