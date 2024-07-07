@@ -39,7 +39,6 @@ class subscriptionsController extends AbstractController {
         $successUrl = $this->generateUrl('payment_success', [], UrlGeneratorInterface::ABSOLUTE_URL);
         $cancelUrl = $this->generateUrl('payment_cancel', [], UrlGeneratorInterface::ABSOLUTE_URL);
 
-        // Create a checkout session to collect payment method
         $session = Session::create([
             'payment_method_types' => ['card'],
             'mode' => 'setup',
@@ -53,10 +52,6 @@ class subscriptionsController extends AbstractController {
             'billing_address_collection' => 'required',
             'customer' => $customer->id,
         ]);
-        
-        var_dump($request->cookies->all());
-
-        dd('done');
 
         $request->getSession()->set('paymentId', $session->id);
         $request->getSession()->set('token', $request->cookies->get('token'));
@@ -68,8 +63,6 @@ class subscriptionsController extends AbstractController {
     #[Route("/subscription-success", "payment_success")]
     public function paymentSuccess(Request $request)
     {
-
-        var_dump($request->cookies->all());
 
         $sessionId = $request->getSession()->get('paymentId');
         $subsId = $request->getSession()->get('subsId');
@@ -122,10 +115,6 @@ class subscriptionsController extends AbstractController {
                 'subsDate' => $today,
             ],
         ]);
-
-        var_dump($request->cookies->all());
-
-        dd('done');
 
         return $this->redirectToRoute('subscriptions');
     }
