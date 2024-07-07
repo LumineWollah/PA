@@ -64,6 +64,9 @@ class subscriptionsController extends AbstractController {
     #[Route("/subscription-success", "payment_success")]
     public function paymentSuccess(Request $request)
     {
+
+        var_dump($request->cookies->all());
+
         $sessionId = $request->getSession()->get('paymentId');
         $subsId = $request->getSession()->get('subsId');
         $token = $request->getSession()->get('token');  
@@ -116,7 +119,11 @@ class subscriptionsController extends AbstractController {
             ],
         ]);
 
-        return $this->redirectToRoute('myProfile');
+        var_dump($request->cookies->all());
+
+        dd('done');
+
+        return $this->redirectToRoute('subscriptions');
     }
 
     #[Route("/subscription-cancel", "payment_cancel")]
