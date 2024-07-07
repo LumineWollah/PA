@@ -77,7 +77,8 @@
                 
                 {% set id = app.request.cookies.get('id') %}
                 {% set pp = app.request.cookies.get('profile_pict') %}
-
+                <a id="frButton"><img src="{{ asset('icons/france.png') }}" alt="franceLanguage" class="d-inline-block align-text-center languageBtn"></a>
+                <a id="enButton" class="me-3"><img src="{{ asset('icons/england.png') }}" alt="englishLanguage" class="d-inline-block align-text-center languageBtn"></a>
                 {% if id is not defined or id is null %}
                     <a href="{{ path('login') }}" class="btn btn-primary me-3 btnConnect">{{ 'connexion'|trans({}, 'user') }}</a>
                     <a href="{{ path('register') }}" class="btn btn-primary btnRegister">{{ 'inscription'|trans({}, 'user') }}</a>
@@ -154,6 +155,21 @@
                 </div>
             </div>
         {% block body %}{% endblock %}
+        <script>
+            document.getElementById('frButton').addEventListener('click', function() {
+                changeLanguage('fr');
+            });
+
+            document.getElementById('enButton').addEventListener('click', function() {
+                changeLanguage('en');
+            });
+
+            function changeLanguage(lang) {
+                let currentUrl = new URL(window.location.href);
+                currentUrl.searchParams.set('_locale', lang);
+                window.location.href = currentUrl.href;
+            }
+        </script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
         {% block javascripts %}{% endblock %}
     </body>

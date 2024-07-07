@@ -70,3 +70,9 @@ html::-webkit-scrollbar {
     color: white !important;
     border: white 1.5px solid;
 }
+
+.languageBtn {
+    height: 4vh;
+    margin-right: 1.5vh;
+    cursor: pointer;
+}
