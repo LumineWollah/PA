@@ -25,7 +25,7 @@ class subscriptionsController extends AbstractController {
     }
 
     #[Route("/subscribe", "subscribe")]
-    public function subscriptions(Request $request): Response
+    public function subscriptions(Request $request)
     {
         $emailAdr = $request->cookies->get('email');
         $lastname = $request->cookies->get('lastname');
@@ -54,16 +54,15 @@ class subscriptionsController extends AbstractController {
             'customer' => $customer->id,
         ]);
 
-        // Store the payment session ID in the session
         $request->getSession()->set('paymentId', $session->id);
         $request->getSession()->set('token', $request->cookies->get('token'));
         $request->getSession()->set('id', $request->cookies->get('id'));
-        // Redirect to the Stripe checkout page
+
         return $this->redirect($session->url);
     }
 
     #[Route("/subscription-success", "payment_success")]
-    public function paymentSuccess(Request $request): Response
+    public function paymentSuccess(Request $request)
     {
         $sessionId = $request->getSession()->get('paymentId');
         $subsId = $request->getSession()->get('subsId');
