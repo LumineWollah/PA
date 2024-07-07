@@ -71,7 +71,8 @@
         const travelersNb = $("#travelersNb").text();
         const priceMin = $("#priceMin").val();
         const priceMax = $("#priceMax").val();
-        const city = $("#city").val();
+        var city = $("#city").val().trim();
+        city = city.substr(0,1).toUpperCase()+city.substr(1).toLowerCase();
 
         if (travelersNb) {
 
