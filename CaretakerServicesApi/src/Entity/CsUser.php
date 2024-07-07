@@ -28,6 +28,15 @@ use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasher;
 
 #[ApiResource(operations: [
+    new Get(
+        name: 'isVerifiedUser', 
+        uriTemplate: '/api/cs_users/{id}/is-verified', 
+        controller: CsUserController::class,
+        deserialize: false,
+        openapiContext: [
+            'summary' => 'Get the verification status of a user',
+        ]
+    ),
     new Post(
         name: 'getReservByDate', 
         uriTemplate: '/cs_users/{id}/reservations', 

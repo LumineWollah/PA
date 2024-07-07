@@ -33,4 +33,15 @@ class homeController extends AbstractController
         ]);
     }
 
+    #[Route("/waiting-room" , name: 'waitingRoom')]
+    public function waitingRoom(Request $request)
+    {
+        $lastname = $request->cookies->get('lastname');
+        $firstname = $request->cookies->get('firstname');
+        return $this->render('frontend/waitingRoom.html.twig', [
+            'lastname' => $lastname,
+            'firstname' => $firstname
+        ]);
+    }
+
 }

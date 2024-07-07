@@ -469,6 +469,12 @@ class servicesController extends AbstractController
 
         $client = $this->apiHttpClient->getClientWithoutBearer();
 
+        $isVerified = json_decode($client->request('GET', 'cs_users/'.$id.'/is-verified')->getContent(), true);
+
+        if (!$isVerified) {
+            return $this->redirectToRoute('waitingRoom');
+        }
+
         $companyResp = $client->request('GET', 'cs_companies?users[]='.$id);
         $comp = $companyResp->toArray()['hydra:member'][0];
 

@@ -24,6 +24,12 @@ class CsUserController extends AbstractController
         return new JsonResponse($jsonUsersList, Response::HTTP_OK, ['accept' => 'json'], true);
     }
 
+    #[Route('/api/cs_users/{id}/is-verified', name: 'isVerifiedUser', methods: ['GET'])]
+    public function isVerifiedUser(CsUser $user): Response
+    {
+        return $this->json($user->getIsVerified(), Response::HTTP_OK);
+    }
+
     #[Route("/api/cs_users/{id}/reservations", name:"getReservByDate", methods:["POST"])]
     public function getReservByDate(Request $request, EntityManagerInterface $entityManager, CsUser $user): Response
     {

@@ -449,6 +449,12 @@ class apartmentsController extends AbstractController
 
         $client = $this->apiHttpClient->getClientWithoutBearer();
 
+        $isVerified = json_decode($client->request('GET', 'cs_users/'.$id.'/is-verified')->getContent(), true);
+
+        if (!$isVerified) {
+            return $this->redirectToRoute('waitingRoom');
+        }
+
         $response = $client->request('GET', 'cs_addonss');
         $addons = $response->toArray()['hydra:member'];
 
