@@ -48,33 +48,33 @@
 'entre': 'Entre 0 et 50 caractères'
 'catégorie': 'Catégorie'
 'sélectionner': 'Sélectionner parmi cette liste la catégorie à laquelle votre service correspond pour aider le client'
-'entrée': 'Entrée d'adresse'
+'entrée': "Entrée d'adresse"
 'combien': "Combien voulez-vous que le client fournisse d'adresse(s) ? (ex: déménagement, taxi, ... nécéssite 2 adresses)"
 'prix2': 'Prix'
 'sivide': 'Si vide : sur devis'
 'description': 'Description de votre service'
-'entre0': 'Entre 0 et 500 caractères'
+'entre2': 'Entre 0 et 500 caractères'
 'disponibilités': 'Disponibilités'
 'horairedébut': 'Horaire de début'
 'horairefin': 'Horaire de fin'
-'email': 'Adresse e-mail de votre entreprise'
-'rappel': 'Nous vous rappelons que c'est à cette adresse que vous recevrez réservations et devis'
-'indisponibilité': 'Dates d'indisponibilité'
+'emailcompany': 'Adresse e-mail de votre entreprise'
+'rappel': "Nous vous rappelons que c'est à cette adresse que vous recevrez réservations et devis"
+'indisponibilité': "Dates d'indisponibilité"
 'valider': 'Valider'
 
 'description2': 'Description :'
 'description3': 'Description'
 'lireplus': 'LIRE PLUS'
 'caractéristiques': 'Caractéristiques'
-'jours': 'Jours d'ouverture :'
+'jours': "Jours d'ouverture :"
 'horaires': 'Horaires :'
 'à': 'à'
 'fournisseur': 'Fournisseur :'
 'réservation': 'Réservation'
-'dateintervention': 'Date de l\'intervention'
+'dateintervention': "Date de l'intervention"
 'adresse21': 'Adresse n°1 :'
 'adresse22': 'Adresse n°2 :'
-'infos1': 'Le fournisseur souhaite avoir l'information de'
+'infos1': "Le fournisseur souhaite avoir l'information de"
 'infos2': 'adresse, veuillez lire la description pour savoir quelles sont les adresse'
 'infos3': 'à renseigner.'
 'pourcetteintervention': 'pour cette intervention'

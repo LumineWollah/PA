@@ -21,11 +21,11 @@
 'compte': 'Compte'
 'email': 'Email :'
 'téléphone': 'Téléphone :'
-'modifier': 'Modifier mes informations'
+'modifierinfos': 'Modifier mes informations'
 'récapitulatif': 'Récapitulatif'
 'inscrit': 'Inscrit depuis le :'
 'publiées': 'Annonces publiées :'
-'encours': 'Annonces en cours :'
+'annoncesencours': 'Annonces en cours :'
 'recette': 'Recette totale :'
 'mesderniers': Mes derniers'
 'revenus': 'revenus'
@@ -33,7 +33,7 @@
 'listedocuments': 'Liste des documents'
 'réservation': 'Réservation'
 'nom': 'Nom'
-'dateémission': 'Date d\'émission'
+'dateémission': "Date d'émission"
 
 'modifierprofil': 'Modifier mon profil'
 'modifier': 'Modifier'
@@ -74,14 +74,13 @@
 
 'servicesencours': 'Liste des services en cours'
 
-'monabonnement': 'Mon abonnement'
 'infosabonnement': 'Consultez les informations de votre abonnement'
 'parmois': '/mois'
 'réservationlogementsetservices': 'Réservation de logements & services'
 'actifdepuis': 'Votre abonnement est actif depuis le'
 'annuler': 'Annuler'
 'abonnements': 'Abonnements'
-'choixabonnement': 'Choisissez l\'abonnement qui vous convient le mieux'
+'choixabonnement': "Choisissez l'abonnement qui vous convient le mieux"
 'gratuit': 'Gratuit'
 'votreabonnement': 'Votre abonnement'
 'nomade': 'Nomade'
@@ -90,7 +89,6 @@
 'aventurier': 'Aventurier'
 'taxesoffertes': 'Taxes CaretakerServices offertes'
 'comparatif': 'Comparatif des avantages'
-'gratuit': 'Gratuit'
 'réserverlogements': 'Réserver des logements'
 'avis': 'Commenter, publier des avis'
 'suppression': 'Suppression de la taxe PCS'

@@ -53,7 +53,7 @@
 'prix2': 'Price'
 'sivide': 'If empty : on estimate'
 'description': 'Description of your service'
-'entre0': 'Between 0 and 500 characters'
+'entre2': 'Between 0 and 500 characters'
 'disponibilités': 'Availabilities'
 'horairedébut': 'Start time'
 'horairefin': 'End time'
