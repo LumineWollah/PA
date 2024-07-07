@@ -26,13 +26,13 @@
                     {% if role == 'ROLE_TRAVELER' or role is not defined or role == null %}
                         <ul class="navbar-nav">
                             <li class="nav-item">
-                                <a class="nav-link {% block activeApar %}{% endblock %} me-4" aria-current="page" href={{ path('apartmentsList') }}>{{ 'logements'|trans({}, 'user') }}</a>
+                                <a class="nav-link {% block activeApar %}{% endblock %} me-4" aria-current="page" href={{ path('apartmentsList') }}>{{ 'logements'|trans({}, 'base') }}</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link {% block activeServ %}{% endblock %} me-4" href={{ path('servicesList') }}>Services</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link {% block activeProv %}{% endblock %} me-4" href={{ path('providersList') }}>{{ 'prestataires'|trans({}, 'user') }}</a>
+                                <a class="nav-link {% block activeProv %}{% endblock %} me-4" href={{ path('providersList') }}>{{ 'prestataires'|trans({}, 'base') }}</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link me-4" href="#">Contact</a>
@@ -41,13 +41,16 @@
                     {% elseif role == 'ROLE_LESSOR' %}
                         <ul class="navbar-nav">
                             <li class="nav-item">
-                                <a class="nav-link {% block activeMyApar %}{% endblock %} me-4" aria-current="page" href={{ path('myApartmentsList') }}>{{ 'meslogements'|trans({}, 'user') }}</a>
+                                <a class="nav-link {% block activeMyApar %}{% endblock %} me-4" aria-current="page" href={{ path('myApartmentsList') }}>{{ 'meslogements'|trans({}, 'base') }}</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link {% block activeCreaApar %}{% endblock %} me-4" href={{ path('apartmentCreate') }}>{{ 'ajouterlogement'|trans({}, 'user') }}</a>
+                                <a class="nav-link {% block activeCreaApar %}{% endblock %} me-4" href={{ path('apartmentCreate') }}>{{ 'ajouterl'|trans({}, 'base') }}</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link {% block activeProvi %}{% endblock %} me-4" href={{ path('providersList') }}>{{ 'prestataires'|trans({}, 'user') }}</a>
+                                <a class="nav-link {% block activeProvi %}{% endblock %} me-4" href={{ path('providersList') }}>{{ 'prestataires'|trans({}, 'base') }}</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link {% block activeReseInProg %}{% endblock %} me-4" href={{ path('reservsInProgress') }}>{{ 'resaencours'|trans({}, 'base') }}</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link me-4" href="#">Contact</a>
@@ -56,13 +59,16 @@
                     {% elseif role == 'ROLE_PROVIDER' %}
                         <ul class="navbar-nav">
                             <li class="nav-item">
-                                <a class="nav-link {% block activeMyServ %}{% endblock %} me-4" aria-current="page" href={{ path('myServicesList') }}>{{ 'mesprestations'|trans({}, 'user') }}</a>
+                                <a class="nav-link {% block activeMyServ %}{% endblock %} me-4" aria-current="page" href={{ path('myServicesList') }}>{{ 'mesprestations'|trans({}, 'base') }}</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link {% block activeCreaServ %}{% endblock %} me-4" href={{ path('serviceCreateProvider') }}>{{ 'ajouterprestation'|trans({}, 'user') }}</a>
+                                <a class="nav-link {% block activeCreaServ %}{% endblock %} me-4" href={{ path('serviceCreateProvider') }}>{{ 'ajouterp'|trans({}, 'base') }}</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link {% block activeQuote %}{% endblock %} me-4" href={{ path('quoteRequests') }}>{{ 'demandedevis'|trans({}, 'user') }}</a>
+                                <a class="nav-link {% block activeQuote %}{% endblock %} me-4" href={{ path('quoteRequests') }}>{{ 'demande'|trans({}, 'base') }}</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link {% block activePresInProg %}{% endblock %} me-4" href={{ path('servicesInProgress') }}>{{ 'prestaencours'|trans({}, 'base') }}</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link me-4" href="#">Contact</a>
@@ -70,7 +76,21 @@
                         </ul>
                     {% else %}
                         <ul class="navbar-nav">
-                            {# ROLE_ADMIN #}
+                            <li class="nav-item">
+                                <a class="nav-link me-4" href={{ path('dashboard') }}>BackOffice</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link {% block activeApar2 %}{% endblock %} me-4" aria-current="page" href={{ path('apartmentsList') }}>{{ 'logements'|trans({}, 'base') }}</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link {% block activeServ2 %}{% endblock %} me-4" href={{ path('servicesList') }}>Services</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link {% block activeProv2 %}{% endblock %} me-4" href={{ path('providersList') }}>{{ 'prestataires'|trans({}, 'base') }}</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link me-4" href="#">Contact</a>
+                            </li>
                         </ul>
                     {% endif %}
                 </div>
@@ -142,6 +162,30 @@
                             </li>
                             <li class="nav-item">
                                 <a href="{{ path('myDocuments') }}" class="nav-link {% block activeDoc %}{% endblock %}" style="background-color: transparent !important;" aria-current="page">
+                                    {{ 'mesdocuments'|trans({}, 'user') }}
+                                </a>
+                            </li>
+                        {% elseif role == 'ROLE_LESSOR' %}
+                            <hr class="mx-auto opacity-100">
+                            <li>
+                                <button class="btn btn-toggle border-0 gestionBtn collapsed {% block activeProvList2 %}{% endblock %}" data-bs-toggle="collapse" data-bs-target="#prestations-collapse" aria-expanded="false">
+                                    {{ 'mesprestations'|trans({}, 'user') }}
+                                </button>
+                                <div class="collapse menuGestion" id="prestations-collapse" >
+                                    <ul class="btn-toggle-nav list-unstyled fw-normal small gestionUl">
+                                        <li><a href={{ path('servicesPast') }} class="d-inline-flex text-decoration-none rounded mb-1 {% block activePast3 %}{% endblock %}">{{ 'passées'|trans({}, 'user') }}</a></li>
+                                        <li><a href={{ path('servicesPresent') }} class="d-inline-flex text-decoration-none rounded mb-1 {% block activePres3 %}{% endblock %}">{{ 'encours'|trans({}, 'user') }}</a></li>
+                                        <li><a href={{ path('servicesFuture') }} class="d-inline-flex text-decoration-none rounded mb-1 {% block activeFutu3 %}{% endblock %}">{{ 'futures'|trans({}, 'user') }}</a></li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ path('myRequests') }}" class="nav-link {% block activeDem2 %}{% endblock %}" style="background-color: transparent !important;" aria-current="page">
+                                    {{ 'mesdemandes'|trans({}, 'user') }}
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ path('myDocuments') }}" class="nav-link {% block activeDoc2 %}{% endblock %}" style="background-color: transparent !important;" aria-current="page">
                                     {{ 'mesdocuments'|trans({}, 'user') }}
                                 </a>
                             </li>
