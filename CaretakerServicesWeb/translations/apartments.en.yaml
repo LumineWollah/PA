@@ -6,7 +6,7 @@
 'compris': 'Understood'
 'nuit': ' / night'
 'chambres': 'bedrooms'
-'voyageurs': 'travelers max.'
+'voyageursmax': 'travelers max.'
 'modifier': 'Edit'
 'supprimer': 'Delete'
 
@@ -61,6 +61,3 @@
 'ajouterservices': 'Add services'
 
 'nos': 'Our'
-'prix': 'Prix'
-'vosdates': 'Vos dates'
-'voyageurs': 'Voyageurs'
