@@ -93,7 +93,7 @@ class connectionController extends AbstractController
             'constraints'=>[
                 new NotBlank(),
                 new Regex([
-                    'pattern' => '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*.?&])[A-Za-z\d@$!%*.?&]{8,}$/',
+                    'pattern' => '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*.?_&])[A-Za-z\d@$!%*.?_&]{8,}$/',
                     'message' => "Votre mot de passe doit contenir 8 caractères minimum, au moins 1 lettre majuscule, 1 lettre minuscule, 1 chiffre et 1 caractère spécial"
                 ]),
             ]
@@ -271,7 +271,7 @@ class connectionController extends AbstractController
             'constraints'=>[
                 new NotBlank(),
                 new Regex([
-                    'pattern' => '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*.?&])[A-Za-z\d@$!%*.?&]{8,}$/',
+                    'pattern' => '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*.?_&])[A-Za-z\d@$!%*.?_&]{8,}$/',
                     'message' => "Votre mot de passe doit contenir 8 caractères minimum, au moins 1 lettre majuscule, 1 lettre minuscule, 1 chiffre et 1 caractère spécial"
                 ]),
             ]
@@ -283,7 +283,7 @@ class connectionController extends AbstractController
             'constraints'=>[
                 new NotBlank(),
                 new Regex([
-                    'pattern' => '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*.?&])[A-Za-z\d@$!%*.?&]{8,}$/',
+                    'pattern' => '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*.?_&])[A-Za-z\d@$!%*.?_&]{8,}$/',
                     'message' => "Votre mot de passe doit contenir 8 caractères minimum, au moins 1 lettre majuscule, 1 lettre minuscule, 1 chiffre et 1 caractère spécial"
                 ]),
             ]
@@ -406,7 +406,7 @@ class connectionController extends AbstractController
             'constraints'=>[
                 new NotBlank(),
                 new Regex([
-                    'pattern' => '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*.?&])[A-Za-z\d@$!%*.?&]{8,}$/',
+                    'pattern' => '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*.?_&])[A-Za-z\d@$!%*.?_&]{8,}$/',
                     'message' => "Votre mot de passe doit contenir 8 caractères minimum, au moins 1 lettre majuscule, 1 lettre minuscule, 1 chiffre et 1 caractère spécial"
                 ]),
             ]
@@ -418,7 +418,7 @@ class connectionController extends AbstractController
             'constraints'=>[
                 new NotBlank(),
                 new Regex([
-                    'pattern' => '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*.?&])[A-Za-z\d@$!%*.?&]{8,}$/',
+                    'pattern' => '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*.?_&])[A-Za-z\d@$!%*.?_&]{8,}$/',
                     'message' => "Votre mot de passe doit contenir 8 caractères minimum, au moins 1 lettre majuscule, 1 lettre minuscule, 1 chiffre et 1 caractère spécial"
                 ]),
             ]
