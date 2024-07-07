@@ -53,6 +53,10 @@ class subscriptionsController extends AbstractController {
             'billing_address_collection' => 'required',
             'customer' => $customer->id,
         ]);
+        
+        var_dump($request->cookies->all());
+
+        dd('done');
 
         $request->getSession()->set('paymentId', $session->id);
         $request->getSession()->set('token', $request->cookies->get('token'));
