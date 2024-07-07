@@ -541,7 +541,7 @@ class apartmentController extends AbstractController
                         ]);
                     }
                 }
-                return $this->redirectToRoute('apartmentsCrud');
+                return $this->redirectToRoute('apartmentCrud');
             }
 
         return $this->render('backend/apartment/apartmentUnavailable.html.twig', [
