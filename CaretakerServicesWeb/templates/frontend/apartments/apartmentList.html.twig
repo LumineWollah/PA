@@ -92,6 +92,10 @@
 
     function renderData(data) {
         $("#rowContainer").empty();
+        if (data.length === 0) {
+            $("#rowContainer").append("<p>Aucun résultat trouvé</p>");
+            return;
+        }
         for (let i = 0; i < Math.ceil(data.length / 4); i++) {
             $("#rowContainer").append("<div class='row apsRow'></div>");
             for (let j = i * 4; j < (i * 4) + 4; j++) {
