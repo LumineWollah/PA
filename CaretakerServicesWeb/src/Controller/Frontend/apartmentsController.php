@@ -877,19 +877,23 @@ class apartmentsController extends AbstractController
                 $data['price'] = $price + (0.03 * $price) + ($data['adultTravelers'] * (0.005 * $price));
             }
             
-            $data['services'] = explode(",", $data['services']);
-            $data['servicesCompletes'] = [];
+            if ($data['services'] == null) {
+                $data['services'] = [];
+            }else{
+                $data['services'] = explode(",", $data['services']);
+                $data['servicesCompletes'] = [];
 
-            foreach ($data['services'] as $key => $service) {
-                foreach ($servicesList['hydra:member'] as $serv) {
-                    if ($serv['id'] == $service) {
-                        $data['servicesCompletes'][] = $serv;
-                        $data['services'][$key] = '/api/cs_services/'.$service;
-                        $data['price'] += $serv['price'];
-                        break;
+                foreach ($data['services'] as $key => $service) {
+                    foreach ($servicesList['hydra:member'] as $serv) {
+                        if ($serv['id'] == $service) {
+                            $data['servicesCompletes'][] = $serv;
+                            $data['services'][$key] = '/api/cs_services/'.$service;
+                            $data['price'] += $serv['price'];
+                            break;
+                        }
                     }
-                }
-            } 
+                } 
+            }
 
             $data['user'] = 'api/cs_users/'.$id;
             $data['apartment'] = 'api/cs_apartments/'.$ap['id'];
