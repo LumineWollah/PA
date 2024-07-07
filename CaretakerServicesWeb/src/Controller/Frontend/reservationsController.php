@@ -64,22 +64,24 @@ class reservationsController extends AbstractController
             'price' => $price->id,
             'quantity' => 1,
         ]];
-            
-        foreach($data['servicesCompletes'] as $service){
-            $product = \Stripe\Product::create([
-                'name' => $service['name'],
-            ]);
+        
+        if (isset($data['servicesCompletes'])){
+            foreach($data['servicesCompletes'] as $service){
+                $product = \Stripe\Product::create([
+                    'name' => $service['name'],
+                ]);
 
-            $price = \Stripe\Price::create([
-                'product' => $product->id,
-                'unit_amount' => intval(round($service['price'] * 100)),
-                'currency' => 'eur',
-            ]);
+                $price = \Stripe\Price::create([
+                    'product' => $product->id,
+                    'unit_amount' => intval(round($service['price'] * 100)),
+                    'currency' => 'eur',
+                ]);
 
-            $lineItems[] = [
-                'price' => $price->id,
-                'quantity' => 1,
-            ];
+                $lineItems[] = [
+                    'price' => $price->id,
+                    'quantity' => 1,
+                ];
+            }
         }
 
         $session = Session::create([
