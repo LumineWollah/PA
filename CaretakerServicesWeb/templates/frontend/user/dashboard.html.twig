@@ -28,7 +28,7 @@
                     <p><strong>{{ 'email'|trans({}, 'user') }} </strong>{{ user.email|capitalize }}</p>
                     <p><strong>{{ 'téléphone'|trans({}, 'user') }} </strong>{{ user.telNumber }}</p>
 
-                    <a href="{{ path('profileEdit', {'user': user|json_encode}) }}" style="color:black;">{{ 'modifier'|trans({}, 'user') }}</a>
+                    <a href="{{ path('profileEdit', {'user': user|json_encode}) }}" style="color:black;">{{ 'modifierinfos'|trans({}, 'user') }}</a>
                 </div>
                 <div class="summaryandrevenue">
                     <div class="summary">
@@ -38,7 +38,7 @@
                                 <li>{{ 'inscrit'|trans({}, 'user') }}<strong> {{ user.dateInscription | date('d/m/Y') }}</strong></li>
                                 {% if 'ROLE_LESSOR' in user.roles %}
                                     <li>{{ 'publiées'|trans({}, 'user') }}<strong> {{ user.apartments|length }}</strong></li>
-                                    <li>{{ 'encours'|trans({}, 'user') }}<strong> {{ user.apartmentsNumber }}</strong></li>
+                                    <li>{{ 'annoncesencours'|trans({}, 'user') }}<strong> {{ user.apartmentsNumber }}</strong></li>
                                         <li>{{ 'recette'|trans({}, 'user') }}<strong> {{ user.earnings }} €</strong></li>
                                 {% endif %}
                             </ul>
