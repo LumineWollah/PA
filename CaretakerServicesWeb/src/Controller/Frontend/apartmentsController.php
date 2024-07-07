@@ -7,6 +7,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Service\ApiHttpClient;
 use DateTime;
+use Exception;
+use Google\Cloud\Vision\V1\ImageAnnotatorClient;
 use Stripe\Stripe;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -37,12 +39,15 @@ class apartmentsController extends AbstractController
 {
     private $apiHttpClient;
     private $amazonS3Client;
-    private $stripeKeyPrivate;
+    private $imageAnnotator;
 
-    public function __construct(ApiHttpClient $apiHttpClient, AmazonS3Client $amazonS3Client, string $stripeKeyPrivate)
+    public function __construct(ApiHttpClient $apiHttpClient, AmazonS3Client $amazonS3Client, string $stripeKeyPrivate, string $keyCertFilePath)
     {
         $this->apiHttpClient = $apiHttpClient;
         $this->amazonS3Client = $amazonS3Client;
+        $this->imageAnnotator = new ImageAnnotatorClient([
+            'credentials' => $keyCertFilePath
+        ]);
         Stripe::setApiKey($stripeKeyPrivate);
     }
 
@@ -53,6 +58,38 @@ class apartmentsController extends AbstractController
             }
         }
         return null;
+    }
+
+    private function isApartmentImage($path) {
+        $isApartment = false;
+
+        $imageData = file_get_contents($path);
+
+        $image = new \Google\Cloud\Vision\V1\Image();
+        $image->setContent($imageData);
+
+        $response = $this->imageAnnotator->labelDetection($image);
+        $labels = $response->getLabelAnnotations();
+        
+        if ($labels) {
+            $keywords = ['apartment', 'interior', 'furniture', 'room', 'living room', 'bedroom', 'kitchen', 'bathroom', 'building', 'parking', 'street'];
+            foreach ($labels as $label) {
+                if (in_array(strtolower($label->getDescription()), $keywords)) {
+                    $isApartment = true;
+                    break;
+                }
+            }
+        }
+
+        if ($response->getError() && $response->getError()->getMessage()) {
+            throw new Exception(
+                $response->getError()->getMessage() .
+                "\nFor more info on error messages, check: " .
+                "https://cloud.google.com/apis/design/errors"
+            );
+        }
+
+        return $isApartment;        
     }
 
     private function getImageConstraints()
@@ -396,7 +433,8 @@ class apartmentsController extends AbstractController
             'pict7'=>$apPict[7],
             'pict8'=>$apPict[8],
             'pict9'=>$apPict[9],
-            'pict10'=>$apPict[10]
+            'pict10'=>$apPict[10],
+            'error'=>null
         ]);
     }
 
@@ -568,7 +606,35 @@ class apartmentsController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
-            
+
+            $imagePaths = [$data['mainPict']->getPathname()];
+
+            for ($i = 1; $i <= 10; $i++) {
+                if ($data['pict' . $i] != null) {
+                    $imagePaths[] = $data['pict' . $i]->getPathname();
+                }
+            }
+
+            foreach ($imagePaths as $imagePath) {
+                if (!$this->isApartmentImage($imagePath)) {
+                    return $this->render('frontend/apartments/apartmentCreate.html.twig', [
+                        'form'=>$form,
+                        'addons'=>$addons,
+                        'mainPict'=>null,
+                        'pict1'=>null,
+                        'pict2'=>null,
+                        'pict3'=>null,
+                        'pict4'=>null,
+                        'pict5'=>null,
+                        'pict6'=>null,
+                        'pict7'=>null,
+                        'pict8'=>null,
+                        'pict9'=>null,
+                        'pict10'=>null,
+                        'error'=>true
+                    ]);
+                }
+            }
             $results = $this->amazonS3Client->insertObject($data['mainPict']);
 
             if ($results['success']) {
@@ -585,7 +651,7 @@ class apartmentsController extends AbstractController
                 
                 $pictures = array($results['link']);
                 
-                for ($i=1; $i < 10; $i++) { 
+                for ($i=1; $i <= 10; $i++) { 
                     if ($data['pict'.$i] != null) {
                         $pictures[] = $this->amazonS3Client->insertObject($data['pict'.$i])['link'];
                     }
@@ -595,11 +661,17 @@ class apartmentsController extends AbstractController
                 $data['pictures'] = $pictures;
 
                 $data['owner'] = 'api/cs_users/'.$id;
+                
+                if ($data['addons'] != null){
 
-                $data['addons'] = explode(",", $data['addons']);
+                    $data['addons'] = explode(",", $data['addons']);
 
-                foreach ($data['addons'] as $key => $addons) {
-                    $data['addons'][$key] = '/api/cs_addonss/'.$addons;
+                    foreach ($data['addons'] as $key => $addons) {
+                        $data['addons'][$key] = '/api/cs_addonss/'.$addons;
+                    }
+                
+                }else{
+                    $data['addons'] = [];
                 }
 
                 $indispo = explode(",", $data['indisponibilities']);
@@ -652,7 +724,8 @@ class apartmentsController extends AbstractController
             'pict7'=>null,
             'pict8'=>null,
             'pict9'=>null,
-            'pict10'=>null
+            'pict10'=>null,
+            'error'=>null
         ]);
     }
 

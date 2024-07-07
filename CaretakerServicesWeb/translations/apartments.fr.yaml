@@ -11,6 +11,7 @@
 'supprimer': 'Supprimer'
 'vosdates': 'Vos dates'
 'prix': 'Prix'
+'novalidimages': 'Certaines images ne correspondent pas à un appartement'
 
 'déposer' : 'Déposer votre fichier ici'
 'ou': 'ou'
@@ -61,5 +62,6 @@
 'localisation': 'Localisation'
 'avis': 'Avis'
 'ajouterservices': 'Ajouter des services'
+'ajouteraddons': 'Ajouter des complèments'
 
 'nos': 'Nos'

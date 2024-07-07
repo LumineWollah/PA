@@ -11,6 +11,7 @@
 'supprimer': 'Delete'
 'vosdates': 'Your dates'
 'prix': 'Price'
+'novalidimages': 'Some images do not correspond to an apartment'
 
 'déposer' : 'Drop your file here'
 'ou': 'or'
@@ -61,5 +62,6 @@
 'localisation': 'Location'
 'avis': 'Reviews'
 'ajouterservices': 'Add services'
+'ajouteraddons': 'Add addons'
 
 'nos': 'Our'

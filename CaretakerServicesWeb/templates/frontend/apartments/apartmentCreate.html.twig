@@ -16,6 +16,22 @@
 
 {% block body %}
 <div class="container-fluid pageContent">
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Erreur</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="modalContent">
+                {{ 'novalidimages'|trans({}, 'apartments') }}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+            </div>
+            </div>
+        </div>
+    </div>
     {{form_start(form)}}
     <div class="row">
         <div class="mainImg p-0" id="preview">
@@ -32,18 +48,22 @@
                 <div class="input inputName">
                     <h4>{{ 'nom'|trans({}, 'apartments') }}</h4>
                     <p>({{ 'entre'|trans({}, 'apartments') }})</p>
+                    {{ form_errors(form.name) }}
                     {{ form_widget(form.name) }}
                 </div>
                 <div class="input inputNb">
                     <h4>{{ 'chambresdispo'|trans({}, 'apartments') }}</h4>
+                    {{ form_errors(form.bedrooms) }}
                     {{ form_widget(form.bedrooms) }}
                 </div>
                 <div class="input inputNb">
                     <h4>{{ 'sallesdebain'|trans({}, 'apartments') }}</h4>
+                    {{ form_errors(form.bathrooms) }}
                     {{ form_widget(form.bathrooms) }}
                 </div>
                 <div class="input inputNb">
                     <h4>{{ 'voyageurs2'|trans({}, 'apartments') }}</h4>
+                    {{ form_errors(form.travelersMax) }}
                     {{ form_widget(form.travelersMax) }}
                 </div>
             </div>
@@ -53,18 +73,22 @@
                 <div class="input inputDesc">
                     <h4>{{ 'description'|trans({}, 'apartments') }}</h4>
                     <p>({{ 'entre2'|trans({}, 'apartments') }})</p>
+                    {{ form_errors(form.description) }}
                     {{ form_widget(form.description) }}
                 </div>
                 <div class="input inputNb">
                     <h4>Surface (m²).</h4>
+                    {{ form_errors(form.area) }}
                     {{ form_widget(form.area) }}
                 </div>
                 <div class="input inputNb">
                     <h4>{{ 'type'|trans({}, 'apartments') }}</h4>
+                    {{ form_errors(form.isHouse) }}
                     {{ form_widget(form.isHouse) }}
                 </div>
                 <div class="input inputNb">
                     <h4>{{ 'type2'|trans({}, 'apartments') }}</h4>
+                    {{ form_errors(form.isFullhouse) }}
                     {{ form_widget(form.isFullhouse) }}
                 </div>
             </div>
@@ -77,6 +101,7 @@
                 <div class="input inputNb">
                     <h4>{{ 'prix/nuit'|trans({}, 'apartments') }}</h4>
                     <div class="input-group">
+                        {{ form_errors(form.price) }}
                         {{ form_widget(form.price)  }}
                         <span class="input-group-text" id="basic-addon2">€</span>
                     </div>
@@ -84,6 +109,7 @@
                 <div class="input inputAdr">
                     <h4>{{ 'adresse'|trans({}, 'apartments') }}</h4>
                     <div id="geocoder" style="position: relative; height: 3vh;"></div>
+                    {{ form_errors(form.address) }}
                     {{form_widget(form.address)}}
                 </div>
             </div>
@@ -174,8 +200,9 @@
         <hr class="mt-5">
         <div class="inputDiv vertical-scroll-panel" style="position: relative;">
             <div class="select-btn">
-                <span class="btn-text">{{ 'ajouterservices'|trans({}, 'apartments') }}</span>
+                <span class="btn-text">{{ 'ajouteraddons'|trans({}, 'apartments') }}</span>
             </div>
+            {{ form_errors(form.addons) }}
             {{ form_widget(form.addons) }}
             <ul class="list-items" style="z-index: 10;">
                 {% for addon in addons %}
@@ -199,7 +226,18 @@
 
 {% block javascripts %}
 <script>
+
+    {% if error is defined and error is not null and error %}
+        var error = true;
+    {% else %}
+        var error = null;
+    {% endif %}
+    
     $(function() {
+
+        if (error != null && error == true) {
+            $('#exampleModal').modal('show');
+        }
 
         var selectedDates = [];
         var indispo = document.getElementById('form_indisponibilities');
