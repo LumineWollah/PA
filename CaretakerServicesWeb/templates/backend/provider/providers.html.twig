@@ -54,7 +54,7 @@
             <div class="container m-0 mb-4">
                 <div class="row">
                 {% for provider in unverifiedProviders %}
-                    <div class="col-3 p-0 me-4">
+                    <div class="col-3 p-0 me-4 mb-4">
                         <div class="noValidateCard">
                             <img src={% if provider['profilePict'] is defined and provider['profilePict'] is not empty %}{{ provider.profilePict }}{% else %}{{asset('icons/profile_pict_default.png')}}{% endif %}>                            
                             <p class="name">{{ provider.firstname|capitalize }} {{ provider.lastname|capitalize }}</p>

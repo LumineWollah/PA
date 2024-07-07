@@ -58,7 +58,7 @@
             <div class="container m-0 mb-4">
                 <div class="row">
                 {% for apartment in unverifiedApartments %}
-                    <div class="col-3 p-0 me-4">
+                    <div class="col-3 p-0 me-4 mb-4">
                         <div class="noValidateCard">
                             <img src={% if apartment['mainPict'] is defined and apartment['mainPict'] is not empty %}{{ apartment.mainPict }}{% endif %}>                            
                             <p class="name">{{ apartment.name|capitalize }}</p>
@@ -118,7 +118,7 @@
                                 </form>
                                 <form action="{{ path('apartmentUnavailable') }}" method="post" style="display: inline;">
                                     <input type="hidden" name="apartment" value="{{ apartment|json_encode }}">
-                                    <button type="submit" class="btn" style="background-color: #18A0FB;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/pen.png') }}></div></button>
+                                    <button type="submit" class="btn" style="background-color: #18A0FB;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/calendar.png') }}></div></button>
                                 </form>
                             </td>
                         </tr>

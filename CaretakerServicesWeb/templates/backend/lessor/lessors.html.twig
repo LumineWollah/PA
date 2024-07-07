@@ -54,7 +54,7 @@
             <div class="container m-0 mb-4">
                 <div class="row">
                 {% for lessor in unverifiedLessors %}
-                    <div class="col-3 p-0 me-4">
+                    <div class="col-3 p-0 me-4 mb-4">
                         <div class="noValidateCard">
                             <img src={% if lessor['profilePict'] is defined and lessor['profilePict'] is not empty %}{{ lessor.profilePict }}{% else %}{{asset('icons/profile_pict_default.png')}}{% endif %}>                            
                             <p class="name">{{ lessor.firstname|capitalize }} {{ lessor.lastname|capitalize }}</p>
