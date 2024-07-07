@@ -730,7 +730,7 @@ class servicesController extends AbstractController
 
             $action = $request->request->get('action');
 
-            if ($action === 'devis') {
+            if ($action == 'devis') {
 
                 $addresses = '';
 
@@ -771,7 +771,8 @@ class servicesController extends AbstractController
                     'otherData' => $data['otherData'],
                     'price' => 0,
                     'active' => false,
-                    'status' => 0
+                    'status' => 0,
+                    'isRequest' => true
                 ];
 
                 $response = $client->request('POST', 'cs_reservations', [

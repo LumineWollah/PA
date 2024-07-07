@@ -415,15 +415,4 @@ class reservationsController extends AbstractController
         ]);
     }
 
-    #[Route('/reservation/{id}/opinion', 'myReservationOpinion')]
-    public function myReservationOpinion(Request $request, int $id){
-        $client = $this->apiHttpClient->getClientWithoutBearer();
-        $response = $client->request('GET', 'cs_reservations/'.$id);
-        $reservation = $response->toArray();
-
-        return $this->render('frontend/reservations/opinion.html.twig', [
-            'reservation' => $reservation,
-        ]);
-    }
-
 }

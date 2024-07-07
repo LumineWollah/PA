@@ -79,7 +79,7 @@ class reviewsController extends AbstractController
     }
     
     #[Route('review/create', name: 'myReservationOpinion')]
-    public function apartmentCreateCrud(Request $request)
+    public function reviewCreate(Request $request)
     {
         $client = $this->apiHttpClient->getClient($request->cookies->get('token'));
 

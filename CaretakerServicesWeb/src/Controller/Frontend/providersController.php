@@ -193,7 +193,7 @@ class providersController extends AbstractController
             return $this->redirectToRoute('login', ['redirect'=>'quoteRequestDelete']);
         }
 
-        $client = $this->apiHttpClient->getClientWithoutBearer();
+        $client = $this->apiHttpClient->getClient($request->cookies->get('token'));
 
         $reservation = $request->request->get('reservationContent');
         $reservation = json_decode($reservation, true);

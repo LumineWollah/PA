@@ -80,9 +80,6 @@
                                 <a class="nav-link me-4" href={{ path('dashboard') }}>BackOffice</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link {% block activeApar2 %}{% endblock %} me-4" aria-current="page" href={{ path('apartmentsList') }}>{{ 'logements'|trans({}, 'base') }}</a>
-                            </li>
-                            <li class="nav-item">
                                 <a class="nav-link {% block activeServ2 %}{% endblock %} me-4" href={{ path('servicesList') }}>Services</a>
                             </li>
                             <li class="nav-item">
@@ -162,7 +159,7 @@
                                     {{ 'mesdocuments'|trans({}, 'user') }}
                                 </a>
                             </li>
-                        {% elseif role == 'ROLE_LESSOR' %}
+                        {% elseif role == 'ROLE_LESSOR' or role == 'ROLE_ADMIN' %}
                             <hr class="mx-auto opacity-100">
                             <li>
                                 <button class="btn btn-toggle border-0 gestionBtn collapsed {% block activeProvList2 %}{% endblock %}" data-bs-toggle="collapse" data-bs-target="#prestations-collapse" aria-expanded="false">
@@ -190,6 +187,7 @@
                         <li class="nav-item">
                             <a href={{ path('logoutFunc') }} class="logoutBtn nav-link btn btn-error" aria-current="page">
                                 {{ 'déconnecter'|trans({}, 'user') }}
+
                             </a>
                         </li>
                     </ul>
