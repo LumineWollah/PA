@@ -179,6 +179,12 @@
             cancelLabel: 'Clear',
             format: 'dd.mm.yyyy',
             separator: ' - '
+        },
+        isInvalidDate: function(date) {
+            if (date.isBefore(moment(), 'day')) {
+                return true;
+            }
+            return false;
         }
     }, function(start, end, label) {
                 $(this).val(start.format('YYYY.MM.DD')+ " - " + end.format('YYYY.MM.DD'))
