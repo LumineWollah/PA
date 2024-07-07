@@ -116,18 +116,18 @@ class subscriptionsController extends AbstractController {
             ],
         ]);
 
-        return $this->redirectToRoute('subscriptions');
+        return $this->redirectToRoute('myProfile');
     }
 
     #[Route("/subscription-cancel", "payment_cancel")]
-    public function paymentCancel(): Response
+    public function paymentCancel()
     {
         // Handle the cancellation
         return new Response('Subscription cancelled.', 200);
     }
 
     #[Route("/unsubscribe", "unsubscribe")]
-    public function unsubscribe(Request $request): Response
+    public function unsubscribe(Request $request)
     {
         $subscriptionId = $request->query->get('subsId');
 
