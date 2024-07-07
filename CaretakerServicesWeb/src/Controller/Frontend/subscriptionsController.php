@@ -56,7 +56,8 @@ class subscriptionsController extends AbstractController {
 
         // Store the payment session ID in the session
         $request->getSession()->set('paymentId', $session->id);
-
+        $request->getSession()->set('token', $request->cookies->get('token'));
+        $request->getSession()->set('id', $request->cookies->get('id'));
         // Redirect to the Stripe checkout page
         return $this->redirect($session->url);
     }
@@ -66,6 +67,8 @@ class subscriptionsController extends AbstractController {
     {
         $sessionId = $request->getSession()->get('paymentId');
         $subsId = $request->getSession()->get('subsId');
+        $token = $request->getSession()->get('token');  
+        $id = $request->getSession()->get('id');
 
         $session = Session::retrieve($sessionId);
         $setupIntent = \Stripe\SetupIntent::retrieve($session->setup_intent);
@@ -101,12 +104,12 @@ class subscriptionsController extends AbstractController {
             'default_payment_method' => $paymentMethodId,
         ]);
 
-        $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/merge-patch+json');
+        $client = $this->apiHttpClient->getClient($token, 'application/merge-patch+json');
 
         $now = new \DateTime();
         $today = $now->format('Y-m-d');
 
-        $response = $client->request('PATCH', 'cs_users/'.$request->cookies->get('id'), [
+        $response = $client->request('PATCH', 'cs_users/'.$id, [
             'json' => [
                 'subsId' => $subscription->id,
                 'subscription' => intval($subsId),
