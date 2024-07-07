@@ -178,10 +178,7 @@ class userController extends AbstractController
         $id = $request->cookies->get('id');
             
         if ($id == null) {
-            $id = $request->getSession()->get('id');
-            if ($id == null) {
-                return $this->redirectToRoute('login', ['redirect'=>'subscriptions']);
-            }
+            return $this->redirectToRoute('login', ['redirect'=>'subscriptions']);
         }
 
         $client = $this->apiHttpClient->getClientWithoutBearer();
