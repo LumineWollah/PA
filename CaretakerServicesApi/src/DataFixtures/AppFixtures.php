@@ -115,8 +115,6 @@ class AppFixtures extends Fixture
             $apartment->setBathrooms(4);
             $apartment->setTravelersMax(8);
             $apartment->setArea(825.25);
-            $apartment->setIsFullhouse(true);
-            $apartment->setIsHouse(true);
             $apartment->setPrice(421);
             $apartment->setOwner($user);
             $apartment->setAddress("71, avenue d'Italie");
@@ -126,6 +124,20 @@ class AppFixtures extends Fixture
             $apartment->setCountry("France");
             $apartment->addMandatoryService($service);
             $apartment->addAddon($addon);
+            if ($i % 2 == 0) {
+                $apartment->setIsHouse(false);
+                $apartment->setIsFullhouse(false);
+            }else{
+                $apartment->setIsFullhouse(true);
+                $apartment->setIsHouse(true);
+            }
+            if ($i % 5 == 0) {
+                $apartment->setActive(false);
+                $apartment->setIsVerified(false);
+            }else{
+                $apartment->setActive(true);
+                $apartment->setIsVerified(true);
+            }
             $apartment->setMainPict($images[rand(0, 8)]);
             $apartment->setPictures(["https://tinyurl.com/2w8fnhrs", "https://tinyurl.com/4bck47tz"]);
             $manager->persist($apartment);

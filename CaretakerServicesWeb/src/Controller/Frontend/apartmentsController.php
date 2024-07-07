@@ -923,7 +923,7 @@ class apartmentsController extends AbstractController
     { 
         $client = $this->apiHttpClient->getClientWithoutBearer();
 
-        $responseAparts = $client->request('GET', 'cs_apartments');
+        $responseAparts = $client->request('GET', 'cs_apartments?active=1');
 
         $aps = $responseAparts->toArray();
 
@@ -952,7 +952,7 @@ class apartmentsController extends AbstractController
         
         $client = $this->apiHttpClient->getClientWithoutBearer();
 
-        $responseAparts = $client->request('GET', 'cs_apartments?owner='.$id);
+        $responseAparts = $client->request('GET', 'cs_apartments?active=1&owner='.$id);
 
         $aps = $responseAparts->toArray();
 
@@ -982,7 +982,7 @@ class apartmentsController extends AbstractController
         $requestsPresent = [];
         $requestsFuture = [];
 
-        $responseAparts = $client->request('GET', 'cs_apartments?owner='.$id);
+        $responseAparts = $client->request('GET', 'cs_apartments?active=1&owner='.$id);
         $apartments = $responseAparts->toArray()['hydra:member'];
 
         $reservation = [];

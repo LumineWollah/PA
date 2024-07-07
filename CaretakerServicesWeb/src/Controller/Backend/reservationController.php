@@ -128,7 +128,7 @@ class reservationController extends AbstractController
             $serviceChoice += [ $service['name'] => $service['id'] ];
         }
 
-        $response = $client->request('GET', 'cs_apartments', [
+        $response = $client->request('GET', 'cs_apartments?active=1', [
             'query' => [
                 'page' => 1,
             ]
@@ -276,7 +276,7 @@ class reservationController extends AbstractController
             $serviceChoice += [$service['name'] => $service['id']];
         }
 
-        $response = $client->request('GET', 'cs_apartments', [
+        $response = $client->request('GET', 'cs_apartments?active=1', [
             'query' => [
                 'page' => 1,
             ]

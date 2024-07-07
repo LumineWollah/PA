@@ -102,7 +102,7 @@ use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 #[GetCollection()]
 #[Delete(security: "is_granted('ROLE_ADMIN') or object.getOwner() == user")]
 #[Post(security: "is_granted('ROLE_LESSOR') or is_granted('ROLE_ADMIN')")]
-#[ApiFilter(SearchFilter::class, properties: ['owner' => 'exact', 'city' => 'exact'])]
+#[ApiFilter(SearchFilter::class, properties: ['owner' => 'exact', 'city' => 'exact', 'active' => 'exact', 'isVerified' => 'exact'])]
 #[ORM\Entity(repositoryClass: CsApartmentRepository::class)]
 class CsApartment
 {
@@ -158,7 +158,7 @@ class CsApartment
 
     #[ORM\Column]
     #[Groups(["getUsers", "getApartments", "getReservations", "getAddons", "getReviews", "getDocuments"])]
-    private ?bool $active = true;
+    private ?bool $active = false;
 
     #[ORM\Column(length: 500)]
     #[Groups(["getUsers", "getApartments", "getReservations", "getAddons", "getReviews", "getDocuments"])]

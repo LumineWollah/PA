@@ -479,7 +479,8 @@ class apartmentController extends AbstractController
 
         $response = $client->request('PATCH', 'cs_apartments/'.$id, [
             'json' => [
-                'isVerified'=>true
+                'isVerified'=>true,
+                'active'=>true,
             ],
         ]);
         

@@ -113,10 +113,9 @@ class userController extends AbstractController
 
                 $client = $this->apiHttpClient->getClientWithoutBearer();
         
-                $response = $client->request('GET', 'cs_apartments', [
+                $response = $client->request('GET', 'cs_apartments?active=1&owner='.$id, [
                     'json' => [
-                        'page' => 1,
-                        'owner' => '/api/cs_users/'.$id
+                        'page' => 1
                     ]
                 ]);
         
@@ -143,10 +142,9 @@ class userController extends AbstractController
 
                 $client = $this->apiHttpClient->getClientWithoutBearer();
         
-                $response = $client->request('GET', 'cs_services', [
+                $response = $client->request('GET', 'cs_services?company='.$user['company']['id'], [
                     'json' => [
-                        'page' => 1,
-                        'company' => '/api/cs_companies/'.$user['company']['id']
+                        'page' => 1
                     ]
                 ]);
         
