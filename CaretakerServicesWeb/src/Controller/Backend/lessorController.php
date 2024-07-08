@@ -82,6 +82,9 @@ class lessorController extends AbstractController
                 'roles' => $lessor['roles'],
                 'isVerified' => $lessor['isVerified'],
             ];
+            if (isset($lessor['profilePict'])) {
+                $defaults['profilePict'] = $lessor['profilePict'];
+            }
         } catch (Exception $e) {
             $defaults = [];
         }

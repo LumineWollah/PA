@@ -76,6 +76,9 @@ class travelerController extends AbstractController
                 'roles' => $traveler['roles'],
                 'isVerified' => $traveler['isVerified'],
             ];
+            if (isset($traveler['profilePict'])) {
+                $defaults['profilePict'] = $traveler['profilePict'];
+            }
         } catch (Exception $e) {
             $defaults = [];
         }
