@@ -49,6 +49,11 @@
 'détailréservation': 'Détail de votre réservation'
 'votrelogement': 'Votre logement'
 'voirlogement': 'Voir le logement'
+'voirserv': 'Voir le service'
+'autresinfos': 'Autres informations :'
+'dateinter': "Date d'intervention :"
+'détaileréservation': 'Détail de la réservation'
+'aucuneinfo': 'Aucune information disponible'
 'détail': 'Le détail'
 'vosdates': 'Vos dates :'
 'prixtotal': 'Prix total :'

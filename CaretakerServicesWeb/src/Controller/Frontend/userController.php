@@ -387,7 +387,7 @@ class userController extends AbstractController
         $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/merge-patch+json');
 
         if ($refund->status == 'succeeded') {
-            $client->request('DELETE', 'cs_reservations/'.$id);
+            $client->request('DELETE', 'cs_reservations/'.$reservation['id']);
         }
 
         return $this->redirectToRoute('reservationsFuture');

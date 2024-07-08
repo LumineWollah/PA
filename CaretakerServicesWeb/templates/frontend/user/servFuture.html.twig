@@ -72,14 +72,17 @@
                             <td>{{ reservation.startingDate|date('d/m/Y') }}</td>
                             <td>{{ reservation.price }} €</td>
                             <td class="action">
-                                <a href="{{ path('reservationDelete', {'id': reservation.id }) }}" class="btn" style="background-color: #EE3939;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/bin.png') }}></div></a>
-                                <form action="{{ path('reservationEdit') }}" method="post" style="display: inline;">
+                                <form action="{{ path('myReservationServDetail') }}" method="post" style="display: inline;">
                                     <input type="hidden" name="reservation" value="{{ reservation|json_encode }}">
-                                    <button type="submit" class="btn" style="background-color: #18A0FB;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/pen.png') }}></div></button>
+                                    <button type="submit" class="btn" style="background-color: #18A0FB;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/chart.png') }}></div></button>
                                 </form>
                                 {% if reservation.documents is not empty %}
                                     <a href="{{ reservation.documents[0].url }}" target="_blank" class="btn" style="background-color: #A594F9;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/documents.png') }}></div></a>
-                                {% endif %}                            
+                                {% endif %}
+                                <form action="{{ path('reservationsRefund') }}" method="post" style="display: inline;">
+                                    <input type="hidden" name="reservation" value="{{ reservation|json_encode }}">
+                                    <button type="submit" class="btn" style="background-color: #EE3939;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/bin.png') }}></div></button>
+                                </form>                       
                             </td>
                         </tr>
                     {% endfor %}

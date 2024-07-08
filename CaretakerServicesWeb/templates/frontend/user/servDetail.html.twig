@@ -1,0 +1,52 @@
+{% extends 'frontend/user/base.html.twig' %}
+
+{% block stylesheets %}<link rel="stylesheet" href={{ asset('styles/frontend/user/reservDetail.css') }}>{% endblock %}
+
+{% block activeProvList %}active{% endblock %}
+{% block activeProvList2 %}active{% endblock %}
+
+{% block title %}Detail - Reservation{% endblock %}
+
+{% block body %}
+    <div class="col-10 p-3">
+        <h1>{{ 'détaileréservation'|trans({}, 'user') }}</h1>
+        <div class="row">
+            <div class="col-4">
+                <h3>{{ 'votrelogement'|trans({}, 'user') }}</h3>
+                <div class="card">
+                    {% if reservation.service.coverImage is defined and reservation.service.coverImage is not null %}
+                        <img src="{{ reservation.service.coverImage }}">
+                    {% else %}
+                        <img src="{{ asset('icons/profile_pict_default_company.png') }}">
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-text mb-4">{{ reservation.service.name }}</h5>
+                        <a href="{{ path('serviceDetail', {'id': reservation.service.id}) }}" class="seeAppart mb-1">{{ 'voirserv'|trans({}, 'user') }}</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+                <h3>{{ 'détail'|trans({}, 'user') }}</h3>
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-text mb-1">{{ 'dateinter'|trans({}, 'user') }}</h5>
+                        <p class="card-text mb-4">{{ reservation.startingDate|date('d/m/Y') }}</p>
+                        <h5 class="card-text mb-1">{{ 'prixtotal'|trans({}, 'user') }}</h5>
+                        <p class="card-text mb-4">{{ reservation.price }} €</p>
+                        <h5 class="card-text mb-3">{{ 'autresinfos'|trans({}, 'user') }}</h5>
+                        {% if reservation.otherData is defined and reservation.otherData is not null %}
+                            {% set cpt = 1 %}
+                            {% for key, address in reservation.otherData %}
+                                <p class='mb-1'><strong>Adresse {{ cpt }}:</strong> {{ address.address }}</p>
+                                {% set cpt = cpt + 1 %}
+                            {% endfor %}
+                        {% else %}
+                            <p class="card-text mb-1">{{ 'aucuneinfo'|trans({}, 'user') }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

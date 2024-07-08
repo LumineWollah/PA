@@ -406,6 +406,17 @@ class reservationsController extends AbstractController
         ]);
     }
 
+    #[Route('/reservation-service/detail', 'myReservationServDetail')]
+    public function myReservationServDetail(Request $request){
+        
+        $reservationData = $request->request->get('reservation');
+        $reservation = json_decode($reservationData, true);
+    
+        return $this->render('frontend/user/servDetail.html.twig', [
+            'reservation' => $reservation,
+        ]);
+    }
+
     #[Route('/reservation/{id}/documents', 'myReservationDocuments')]
     public function myReservationDocuments(Request $request, int $id){
         $client = $this->apiHttpClient->getClientWithoutBearer();

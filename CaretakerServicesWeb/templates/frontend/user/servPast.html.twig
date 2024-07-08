@@ -72,18 +72,18 @@
                             <td>{{ reservation.startingDate|date('d/m/Y') }}</td>
                             <td>{{ reservation.price }} €</td>
                             <td class="action">
-                                <form action="{{ path('myReservationDetail') }}" method="post" style="display: inline;">
+                                <form action="{{ path('myReservationServDetail') }}" method="post" style="display: inline;">
                                     <input type="hidden" name="reservation" value="{{ reservation|json_encode }}">
                                     <button type="submit" class="btn" style="background-color: #18A0FB;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/chart.png') }}></div></button>
-                                </form>                        
-                                {% if reservation.reviews is defined and reservation.reviews is not empty %}
-                                    <a href="{{ path('reviewShowFE', {'review': reservation.reviews|json_encode, 'origin': 'servicesPast', 'service': reservation.service|json_encode }) }}" class="btn" style="background-color: #4CBA78;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/star.png') }}></div></a>
-                                {% else %}    
-                                    <a href="{{ path('myReservationOpinion', {'id': reservation.id, 'service': reservation.service.id, 'origin': 'servicesPast' }) }}" class="btn" style="background-color: #4CBA78;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/star.png') }}></div></a>
-                                {% endif %}
+                                </form>
                                 {% if reservation.documents is not empty %}
                                     <a href="{{ reservation.documents[0].url }}" target="_blank" class="btn" style="background-color: #A594F9;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/documents.png') }}></div></a>
-                                {% endif %}            
+                                {% endif %}                                
+                                {% if reservation.reviews is defined and reservation.reviews is not empty %}
+                                    <a href="{{ path('reviewShowFE', {'review': reservation.reviews|json_encode, 'origin': 'reservationsPast', 'apartment': reservation.apartment|json_encode }) }}" class="btn" style="background-color: #4CBA78;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/star.png') }}></div></a>
+                                {% else %}  
+                                    <a href="{{ path('myReservationOpinion', {'id': reservation.id, 'apartment': reservation.apartment.id, 'origin': 'reservationsPast' }) }}" class="btn" style="background-color: #4CBA78;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/star.png') }}></div></a>
+                                {% endif %}             
                             </td>
                         </tr>
                     {% endfor %}
