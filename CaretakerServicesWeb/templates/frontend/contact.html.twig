@@ -56,51 +56,45 @@
         </div>
     </div>
 
-    <div class="row contactForm">
-        <div class="col-md-7">
-            <div class="contact-wrap w-100 p-md-5 p-4">
-                <h3 class="mb-4">Contact Us</h3>
-                <form method="POST" id="contactForm" name="contactForm" class="" novalidate="novalidate">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="label mb-1" for="name">Full Name</label>
-                                <input type="text" class="form-control" name="name" id="name" placeholder="Name">
-                                <div data-lastpass-icon-root="" style="position: relative !important; height: 0px !important; width: 0px !important; float: left !important;"></div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="label mb-1" for="email">Email Address</label>
-                                <input type="email" class="form-control" name="email" id="email" placeholder="Email">
-                            </div>
-                        </div>
-                        <div class="col-md-12 mt-3">
-                            <div class="form-group">
-                                <label class="label mb-1" for="subject">Subject</label>
-                                <input type="text" class="form-control" name="subject" id="subject" placeholder="Subject">
-                            </div>
-                        </div>
-                        <div class="col-md-12 mt-3">
-                            <div class="form-group">
-                                <label class="label mb-1" for="#">Message</label>
-                                <textarea name="message" class="form-control" id="message" cols="30" rows="4" placeholder="Message"></textarea>
-                            </div>
-                        </div>
-                        <div class="col-md-12 mt-4">
-                            <div class="form-group">
-                                <input type="submit" value="Send Message" class="btn btnSend">
-                                <div class="submitting"></div>
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </div>
+    <div class="row contactForm justify-content-center">
+        <h2><span class="h2span">{{ 'contacteznous'|trans({}, 'contact') }}</span></h2>
+        <div style="width: 50vw;">
+            {{ form_start(form) }}
+                <div class="mb-3">
+                    <label for="email" class="form-label">{{ 'email'|trans({}, 'contact') }}</label>
+                    {% if form_errors(form.clientEmail) %}
+                        <div class="error" style="color: red;">{{ form_errors(form.clientEmail) }}</div>
+                    {% endif %}
+                    {{ form_widget(form.clientEmail) }}
+                </div>
+                <div class="mb-3">
+                    <label for="message" class="form-label">{{ 'sujet'|trans({}, 'contact') }}</label>
+                    {% if form_errors(form.subject) %}
+                        <div class="error" style="color: red;">{{ form_errors(form.subject) }}</div>
+                    {% endif %}
+                    {{ form_widget(form.subject) }}
+                </div>
+                <div class="mb-3">
+                    <label for="name" class="form-label">{{ 'nom'|trans({}, 'contact') }}</label>
+                    {% if form_errors(form.name) %}
+                        <div class="error" style="color: red;">{{ form_errors(form.name) }}</div>
+                    {% endif %}
+                    {{ form_widget(form.name) }}
+                </div>
+                <div class="mb-3">
+                    <label for="message" class="form-label">{{ 'message'|trans({}, 'contact') }}</label>
+                    {% if form_errors(form.description) %}
+                        <div class="error" style="color: red;">{{ form_errors(form.description) }}</div>
+                    {% endif %}
+                    {{ form_widget(form.description) }}
+                </div>
+                <button type="submit" class="btn btn-primary btnSend">{{ 'envoyer'|trans({}, 'contact') }}</button>
+            {{ form_end(form) }}
         </div>
-        <div class="col-md-5 p-0">
-            <div class="rightImg">
-                <img src="{{ asset('icons/logo/2_dark_mode.png') }}" alt="image">
-            </div>
+    </div>
+    <div class="col-md-5 p-0">
+        <div class="rightImg">
+            <img src="{{ asset('icons/logo/2_dark_mode.png') }}" alt="image">
         </div>
     </div>
 {% endblock %}
