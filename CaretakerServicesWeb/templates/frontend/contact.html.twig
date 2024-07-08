@@ -1,0 +1,102 @@
+{% extends 'frontend/base.html.twig' %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href={{ asset('styles/frontend/contact.css') }}>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+{% endblock %}
+
+{% block body %}
+    <div class="d-flex justify-content-center align-items-center" style=" margin: 100px; padding: 0px">
+      <br><br><br><h3 class="text-align-center" style="font-family: 'Antonio'; font-size: 48px;">Paris<span style="color: #a594f9;"> Caretaker</span> Services</h3> 
+    </div>
+    <div class="row rowInfos">
+        <div class="col-md-3">
+            <div class="dbox w-100 text-center">
+                <div class="icon d-flex align-items-center justify-content-center">
+                    <span class="round fa fa-map-marker"></span>
+                </div>
+                <div class="text">
+                    <p>21 Rue Erard, 75012 Paris</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="dbox w-100 text-center">
+                <div class="icon d-flex align-items-center justify-content-center">
+                    <span class="round fa-phone fa"></span>
+                </div>
+                <div class="text">
+                    <p><a href="tel://0231424547">02.31.42.45.47</a></p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="dbox w-100 text-center">
+                <div class="icon d-flex align-items-center justify-content-center">
+                    <span class="round fa fa-paper-plane"></span>
+                </div>
+                <div class="text">
+                    <p><a href="mailto:ne-pas-repondre@caretakerservices.fr">ne-pas-repondre@caretakerservices.fr</a></p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="dbox w-100 text-center">
+                <div class="icon d-flex align-items-center justify-content-center">
+                    <span class="round fa fa-globe"></span>
+                </div>
+                <div class="text">
+                    <p><a href="#">caretakerservices.fr</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row contactForm">
+        <div class="col-md-7">
+            <div class="contact-wrap w-100 p-md-5 p-4">
+                <h3 class="mb-4">Contact Us</h3>
+                <form method="POST" id="contactForm" name="contactForm" class="" novalidate="novalidate">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="label mb-1" for="name">Full Name</label>
+                                <input type="text" class="form-control" name="name" id="name" placeholder="Name">
+                                <div data-lastpass-icon-root="" style="position: relative !important; height: 0px !important; width: 0px !important; float: left !important;"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="label mb-1" for="email">Email Address</label>
+                                <input type="email" class="form-control" name="email" id="email" placeholder="Email">
+                            </div>
+                        </div>
+                        <div class="col-md-12 mt-3">
+                            <div class="form-group">
+                                <label class="label mb-1" for="subject">Subject</label>
+                                <input type="text" class="form-control" name="subject" id="subject" placeholder="Subject">
+                            </div>
+                        </div>
+                        <div class="col-md-12 mt-3">
+                            <div class="form-group">
+                                <label class="label mb-1" for="#">Message</label>
+                                <textarea name="message" class="form-control" id="message" cols="30" rows="4" placeholder="Message"></textarea>
+                            </div>
+                        </div>
+                        <div class="col-md-12 mt-4">
+                            <div class="form-group">
+                                <input type="submit" value="Send Message" class="btn btnSend">
+                                <div class="submitting"></div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="col-md-5 p-0">
+            <div class="rightImg">
+                <img src="{{ asset('icons/logo/2_dark_mode.png') }}" alt="image">
+            </div>
+        </div>
+    </div>
+{% endblock %}

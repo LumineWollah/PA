@@ -44,4 +44,10 @@ class homeController extends AbstractController
         ]);
     }
 
+    #[Route("/contact" , name: 'contact')]
+    public function contact()
+    {
+        return $this->render('frontend/contact.html.twig');
+    }
+
 }
