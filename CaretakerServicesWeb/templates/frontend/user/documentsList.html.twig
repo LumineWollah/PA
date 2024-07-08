@@ -66,10 +66,14 @@
                                 {% if document.attachedReserv is not defined or document.attachedReserv is null %}
                                     <p>-</p>
                                 {% else %}
-                                    <form action="{{ path('myReservationDetail') }}" method="post" style="display: inline;">
-                                        <input type="hidden" name="reservation" value="{{ document.attachedReserv|json_encode }}">
-                                        <button type="submit" class="btn btn-light apartment" style="height:40px"><p>{{ 'réservation'|trans({}, 'user') }} n°{{ document.attachedReserv.id|capitalize }} </p></button>
-                                    </form>
+                                    {% if document.attachedReserv.apartment is defined and document.attachedReserv.apartment is not null %}
+                                        <form action="{{ path('myReservationDetail') }}" method="post" style="display: inline;">
+                                    {% else %}
+                                        <form action="{{ path('myReservationServDetail') }}" method="post" style="display: inline;">
+                                    {% endif %}
+                                            <input type="hidden" name="reservation" value="{{ document.attachedReserv|json_encode }}">
+                                            <button type="submit" class="btn btn-light apartment" style="height:40px"><p>{{ 'réservation'|trans({}, 'user') }} n°{{ document.attachedReserv.id|capitalize }} </p></button>
+                                        </form>
                                 {% endif %}
                             </td>
                             <td>{{ document.type }}</td>
