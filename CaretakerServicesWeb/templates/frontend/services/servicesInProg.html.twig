@@ -156,7 +156,7 @@
                             {% endif %}
                             <td class="action">
                                 {% if request.documents is not empty %}
-                                    {% for doc in reservation.documents %}
+                                    {% for doc in request.documents %}
                                         {% if doc.type|lower == 'facture' %}
                                             <a href="{{ doc.url }}" target="_blank" class="btn" style="background-color: #A594F9;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/documents.png') }}></div></a>
                                         {% endif %}
@@ -187,7 +187,7 @@
                             <td>{{ request.price }}€</td>
                             <td class="action">
                                 {% if request.documents is not empty %}
-                                    {% for doc in reservation.documents %}
+                                    {% for doc in request.documents %}
                                         {% if doc.type|lower == 'facture' %}
                                             <a href="{{ doc.url }}" target="_blank" class="btn" style="background-color: #A594F9;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/documents.png') }}></div></a>
                                         {% endif %}
@@ -225,7 +225,7 @@
                                         <div class="btnImage"><img style="height:20px;" src="{{ asset('icons/crud/eye.png') }}"></div>
                                     </div>   
                                 {% if request.documents is not empty %}
-                                    {% for doc in reservation.documents %}
+                                    {% for doc in request.documents %}
                                         {% if doc.type|lower == 'facture' %}
                                             <a href="{{ doc.url }}" target="_blank" class="btn" style="background-color: #A594F9;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/documents.png') }}></div></a>
                                         {% endif %}

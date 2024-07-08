@@ -44,6 +44,16 @@
                     targets: -1,
                     orderable: false,
                 },
+                {
+                    targets: -2,
+                    orderable: false,
+                    className: 'dt-body-left dt-head-left'
+                },
+                {
+                    targets: -3,
+                    orderable: false,
+                    className: 'dt-body-left dt-head-left'
+                },
             ]
         } );
         $('#crudList2').DataTable( {
@@ -73,6 +83,11 @@
                 {
                     targets: -1,
                     orderable: false,
+                },
+                {
+                    targets: -2,
+                    orderable: false,
+                    className: 'dt-body-left dt-head-left'
                 },
             ]
         } );
@@ -123,6 +138,8 @@
                         <th scope="col">Date de sortie</th>
                         <th scope="col">Prix</th>
                         <th scope="col">Note</th>
+                        <th scope="col">Etat des lieux d'entrée</th>
+                        <th scope="col">Etat des lieux de sortie</th>
                         <th scope="col">Actions</th>
                     </tr>
                 </thead>
@@ -139,9 +156,37 @@
                             {% else %}
                                 <td>Non noté</td>
                             {% endif %}
+                            <td>
+                                {% set findDoc = 0 %}
+                                {% if request.documents is not empty %}
+                                    {% for doc in request.documents %}
+                                        {% if doc.type|lower == 'etat des lieux entree' %}
+                                            {% set findDoc = 1 %}
+                                            <a href="{{ doc.url }}" target="_blank" class="btn" style="background-color: #A594F9;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/documents.png') }}></div></a>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endif %}
+                                {% if findDoc == 0 %}
+                                    {{ 'pasencoreeffctue'|trans({}, 'apartments') }}
+                                {% endif %}                            
+                            </td>
+                            <td>
+                                {% set findDoc = 0 %}
+                                {% if request.documents is not empty %}
+                                    {% for doc in request.documents %}
+                                        {% if doc.type|lower == 'etat des lieux sortie' %}
+                                            {% set findDoc = 1 %}
+                                            <a href="{{ doc.url }}" target="_blank" class="btn" style="background-color: #A594F9;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/documents.png') }}></div></a>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endif %}
+                                {% if findDoc == 0 %}
+                                    {{ 'pasencoreeffctue'|trans({}, 'apartments') }}
+                                {% endif %}                     
+                            </td>
                             <td class="action">
                                 {% if request.documents is not empty %}
-                                    {% for doc in reservation.documents %}
+                                    {% for doc in request.documents %}
                                         {% if doc.type|lower == 'facture' %}
                                             <a href="{{ doc.url }}" target="_blank" class="btn" style="background-color: #A594F9;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/documents.png') }}></div></a>
                                         {% endif %}
@@ -161,6 +206,7 @@
                         <th scope="col">Date d'entrée</th>
                         <th scope="col">Date de sortie</th>
                         <th scope="col">Prix</th>
+                        <th scope="col">Etat des lieux d'entrée</th>
                         <th scope="col">Actions</th>
                     </tr>
                 </thead>
@@ -173,8 +219,22 @@
                             <td>{{ request.endingDate|date('d/m/Y') }}</td>
                             <td>{{ request.price }}€</td>
                             <td class="action">
+                                {% set findDoc = 0 %}
                                 {% if request.documents is not empty %}
-                                    {% for doc in reservation.documents %}
+                                    {% for doc in request.documents %}
+                                        {% if doc.type|lower == 'etat des lieux entree' %}
+                                            {% set findDoc = 1 %}
+                                            <a href="{{ doc.url }}" target="_blank" class="btn" style="background-color: #A594F9;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/documents.png') }}></div></a>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endif %}
+                                {% if findDoc == 0 %}
+                                    {{ 'pasencoreeffctue'|trans({}, 'apartments') }}
+                                {% endif %}                        
+                            </td>
+                            <td class="action">
+                                {% if request.documents is not empty %}
+                                    {% for doc in request.documents %}
                                         {% if doc.type|lower == 'facture' %}
                                             <a href="{{ doc.url }}" target="_blank" class="btn" style="background-color: #A594F9;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/documents.png') }}></div></a>
                                         {% endif %}
@@ -207,7 +267,7 @@
                             <td>{{ request.price }}€</td>
                             <td class="action">
                                 {% if request.documents is not empty %}
-                                    {% for doc in reservation.documents %}
+                                    {% for doc in request.documents %}
                                         {% if doc.type|lower == 'facture' %}
                                             <a href="{{ doc.url }}" target="_blank" class="btn" style="background-color: #A594F9;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/documents.png') }}></div></a>
                                         {% endif %}

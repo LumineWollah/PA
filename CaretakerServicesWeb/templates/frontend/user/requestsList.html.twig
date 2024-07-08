@@ -167,7 +167,7 @@
                                     <button type="submit" class="btn" style="background-color: #18A0FB;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/accept.png') }}></div></button>
                                 </form>
                                 {% if request.documents is not empty %}
-                                    {% for doc in reservation.documents %}
+                                    {% for doc in request.documents %}
                                         {% if doc.type|lower == 'devis' %}
                                             <a href="{{ doc.url }}" target="_blank" class="btn" style="background-color: #A594F9;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/documents.png') }}></div></a>
                                         {% endif %}
