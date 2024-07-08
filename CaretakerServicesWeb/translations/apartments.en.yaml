@@ -66,4 +66,17 @@
 
 'nos': 'Our'
 'paslogements': "You haven't added any apartments yet"
-'pasencoreeffctue': "Not yet done"
+'pasencoreeffctue': 'Not yet done'
+
+'listedemandes': 'List of requests'
+'réservationseffectuées': 'Reservations already made :'
+'logement': 'Apartment'
+'demandeur': 'Applicant'
+'dateentrée': 'Entry date'
+'datesortie': 'Exit date'
+'note': 'Note'
+'étatdeslieuxentrée': 'Entry inventory'
+'étatdeslieuxsortie': 'Exit inventory'
+'nonnoté': 'Not rated'
+'réservationsencours': 'Reservations in progress :'
+'réservationsfutures': 'Future reservations :'

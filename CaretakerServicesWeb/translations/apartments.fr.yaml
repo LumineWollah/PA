@@ -70,3 +70,13 @@
 
 'listedemandes': 'Liste des demandes'
 'réservationseffectuées': 'Réservations déjà effectuées :'
+'logement': 'Logement'
+'demandeur': 'Demandeur'
+'dateentrée': "Date d'entrée"
+'datesortie': 'Date de sortie'
+'note': 'Note'
+'étatdeslieuxentrée': "État des lieux d'entrée"
+'étatdeslieuxsortie': "État des lieux de sortie"
+'nonnoté': 'Non noté'
+'réservationsencours': 'Réservations en cours :'
+'réservationsfutures': 'Réservations futures :'

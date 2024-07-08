@@ -126,20 +126,20 @@
     <div class="col-12 p-0 mt-5">
         <div class="p-3">
             <div class="btn-create-row">
-                <h1 class="mt-3">Liste des demandes</h1>
+                <h1 class="mt-3">{{ 'listedemandes'|trans({}, 'apartments') }}</h1>
             </div>
-            <h2 style="font-family: Quicksand; font-size:1.2vw !important; color: #A594F9;">Réservations déjà effectuées :</h2>
+            <h2 style="font-family: Quicksand; font-size:1.2vw !important; color: #A594F9;">{{ 'réservationseffectuées'|trans({}, 'apartments') }}</h2>
             <table id="crudList" class="table table-striped">
                 <thead>
                     <tr>
-                        <th scope="col">Appartement</th>
-                        <th scope="col">Demandeur</th>
-                        <th scope="col">Date d'entrée</th>
-                        <th scope="col">Date de sortie</th>
-                        <th scope="col">Prix</th>
-                        <th scope="col">Note</th>
-                        <th scope="col">Etat des lieux d'entrée</th>
-                        <th scope="col">Etat des lieux de sortie</th>
+                        <th scope="col">{{ 'logement'|trans({}, 'apartments') }}</th>
+                        <th scope="col">{{ 'demandeur'|trans({}, 'apartments') }}</th>
+                        <th scope="col">{{ 'dateentrée'|trans({}, 'apartments') }}</th>
+                        <th scope="col">{{ 'datesortie'|trans({}, 'apartments') }}</th>
+                        <th scope="col">{{ 'prix'|trans({}, 'apartments') }}</th>
+                        <th scope="col">{{ 'note'|trans({}, 'apartments') }}</th>
+                        <th scope="col">{{ 'étatdeslieuxentrée'|trans({}, 'apartments') }}</th>
+                        <th scope="col">{{ 'étatdeslieuxsortie'|trans({}, 'apartments') }}</th>
                         <th scope="col">Actions</th>
                     </tr>
                 </thead>
@@ -154,7 +154,7 @@
                             {% if request.reviews is defined and request.reviews is not null %}
                                 <td>{{ request.reviews.rate }}/5</td>
                             {% else %}
-                                <td>Non noté</td>
+                                <td>{{ 'nonnoté'|trans({}, 'apartments') }}</td>
                             {% endif %}
                             <td>
                                 {% set findDoc = 0 %}
@@ -197,16 +197,16 @@
                     {% endfor %}
                 </tbody>
             </table>
-            <h2 style="font-family: Quicksand; font-size:1.2vw !important; color: #A594F9;" class="mt-4" >Réservations en cours :</h2>
+            <h2 style="font-family: Quicksand; font-size:1.2vw !important; color: #A594F9;" class="mt-4" >{{ 'réservationsencours'|trans({}, 'apartments') }}</h2>
             <table id="crudList2" class="table table-striped">
                 <thead>
                     <tr>
-                        <th scope="col">Appartement</th>
-                        <th scope="col">Demandeur</th>
-                        <th scope="col">Date d'entrée</th>
-                        <th scope="col">Date de sortie</th>
-                        <th scope="col">Prix</th>
-                        <th scope="col">Etat des lieux d'entrée</th>
+                        <th scope="col">{{ 'appartment'|trans({}, 'apartments') }}</th>
+                        <th scope="col">{{ 'demandeur'|trans({}, 'apartments') }}</th>
+                        <th scope="col">{{ 'logement'|trans({}, 'apartments') }}</th>
+                        <th scope="col">{{ 'datesortie'|trans({}, 'apartments') }}</th>
+                        <th scope="col">{{ 'prix'|trans({}, 'apartments') }}</th>
+                        <th scope="col">{{ 'étatdeslieuxentrée'|trans({}, 'apartments') }}</th>
                         <th scope="col">Actions</th>
                     </tr>
                 </thead>
@@ -245,15 +245,15 @@
                     {% endfor %}
                 </tbody>
             </table>
-            <h2 style="font-family: Quicksand; font-size:1.2vw !important; color: #A594F9;" class="mt-4" >Réservations futures :</h2>
+            <h2 style="font-family: Quicksand; font-size:1.2vw !important; color: #A594F9;" class="mt-4" >{{ 'réservationsfutures'|trans({}, 'apartments') }}</h2>
             <table id="crudList3" class="table table-striped">
                 <thead>
                     <tr>
-                        <th scope="col">Appartement</th>
-                        <th scope="col">Demandeur</th>
-                        <th scope="col">Date d'entrée</th>
-                        <th scope="col">Date de sortie</th>
-                        <th scope="col">Prix</th>
+                        <th scope="col">{{ 'logement'|trans({}, 'apartments') }}</th>
+                        <th scope="col">{{ 'demandeur'|trans({}, 'apartments') }}</th>
+                        <th scope="col">{{ 'dateentrée'|trans({}, 'apartments') }}</th>
+                        <th scope="col">{{ 'datesortie'|trans({}, 'apartments') }}</th>
+                        <th scope="col">{{ 'prix'|trans({}, 'apartments') }}</th>
                         <th scope="col">Actions</th>
                     </tr>
                 </thead>
