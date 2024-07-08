@@ -112,7 +112,11 @@
 }
 
 .profilePict {
-    width: 100px;
+    width: 5vw;
+    height: 5vw;
+    border-radius: 50%;
+    box-shadow: rgba(0,0,0,0.8) 0 0 10px;
+    margin-right: 1vw;
 }
 
 .smallRow {
@@ -123,13 +127,14 @@
 }
 
 .name {
-    font-size: 1.3vw;
+    font-size: 1.7vw;
     font-weight: 500;
 }
 
 .checkmark {
-    width: 50px;
-    padding-left: 1%;
+    width: 1.5vw;
+    padding-left: 2px;
+    padding-bottom: 20px;
 }
 
 .userCard {
