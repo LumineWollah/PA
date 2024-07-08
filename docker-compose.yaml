@@ -31,6 +31,7 @@ services:
       - /etc/letsencrypt:/etc/letsencrypt
       - /home/webadmin/jwt:/var/www/html/config/jwt
       - /home/webadmin/.env-api:/var/www/html/.env
+      - /home/webadmin/secrets.json:/var/www/html/config/secrets/secrets.json
     depends_on:
       - mariadb
     networks:
