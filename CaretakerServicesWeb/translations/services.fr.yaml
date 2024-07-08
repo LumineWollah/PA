@@ -53,7 +53,7 @@
 'prix2': 'Prix'
 'sivide': 'Si vide : sur devis'
 'description': 'Description de votre service'
-'entre2': 'Entre 0 et 500 caractères'
+'entre2': 'Entre 50 et 500 caractères'
 'disponibilités': 'Disponibilités'
 'horairedébut': 'Horaire de début'
 'horairefin': 'Horaire de fin'
