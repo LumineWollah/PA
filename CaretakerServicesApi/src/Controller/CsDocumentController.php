@@ -30,6 +30,32 @@ class CsDocumentController extends AbstractController
     {
         $data = json_decode($request->getContent(), true);
 
+        $requiredFields = [
+            'livingRoomStatus',
+            'livingRoomComments',
+            'kitchenStatus',
+            'kitchenComments',
+            'bedroomStatus',
+            'bedroomComments',
+            'bathroomStatus',
+            'bathroomComments',
+            'userId',
+            'reservId'
+        ];
+
+        $missingFields = [];
+        foreach ($requiredFields as $field) {
+            if (!isset($data[$field])) {
+                $missingFields[] = $field;
+            }
+        }
+
+        if (!empty($missingFields)) {
+            return new JsonResponse([
+                'error' => 'Missing required fields: ' . implode(', ', $missingFields)
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
         $html = '
         <style>
         @import url(\'https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap\');
