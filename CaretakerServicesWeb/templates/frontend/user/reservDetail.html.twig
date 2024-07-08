@@ -54,19 +54,25 @@
                         {% if reservation.documents is not defined or reservation.documents is empty %}
                             <p class="card-text mb-1">{{ 'aucunetat'|trans({}, 'user') }}</p>
                         {% else %}
+                            {% set findDoc = 0 %}
                             {% for doc in reservation.documents %}
                                 {% if doc.type|lower == "etat des lieux entree" %}
+                                    {% set findDoc = 1 %}
                                     <div class="invFormDoc">
                                         <p class="card-text mb-1">{{ 'etatdeslieuxentree'|trans({}, 'user') }}</p>
                                         <a href="{{ doc.url }}" target="_blank" class="btn" style="background-color: #A594F9;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/documents.png') }}></div></a>
                                     </div>
                                 {% elseif doc.type|lower == "etat des lieux sortie" %}
+                                    {% set findDoc = 1 %}
                                     <div class="invFormDoc mt-3">
                                         <p class="card-text mb-1">{{ 'etatdeslieuxsortie'|trans({}, 'user') }}</p>
                                         <a href="{{ doc.url }}" target="_blank" class="btn" style="background-color: #A594F9;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/documents.png') }}></div></a>
                                     </div>
                                 {% endif %}
                             {% endfor %}
+                            {% if findDoc == 0 %}
+                                <p class="card-text mb-1">{{ 'aucunetat'|trans({}, 'user') }}</p>
+                            {% endif %}
                         {% endif %}
                     </div>
                 </div>
