@@ -97,3 +97,8 @@
 'réserverlogements': 'Book apartments'
 'avis': 'Comment, post reviews'
 'suppression': 'Deletion of the PCS tax'
+
+'etatdeslieux': 'State of play'
+'aucunetat': 'No state of play has been made yet'
+'etatdeslieuxentree': 'Entry state of play:'
+'etatdeslieuxsortie': 'Exit state of play:'

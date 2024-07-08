@@ -48,6 +48,28 @@
                         {% endif %}
                     </div>
                 </div>
+                <h3>{{ 'etatdeslieux'|trans({}, 'user') }}</h3>
+                <div class="card">
+                    <div class="card-body">
+                        {% if reservation.documents is not defined or reservation.documents is empty %}
+                            <p class="card-text mb-1">{{ 'aucunetat'|trans({}, 'user') }}</p>
+                        {% else %}
+                            {% for doc in reservation.documents %}
+                                {% if doc.type|lower == "etat des lieux entree" %}
+                                    <div class="invFormDoc">
+                                        <p class="card-text mb-1">{{ 'etatdeslieuxentree'|trans({}, 'user') }}</p>
+                                        <a href="{{ doc.url }}" target="_blank" class="btn" style="background-color: #A594F9;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/documents.png') }}></div></a>
+                                    </div>
+                                {% elseif doc.type|lower == "etat des lieux sortie" %}
+                                    <div class="invFormDoc mt-3">
+                                        <p class="card-text mb-1">{{ 'etatdeslieuxsortie'|trans({}, 'user') }}</p>
+                                        <a href="{{ doc.url }}" target="_blank" class="btn" style="background-color: #A594F9;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/documents.png') }}></div></a>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
             </div>
         </div>
     </div>

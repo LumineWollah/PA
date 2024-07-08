@@ -97,3 +97,8 @@
 'réserverlogements': 'Réserver des logements'
 'avis': 'Commenter, publier des avis'
 'suppression': 'Suppression de la taxe PCS'
+
+'etatdeslieux': 'État des lieux'
+'aucunetat': "Aucun état des lieux n'a été réalisé pour le moment"
+'etatdeslieuxentree': "État des lieux d'entrée :"
+'etatdeslieuxsortie': "État des lieux de sortie :"

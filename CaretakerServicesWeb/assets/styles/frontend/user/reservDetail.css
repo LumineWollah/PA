@@ -40,3 +40,12 @@ h3 {
 p {
     font-family: 'QuickSand', sans-serif;
 } 
+
+.invFormDoc {
+    display: flex;
+    align-items: center;
+}
+
+.invFormDoc p {
+    margin-right: 1vw;
+}

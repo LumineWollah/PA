@@ -40,7 +40,8 @@ class CsDocumentController extends AbstractController
             'bathroomStatus',
             'bathroomComments',
             'userId',
-            'reservId'
+            'reservId',
+            'type'
         ];
 
         $missingFields = [];
@@ -56,6 +57,8 @@ class CsDocumentController extends AbstractController
             ], Response::HTTP_BAD_REQUEST);
         }
 
+        $type = ($data['type'] == 'entree') ? 'd\'entrée' : 'de sortie';
+
         $html = '
         <style>
         @import url(\'https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap\');
@@ -65,7 +68,7 @@ class CsDocumentController extends AbstractController
         p { margin: 0px; margin-bottom: 5px; font-family: \'Quicksand\', sans-serif; }
         </style>
         <div style="display: flex; justify-content: space-between; align-items: center;">
-            <h1 style="">État des lieux d\'entrée</h1>
+            <h1 style="">État des lieux '.$type.'</h1>
             <img src="https://caretakerservices.s3.eu-west-2.amazonaws.com/4_dark_mode_little.png" alt="Logo PCS">
         </div>
 
@@ -113,7 +116,7 @@ class CsDocumentController extends AbstractController
 
         $document = new CsDocument();
         $document->setName($file_name);
-        $document->setType("Etat des lieux");
+        $document->setType("Etat des lieux ".$data['type']);
         $document->setUrl($filePath);
         $user = $em->find(CsUser::class, $data['userId']);
         $document->setOwner($user);
