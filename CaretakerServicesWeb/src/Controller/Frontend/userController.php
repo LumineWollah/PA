@@ -557,9 +557,10 @@ class userController extends AbstractController
                     ]
                 ]);
             if ($response->toArray()["hydra:totalItems"] > 0 && $response->toArray()["hydra:member"][0]['id'] != $storedUser) {
+                dd($response->toArray(), $storedUser);
                 $errorMessages[] = "Adresse mail déjà utilisée. Essayez en une autre.";
 
-                return $this->render('backend/user/editUser.html.twig', [
+                return $this->render('frontend/user/editProfile.html.twig', [
                     'form'=>$form,
                     'errorMessages'=>$errorMessages
                 ]);

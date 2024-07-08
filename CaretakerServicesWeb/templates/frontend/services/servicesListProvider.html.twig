@@ -27,6 +27,7 @@
             </div>
         </div>
     </div>   
+    {% if serv|length > 0 %}
     {% for key, value in serv %}
         {% set categoryName = key|split('-')[0] %}
         {% set categoryColor = key|split('-')[1] %}
@@ -85,6 +86,9 @@
             {% endfor %}
         </div>
     {% endfor %}
+    {% else %}
+        <p class="listevide">{{ 'passervices'|trans({}, 'services') }}</p>
+    {% endif %}
 </div>
 {% endblock %}
 

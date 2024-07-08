@@ -73,6 +73,8 @@
             {% endfor %}
         </div>
     {% endfor %}
+    {% else %}
+        <p class="listevide">{{ 'paslogements'|trans({}, 'apartments') }}</p>
     {% endif %}
 </div>
 {% endblock %}

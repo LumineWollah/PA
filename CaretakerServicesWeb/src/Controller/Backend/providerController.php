@@ -11,6 +11,7 @@ use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\UrlType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\Regex;
 
@@ -63,25 +64,46 @@ class providerController extends AbstractController
     public function providerEdit(Request $request)
     {
         if (!$this->checkUserRole($request)) {return $this->redirectToRoute('login');}
+        
+        $client = $this->apiHttpClient->getClient($request->cookies->get('token'));
 
         $providerData = $request->request->get('provider');
         $provider = json_decode($providerData, true);
 
         $storedProvider = $request->getSession()->get('providerId');
 
+        $response = $client->request('GET', 'cs_companies', [
+            'query' => [
+                'page' => 1,
+            ]
+        ]);
+
+        $companiesList = $response->toArray();
+        $companyChoice = array();
+
+        foreach ($companiesList['hydra:member'] as $company) {
+            $companyChoice += [ $company['companyName'] => $company['id'] ];
+        }
+
         if (!$storedProvider) {
             $request->getSession()->set('providerId', $provider['id']);
         }
 
-        try {
+        try { 
             $defaults = [
                 'email' => $provider['email'],
                 'firstname' => $provider['firstname'],
                 'lastname' => $provider['lastname'],
                 'telNumber' => $provider['telNumber'],
                 'roles' => $provider['roles'],
-                'profilePict' => $provider['profilePict'],
+                'isVerified' => $provider['isVerified'],
             ];
+            if (isset($provider['company'])) {
+                $defaults['company'] = $provider['company']['id'];
+            }
+            if (isset($provider['profilePict'])) {
+                $defaults['profilePict'] = $provider['profilePict'];
+            }
         } catch (Exception $e) {
             $defaults = [];
         }
@@ -153,6 +175,17 @@ class providerController extends AbstractController
             ],
             "required"=>false,
         ])
+        ->add("isVerified", CheckboxType::class, [
+            "attr"=>[
+                "placeholder"=>"Vérifié",
+            ],
+            'required'=>false,
+        ])
+        ->add("company", ChoiceType::class, [
+            "choices" => $companyChoice,
+            "expanded" => False,
+            "multiple" => False,
+        ])
         ->getForm()->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()){
                 $data = $form->getData();
@@ -173,6 +206,8 @@ class providerController extends AbstractController
                         'errorMessages'=>$errorMessages
                     ]);
                 }
+
+                $data['company'] = 'api/cs_companies/'.$data['company'];
                 
                 $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/merge-patch+json');
 
