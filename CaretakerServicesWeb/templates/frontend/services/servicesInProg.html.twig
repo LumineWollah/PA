@@ -156,8 +156,12 @@
                             {% endif %}
                             <td class="action">
                                 {% if request.documents is not empty %}
-                                    <a href="{{ request.documents[0].url }}" target="_blank" class="btn" style="background-color: #A594F9;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/documents.png') }}></div></a>
-                                {% endif %}                            
+                                    {% for doc in reservation.documents %}
+                                        {% if doc.type|lower == 'facture' %}
+                                            <a href="{{ doc.url }}" target="_blank" class="btn" style="background-color: #A594F9;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/documents.png') }}></div></a>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endif %}                       
                             </td>
                         </tr>
                     {% endfor %}
@@ -183,7 +187,11 @@
                             <td>{{ request.price }}€</td>
                             <td class="action">
                                 {% if request.documents is not empty %}
-                                    <a href="{{ request.documents[0].url }}" target="_blank" class="btn" style="background-color: #A594F9;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/documents.png') }}></div></a>
+                                    {% for doc in reservation.documents %}
+                                        {% if doc.type|lower == 'facture' %}
+                                            <a href="{{ doc.url }}" target="_blank" class="btn" style="background-color: #A594F9;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/documents.png') }}></div></a>
+                                        {% endif %}
+                                    {% endfor %}
                                 {% endif %}
                             </td>
                         </tr>
@@ -217,7 +225,11 @@
                                         <div class="btnImage"><img style="height:20px;" src="{{ asset('icons/crud/eye.png') }}"></div>
                                     </div>   
                                 {% if request.documents is not empty %}
-                                    <a href="{{ request.documents[0].url }}" target="_blank" class="btn" style="background-color: #A594F9;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/documents.png') }}></div></a>
+                                    {% for doc in reservation.documents %}
+                                        {% if doc.type|lower == 'facture' %}
+                                            <a href="{{ doc.url }}" target="_blank" class="btn" style="background-color: #A594F9;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/documents.png') }}></div></a>
+                                        {% endif %}
+                                    {% endfor %}
                                 {% endif %}
                                 <form action="{{ path('serviceProgDelete') }}" method="post" style="display: inline;">
                                     <input type="hidden" name="reservation" value="{{ request|json_encode }}">

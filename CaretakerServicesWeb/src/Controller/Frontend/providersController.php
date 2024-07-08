@@ -319,7 +319,7 @@ class providersController extends AbstractController
             $responseDoc = $client->request('POST', 'cs_documents', [
                 'json' => [
                     "name" => $file_name,
-                    "type" => "Facture",
+                    "type" => "Devis",
                     "url" => $resultS3['link'],
                     "owner" => "api/cs_users/".$id,
                     "attachedReserv" => "api/cs_reservations/".$reservId

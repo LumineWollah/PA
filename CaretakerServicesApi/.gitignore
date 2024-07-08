@@ -9,4 +9,5 @@
 /var/
 /vendor/
 /config/jwt/
+/config/secrets/
 ###< symfony/framework-bundle ###

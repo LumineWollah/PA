@@ -19,8 +19,28 @@ use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use App\Controller\CsDocumentController;
 
-#[ApiResource(normalizationContext: ['groups' => ['getDocuments']])]
+#[ApiResource(operations: [new Post(
+    name: 'inventoryFormCreate', 
+    uriTemplate: 'api/inventory-form/create', 
+    controller: CsDocumentController::class,
+    deserialize: false,
+    openapiContext: [
+        'summary' => 'Create a document in PDF for an inventory form',
+        'requestBody' => [
+            'description' => 'Create a document in PDF for an inventory form',
+            'content' => [
+                'application/json' => [
+                    'schema' => [
+                        'type' => 'object',
+                        'properties' => [],
+                    ],
+                ],
+            ],
+        ],
+    ]
+)], normalizationContext: ['groups' => ['getDocuments']])]
 #[Get(security: "is_granted('ROLE_ADMIN') or object.getOwner() == user")]
 #[Patch(security: "is_granted('ROLE_ADMIN') or object.getOwner() == user")]
 #[GetCollection]
