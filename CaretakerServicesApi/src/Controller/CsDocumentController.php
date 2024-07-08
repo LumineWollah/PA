@@ -12,6 +12,7 @@ use Dompdf\Dompdf;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[ApiResource]
@@ -79,7 +80,7 @@ class CsDocumentController extends AbstractController
         $resultS3 = $this->amazonS3Client->finalInsert($file_name, $tempFilePath, $mime_type);
 
         if (!$resultS3['success']) {
-            return new JsonResponse(['message' => 'PDF generation failed', 'error' => $resultS3['error']], JsonResponse::HTTP_INTERNAL_SERVER_ERROR);
+            return new JsonResponse(false, Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         $filePath = $resultS3['link'];
@@ -94,7 +95,7 @@ class CsDocumentController extends AbstractController
         $document->setattachedReserv($reservation);
         $em->persist($document);
 
-        return new JsonResponse(['message' => 'PDF generated successfully'], JsonResponse::HTTP_OK);
+        return new JsonResponse(true, Response::HTTP_OK);
     }
 
 }
