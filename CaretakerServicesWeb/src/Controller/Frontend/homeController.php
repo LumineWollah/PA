@@ -117,7 +117,13 @@ class homeController extends AbstractController
             $response = $client->request('POST', 'cs_tickets', [
                 'json' => $data,
             ]);
-            $this->addFlash('success', 'Your message has been sent successfully.');
+
+            $response = json_decode($response->getContent(), true);
+
+            if ($response['@type'] == 'CsTicket') {
+                $this->addFlash('success', 'Your message has been sent successfully.');
+                return $this->redirectToRoute('home');
+            }
         }
 
         return $this->render('frontend/contact.html.twig', [
