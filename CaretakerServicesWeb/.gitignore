@@ -26,3 +26,5 @@
 ###< symfony/asset-mapper ###
 
 /config/secrets/
+
+certfile.json
