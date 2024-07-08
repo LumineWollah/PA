@@ -19,7 +19,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[Get(security: "is_granted('ROLE_ADMIN')")]
 #[GetCollection(security: "is_granted('ROLE_ADMIN')")]
 #[Delete(security: "is_granted('ROLE_ADMIN')")]
-#[Post(security: "is_granted('ROLE_ADMIN')")]
+#[Post()]
 class CsTicket
 {
     #[ORM\Id]
