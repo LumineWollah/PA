@@ -117,6 +117,7 @@
     border-radius: 50%;
     box-shadow: rgba(0,0,0,0.8) 0 0 10px;
     margin-right: 1vw;
+    object-fit: cover;
 }
 
 .smallRow {
