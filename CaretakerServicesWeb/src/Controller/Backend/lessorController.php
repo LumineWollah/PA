@@ -11,6 +11,7 @@ use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\UrlType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\Regex;
 
@@ -79,7 +80,7 @@ class lessorController extends AbstractController
                 'lastname' => $lessor['lastname'],
                 'telNumber' => $lessor['telNumber'],
                 'roles' => $lessor['roles'],
-                'profilePict' => $lessor['profilePict'],
+                'isVerified' => $lessor['isVerified'],
             ];
         } catch (Exception $e) {
             $defaults = [];
@@ -150,6 +151,12 @@ class lessorController extends AbstractController
                 "placeholder"=>"URL de la photo de profil",
             ],
             "required"=>false,
+        ])
+        ->add("isVerified", CheckboxType::class, [
+            "attr"=>[
+                "placeholder"=>"Vérifié",
+            ],
+            'required'=>false,
         ])
         ->getForm()->handleRequest($request);
 

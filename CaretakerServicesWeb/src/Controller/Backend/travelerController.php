@@ -12,6 +12,7 @@ use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\UrlType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\Regex;
 
@@ -73,7 +74,7 @@ class travelerController extends AbstractController
                 'lastname' => $traveler['lastname'],
                 'telNumber' => $traveler['telNumber'],
                 'roles' => $traveler['roles'],
-                'profilePict' => $traveler['profilePict'],
+                'isVerified' => $traveler['isVerified'],
             ];
         } catch (Exception $e) {
             $defaults = [];
@@ -145,6 +146,12 @@ class travelerController extends AbstractController
                 "placeholder"=>"URL de la photo de profil",
             ],
             "required"=>false,
+        ])
+        ->add("isVerified", CheckboxType::class, [
+            "attr"=>[
+                "placeholder"=>"Vérifié",
+            ],
+            'required'=>false,
         ])
         ->getForm()->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()){

@@ -8,6 +8,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Service\ApiHttpClient;
 use Exception;
+use phpDocumentor\Reflection\Types\Boolean;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,6 +17,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\Regex;
@@ -161,6 +163,12 @@ class actionUserController extends AbstractController
                 ])
             ],
         ])
+        ->add("isVerified", CheckboxType::class, [
+            "attr"=>[
+                "placeholder"=>"Vérifié",
+            ],
+            'required'=>false,
+        ])
         ->getForm()->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()){
             $data = $form->getData();
@@ -192,12 +200,12 @@ class actionUserController extends AbstractController
                 'json' => $data,
             ]);
             $response = json_decode($response->getContent(), true);
-
-            if ($role[0] == 'ROLE_LESSOR') {
+            
+            if ($role == 'ROLE_LESSOR' or $role[0] == 'ROLE_LESSOR') {
                 $route = 'lessorList';
-            } elseif ($role[0] == 'ROLE_PROVIDER') {
+            } elseif ($role == 'ROLE_PROVIDER' or $role[0] == 'ROLE_PROVIDER') {
                 $route = 'providerList';
-            } elseif ($role[0] == 'ROLE_TRAVELER') {
+            } elseif ($role == 'ROLE_TRAVELER' or $role[0] == 'ROLE_TRAVELER') {
                 $route = 'travelerList';
             } else {
                 $route = 'adminList';

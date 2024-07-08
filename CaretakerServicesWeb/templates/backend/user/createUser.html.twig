@@ -36,6 +36,9 @@
                     {{form_widget(form.profilePict)}}
                     <div class="errors">{{form_errors(form.profilePict)}}</div>
                 </div>
+                <div class="inputDiv" style="position: relative;">
+                    {{form_widget(form.isVerified)}} Vérifié
+                </div>
                 <button type="submit" class="btn">Créer</button>
             {{form_end(form)}}
         </div>
