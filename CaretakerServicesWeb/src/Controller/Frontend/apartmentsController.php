@@ -793,7 +793,7 @@ class apartmentsController extends AbstractController
         $form = $this->createFormBuilder($defaults)
         ->add("dates", TextType::class, [
             "attr"=>[
-                "placeholder"=>"Départ - Arrivée",
+                "placeholder"=>"Arrivée - Départ",
                 'autocomplete'=>"off",
                 'readonly'=>'readonly',
                 'required'=>true
