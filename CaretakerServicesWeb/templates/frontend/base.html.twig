@@ -87,8 +87,8 @@
                 
                 {% set id = app.request.cookies.get('id') %}
                 {% set pp = app.request.cookies.get('profile_pict') %}
-                <a id="frButton"><img src="{{ asset('icons/france.png') }}" alt="franceLanguage" class="d-inline-block align-text-center languageBtn"></a>
-                <a id="enButton" class="me-3"><img src="{{ asset('icons/england.png') }}" alt="englishLanguage" class="d-inline-block align-text-center languageBtn"></a>
+                <a href="{{ path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params')|merge(app.request.query.all)|merge({_locale: 'fr'})) }}"><img src="{{ asset('icons/france.png') }}" alt="franceLanguage" class="d-inline-block align-text-center languageBtn"></a=>
+                <a class="me-3" href="{{ path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params')|merge(app.request.query.all)|merge({_locale: 'en'})) }}"><img src="{{ asset('icons/england.png') }}" alt="englishLanguage" class="d-inline-block align-text-center languageBtn"></a>
                 {% if id is not defined or id is null %}
                     <a href="{{ path('login') }}" class="btn btn-primary me-3 btnConnect">{{ 'connexion'|trans({}, 'home') }}</a>
                     <a href="{{ path('register') }}" class="btn btn-primary btnRegister">{{ 'inscription'|trans({}, 'home') }}</a>
@@ -105,22 +105,6 @@
             </div>
         </nav>
         {% block body %}{% endblock %}
-        
-        <script>
-            document.getElementById('frButton').addEventListener('click', function() {
-                changeLanguage('fr');
-            });
-
-            document.getElementById('enButton').addEventListener('click', function() {
-                changeLanguage('en');
-            });
-
-            function changeLanguage(lang) {
-                let currentUrl = new URL(window.location.href);
-                currentUrl.searchParams.set('_locale', lang);
-                window.location.href = currentUrl.href;
-            }
-        </script>
         <!-- Start of HubSpot Embed Code -->
         <script type="text/javascript" id="hs-script-loader" async defer src="//js-eu1.hs-scripts.com/144947013.js"></script>
         <!-- End of HubSpot Embed Code -->
