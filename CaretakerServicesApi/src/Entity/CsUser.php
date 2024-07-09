@@ -168,6 +168,10 @@ class CsUser implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(["getUsers"])]
     private ?\DateTimeInterface $subsDate = null;
 
+    #[ORM\Column]
+    #[Groups(["getUsers"])]
+    private ?bool $emailIsVerify = false;
+
     public function __construct()
     {
         $this->dateInscription = new DateTime();
@@ -642,6 +646,18 @@ class CsUser implements UserInterface, PasswordAuthenticatedUserInterface
     public function setSubsDate(?\DateTimeInterface $subsDate): static
     {
         $this->subsDate = $subsDate;
+
+        return $this;
+    }
+
+    public function getEmailIsVerify(): ?bool
+    {
+        return $this->emailIsVerify;
+    }
+
+    public function setEmailIsVerify(bool $emailIsVerify): static
+    {
+        $this->emailIsVerify = $emailIsVerify;
 
         return $this;
     }
