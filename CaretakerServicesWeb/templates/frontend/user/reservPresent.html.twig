@@ -81,10 +81,6 @@
                                         {% endif %}
                                     {% endfor %}
                                 {% endif %}
-                                <form action="{{ path('reservationEdit') }}" method="post" style="display: inline;">
-                                    <input type="hidden" name="reservation" value="{{ reservation|json_encode }}">
-                                    <button type="submit" class="btn" style="background-color: #18A0FB;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/services.png') }}></div></button>
-                                </form>
                             </td>
                         </tr>
                     {% endfor %}
