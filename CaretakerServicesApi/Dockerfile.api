@@ -27,7 +27,7 @@ FROM build AS dev
 COPY ./creation-database-dev.sh .
 WORKDIR /var/www/html
 EXPOSE 80
-CMD ["sh", "-c", "composer install --no-interaction && /creation-database-dev.sh && apache2-foreground"]
+CMD ["sh", "-c", "composer install --no-interaction && ./creation-database-dev.sh && apache2-foreground"]
 
 FROM build AS prod
 
@@ -36,4 +36,4 @@ COPY . /var/www/html
 WORKDIR /var/www/html
 RUN rm -rf /var/www/html/.env.dev /var/www/html/tests
 EXPOSE 80
-CMD ["sh", "-c", "composer install --no-dev --optimize-autoloader && /creation-database-prod.sh && apache2-foreground"]
+CMD ["sh", "-c", "composer install --no-dev --optimize-autoloader && ./creation-database-prod.sh && apache2-foreground"]
