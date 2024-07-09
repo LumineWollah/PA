@@ -1,4 +1,4 @@
-name: Deploy to Linux Server
+name: Deploy to Linux Server Prod
 
 on:
   push:

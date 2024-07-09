@@ -24,9 +24,9 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 
 FROM build AS dev
 
-COPY ./creation-database-dev.sh /var/www/html/creation-database-dev.sh
+COPY . /var/www/html
 WORKDIR /var/www/html
-RUN chmod a+x ./creation-database-dev.sh
+RUN chmod +x ./creation-database-dev.sh
 EXPOSE 80
 CMD ["sh", "-c", "composer install --no-interaction && apache2-foreground"]
 
