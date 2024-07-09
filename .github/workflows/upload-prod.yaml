@@ -1,0 +1,32 @@
+name: Deploy to Linux Server
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+      with: 
+        ref: main
+
+    - name: SSH Deploy
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.SSHKEY }}
+        script: |
+
+          cd /home/dockeradmin/PA
+
+          git fetch origin
+          git reset --hard origin/main
+
+          docker compose -f docker-compose-prod.yaml up -d --build
+          docker exec web bash -c "cp -r assets public && php bin/console asset-map:compile && php bin/console c:c && chmod -R 777 var/"
