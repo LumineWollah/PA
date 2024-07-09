@@ -97,7 +97,10 @@
                                     <input type="hidden" name="reservation" value="{{ reservation|json_encode }}">
                                     <button type="submit" class="btn" style="background-color: #18A0FB;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/pen.png') }}></div></button>
                                 </form>
-                                 <a {#href={{ reservation.url }}#} href="https://i.gifer.com/origin/28/282268c47ffc9391bf7ee0a1104ce1bd_w200.gif" target="blank_" class="btn" style="background-color: #A594F9;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/eye.png') }}></div></a>
+                                <form action="{{ path('reservationShow') }}" method="post" style="display: inline;">
+                                    <input type="hidden" name="reservation" value="{{ reservation|json_encode }}">
+                                    <button type="submit" class="btn" style="background-color: #A594F9;"><div class="btnImage"><img style="height:17px;" src={{ asset('icons/crud/chart.png') }}></div></button>
+                                </form>
                             </td>
                         </tr>
                     {% endfor %}
