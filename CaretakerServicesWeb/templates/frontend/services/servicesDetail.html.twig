@@ -109,6 +109,11 @@
                                 <div style="color: red;">{{ form_errors(form.address1) }}</div>
                                 {{ form_widget(form.address1) }}
                             </div>
+                            {% if errorMessage is defined %}
+                                <div class="col-12">
+                                    <p class="error" style="color: red;"><strong>{{ 'errorMessage'|trans({}, 'services') }}</strong></p>
+                                </div>
+                            {% endif %}
                         {% endif %}
                         {% if service.addressInputs > 0 %}
                             <p>{{ 'infos1'|trans({}, 'services') }} {{ service.addressInputs }} {{ 'infos2'|trans({}, 'services') }}{{ service.addressInputs > 1 ? 's' : '' }} {{ 'infos3'|trans({}, 'services') }}</p>

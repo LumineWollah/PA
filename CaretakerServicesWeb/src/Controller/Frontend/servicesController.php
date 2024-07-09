@@ -411,7 +411,7 @@ class servicesController extends AbstractController
             }else{
                 unset($data['endTime']);
             }
-    
+
             $id = $service['id'];
             $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/merge-patch+json');
 
@@ -749,7 +749,7 @@ class servicesController extends AbstractController
 
                     unset($data['address'.$i]);
                 }
-
+    
                 $email = (new Email())
                     ->from('ne-pas-repondre@caretakerservices.fr')
                     ->to($serv['company']['companyEmail'])
@@ -796,7 +796,20 @@ class servicesController extends AbstractController
                     $data['otherData']["address".$i]["address"] = $data['address'.$i]['place_name'];
 
                     unset($data['address'.$i]);
+    
                 }          
+                
+                if ($serv['addressInputs'] == 2) {
+                    if ($data['otherData']['address0']['address'] == $data['otherData']['address1']['address']) {
+                        
+                        return $this->render('frontend/services/servicesDetail.html.twig', [
+                            'errorMessage' => 'Vous devez sélectionner deux adresses différentes',
+                            'service'=>$serv,
+                            'form'=>$form,
+                            'datesRangeReservs'=>$datesRangeReservs
+                        ]);
+                    }
+                }
 
                 $date = explode(" ", $data['date']);
                 $startDateTime = DateTime::createFromFormat('d/m/Y', trim($date[1]));

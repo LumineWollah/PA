@@ -100,3 +100,4 @@
 'modifier': 'Modifier'
 'supprimer': 'Supprimer'
 'passervices': "Vous n'avez pas encore publié de services"
+'errorMessage': 'Vous devez sélectionner deux adresses différentes'
