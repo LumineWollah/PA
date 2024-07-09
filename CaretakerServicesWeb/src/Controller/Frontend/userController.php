@@ -381,7 +381,7 @@ class userController extends AbstractController
 
         $refund = \Stripe\Refund::create([
             'charge' => $chargeId,
-            'amount' => $reservation['price'] * 100,
+            'amount' => intval($reservation['price'] * 100),
         ]);
     
         $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/merge-patch+json');
