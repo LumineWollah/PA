@@ -389,8 +389,12 @@ class userController extends AbstractController
         if ($refund->status == 'succeeded') {
             $client->request('DELETE', 'cs_reservations/'.$reservation['id']);
         }
-
-        return $this->redirectToRoute('reservationsFuture');
+        
+        if (isset($reservation['apartment']) && $reservation['apartment'] != null) {
+            return $this->redirectToRoute('reservationsFuture');
+        } else {
+            return $this->redirectToRoute('servicesFuture');
+        }
     }
 
     #[Route('/profile/requests', name: 'myRequests')]
