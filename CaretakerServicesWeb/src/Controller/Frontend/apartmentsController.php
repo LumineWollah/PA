@@ -415,7 +415,7 @@ class apartmentsController extends AbstractController
             
             $request->getSession()->remove('apartment');
 
-            return $this->redirectToRoute('myApartmentsList');
+            return $this->redirectToRoute('myApartmentsList', ['showPopup'=>true, 'content'=>'Le logement a été modifié', 'title'=>'Modification réussie']);
         }
 
         $apPict = array_pad($apartment['pictures'], 11, null);
@@ -713,7 +713,7 @@ class apartmentsController extends AbstractController
                         ]);
                     }
                 }
-                return $this->redirectToRoute('myApartmentsList');
+                return $this->redirectToRoute('myApartmentsList', ['showPopup'=>true, 'content'=>'Votre logement est maintenant en cours de validation par un administrateur de Paris Caretaker Services', 'title'=>'En attente de validation']);
             }
         }
 

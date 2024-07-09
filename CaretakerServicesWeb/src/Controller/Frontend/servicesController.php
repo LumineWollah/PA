@@ -442,7 +442,7 @@ class servicesController extends AbstractController
 
             $request->getSession()->remove('service');
 
-            return $this->redirectToRoute('myServicesList');
+            return $this->redirectToRoute('myServicesList', ['showPopup'=>true, 'content'=>'Votre logement a été modifié', 'title'=>'Modification réussie']);
         }
 
         $dataToRender = [
@@ -615,7 +615,7 @@ class servicesController extends AbstractController
                             ]);
                         }
                     }
-                    return $this->redirectToRoute('myServicesList', ['showPopup'=>true, 'content'=>'Service créé avec succès', 'title'=>'Création de service']);
+                    return $this->redirectToRoute('myServicesList', ['showPopup'=>true, 'content'=>'Votre service est maintenant en cours de validation par un administrateur de Paris Caretaker Services', 'title'=>'En attente de validation']);
                 } else {
                     return $this->redirectToRoute('myServicesList', ['showPopup'=>true, 'content'=>'Erreur lors de la création du service', 'title'=>'Création de service']);
                 }
