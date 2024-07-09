@@ -76,3 +76,7 @@ html::-webkit-scrollbar {
     margin-right: 1.5vh;
     cursor: pointer;
 }
+
+.profPict {
+    object-fit: cover;
+}

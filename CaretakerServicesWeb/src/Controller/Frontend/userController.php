@@ -21,7 +21,9 @@ use Symfony\Component\Form\Extension\Core\Type\RadioType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\UrlType;
+use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -559,14 +561,13 @@ class userController extends AbstractController
 
             $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/ld+json');
             
-            $response = $client->request('GET', 'cs_users', [
+            $response = $client->request('GET', 'cs_users?email='.$data['email'], [
                 'query' => [
                     'page' => 1,
-                    'email' => $data['email']
-                    ]
-                ]);
+                ]
+            ]);
+
             if ($response->toArray()["hydra:totalItems"] > 0 && $response->toArray()["hydra:member"][0]['id'] != $storedUser) {
-                dd($response->toArray(), $storedUser);
                 $errorMessages[] = "Adresse mail déjà utilisée. Essayez en une autre.";
 
                 return $this->render('frontend/user/editProfile.html.twig', [
@@ -581,11 +582,43 @@ class userController extends AbstractController
                 'json' => $data,
             ]);
 
-            $response = json_decode($response->getContent(), true);
+            $redirectResponse = new RedirectResponse($this->generateUrl('myProfile'));
 
+            foreach ($data as $key => $value) {
+                switch ($key) {
+                    case 'token':
+                        $redirectResponse->headers->setCookie(Cookie::create('token', $value, 0, '/', null, false, true, false, 'Lax'));
+                        break;
+                    case 'roles':
+                        $redirectResponse->headers->setCookie(Cookie::create('roles', $value, 0, '/', null, false, true, false, 'Lax'));
+                        break;
+                    case 'id':
+                        $redirectResponse->headers->setCookie(Cookie::create('id', $value, 0, '/', null, false, true, false, 'Lax'));
+                        break;
+                    case 'profilePict':
+                        $redirectResponse->headers->setCookie(Cookie::create('profile_pict', $value, 0, '/', null, false, true, false, 'Lax'));
+                        break;
+                    case 'lastname':
+                        $redirectResponse->headers->setCookie(Cookie::create('lastname', $value, 0, '/', null, false, true, false, 'Lax'));
+                        break;
+                    case 'firstname':
+                        $redirectResponse->headers->setCookie(Cookie::create('firstname', $value, 0, '/', null, false, true, false, 'Lax'));
+                        break;
+                    case 'email':
+                        $redirectResponse->headers->setCookie(Cookie::create('email', $value, 0, '/', null, false, true, false, 'Lax'));
+                        break;
+                    case 'subscription':
+                        $redirectResponse->headers->setCookie(Cookie::create('subscription', $value, 0, '/', null, false, true, false, 'Lax'));
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            $response = json_decode($response->getContent(), true);
             $request->getSession()->remove('userId');
 
-            return $this->redirectToRoute('myProfile');
+            return $redirectResponse;
         }      
         return $this->render('frontend/user/editProfile.html.twig', [
             'form'=>$form,

@@ -105,7 +105,7 @@
                         {% if pp is null %}
                             <a href={{ path('myProfile') }}><img src={{ asset('icons/profile_pict_default_white.png') }} alt="Profile Picture" width="40" height="40" class="rounded-circle me-2"></a>
                         {% else %}
-                            <a href={{ path('myProfile') }}><img src="{{ pp }}" alt="Profile Picture" width="40" height="40" class="rounded-circle me-2"></a>
+                            <a href={{ path('myProfile') }}><img src="{{ pp }}" alt="Profile Picture" width="40" height="40" class="profPict rounded-circle me-2"></a>
                         {% endif %}
                     </div>
                 {% endif %}
@@ -190,7 +190,6 @@
                         <li class="nav-item">
                             <a href={{ path('logoutFunc') }} class="logoutBtn nav-link btn btn-error" aria-current="page">
                                 {{ 'déconnecter'|trans({}, 'user') }}
-
                             </a>
                         </li>
                     </ul>
