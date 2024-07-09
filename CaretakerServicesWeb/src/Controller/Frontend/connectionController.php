@@ -105,6 +105,9 @@ class connectionController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()){
             $data = $form->getData();
+
+            $rememberMe = $data['remember_me'];
+
             unset($data['remember_me']);
             
             $client = $this->apiHttpClient->getClientWithoutBearer();
@@ -144,14 +147,16 @@ class connectionController extends AbstractController
             
             unset($response['user']['roles'][array_search('ROLE_USER', $response['user']['roles'])]);
 
-            $cookie0 = Cookie::create('token', $response['token'], 0, '/', null, false, true, false, 'Lax');
-            $cookie1 = Cookie::create('roles', $response['user']['roles'][0], 0, '/', null, false, true, false, 'Lax');
-            $cookie2 = Cookie::create('id', $response['user']['id'], 0, '/', null, false, true, false, 'Lax');
-            $cookie3 = Cookie::create('profile_pict', $response['user']['profile_pict'], 0, '/', null, false, true, false, 'Lax');
-            $cookie4 = Cookie::create('lastname', $response['user']['lastname'], 0, '/', null, false, true, false, 'Lax');
-            $cookie5 = Cookie::create('firstname', $response['user']['firstname'], 0, '/', null, false, true, false, 'Lax');
-            $cookie6 = Cookie::create('email', $response['user']['email'], 0, '/', null, false, true, false, 'Lax');
-            $cookie7 = Cookie::create('subscription', $response['user']['subscription'], 0, '/', null, false, true, false, 'Lax');
+            $time = $rememberMe ? 0 : time() + 2592000;
+
+            $cookie0 = Cookie::create('token', $response['token'], $time, '/', null, false, true, false, 'Lax');
+            $cookie1 = Cookie::create('roles', $response['user']['roles'][0], $time, '/', null, false, true, false, 'Lax');
+            $cookie2 = Cookie::create('id', $response['user']['id'], $time, '/', null, false, true, false, 'Lax');
+            $cookie3 = Cookie::create('profile_pict', $response['user']['profile_pict'], $time, '/', null, false, true, false, 'Lax');
+            $cookie4 = Cookie::create('lastname', $response['user']['lastname'], $time, '/', null, false, true, false, 'Lax');
+            $cookie5 = Cookie::create('firstname', $response['user']['firstname'], $time, '/', null, false, true, false, 'Lax');
+            $cookie6 = Cookie::create('email', $response['user']['email'], $time, '/', null, false, true, false, 'Lax');
+            $cookie7 = Cookie::create('subscription', $response['user']['subscription'], $time, '/', null, false, true, false, 'Lax');
             
             if ($request->get('redirect')) {
                 if ($request->get('id') != null) {

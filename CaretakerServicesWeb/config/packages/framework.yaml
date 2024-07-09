@@ -12,7 +12,7 @@ framework:
         handler_id: null
         cookie_secure: auto
         cookie_samesite: lax
-        cookie_lifetime: 10000
+        cookie_lifetime: 2592000
 
     #esi: true
     #fragments: true
