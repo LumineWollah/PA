@@ -360,5 +360,4 @@ class reservationController extends AbstractController
             'errorMessage' => null,
         ]);
     }
-
 }
