@@ -135,6 +135,8 @@ class connectionController extends AbstractController
                     'errorMessage'=>$errorMessage
                 ]);
             }
+
+            $response = json_decode($response->getContent(), true);
             
             $responseBan = $client->request('GET', 'cs_users', [
                 'query' => [
@@ -162,7 +164,7 @@ class connectionController extends AbstractController
                 }
                 $client = $this->apiHttpClient->getClient($response['token'], 'application/merge-patch+json');
             
-                $response = $client->request('PATCH', 'cs_users/'.$response['user']['id'], [
+                $verifyEmail = $client->request('PATCH', 'cs_users/'.$response['user']['id'], [
                     'json' => [
                         "emailIsVerified"=>true
                     ],
@@ -177,8 +179,6 @@ class connectionController extends AbstractController
                     'errorMessage'=>$errorMessage
                 ]);
             }
-
-            $response = json_decode($response->getContent(), true);
             
             unset($response['user']['roles'][array_search('ROLE_USER', $response['user']['roles'])]);
 
