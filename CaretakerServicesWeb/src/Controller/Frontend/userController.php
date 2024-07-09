@@ -375,18 +375,23 @@ class userController extends AbstractController
             return $this->redirectToRoute('login', ['redirect'=>'myProfile']);
         }
 
-        $paymentIntent = \Stripe\PaymentIntent::retrieve($reservation['payementId']);
+        try {
+            $paymentIntent = \Stripe\PaymentIntent::retrieve($reservation['payementId']);
 
-        $chargeId = $paymentIntent->latest_charge;
+            $chargeId = $paymentIntent->latest_charge;
 
-        $refund = \Stripe\Refund::create([
-            'charge' => $chargeId,
-            'amount' => intval($reservation['price'] * 100),
-        ]);
-    
-        $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/merge-patch+json');
+            $refund = \Stripe\Refund::create([
+                'charge' => $chargeId,
+                'amount' => intval($reservation['price'] * 100),
+            ]);
 
-        if ($refund->status == 'succeeded') {
+            $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/merge-patch+json');
+
+            if ($refund->status == 'succeeded') {
+                $client->request('DELETE', 'cs_reservations/'.$reservation['id']);
+            }
+        } catch (\Stripe\Exception\InvalidRequestException $e) {
+            $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/merge-patch+json');
             $client->request('DELETE', 'cs_reservations/'.$reservation['id']);
         }
         
