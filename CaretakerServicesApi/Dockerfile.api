@@ -28,7 +28,7 @@ COPY ./creation-database-dev.sh .
 RUN chmod a+x creation-database-dev.sh
 WORKDIR /var/www/html
 EXPOSE 80
-CMD ["sh", "-c", "composer install --no-interaction && ./creation-database-dev.sh && apache2-foreground"]
+CMD ["sh", "-c", "composer install --no-interaction && apache2-foreground"]
 
 FROM build AS prod
 
