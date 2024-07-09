@@ -1,4 +1,4 @@
-FROM php:8.1-apache
+FROM php:8.1-apache AS build
 
 RUN apt-get update && apt-get install -y \
     libicu-dev \
@@ -16,16 +16,24 @@ RUN apt-get update && apt-get install -y \
     zip \
     -j$(nproc) gd
 
+ENV COMPOSER_ALLOW_SUPERUSER 1
+
 COPY apache/vhost.conf /etc/apache2/sites-available/000-default.conf
+RUN a2enmod rewrite
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-RUN update-ca-certificates
+FROM build AS dev
 
-RUN a2enmod rewrite ssl
+COPY creation-database-dev.sh .
+WORKDIR /var/www/html
+EXPOSE 80
+CMD ["sh", "-c", "composer install --no-interaction && /creation-database-dev.sh && apache2-foreground"]
 
-# RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-# RUN php -r "if (hash_file('sha384', 'composer-setup.php') === 'dac665fdc30fdd8ec78b38b9800061b4150413ff2e3b6f88543c636f7cd84f6db9189d43a81e5503cda447da73c7e5b6') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
-# RUN php composer-setup.php
-# RUN php -r "unlink('composer-setup.php');"
-# RUN php composer.phar install
+FROM build AS prod
 
-EXPOSE 80 443
+COPY creation-database-prod.sh .
+COPY . /var/www/html
+WORKDIR /var/www/html
+RUN rm -rf /var/www/html/.env.dev /var/www/html/tests
+EXPOSE 80
+CMD ["sh", "-c", "composer install --no-dev --optimize-autoloader && /creation-database-prod.sh && apache2-foreground"]

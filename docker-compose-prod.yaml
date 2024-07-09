@@ -8,34 +8,37 @@ services:
   web:
     build:
       context: ./CaretakerServicesWeb
+      target: prod
       dockerfile: Dockerfile.web
     container_name: web
     volumes:
-      - ./CaretakerServicesWeb:/var/www/html
-      - /etc/letsencrypt:/etc/letsencrypt
-      - /home/webadmin/.env-web:/var/www/html/.env
-      - /home/webadmin/secrets.json:/var/www/html/config/secrets/secrets.json
-      - /home/webadmin/certfile.json:/var/www/html/config/secrets/certfile.json
+      - ../.env-web:/var/www/html/.env:ro
+      - /home/dockeradmin/secrets.json:/var/www/html/config/secrets/secrets.json:ro
+      - /home/dockeradmin/certfile.json:/var/www/html/config/secrets/certfile.json:ro
     depends_on:
       - mariadb
     networks:
       - symfony
+    environment:
+      - APP_ENV=prod
+    restart: always
 
   api:
     build:
       context: ./CaretakerServicesApi
+      target: prod
       dockerfile: Dockerfile.api
     container_name: api
     volumes:
-      - ./CaretakerServicesApi:/var/www/html
-      - /etc/letsencrypt:/etc/letsencrypt
-      - /home/webadmin/jwt:/var/www/html/config/jwt
-      - /home/webadmin/.env-api:/var/www/html/.env
-      - /home/webadmin/secrets.json:/var/www/html/config/secrets/secrets.json
+      - ../.env-api:/var/www/html/.env:ro
+      - /home/dockeradmin/secrets.json:/var/www/html/config/secrets/secrets.json:ro
     depends_on:
       - mariadb
     networks:
       - symfony
+    environment:
+      - APP_ENV=prod
+    restart: always
 
   mariadb:
     image: mariadb:latest
@@ -51,6 +54,7 @@ services:
       - mariadb_data:/var/lib/mysql
     networks:
       - symfony
+    restart: always
 
   proxy:
     build:
@@ -67,6 +71,7 @@ services:
       - api
     networks:
       - symfony
+    restart: always
 
 volumes:
   mariadb_data:

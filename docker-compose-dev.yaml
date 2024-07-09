@@ -1,0 +1,90 @@
+version: '3.8'
+
+networks:
+  symfony:
+    driver: bridge
+
+services:
+  web:
+    build:
+      context: ./CaretakerServicesWeb
+      target: dev
+      dockerfile: Dockerfile.web
+    container_name: web
+    volumes:
+      - ../.env-web:/var/www/html/.env:ro
+      - /home/dockeradmin/secrets.json:/var/www/html/config/secrets/secrets.json:ro
+      - /home/dockeradmin/certfile.json:/var/www/html/config/secrets/certfile.json:ro
+      - ./CaretakerServicesWeb:/var/www/html
+      # - ../logs/web:/var/www/html/storage/logs
+    depends_on:
+      - mariadb
+    networks:
+      - symfony
+    environment:
+      - APP_ENV=dev
+
+  api:
+    build:
+      context: ./CaretakerServicesApi
+      target: dev
+      dockerfile: Dockerfile.api
+    container_name: api
+    volumes:
+      - ../.env-api:/var/www/html/.env:ro
+      - /home/dockeradmin/secrets.json:/var/www/html/config/secrets/secrets.json:ro
+      - ./CaretakerServicesApi:/var/www/html
+      # - ../logs/api:/var/www/html/storage/logs
+    depends_on:
+      - mariadb
+    networks:
+      - symfony
+    environment:
+      - APP_ENV=dev
+
+  mariadb:
+    image: mariadb:latest
+    container_name: mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: caretakerservicesdb
+      MYSQL_USER: pcs
+      MYSQL_PASSWORD: pass
+    ports:
+      - "3306:3306"
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    networks:
+      - symfony
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: phpmyadmin
+    environment:
+      PMA_HOST: mariadb
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "8082:80"
+    depends_on:
+      - mariadb
+    networks:
+      - symfony
+
+  proxy:
+    build:
+      context: ./Proxy
+      dockerfile: Dockerfile.proxy
+    container_name: proxy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /etc/letsencrypt:/etc/letsencrypt
+    depends_on:
+      - web
+      - api
+    networks:
+      - symfony
+
+volumes:
+  mariadb_data:
