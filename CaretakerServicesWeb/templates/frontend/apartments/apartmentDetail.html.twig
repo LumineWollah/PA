@@ -119,7 +119,7 @@
                 <div class="col-3">
                     <div class="middleForm">
                         <p class="reservTitle">{{ 'montant'|trans({}, 'apartments') }}</p>
-                        <div class="secondColRow"><p class="">{{ apartment.price }}€ x <span class="nightsNb">0</span> {{ 'nights'|trans({}, 'apartments') }} {{ (subscription is not null and subscription > 0) ? '(- 5%)' : '' }}</p><p><b><span id="priceForNights">0</span> €</b></p></div>
+                        <div class="secondColRow"><p class="">{{ apartment.price }}€ x <span class="nightsNb">0</span> {{ 'nuits'|trans({}, 'apartments') }} {{ (subscription is not null and subscription > 0) ? '(- 5%)' : '' }}</p><p><b><span id="priceForNights">0</span> €</b></p></div>
                         <div class="secondColRow"><p class="">{{ 'frais'|trans({}, 'apartments') }}</p><p><b><span id="servicesValue">0</span> €</b></p></div>
                         <div class="secondColRow"><p class="">{{ 'taxes'|trans({}, 'apartments') }} {{ (subscription is not null and subscription == 2) ? '(Offertes)' : '' }}</p><p><b>{{ (subscription is not null and subscription == 2) ? '<s>' : '' }}<span id="taxesValue">0</span>{{ (subscription is not null and subscription == 2) ? '</s>' : '' }} €</b></p></div>
                         <p class="reservTitle mt-4">{{ 'prestations'|trans({}, 'apartments') }}</p>
