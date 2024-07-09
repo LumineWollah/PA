@@ -4,6 +4,7 @@ namespace App\Controller\Frontend;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Service\ApiHttpClient;
 use App\Service\AmazonS3Client;
@@ -17,6 +18,7 @@ use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\Mailer;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\Regex;
@@ -74,8 +76,15 @@ class connectionController extends AbstractController
     }
 
     #[Route('/login', name: 'login')]
-    public function login(Request $request)
+    public function login(Request $request, MailerInterface $mailer)
     {
+        $activateAccount = $request->query->get('activateAccount');
+        if ($activateAccount != null) {
+            $request->getSession()->set('activateAccount', $activateAccount);
+        } else {
+            $activateAccount = $request->getSession()->get('activateAccount');
+        }
+
         $form = $this->createFormBuilder()
         ->add("username", EmailType::class, [
             "attr"=>[
@@ -134,6 +143,32 @@ class connectionController extends AbstractController
                 ]
             ]);
 
+            if ($responseBan->toArray()["hydra:member"][0]['emailIsVerify'] == false && $responseBan->toArray()["hydra:member"][0]["roles"][0] != "ROLE_ADMIN"){
+                if (!$activateAccount) {
+                    
+                    $email = (new \Symfony\Component\Mime\Email())
+                        ->from('ne-pas-repondre@caretakerservices.fr')
+                        ->to($data["username"])
+                        ->subject('Vérification inscription Caretaker Services')
+                        ->html('<p>Veuillez cliquer sur le lien suivant pour valider votre inscription: <a href="https://www.caretakerservices.fr/login?activateAccount=1">Valider mon inscription</a></p><p>Cordialement, Caretaker Services</p>');
+
+                    $mailer->send($email);
+                    
+                    $errorMessage = "Veuillez valider votre adresse mail, nous vous avons renvoyé un mail de confirmation.";
+                    return $this->render('frontend/login_register/login.html.twig', [
+                        'form'=>$form,
+                        'errorMessage'=>$errorMessage
+                    ]);
+                }
+                $client = $this->apiHttpClient->getClient($response['token'], 'application/merge-patch+json');
+            
+                $response = $client->request('PATCH', 'cs_users/'.$response['user']['id'], [
+                    'json' => [
+                        "emailIsVerified"=>true
+                    ],
+                ]);
+                
+            }
             
             if ($responseBan->toArray()["hydra:member"][0]["isBan"] == true && $responseBan->toArray()["hydra:member"][0]["roles"][0] != "ROLE_ADMIN"){
                 $errorMessage = "Ce compte est banni";
@@ -230,7 +265,7 @@ class connectionController extends AbstractController
     }
 
     #[Route('/register/perso', name: 'registerPerso')]
-    public function registerPerso(Request $request)
+    public function registerPerso(Request $request, MailerInterface $mailer)
     {
         $formForPerso = $this->createFormBuilder([])
         ->add("firstname", TextType::class, [
@@ -355,6 +390,14 @@ class connectionController extends AbstractController
                 'json' => $jsonData
             ]);
 
+            $email = (new \Symfony\Component\Mime\Email())
+                ->from('ne-pas-repondre@caretakerservices.fr')
+                ->to($data["email"])
+                ->subject('Vérification inscription Caretaker Services')
+                ->html('<p>Bonjour '.$data["firstname"].',</p><p>Veuillez cliquer sur le lien suivant pour valider votre inscription: <a href="https://www.caretakerservices.fr/login?activateAccount=1">Valider mon inscription</a></p><p>Cordialement, Caretaker Services</p>');
+
+            $mailer->send($email);
+
             return $this->redirectToRoute('login');
         }
 
@@ -365,7 +408,7 @@ class connectionController extends AbstractController
     }
 
     #[Route('/register/pro', name: 'registerPro')]
-    public function registerPro(Request $request)
+    public function registerPro(Request $request, MailerInterface $mailer)
     {
         $formForPro = $this->createFormBuilder([])
         ->add("firstname", TextType::class, [
@@ -554,6 +597,14 @@ class connectionController extends AbstractController
             $response = $client->request('POST', 'cs_users', [
                 'json' => $jsonData
             ]);
+
+            $email = (new \Symfony\Component\Mime\Email())
+                ->from('ne-pas-repondre@caretakerservices.fr')
+                ->to($data["email"])
+                ->subject('Vérification inscription Caretaker Services')
+                ->html('<p>Bonjour '.$data["firstname"].',</p><p>Veuillez cliquer sur le lien suivant pour valider votre inscription: <a href="https://www.caretakerservices.fr/login?activateAccount=1">Valider mon inscription</a></p><p>Cordialement, Caretaker Services</p>');
+
+            $mailer->send($email);
 
             return $this->redirectToRoute('login');
         }
