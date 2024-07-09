@@ -371,3 +371,67 @@ input::-webkit-input-placeholder {
 .item.checked .check-icon{
     transform: scale(1);
 }
+
+.reviewAuthor {
+    display: flex;
+    align-items: center;
+    height: 10vh;
+}
+
+.authorPict {
+    width: 2.7vw;
+    height: 2.7vw;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: rgba(0,0,0,0.8) 0 0 10px;
+    margin-right: 1vw;
+}
+
+.reviewAuthorContent {
+    display: flex;
+    flex-direction: column;
+}
+
+.reviewAuthorContent p {
+    margin-bottom: 0;
+}
+
+.authorName {
+    font-family: 'Antonio';
+    font-weight: 700;
+    font-size: 1vw;
+}
+
+.reviewDate {
+    font-family: 'Quicksand';
+    font-weight: 300;
+    font-size: 1vw;
+}
+
+.stars {
+    width: 1.5vw;
+}
+
+.reviewContent {
+    margin-left: 3.8vw;
+    font-family: 'Quicksand';
+}
+
+.commentsBtn {
+    border: 3px solid #A594F9;
+    background-color: white;
+    border-radius: 15px;
+    box-shadow: rgba(0,0,0,0.4) 0 0 10px;
+    color: #A594F9;
+    font-family: 'Roboto Condensed';
+    font-weight: bold;
+    font-size: 1vw;
+    margin-top: 1.5vh;
+    transition: all 0.3s ease-in-out;
+}
+
+.commentsBtn:hover {
+    background-color: #A594F9;
+    color: white;
+    border: 3px solid #A594F9;
+}

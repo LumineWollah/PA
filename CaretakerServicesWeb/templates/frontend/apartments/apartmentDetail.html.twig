@@ -50,6 +50,47 @@
                 <button type="button" class="btn readMoreBtn" data-bs-toggle="modal" data-bs-target="#exampleModalLive">
                     {{ 'lire'|trans({}, 'apartments') }}
                 </button>
+                <div class="modal fade" id="modalReviews" tabindex="-1" aria-labelledby="exampleModalLiveLabel" style="display: none;" aria-hidden="true">
+                    <div class="modal-dialog modal-lg modal-dialog-scrollable .modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="exampleModalLiveLabel">Commentaires à propos de ce logement</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                            </div>
+                            <div class="modal-body" style="display: flex; flex-direction: column; align-items: center;">
+                                {% for review in apartment.reviews %}
+                                    <div class="review col-11">
+                                        <div class="reviewHeader">
+                                            <div class="reviewText">
+                                                <div class="reviewAuthor">
+                                                    <img class="authorPict" {% if review.author.profilePict is defined %} src={{ asset( review.author.profilePict ) }} {% else %} src={{ asset('icons/profile_pict_default.png') }} {% endif %}>
+                                                    <div class="reviewAuthorContent">
+                                                        <p><span class="authorName">@{{ review.author.firstname|capitalize }} {{ review.author.lastname|capitalize }}</span>  •  <span class="reviewDate">{{ review.postDate | date('d/m/Y') }}</span></p>
+                                                        <div class="reviewRate">
+                                                            {% for i in range(1, review.rate) %}
+                                                                <img src={{ asset('icons/purple_star.png') }} class="stars">
+                                                            {% endfor %}
+                                                            {% if review.rate < 5 %}
+                                                                {% for i in range(1, 5 - review.rate) %}
+                                                                    <img src={{ asset('icons/gray_star.png') }} class="stars">
+                                                                {% endfor %}
+                                                            {% endif %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <p class="reviewContent">{{ review.content }}</p>
+                                            </div>
+                                        </div>
+                                        <hr>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="col-5 caractColumn align-items-center">
                 <div class="caract">
@@ -196,19 +237,35 @@
         <div class="row reviews justify-content-center">
             <h2>{{ 'avis'|trans({}, 'apartments') }}</h2>
             <div class="reviewsContainer">
-                {% for review in apartment.reviews %}
-                    <div class="review">
+                {% for review in apartment.reviews|slice(-2) %}
+                    <div class="review col-6">
                         <div class="reviewHeader">
-                            <img style="width:50px" {% if review.author.profilePict is defined %} src={{ asset( review.author.profilePict ) }} {% else %} src={{ asset('icons/profile_pict_default.png') }} {% endif %}>
                             <div class="reviewText">
-                                <p class="reviewName">{{ review.author.firstname|capitalize }} {{ review.author.lastname|capitalize }}</p>
-                                <p class="reviewDate">{{ review.postDate | date('d/m/Y') }}</p>
-                                <p class="reviewRate">{{ review.rate }}/5</p>
+                                <div class="reviewAuthor">
+                                    <img class="authorPict" {% if review.author.profilePict is defined %} src={{ asset( review.author.profilePict ) }} {% else %} src={{ asset('icons/profile_pict_default.png') }} {% endif %}>
+                                    <div class="reviewAuthorContent">
+                                        <p><span class="authorName">@{{ review.author.firstname|capitalize }} {{ review.author.lastname|capitalize }}</span>  •  <span class="reviewDate">{{ review.postDate | date('d/m/Y') }}</span></p>
+                                        <div class="reviewRate">
+                                            {% for i in range(1, review.rate) %}
+                                                <img src={{ asset('icons/purple_star.png') }} class="stars">
+                                            {% endfor %}
+                                            {% if review.rate < 5 %}
+                                                {% for i in range(1, 5 - review.rate) %}
+                                                    <img src={{ asset('icons/gray_star.png') }} class="stars">
+                                                {% endfor %}
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
                                 <p class="reviewContent">{{ review.content }}</p>
                             </div>
                         </div>
+                        <hr>
                     </div>
                 {% endfor %}
+                <button type="button" class="btn commentsBtn" data-bs-toggle="modal" data-bs-target="#modalReviews">
+                    {{ 'lireles'|trans({}, 'apartments') }} {{ apartment.reviews|length }} {{ 'commentaires'|trans({}, 'apartments') }}
+                </button>
             </div>
         </div>
     </div>
