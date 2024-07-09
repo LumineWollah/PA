@@ -41,7 +41,7 @@ class reservationsController extends AbstractController
         $objName = $request->getSession()->get('objName');
 
         $success = $this->generateUrl('reservPaySucc', [], UrlGeneratorInterface::ABSOLUTE_URL);
-        $failure = $this->generateUrl('reservPayFail');
+        $fail = $this->generateUrl('reservPayFail', [], UrlGeneratorInterface::ABSOLUTE_URL);
 
         $emailAdr = $request->cookies->get('email');
 
@@ -89,7 +89,7 @@ class reservationsController extends AbstractController
             'line_items' => $lineItems,
             'mode' => 'payment',
             'success_url' => $success,
-            'cancel_url' => $success,
+            'cancel_url' => $fail,
             'billing_address_collection' => 'required',
             'customer' => $customer->id,
         ]);
@@ -242,7 +242,7 @@ class reservationsController extends AbstractController
         $request->getSession()->set('reservData', $reserv);
 
         $success = $this->generateUrl('requestPaySucc', [], UrlGeneratorInterface::ABSOLUTE_URL);
-        $failure = $this->generateUrl('reservPayFail');
+        $fail = $this->generateUrl('reservPayFail', [], UrlGeneratorInterface::ABSOLUTE_URL);
 
         $emailAdr = $request->cookies->get('email');
 
@@ -269,7 +269,7 @@ class reservationsController extends AbstractController
             ]],
             'mode' => 'payment',
             'success_url' => $success,
-            'cancel_url' => $success,
+            'cancel_url' => $fail,
             'billing_address_collection' => 'required',
             'customer' => $customer->id,
         ]);
