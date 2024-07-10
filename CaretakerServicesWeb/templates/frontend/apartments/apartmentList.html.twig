@@ -40,13 +40,15 @@
             </div>
             <ul class="list-items" style="z-index: 10;">
                 {% for addon in addons %}
-                    <li class="item">
+                    {% if addon.apartments is not empty %}
+                        <li class="item">
                         <span class="checkbox">
                             <i class="fa-solid fa-check check-icon"></i>
                         </span>
                         <span class="item-text">{{ addon.name }}</span>
                         <span class="item-id" style="display: none;">{{ addon.id }}</span>
                     </li>
+                    {% endif %}
                 {% endfor %}
             </ul>
         </div>
