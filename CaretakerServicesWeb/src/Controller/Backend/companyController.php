@@ -9,6 +9,7 @@ use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Regex;
@@ -27,7 +28,16 @@ class companyController extends AbstractController
         $role = $request->cookies->get('roles');
         return $role !== null && $role == 'ROLE_ADMIN';
     }
-    
+
+    private function extractValueByPrefix($data, $prefix) {
+        foreach ($data as $item) {
+            if (is_array($item) && strpos($item['id'], $prefix) === 0) {
+                return $item['text'];
+            }
+        }
+        return null;
+    }
+
     public const SIRET_LENGTH = 14;
 
     private function isValid(?string $siret): bool
@@ -145,33 +155,24 @@ class companyController extends AbstractController
             ],
             "required"=>false,
         ])
-        ->add("address", TextType::class, [
-            "attr"=>[
-                "placeholder"=>"Adresse de l'entreprise",
-            ], 
-            "required"=>false,
-        ])
-        ->add("city", TextType::class, [
-            "attr"=>[
-                "placeholder"=>"Ville de l'entreprise",
-            ], 
-            "required"=>false,
-        ])
-        ->add("postalCode", TextType::class, [
-            "attr"=>[
-                "placeholder"=>"Code postal de l'entreprise",
-            ], 
-            "required"=>false,
-        ])
-        ->add("country", TextType::class, [
-            "attr"=>[
-                "placeholder"=>"Pays de l'entreprise",
-            ], 
-            "required"=>false,
+        ->add("address", HiddenType::class, [
+            "constraints"=>[
+                new NotBlank([
+                    'message' => 'L\'adresse est obligatoire',
+                ]),
+            ],
         ])
         ->getForm()->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()){
                 $data = $form->getData();
+
+                $data['address'] = json_decode($data['address'], true);
+                
+                $data["country"] = $this->extractValueByPrefix($data["address"]['context'], 'country');
+                $data["city"] = $this->extractValueByPrefix($data["address"]['context'], 'place');
+                $data["postalCode"] = $this->extractValueByPrefix($data["address"]['context'], 'postcode');
+                $data["centerGps"] = $data['address']['center'];                
+                $data["address"] = $data['address']['place_name'];
                 
                 $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/merge-patch+json');
 
@@ -247,10 +248,7 @@ class companyController extends AbstractController
                 ]),
             ],
         ])
-        ->add("address", TextType::class, [
-            "attr"=>[
-                "placeholder"=>"Adresse",
-            ], 
+        ->add("address", HiddenType::class, [
             "constraints"=>[
                 new NotBlank([
                     'message' => 'L\'adresse est obligatoire',
@@ -262,6 +260,14 @@ class companyController extends AbstractController
             $data = $form->getData();
 
             $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/ld+json');
+
+            $data['address'] = json_decode($data['address'], true);
+                
+            $data["country"] = $this->extractValueByPrefix($data["address"]['context'], 'country');
+            $data["city"] = $this->extractValueByPrefix($data["address"]['context'], 'place');
+            $data["postalCode"] = $this->extractValueByPrefix($data["address"]['context'], 'postcode');
+            $data["centerGps"] = $data['address']['center'];                
+            $data["address"] = $data['address']['place_name'];
             
             $response = $client->request('GET', 'cs_companies', [
                 'query' => [

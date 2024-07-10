@@ -54,9 +54,14 @@
             {% endif %}
             {% if review['reservation'] is defined and review['reservation'] is not empty %}
                 <div class"container"><strong>Réservation :</strong>
-                    <div class="container">
-                        <a {#href={{ reservation.url }}#} href="https://i.gifer.com/origin/28/282268c47ffc9391bf7ee0a1104ce1bd_w200.gif" target="blank_" class="btn" style="background-color: #A594F9;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/eye.png') }}></div></a>
-                    </div>
+                    <form action="{{ path('reservationShow') }}" method="post" style="display: inline;">
+                        <input type="hidden" name="reservation" value="{{ review.reservation|json_encode }}">
+                        <button type="submit" class="container" style="background-color: #A594F9;">
+                            <div class="container">
+                                <p><strong>Nom:</strong> {{ review.reservation.id }}</p>
+                            </div>
+                        </button>                    
+                    </form>
                 </div>
             {% endif %}
              </div>

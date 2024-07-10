@@ -41,6 +41,9 @@ class serviceController extends AbstractController
     public function serviceList(Request $request)
     {
         if (!$this->checkUserRole($request)) {return $this->redirectToRoute('login');}
+        
+        $request->getSession()->remove('userId');
+        $request->getSession()->remove('serviceId');
 
         $client = $this->apiHttpClient->getClient($request->cookies->get('token'));
 
@@ -66,11 +69,7 @@ class serviceController extends AbstractController
 
         $id = $request->query->get('id');
 
-        $response = $client->request('DELETE', 'cs_services/'.$id, [
-            'query' => [
-                'id' => $id
-            ]
-        ]);
+        $response = $client->request('DELETE', 'cs_services/'.$id);
 
         return $this->redirectToRoute('serviceList');
     }
@@ -93,10 +92,12 @@ class serviceController extends AbstractController
             $defaults = [
                 'name' => $service['name'],
                 'description' => $service['description'],
-                'price' => $service['price'],
                 'category' => $service['category']['id'],
                 'company' => $service['company']['id'],
             ];
+            if (isset($service['price'])) {
+                $defaults['price'] = $service['price'];
+            }
         } catch (Exception $e) {
             $defaults = [];
         }

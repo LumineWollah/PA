@@ -35,6 +35,9 @@ class lessorController extends AbstractController
     {
         if (!$this->checkUserRole($request)) {return $this->redirectToRoute('login');}       
 
+        $request->getSession()->remove('userId');
+        $request->getSession()->remove('lessorId');
+
         $client = $this->apiHttpClient->getClient($request->cookies->get('token'));
 
         $response = $client->request('GET', 'cs_users', [

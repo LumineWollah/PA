@@ -83,6 +83,7 @@ class connectionController extends AbstractController
             $request->getSession()->set('activateAccount', $activateAccount);
         } else {
             $activateAccount = $request->getSession()->get('activateAccount');
+            $request->getSession()->remove('activateAccount');
         }
 
         $form = $this->createFormBuilder()
@@ -159,7 +160,7 @@ class connectionController extends AbstractController
             
                 $verifyEmail = $client->request('PATCH', 'cs_users/'.$response['user']['id'], [
                     'json' => [
-                        "emailIsVerified"=>true
+                        "emailIsVerify"=>true
                     ],
                 ]);
                 

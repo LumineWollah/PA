@@ -37,6 +37,7 @@ class documentController extends AbstractController
         if (!$this->checkUserRole($request)) {return $this->redirectToRoute('login');}
 
         $client = $this->apiHttpClient->getClient($request->cookies->get('token'));
+        
         $request->getSession()->remove('documentId');
 
         $response = $client->request('GET', 'cs_documents', [
@@ -158,14 +159,18 @@ class documentController extends AbstractController
         ])
         ->add("attachedReserv", ChoiceType::class, [
             "choices" => $reservationChoice,
-            "required"=>false,
         ])
         ->getForm()->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()){
             $data = $form->getData();
             
             $data['owner'] = 'api/cs_users/'.$data['owner'];
-            $data['attachedReserv'] = 'api/cs_reservations/'.$data['attachedReserv'];
+
+            if ($data['attachedReserv'] != null) {
+                $data['attachedReserv'] = 'api/cs_reservations/'.$data['attachedReserv'];
+            } else {
+                unset($data['attachedReserv']);
+            }
 
             $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/merge-patch+json');
 

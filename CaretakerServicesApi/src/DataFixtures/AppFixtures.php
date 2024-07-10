@@ -160,6 +160,7 @@ class AppFixtures extends Fixture
         $user->setisVerified(true);
         $user->setEmailIsVerify(true);
         $user->setRoles(['ROLE_LESSOR']);
+        $user->setEmailIsVerify(true);
         $manager->persist($user);
 
         for ($i=0; $i < 20; $i++) { 
@@ -217,6 +218,7 @@ class AppFixtures extends Fixture
         $user->setisVerified(true);
         $user->setEmailIsVerify(true);
         $user->setRoles(['ROLE_TRAVELER']);
+        $user->setEmailIsVerify(true);
         $manager->persist($user);
 
         $reservation = new CsReservation();
@@ -392,6 +394,7 @@ class AppFixtures extends Fixture
         $user->setisVerified(false);
         $user->setEmailIsVerify(true);
         $user->setAdmin($company);
+        $user->setEmailIsVerify(true);
         $manager->persist($user);
 
         $manager->flush();
