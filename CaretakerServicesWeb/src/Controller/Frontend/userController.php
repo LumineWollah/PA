@@ -33,8 +33,10 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Constraints\Email;
+use Symfony\Component\Mime\Email as MimeEmail;
 use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\Validator\Constraints\PositiveOrZero;
+use Symfony\Component\Mailer\MailerInterface;
 
 class userController extends AbstractController
 {
@@ -638,7 +640,7 @@ class userController extends AbstractController
     }
 
     #[Route('/profile/delete', name: 'profileDelete')]
-    public function profileDelete(Request $request)
+    public function profileDelete(Request $request, MailerInterface $mailer)
     {
         $userData = $request->query->get('user');
         $user = json_decode($userData, true);
@@ -663,6 +665,8 @@ class userController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()){
             $data = $form->getData();
 
+            $client = $this->apiHttpClient->getClient($request->cookies->get('token'));
+
             if ($data['confirmation'] != $string) {
                 $errorMessage = "La chaîne de caractère n'est pas correcte. Veuillez réessayer.";
                 
@@ -675,17 +679,144 @@ class userController extends AbstractController
                     'errorMessage'=>$errorMessage
                 ]);
             }
+            
+            foreach ($user['roles'] as $role) {
+                if ($role == 'ROLE_LESSOR') {
+                    foreach ($user['apartments'] as $apartment) {
+                        $id = $apartment['id'];
+                        $responseReserv = $client->request('GET', 'cs_reservations?unavailability=false&apartment='.$id);
+                        $reservations = $responseReserv->toArray()['hydra:member'];
+
+                        if (count($reservations) == 0){
+                            $response = $client->request('DELETE', 'cs_apartments/'.$id);
+                        }else{
+                            $now = new DateTime();
+                            $today = $now->format('Y-m-d');
+
+                            $responseAvailable = $client->request('POST', 'cs_apartments/availables/'.$id, [
+                                'json' => [
+                                    'starting_date' => $today,
+                                    'ending_date' => $today
+                                ]
+                            ]);
+
+                            if (!(($responseAvailable->toArray())['available'])) {
+                                return $this->redirectToRoute('myApartmentsList', ['showPopup'=>true, 'content'=>'Le logement est réservé pour aujourd\'hui, vous ne pouvez pas le supprimer', 'title'=>'Suppression impossible']);
+                            }
+
+                            $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/merge-patch+json');
+                            $customers = [];
+                            foreach ($reservations as $reserv) {
+                                if (!in_array($reserv['user']['email'], $customers)){
+                                    $customers[] = $reserv['user']['email'];
+                                }
+                                
+                                $paymentIntent = \Stripe\PaymentIntent::retrieve($reserv['payementId']);
+
+                                $chargeId = $paymentIntent->latest_charge;
+
+                                // $refund = \Stripe\Refund::create([
+                                //     'charge' => $chargeId,
+                                //     'amount' => $reserv['price'] * 100,
+                                // ]);
+                            
+                                // if ($refund->status == 'succeeded') {
+                                if (true) {
+                                    $client->request('PATCH', 'cs_reservations/'.$reserv['id'], [
+                                        'json' => [
+                                            'active' => false
+                                        ]
+                                    ]);
+                                }
+                            }
+
+                            foreach ($customers as $customer) {
+                                $email = (new MimeEmail())
+                                    ->from('ne-pas-repondre@caretakerservices.fr')
+                                    ->to($customer)
+                                    ->subject('Votre réservation')
+                                    ->html('<p>Votre réservation pour le #### dans le logement #### a été annulée, car le logement a du être supprimé, vous serez remboursé dans les prochains jours</p>');
+
+                                $mailer->send($email);
+                            }
+
+                            $response = $client->request('DELETE', 'cs_apartments/'.$id);
+                        }
+                    }
+                }
+                if ($role == 'ROLE_PROVIDER') {
+                    foreach ($user['services'] as $service) {
+                        $id = $service['id'];
+                        $responseReserv = $client->request('GET', 'cs_reservations?unavailability=false&service='.$id);
+                        $reservations = $responseReserv->toArray()['hydra:member'];
+
+                        if (count($reservations) == 0){
+                            $response = $client->request('DELETE', 'cs_services/'.$id);
+                        }else{
+                            $now = new DateTime();
+                            $today = $now->format('Y-m-d');
+
+                            $responseAvailable = $client->request('POST', 'cs_services/availables/'.$id, [
+                                'json' => [
+                                    'starting_date' => $today,
+                                    'ending_date' => $today
+                                ]
+                            ]);
+
+                            if (!(($responseAvailable->toArray())['available'])) {
+                                return $this->redirectToRoute('myServicesList', ['showPopup'=>true, 'content'=>'Le service est réservé pour aujourd\'hui, vous ne pouvez pas le supprimer', 'title'=>'Suppression impossible']);
+                            }
+
+                            $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/merge-patch+json');
+                            $customers = [];
+                            foreach ($reservations as $reserv) {
+                                if (!in_array($reserv['user']['email'], $customers)){
+                                    $customers[] = $reserv['user']['email'];
+                                }
+                                
+                                $paymentIntent = \Stripe\PaymentIntent::retrieve($reserv['payementId']);
+
+                                $chargeId = $paymentIntent->latest_charge;
+
+                                // $refund = \Stripe\Refund::create([
+                                //     'charge' => $chargeId,
+                                //     'amount' => $reserv['price'] * 100,
+                                // ]);
+                            
+                                // if ($refund->status == 'succeeded') {
+                                if (true) {
+                                    $client->request('PATCH', 'cs_reservations/'.$reserv['id'], [
+                                        'json' => [
+                                            'active' => false
+                                        ]
+                                    ]);
+                                }
+                            }
+
+                            foreach ($customers as $customer) {
+                                $email = (new MimeEmail())
+                                    ->from('ne-pas-repondre@caretakerservices.fr')
+                                    ->to($customer)
+                                    ->subject('Votre réservation')
+                                    ->html('<p>Votre réservation pour le #### dans le service #### a été annulée, car le service a du être supprimé, vous serez remboursé dans les prochains jours</p>');
+
+                                $mailer->send($email);
+                            }
+
+                            $response = $client->request('DELETE', 'cs_services/'.$id);
+                        }
+                    }
+                }
+            }
 
             $client = $this->apiHttpClient->getClient($request->cookies->get('token'));
-            // dd($storedUser);
-            // dd($request->cookies->get('token'));
             $response = $client->request('DELETE', 'cs_users/'.$storedUser);
 
             $response = json_decode($response->getContent(), true);
             $request->getSession()->remove('userId');
             $request->getSession()->remove('string');
 
-            return $this->redirectToRoute('logoutFunc');
+            return $this->redirectToRoute('logoutFunc', ['showPopup'=>true, 'content'=>'Les réservations ont été annulées et les clients remboursés', 'title'=>'Suppression réussie']);
         }      
         return $this->render('frontend/user/deleteProfile.html.twig', [
             'form'=>$form,
