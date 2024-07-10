@@ -53,27 +53,27 @@ class CsDocument
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(["getUsers", "getDocuments", "getReservations"])]
+    #[Groups(["getUsers", "getDocuments", "getReservations", "getReviews"])]
     private ?int $id = null;
 
     #[ORM\Column(length: 300)]
-    #[Groups(["getUsers", "getDocuments", "getReservations"])]
+    #[Groups(["getUsers", "getDocuments", "getReservations", "getReviews"])]
     private ?string $name = null;
 
     #[ORM\Column(length: 50)]
-    #[Groups(["getUsers", "getDocuments", "getReservations"])]
+    #[Groups(["getUsers", "getDocuments", "getReservations", "getReviews"])]
     private ?string $type = null;
 
     #[ORM\Column(length: 300)]
-    #[Groups(["getUsers", "getDocuments", "getReservations"])]
+    #[Groups(["getUsers", "getDocuments", "getReservations", "getReviews"])]
     private ?string $url = null;
 
     #[ORM\Column]
-    #[Groups(["getUsers", "getDocuments", "getReservations"])]
+    #[Groups(["getUsers", "getDocuments", "getReservations", "getReviews"])]
     private ?DateTime $dateCreation = null;
 
     #[ORM\Column]
-    #[Groups(["getUsers", "getDocuments", "getReservations"])]
+    #[Groups(["getUsers", "getDocuments", "getReservations", "getReviews"])]
     private ?bool $visibility = true;
 
     #[ORM\ManyToOne(inversedBy: 'documents')]

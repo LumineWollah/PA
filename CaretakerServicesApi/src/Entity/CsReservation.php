@@ -99,7 +99,7 @@ class CsReservation
      * @var Collection<int, CsDocument>
      */
     #[ORM\OneToMany(targetEntity: CsDocument::class, mappedBy: 'attachedReserv', cascade: ['remove'])]
-    #[Groups(["getReservations"])]
+    #[Groups(["getReservations", "getReviews"])]
     private Collection $documents;
 
     #[ORM\Column]

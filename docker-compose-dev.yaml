@@ -16,7 +16,6 @@ services:
       - /home/dockeradmin/secrets.json:/var/www/html/config/secrets/secrets.json:ro
       - /home/dockeradmin/certfile.json:/var/www/html/config/secrets/certfile.json:ro
       - ./CaretakerServicesWeb:/var/www/html
-      # - ../logs/web:/var/www/html/storage/logs
     depends_on:
       - mariadb
     networks:
@@ -35,7 +34,6 @@ services:
       - ../.env-api:/var/www/html/.env:ro
       - /home/dockeradmin/secrets.json:/var/www/html/config/secrets/secrets.json:ro
       - ./CaretakerServicesApi:/var/www/html
-      # - ../logs/api:/var/www/html/storage/logs
     depends_on:
       - mariadb
     networks:
