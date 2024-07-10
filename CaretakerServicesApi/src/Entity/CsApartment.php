@@ -199,7 +199,7 @@ class CsApartment
     #[Groups(["getApartments"])]
     private Collection $reservations;
 
-    #[ORM\OneToMany(targetEntity: CsReviews::class, mappedBy: 'apartment')]
+    #[ORM\OneToMany(targetEntity: CsReviews::class, mappedBy: 'apartment', cascade: ['remove'])]
     #[Groups(["getApartments"])]
     private Collection $reviews;
 

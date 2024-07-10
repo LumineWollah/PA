@@ -646,8 +646,9 @@ class userController extends AbstractController
         $user = json_decode($userData, true);
 
         $storedUser = $request->getSession()->get('user');
+        $request->getSession()->remove('user');
 
-        if (!$storedUser) {
+        if ($storedUser == null) {
             $request->getSession()->set('user', $user['id']);
         }
 
@@ -711,17 +712,24 @@ class userController extends AbstractController
                                     $customers[] = $reserv['user']['email'];
                                 }
                                 
-                                $paymentIntent = \Stripe\PaymentIntent::retrieve($reserv['payementId']);
+                                try {
+                                    $paymentIntent = \Stripe\PaymentIntent::retrieve($reserv['payementId']);
 
-                                $chargeId = $paymentIntent->latest_charge;
+                                    $chargeId = $paymentIntent->latest_charge;
 
-                                // $refund = \Stripe\Refund::create([
-                                //     'charge' => $chargeId,
-                                //     'amount' => $reserv['price'] * 100,
-                                // ]);
-                            
-                                // if ($refund->status == 'succeeded') {
-                                if (true) {
+                                    $refund = \Stripe\Refund::create([
+                                        'charge' => $chargeId,
+                                        'amount' => $reserv['price'] * 100,
+                                    ]);
+                                
+                                    if ($refund->status == 'succeeded') {
+                                        $client->request('PATCH', 'cs_reservations/'.$reserv['id'], [
+                                            'json' => [
+                                                'active' => false
+                                            ]
+                                        ]);
+                                    }
+                                } catch (\Stripe\Exception\InvalidRequestException $e) {
                                     $client->request('PATCH', 'cs_reservations/'.$reserv['id'], [
                                         'json' => [
                                             'active' => false
@@ -773,18 +781,25 @@ class userController extends AbstractController
                                 if (!in_array($reserv['user']['email'], $customers)){
                                     $customers[] = $reserv['user']['email'];
                                 }
+
+                                try {
+                                    $paymentIntent = \Stripe\PaymentIntent::retrieve($reserv['payementId']);
+
+                                    $chargeId = $paymentIntent->latest_charge;
+
+                                    $refund = \Stripe\Refund::create([
+                                        'charge' => $chargeId,
+                                        'amount' => $reserv['price'] * 100,
+                                    ]);
                                 
-                                $paymentIntent = \Stripe\PaymentIntent::retrieve($reserv['payementId']);
-
-                                $chargeId = $paymentIntent->latest_charge;
-
-                                // $refund = \Stripe\Refund::create([
-                                //     'charge' => $chargeId,
-                                //     'amount' => $reserv['price'] * 100,
-                                // ]);
-                            
-                                // if ($refund->status == 'succeeded') {
-                                if (true) {
+                                    if ($refund->status == 'succeeded') {
+                                        $client->request('PATCH', 'cs_reservations/'.$reserv['id'], [
+                                            'json' => [
+                                                'active' => false
+                                            ]
+                                        ]);
+                                    }
+                                } catch (\Stripe\Exception\InvalidRequestException $e) {
                                     $client->request('PATCH', 'cs_reservations/'.$reserv['id'], [
                                         'json' => [
                                             'active' => false
@@ -813,7 +828,7 @@ class userController extends AbstractController
             $response = $client->request('DELETE', 'cs_users/'.$storedUser);
 
             $response = json_decode($response->getContent(), true);
-            $request->getSession()->remove('userId');
+            $request->getSession()->remove('user');
             $request->getSession()->remove('string');
 
             return $this->redirectToRoute('logoutFunc', ['showPopup'=>true, 'content'=>'Les réservations ont été annulées et les clients remboursés', 'title'=>'Suppression réussie']);
