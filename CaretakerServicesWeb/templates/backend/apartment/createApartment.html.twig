@@ -1,0 +1,105 @@
+{% extends 'backend/base.html.twig' %}
+
+{% block activeGest %}active{% endblock %}
+{% block activeApar %}active{% endblock %}
+
+{% block title %}Créer un appartement{% endblock %}
+
+{% block stylesheets %}
+    <link href="https://api.mapbox.com/mapbox-gl-js/v3.2.0/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v3.2.0/mapbox-gl.js"></script>
+
+    <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.min.js"></script>
+    <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.css" type="text/css">
+{% endblock %}
+
+{% block body %}
+    <div class="col-10 p-0">
+        <div class="p-3">
+            <h1>Créer un appartement</h1>
+            <div class="errors">{%if errorMessages is defined %}<ul>{% for errorMessage in errorMessages %}<li>{{errorMessage}}</li>{% endfor %}</ul>{% endif %}</div>
+            {{form_start(form)}}
+                <div class="inputDiv" style="position: relative;">
+                    {{form_widget(form.name)}}
+                    <div class="errors">{{form_errors(form.name)}}</div>
+                </div>
+                <div class="inputDiv" style="position: relative;">
+                    {{form_widget(form.description)}}
+                </div>
+                <div class="inputDiv" style="position: relative;">
+                    {{form_widget(form.bedrooms)}}
+                    <div class="errors">{{form_errors(form.bedrooms)}}</div>
+                </div>
+                <div class="inputDiv" style="position: relative;">
+                    {{form_widget(form.bathrooms)}}
+                    <div class="errors">{{form_errors(form.bathrooms)}}</div>
+                </div>
+                <div class="inputDiv" style="position: relative;">
+                    {{form_widget(form.travelersMax)}}
+                    <div class="errors">{{form_errors(form.travelersMax)}}</div>
+                </div>
+                <div class="inputDiv" style="position: relative;">
+                    {{form_widget(form.area)}}
+                    <div class="errors">{{form_errors(form.area)}}</div>
+                </div>
+                <div class="inputDiv" style="position: relative;">
+                    {{form_widget(form.isFullhouse)}}
+                </div>
+                <div class="inputDiv" style="position: relative;">
+                    {{form_widget(form.isHouse)}}
+                </div>
+                <div class="inputDiv" style="position: relative;">
+                    {{form_widget(form.price)}}
+                    <div class="errors">{{form_errors(form.price)}}</div>
+                </div>
+                <div class="inputDiv" style="position: relative;">
+                    {{form_widget(form.apartNumber)}}
+                </div>
+                <div class="inputDiv" style="position: relative;">
+                    {{form_widget(form.owner)}}
+                </div>
+                <div class="inputDiv" style="position: relative;">
+                    {{form_widget(form.mainPict)}}
+                </div>
+                <div class="inputDiv" style="position: relative;">
+                    {{form_widget(form.addons)}}
+                    {% if defaults.addons is defined and defaults.addons is not empty %}
+                        <ul>
+                            {% for addon in defaults.addons %}
+                                <li>{{ addon }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+                <div id="geocoder" style="position: relative; height: 3vh;"></div>
+                {{form_widget(form.address)}}
+                <div class="errors">{{form_errors(form.address)}}</div>
+                <button type="submit" class="btn">Créer</button>
+
+            {{form_end(form)}}
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+    mapboxgl.accessToken = 'pk.eyJ1IjoibGVvLXVyYWhhcmEiLCJhIjoiY2x2MTJrcHJ4MDIwdzJrdXNhcDhjazF4MSJ9.ZJjs_hvEVTuHKAe2CeDGbQ';
+    const geocoder = new MapboxGeocoder({
+        accessToken: mapboxgl.accessToken,
+        countries: 'fr',
+        bbox: [-5.3173828125, 41.27780646738183, 9.84375, 51.12421275782688],
+        types: 'address',
+        mapboxgl: mapboxgl
+    });
+    geocoder.addTo('#geocoder');
+
+    const results = document.getElementById('form_address');
+    geocoder.on('result', (e) => {
+        results.value = JSON.stringify(e.result, null, 2);
+    });
+
+    geocoder.on('clear', () => {
+        results.value = '';
+    });
+</script>
+{% endblock %}

@@ -1,4 +1,4 @@
-# Caretaker Services
+# Paris Caretaker Services
 
 - Installer composer
     1) Vérifier si php est installé : `php -v` (version 8.1.10)
@@ -47,6 +47,13 @@
     4) Taper la commande `composer install` (uniquement la première fois ou si de nouveau composer require ont été fait)
     3) Taper la commande `symfony server:start --port=8001`
     4) Se rendre sur [https://127.0.0.1:8001](https://127.0.0.1:8001)
+
+- Comment réinitialiser la base de données ?
+    1) Pour la supprimer faire `php bin/console doctrine:database:drop --force`  
+    2) Ensuite il faut la recréer `php bin/console doctrine:database:create`  
+    3) Puis y pusher les nouveaux schemas : `php bin/console doctrine:schema:update --force`  
+    4) Créer les nouvelles migrations : `php bin/console make:migration`  
+    5) Ajouter les fixtures : `php bin/console doctrine:fixtures:load`
 
 - Fonctionnement du Github :
     1) Ne pas push sur le main !

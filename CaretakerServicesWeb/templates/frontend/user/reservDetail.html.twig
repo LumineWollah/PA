@@ -1,0 +1,83 @@
+{% extends 'frontend/user/base.html.twig' %}
+
+{% block stylesheets %}<link rel="stylesheet" href={{ asset('styles/frontend/user/reservDetail.css') }}>{% endblock %}
+
+{% block activeRese %}active{% endblock %}
+
+{% block title %}Detail - Reservation{% endblock %}
+
+{% block body %}
+    <div class="col-10 p-3">
+        <h1>{{ 'détaileréservation'|trans({}, 'user') }}</h1>
+        <div class="row">
+            <div class="col-4">
+                <h3>{{ 'votrelogement'|trans({}, 'user') }}</h3>
+                <div class="card">
+                    <img src="{{ reservation.apartment.mainPict }}">
+                    <div class="card-body">
+                        <h5 class="card-text mb-4">{{ reservation.apartment.name }}</h5>
+                        <a href="{{ path('apartmentsDetail', {'id': reservation.apartment.id}) }}" class="seeAppart mb-1">{{ 'voirlogement'|trans({}, 'user') }}</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+                <h3>{{ 'détail'|trans({}, 'user') }}</h3>
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-text mb-1">{{ 'vosdates'|trans({}, 'user') }}</h5>
+                        <p class="card-text mb-4">{{ reservation.startingDate|date('d/m/Y') }} - {{ reservation.endingDate|date('d/m/Y') }}</p>
+                        <h5 class="card-text mb-1">{{ 'prixtotal'|trans({}, 'user') }}</h5>
+                        <p class="card-text mb-4">{{ reservation.price }} €</p>
+                        <h5 class="card-text mb-1">{{ 'voyageurs'|trans({}, 'user') }}</h5>
+                        <p class="card-text mb-1">{{ 'adultes'|trans({}, 'user') }} {{ reservation.adultTravelers }} | {{ 'enfants'|trans({}, 'user') }} {{ reservation.childTravelers }} | {{ 'bébés'|trans({}, 'user') }} {{ reservation.babyTravelers }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+                <h3>{{ 'vosservices'|trans({}, 'user') }}</h3>
+                <div class="card">
+                    <div class="card-body">
+                        {% if reservation.services is empty %}
+                            <p class="card-text mb-1">{{ 'aucunservice'|trans({}, 'user') }}</p>
+                        {% else %}
+                            {% for service in reservation.services %}
+                                <p class="card-text mb-2"><a href="{{ path('serviceDetail', {'id':service.id}) }}" style="color: black;">{{ service.name }}</a> : {{ service.price }} €</p>
+                            {% endfor %}
+                            <hr>
+                            <a href="{{ path('myDocuments') }}" class="seeAppart mb-1">{{ 'voirdocuments'|trans({}, 'user') }}</a>
+                        {% endif %}
+                    </div>
+                </div>
+                <h3>{{ 'etatdeslieux'|trans({}, 'user') }}</h3>
+                <div class="card">
+                    <div class="card-body">
+                        {% if reservation.documents is not defined or reservation.documents is empty %}
+                            <p class="card-text mb-1">{{ 'aucunetat'|trans({}, 'user') }}</p>
+                        {% else %}
+                            {% set findDoc = 0 %}
+                            {% for doc in reservation.documents %}
+                                {% if doc.type|lower == "etat des lieux entree" %}
+                                    {% set findDoc = 1 %}
+                                    <div class="invFormDoc">
+                                        <p class="card-text mb-1">{{ 'etatdeslieuxentree'|trans({}, 'user') }}</p>
+                                        <a href="{{ doc.url }}" target="_blank" class="btn" style="background-color: #A594F9;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/documents.png') }}></div></a>
+                                    </div>
+                                {% elseif doc.type|lower == "etat des lieux sortie" %}
+                                    {% set findDoc = 1 %}
+                                    <div class="invFormDoc mt-3">
+                                        <p class="card-text mb-1">{{ 'etatdeslieuxsortie'|trans({}, 'user') }}</p>
+                                        <a href="{{ doc.url }}" target="_blank" class="btn" style="background-color: #A594F9;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/documents.png') }}></div></a>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                            {% if findDoc == 0 %}
+                                <p class="card-text mb-1">{{ 'aucunetat'|trans({}, 'user') }}</p>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

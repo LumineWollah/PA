@@ -1,0 +1,32 @@
+name: Deploy to Linux Server Prod
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+      with: 
+        ref: main
+
+    - name: SSH Deploy
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.SSHKEY }}
+        script: |
+
+          cd /home/dockeradmin/PA
+
+          git fetch origin
+          git reset --hard origin/main
+
+          docker compose -f docker-compose-dev.yaml down
+          docker compose -f docker-compose-prod.yaml up -d --build

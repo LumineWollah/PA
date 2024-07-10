@@ -1,0 +1,85 @@
+{% extends 'backend/base.html.twig' %}
+
+{% block stylesheets %}<link rel="stylesheet" href={{ asset('styles/crud.css') }}>{% endblock %}
+
+{% block activeGest %}active{% endblock %}
+{% block activeAdm %}active{% endblock %}
+
+{% block title %}Liste des admins{% endblock %}
+
+{% block body %}
+<script>
+    $(document).ready( function () {
+        $('#crudList').DataTable( {
+            buttons: true,
+            pageLength: 10,
+            layout: {
+                topStart: {
+                    search: {
+                        placeholder: "Rechercher...",
+                        search: ""
+                    }
+                },
+                topEnd: 'buttons',
+                bottomStart: 'paging',
+                bottomEnd: 'info',
+            },
+            language: {
+                search: "",
+                info: "Affichage des entrées _START_ à _END_ sur _TOTAL_ au total",
+            },
+            buttons: [
+                'pdf'
+            ],
+            columnDefs: [
+                {
+                    targets: 3,
+                    className: 'dt-body-left dt-head-left'
+                },
+                {
+                    targets: -1,
+                    orderable: false,
+                }   
+            ]
+        } );
+    } );
+</script>
+    <div class="col-10 p-0">
+        <div class="p-3">
+            <div class="btn-create-row">
+                <h1>Liste des admins</h1>
+                <a href="{{ path('userCreate', {'role':'ROLE_ADMIN' }) }}" class="btn btn-create"><div class="btnImage"><img style="height:20px;">Créer +</div></a>
+            </div>            
+            <table id="crudList" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">Prénom</th>
+                        <th scope="col">Nom</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Téléphone</th>
+                        <th scope="col">Inscrit le</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for admin in admins %}
+                        <tr>
+                            <td>{{ admin.firstname|capitalize }}</td>
+                            <td>{{ admin.lastname|upper }}</td>
+                            <td>{{ admin.email }}</td>
+                            <td>{{ admin.telNumber|split('', 2)|join('.') }}</td>
+                            <td>{{ admin.dateInscription | date('d/m/Y H:i:s') }}</td>
+                            <td class="action" >
+                                <form action="{{ path('userShow') }}" method="post" style="display: inline;">
+                                    <input type="hidden" name="user" value="{{ admin|json_encode }}">
+                                    <button type="submit" class="btn" style="background-color: #A594F9;"><div class="btnImage"><img style="height:17px;" src={{ asset('icons/crud/chart.png') }}></div></button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
+

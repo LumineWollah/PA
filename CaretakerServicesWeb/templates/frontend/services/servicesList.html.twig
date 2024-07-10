@@ -1,0 +1,69 @@
+{% extends 'frontend/base.html.twig' %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href={{ asset('styles/frontend/services/servicesList.css') }}>
+    
+{% endblock %}
+
+{% block activeServ %}active{% endblock %}
+{% block activeServ2 %}active{% endblock %}
+{% block activeServ3 %}active{% endblock %}
+
+{% block body %}
+<div class="container-fluid pageContent">
+    <h1>{{ 'nos'|trans({}, 'services') }} <span class="h1span">services</span> {{ 'proposés'|trans({}, 'services') }}</h1>    
+    {% for key, value in services %}
+        {% set categoryName = key|split('-')[0] %}
+        {% set categoryColor = key|split('-')[1] %}
+        {% set categoryId = key|split('-')[2] %}
+        <div class="row rowServ" style="{% if loop.index is not even %}background-color: #D9D9D9;{% endif %}">
+            <h2 style="color: #{{ categoryColor }};">{{ categoryName|upper }}</h2>
+            <div class="row">
+                <div id="carouselExampleControls_{{categoryName}}" class="carousel slide" data-ride="carousel">
+                    <div class="carousel-inner">
+                        {% if value|length < 4 %}
+                            {% set step = value|length %}
+                        {% else %}
+                            {% set step = 4 %}
+                        {% endif %}
+                        {% for i in range(0, value|length, step) %}
+                            {% if value|length > i %}
+                                <div class="carousel-item {% if i == 0 %}active{% endif %}">
+                                    <div class="cards-wrapper">
+                                        {% for j in range(i, i+3) %}
+                                            {% if value|length > j %}
+                                                <div class="card {% if j != i %}d-none d-md-block{% endif %}" style="border-color: #{{ categoryColor }};">
+                                                    {% if value[j].coverImage is not defined or value[j].coverImage is null %}
+                                                        <img src={{ asset('icons/profile_pict_default_company.png') }}>
+                                                    {% else %}
+                                                        {% set coverImage = value[j].coverImage %}
+                                                        <img src="{{ coverImage }}">
+                                                    {% endif %}
+                                                    <div class="card-body">
+                                                        <h5 class="card-title title">{{ value[j].name }}</h5>
+                                                        <p class="card-text desc">{{ value[j].description }}</p>
+                                                        <a href="{{ path('serviceDetail', {'id':value[j].id}) }}" class="btn contactBtn">{{ 'réserver2'|trans({}, 'services') }}</a>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls_{{categoryName}}" data-bs-slide="prev">
+                        <img src={{ asset('icons/arrow_left.png') }} class="arrow leftAr">
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls_{{categoryName}}" data-bs-slide="next">
+                        <img src={{ asset('icons/arrow_right.png') }} class="arrow rightAr">
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
+            </div>
+            <a class="seeMore" style="color: #{{ categoryColor }};" href="{{ path('servicesCategoryList', {'id':categoryId}) }}">{{ 'voirplus'|trans({}, 'services') }}</a> 
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

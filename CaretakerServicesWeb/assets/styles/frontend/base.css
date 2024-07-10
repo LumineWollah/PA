@@ -1,0 +1,82 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Antonio:wght@100..700&family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap');
+
+nav{
+    background-color: #3D2F44; 
+    height: 8vh; 
+    width: 100vw;
+    position: fixed !important;
+    top: 0;
+    font-family: 'Roboto Condensed';
+    font-weight: 700;
+    font-size: 18px;
+    z-index: 10;
+}
+
+nav a {
+    color: white !important;
+
+}
+
+.active {
+    color: #A594F9 !important;
+}
+
+html {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    overflow-y: scroll;
+}
+
+html::-webkit-scrollbar {
+    display: none;
+}
+
+.btnConnect {
+    background: none;
+    border: 1px solid white;
+    animation: all 1s ease-in-out;
+}
+
+.btnRegister {
+    background-color: #221A27;
+    border: 1px solid #221A27;
+    animation: all 1s ease-in-out;
+}
+
+.btnConnect:hover, .btnRegister:hover {
+    color: #221A27 !important;
+    border: 1px solid #221A27;
+    background-color: white;
+}
+
+.username {
+    color: white;
+    margin-right: 1.3vw;
+}
+
+.logoutBtn {
+    background-color: #EE3939;
+    width: 40%;
+    font-size: 50%;
+    border: #EE3939 1.5px solid;
+    position: absolute;
+    bottom: 2.5%;
+}
+
+.logoutBtn:hover {
+    background-color: #EE3939;
+    color: white !important;
+    border: white 1.5px solid;
+}
+
+.languageBtn {
+    height: 4vh;
+    margin-right: 1.5vh;
+    cursor: pointer;
+}
+
+.profPict {
+    object-fit: cover;
+}

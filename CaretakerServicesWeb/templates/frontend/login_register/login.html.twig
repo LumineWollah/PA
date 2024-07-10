@@ -1,0 +1,33 @@
+{% extends 'frontend/login_register/base.html.twig' %}
+
+{% block stylesheets %}<link href={{ asset('styles/frontend/login_register/login.css') }} rel="stylesheet">{% endblock %}
+
+{% block pageContent %}
+<div class="loginCard">
+    <div class="titleCard">
+        <h2>{{ 'connexion'|trans({}, 'login') }}</h2>
+        <p class="titleDesc">{{ 'entrez'|trans({}, 'login') }}</p>
+    </div>
+    {{form_start(form)}}
+        <div class="errors">{%if errorMessage %}<ul><li>{{errorMessage}}</li></ul>{% endif %}{{form_errors(form.username)}}</div>
+        <div class="inputDiv">
+            <img src="{{ asset('icons/login/email.png') }}" alt="Email" class="inputLogo">
+            {{form_widget(form.username)}}
+        </div>
+        <div class="errors">{{form_errors(form.password)}}</div>
+        <div class="inputDiv"> 
+            <img src="{{ asset('icons/login/lock.png') }}" alt="Password" class="inputLogo">
+            {{form_widget(form.password)}}
+        </div>
+        <div class="otherOptions">
+            <div class="checkboxDiv">
+                {{form_widget(form.remember_me)}}
+                <label for="remember_me" class="rememberMe">{{ 'souvenir'|trans({}, 'login') }}</label>
+            </div>
+            <a href="#" class="forgetPwd">{{ 'oublié'|trans({}, 'login') }}</a>
+        </div>
+        <button type="submit" class="btn loginBtn">{{ 'connecter'|trans({}, 'login') }}</button>
+    {{form_end(form)}}
+</div>
+<a href={{ path("register") }} class="noAccount">{{ 'pasdecompte'|trans({}, 'login') }}<span style="color: #3D2F44;">{{ 'inscrivez'|trans({}, 'login') }}</span></a>
+{% endblock %}

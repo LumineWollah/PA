@@ -1,0 +1,198 @@
+{% extends 'frontend/base.html.twig' %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href={{ asset('styles/frontend/companies/companiesList.css') }}>
+{% endblock %}
+
+{% block activeServ %}active{% endblock %}
+{% block activeServ2 %}active{% endblock %}
+{% block activeServ3 %}active{% endblock %}
+
+{% block body %}
+<div class="container-fluid pageContent">
+    <h1>{{ 'nos'|trans({}, 'services') }} <span class="h1span">services</span> {{ 'de'|trans({}, 'services') }} <span style="color: #{{ category.color }}; text-decoration: underline;">{{ category.name }}</span></h1>    
+
+    <div class="filters">
+        <label for="price-filter">{{ 'prix'|trans({}, 'services') }}</label>
+        <select id="price-filter">
+            <option value="all">{{ 'tous'|trans({}, 'services') }}</option>
+            <option value="estimate">{{ 'surdevis'|trans({}, 'services') }}</option>
+            <option value="low">{{ 'prixbas'|trans({}, 'services') }} (- 50 €)</option>
+            <option value="medium">{{ 'prixmoyen'|trans({}, 'services') }} (- 100 €)</option>
+            <option value="high">{{ 'prixélevé'|trans({}, 'services') }}</option>
+        </select>
+
+        <label for="distance-filter">{{ 'distance'|trans({}, 'services') }}</label>
+        <select id="distance-filter">
+            <option value="all">{{ 'tous'|trans({}, 'services') }}</option>
+            <option value="near">{{ 'proche'|trans({}, 'services') }} (- 20 km)</option>
+        </select>
+    </div>
+
+    {% for i in range(0, (((category.services|length)/4)|round(0, 'ceil'))-1) %}
+        <div class="row servRow">
+            {% for j in range(i*4, (i*4)+3) %}
+                {% if j < category.services|length %}
+                    <a class="col-3 companyContainer categoryServicesContainer" href={{ path('serviceDetail', {'id':category.services[j].id}) }}>               
+                        <div class="imgContainer">
+                            {% if category.services[j].coverImage is not defined or category.services[j].coverImage is null %}
+                                <img src={{ asset('icons/profile_pict_default_company.png') }}>
+                            {% else %}
+                                {% set coverImage = category.services[j].coverImage %}
+                                <img src="{{ coverImage }}">
+                            {% endif %}
+                        </div>
+                        <p class="apartName"><b>{{ category.services[j].name }}</b></p>
+                        <p class="servDesc">{{ category.services[j].description }}</p>
+                        <p class="servPlace"><b>{{ 'siège'|trans({}, 'services') }}</b> {{ category.services[j].company.city }}</p>
+                        <span id="coords" style="display: none;">{{ category.services[j].company.centerGps|json_encode }}</span>
+                        {% if category.services[j].price is not defined or category.services[j].price is null %}
+                            <p class="apartDesc"><b>{{ 'prix-'|trans({}, 'services') }} €</b></p>
+                            <span id="price" style="display: none;">{{ null }}</span>
+                        {% else %}
+                            <p class="apartDesc"><b>{{ 'prix~'|trans({}, 'services') }} ~{{ category.services[j].price }} €</b></p>
+                            <span id="price" style="display: none;">{{ category.services[j].price }}</span>
+                        {% endif %}
+                    </a>
+                {% endif %}
+            {% endfor %}
+        </div>
+    {% endfor %}
+</div>
+<script src="https://unpkg.com/@turf/turf@6/turf.min.js"></script>
+<script>
+    const services = document.querySelectorAll('.categoryServicesContainer');
+
+    document.getElementById('price-filter').addEventListener('change', function() {
+        const selectedPrice = this.value;
+        const selectedDistance = document.getElementById('distance-filter').value;
+        filterServices(selectedPrice, selectedDistance);
+    });
+
+    document.getElementById('distance-filter').addEventListener('change', function() {
+        const selectedDistance = this.value;
+        const selectedPrice = document.getElementById('price-filter').value;
+        filterServices(selectedPrice, selectedDistance);
+    });
+
+    function filterServices(selectedPrice, selectedDistance) {
+            
+        services.forEach(service => {
+            const price = service.querySelector('#price').textContent;
+            const coordsElement = JSON.parse(service.querySelector('#coords').textContent);
+
+            if (selectedPrice === 'all' && selectedDistance === 'all') {
+                service.style.display = 'block';
+            } else if (selectedPrice === 'estimate' && selectedDistance === 'all') {
+                if (price === '') {
+                    service.style.display = 'block';
+                } else {
+                    service.style.display = 'none';
+                }
+            } else if (selectedPrice === 'low' && selectedDistance === 'all') {
+                if (price < 50 && price != '') {
+                    service.style.display = 'block';
+                } else {
+                    service.style.display = 'none';
+                }
+            } else if (selectedPrice === 'medium' && selectedDistance === 'all') {
+                if (price >= 50 && price <= 100) {
+                    service.style.display = 'block';
+                } else {
+                    service.style.display = 'none';
+                }
+            } else if (selectedPrice === 'high' && selectedDistance === 'all') {
+                if (price > 100) {
+                    service.style.display = 'block';
+                } else {
+                    service.style.display = 'none';
+                }
+            } else if (selectedPrice === 'all' && selectedDistance === 'near') {
+                const userCoords = localStorage.getItem('userCoords') ? JSON.parse(localStorage.getItem('userCoords')) : null;
+                const distance = calculateDistance(userCoords, coordsElement);
+                if (distance < 20) {
+                    service.style.display = 'block';
+                } else {
+                    service.style.display = 'none';
+                }
+            } else if (selectedPrice === 'estimate' && selectedDistance === 'near') {
+                const userCoords = localStorage.getItem('userCoords') ? JSON.parse(localStorage.getItem('userCoords')) : null;
+                const distance = calculateDistance(userCoords, coordsElement);
+                if (price === '' && distance < 20) {
+                    service.style.display = 'block';
+                } else {
+                    service.style.display = 'none';
+                }
+            } else if (selectedPrice === 'low' && selectedDistance === 'near') {
+                const userCoords = localStorage.getItem('userCoords') ? JSON.parse(localStorage.getItem('userCoords')) : null;
+                const distance = calculateDistance(userCoords, coordsElement);
+                if (price < 50 && price != '' && distance < 20) {
+                    service.style.display = 'block';
+                } else {
+                    service.style.display = 'none';
+                }
+            } else if (selectedPrice === 'medium' && selectedDistance === 'near') {
+                const userCoords = localStorage.getItem('userCoords') ? JSON.parse(localStorage.getItem('userCoords')) : null;
+                const distance = calculateDistance(userCoords, coordsElement);
+                if (price >= 50 && price <= 100 && distance < 20) {
+                    service.style.display = 'block';
+                } else {
+                    service.style.display = 'none';
+                }
+            } else if (selectedPrice === 'high' && selectedDistance === 'near') {
+                const userCoords = localStorage.getItem('userCoords') ? JSON.parse(localStorage.getItem('userCoords')) : null;
+                const distance = calculateDistance(userCoords, coordsElement);
+                if (price > 100 && distance < 20) {
+                    service.style.display = 'block';
+                } else {
+                    service.style.display = 'none';
+                }
+            }
+        });
+    
+    }
+</script>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+    const point1 = [2.2945, 48.8584];
+
+    function calculateDistance(userCoords, companyCoords) {
+
+        const linestring = {
+            'type': 'Feature',
+            'geometry': {
+                'type': 'LineString',
+                'coordinates': [userCoords, companyCoords]
+            }
+        };
+
+        const distance = turf.length(linestring);
+        console.log(`Distance: ${distance.toLocaleString()} km`);
+        return distance;
+    }
+
+    function getUserLocation() {
+        let userCoords;
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    userCoords = [position.coords.longitude, position.coords.latitude];
+                    console.log(`User coordinates: ${userCoords}`);
+                    localStorage.setItem('userCoords', JSON.stringify(userCoords));
+                },
+                (error) => {
+                    console.error('Error getting location:', error);
+                    alert('Error getting your location. Please allow location access and try again.');
+                }
+            );
+        } else {
+            alert('Geolocation is not supported by this browser.');
+        }
+        return userCoords;
+    }
+
+    window.onload = getUserLocation;
+</script>
+{% endblock %}

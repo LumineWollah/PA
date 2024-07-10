@@ -1,0 +1,299 @@
+{% extends 'frontend/base.html.twig' %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href={{ asset('styles/frontend/apartments/apartmentDetail.css') }}>
+    <link href="https://api.mapbox.com/mapbox-gl-js/v3.2.0/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v3.2.0/mapbox-gl.js"></script>
+    <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.min.js"></script>
+    <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.css" type="text/css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+{% endblock %}
+
+{% block activeServ %}active{% endblock %}
+{% block activeServ2 %}active{% endblock %}
+
+{% block body %}
+<div class="container-fluid pageContent">
+    <div class="row">
+        <div class="mainImg p-0">
+            {% if service.coverImage is not defined or service.coverImage is null %}
+                <img src={{ asset('icons/profile_pict_default_company.png') }}>
+            {% else %}
+                {% set coverImage = service.coverImage %}
+                <img src="{{ coverImage }}">
+            {% endif %}
+        </div>
+    </div>
+    <div class="mainInfos">
+        <div class="row">
+            <div class="col-7">
+                <h1>{{ service.name }}</h1>
+                <div class="apartDescDiv">
+                    <p class="apartDesc"><b>{{ 'description2'|trans({}, 'services') }} </b>{{ service.description }}</p>
+                </div>
+                <div class="modal fade" id="exampleModalLive" tabindex="-1" aria-labelledby="exampleModalLiveLabel" style="display: none;" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-scrollable .modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="exampleModalLiveLabel">{{ 'description3'|trans({}, 'services') }}</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p>{{ service.description }}</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ 'fermer'|trans({}, 'services') }}</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" class="btn readMoreBtn" data-bs-toggle="modal" data-bs-target="#exampleModalLive">
+                    {{ 'lireplus'|trans({}, 'services') }}
+                </button>
+            </div>
+            <div class="col-5 caractColumn align-items-center">
+                <div class="caract" style="width: 100%;">
+                    <h4>{{ 'caractéristiques'|trans({}, 'services') }}</h4>
+                    <ul>
+                        <li>{{ 'jours'|trans({}, 'services') }} <b>{{ service.daysOfWeek|join(', ') }}</b></li>
+                        <li>{{ 'horaires'|trans({}, 'services') }} <b>{{ 'de'|trans({}, 'services') }} {{ service.startTime|slice(0,5) }} {{ 'à'|trans({}, 'services') }} {{ service.endTime|slice(0,5) }}</b></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-3 lessorTinyProfile">
+                <img src={{ asset('icons/profile_pict_default.png') }}>
+                <div class="textName">
+                    <p><b>{{ 'fournisseur'|trans({}, 'services') }}</b> <a href="{{ path('providersDetail', {'id':service.company.id}) }}">{{ service.company.companyName }}</a></p>
+                    {% set current_date = "now"|date('Y-m-d') %}
+                    {% set interval = date(current_date).diff(date(service.company.dateInscription)) %}
+                    {% if interval.y == 0 %}
+                        {% if interval.m == 0 %}
+                            <p class="inscription">{{ 'inscrit'|trans({}, 'services') }} {{ interval.d }} {{ 'jour'|trans({}, 'services') }}{{ interval.d > 1 ? s : null }}</p>
+                        {% else %}
+                            <p class="inscription">{{ 'inscrit'|trans({}, 'services') }} {{ interval.m }} {{ 'mois'|trans({}, 'services') }}</p>
+                        {% endif %}
+                    {% else %}
+                        <p class="inscription">{{ 'inscrit'|trans({}, 'services') }} {{ interval.y }} {{ 'ans'|trans({}, 'services') }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div class="row reservation justify-content-center">
+            <h2>{{ 'réservation'|trans({}, 'services') }}</h2>
+            {{form_start(form)}}
+            <div class="row reservationRow">
+                <div class="col-6 leftFormContainer">
+                    <div class="leftForm">
+                        <p class="reservTitle">{{ 'dateintervention'|trans({}, 'services') }}</p>
+                        <div style="color: red;">{{ form_errors(form.date) }}</div>
+                        {{ form_widget(form.date) }}
+                        <div class="row d-flex mt-4">
+                        {% if service.addressInputs > 0 %}
+                            <div class="col-6">
+                                <p class="reservTitle mb-2">{{ 'adresse21'|trans({}, 'services') }}</p>
+                                <div id="geocoder0" style="position: relative; height: 3vh; margin-bottom: 4vh;"></div>
+                                <div style="color: red;">{{ form_errors(form.address0) }}</div>
+                                {{ form_widget(form.address0) }}
+                            </div>
+                        {% endif %}
+                        {% if service.addressInputs > 1 %}
+                            <div class="col-6">
+                                <p class="reservTitle mb-2">{{ 'adresse22'|trans({}, 'services') }}</p>
+                                <div id="geocoder1" style="position: relative; height: 3vh;"></div>
+                                <div style="color: red;">{{ form_errors(form.address1) }}</div>
+                                {{ form_widget(form.address1) }}
+                            </div>
+                            {% if errorMessage is defined %}
+                                <div class="col-12">
+                                    <p class="error" style="color: red;"><strong>{{ 'errorMessage'|trans({}, 'services') }}</strong></p>
+                                </div>
+                            {% endif %}
+                        {% endif %}
+                        {% if service.addressInputs > 0 %}
+                            <p>{{ 'infos1'|trans({}, 'services') }} {{ service.addressInputs }} {{ 'infos2'|trans({}, 'services') }}{{ service.addressInputs > 1 ? 's' : '' }} {{ 'infos3'|trans({}, 'services') }}</p>
+                        {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="rightForm">
+                        <p class="reservTitle">{{ 'prix2'|trans({}, 'services') }}</p>
+                        {% if service.price is not defined or service.price is null %}                            
+                            <p class="totalText">{{ 'surdevis'|trans({}, 'services') }}</p>
+                        {% else %}
+                            <p class="totalText">{{ service.price }}€ {{ 'pourcetteintervention'|trans({}, 'services') }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="rightForm">
+                        {% if service.price is not defined or service.price is null %}                            
+                            <button type="submit" class="reservBtn" name="action" value="devis" id="reservation" disabled>{{ 'demander'|trans({}, 'services') }}</button>
+                        {% else %}
+                            <button type="submit" class="reservBtn" name="action" value="reservation" id="reservation" disabled>{{ 'réserver'|trans({}, 'services') }}</button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {{form_end(form)}}
+        </div>
+        <hr class="mt-5">
+        <div class="row localisation justify-content-center">
+            <h2>{{ 'localisation'|trans({}, 'services') }}</h2>
+            <div id="map"></div>
+        </div>
+        <hr>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+
+<script>
+
+    var reservBtn = document.getElementById("reservation");
+    var dates = document.getElementById("form_date");
+
+    const rangesTab = {{ datesRangeReservs|json_encode|raw }};
+    var availableDays = {{ service.daysOfWeek|json_encode|raw }};
+    const addressInputs = {{ service.addressInputs }};
+    const address0 = document.getElementById("form_address0");
+    const address1 = document.getElementById("form_address1");
+
+    const mapDays = {
+        "Lundi": 0,
+        "Mardi": 1,
+        "Mercredi": 2,
+        "Jeudi": 3,
+        "Vendredi": 4,
+        "Samedi": 5,
+        "Dimanche": 6
+    };
+
+    availableDays = availableDays.map(day => mapDays[day]);
+
+    function checkButtonStatus() {
+        if (dates.value.trim() != "" && (addressInputs == 0 || (addressInputs == 1 && address0.value.trim() != "") || (addressInputs == 2 && address0.value.trim() != "" && address1.value.trim() != ""))) {
+            reservBtn.disabled = false;
+        } else {
+            reservBtn.disabled = true;
+        }
+    }
+
+    $(function() {
+        $('input[id="form_date"]').daterangepicker({
+            singleDatePicker: true,
+            autoUpdateInput: false,
+            autoApply: true,
+            locale: {
+                cancelLabel: 'Clear',
+            },
+            isInvalidDate: function(date) {
+                if (date.isBefore(moment(), 'day')) {
+                    return true;
+                }
+                if (!availableDays.includes(date.day())) {
+                    return true;
+                }
+                for (var i = 0; i < rangesTab.length; i++) {
+                    var startDate = moment(rangesTab[i][0], 'YYYY-MM-DD');
+                    var endDate = moment(rangesTab[i][1], 'YYYY-MM-DD');
+                    if (date.isBetween(startDate, endDate, null, '[]')) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        }, function(start, end, label) {
+            $(this).val(start.format('YYYY.MM.DD'));
+            
+        }).on('apply.daterangepicker', function(ev, picker) {
+            $(this).val('Le ' + picker.startDate.format('DD/MM/YYYY'));
+            checkButtonStatus();
+        }).on('cancel.daterangepicker', function(ev, picker) {
+            $(this).val('');
+        });
+    });
+
+
+    const centerGps = {{ service.company.centerGps|json_encode|raw }};
+
+    mapboxgl.accessToken = 'pk.eyJ1IjoibGVvLXVyYWhhcmEiLCJhIjoiY2x2MTJrcHJ4MDIwdzJrdXNhcDhjazF4MSJ9.ZJjs_hvEVTuHKAe2CeDGbQ';
+    const map = new mapboxgl.Map({
+        container: 'map',
+        center: centerGps,
+        zoom: 16
+    });
+
+    const geojson = {
+        type: 'FeatureCollection',
+        features: [{
+            type: 'Feature',
+            geometry: {
+                type: 'Point',
+                coordinates: centerGps
+            }
+        }]
+    };
+
+    geojson.features.forEach(function(marker) {
+        var el = document.createElement('div');
+        el.className = 'marker';
+
+        new mapboxgl.Marker(el)
+            .setLngLat(marker.geometry.coordinates)
+            .addTo(map)
+    });
+
+    if (addressInputs > 0) {
+        const geocoder0 = new MapboxGeocoder({
+            accessToken: mapboxgl.accessToken,
+            countries: 'fr',
+            bbox: [-5.3173828125, 41.27780646738183, 9.84375, 51.12421275782688],
+            types: 'address',
+            mapboxgl: mapboxgl
+        });
+        geocoder0.addTo('#geocoder0');
+
+        const result0 = document.getElementById('form_address0');
+        geocoder0.on('result', (e) => {
+            result0.value = JSON.stringify(e.result, null, 2);
+            checkButtonStatus();
+        });
+
+        geocoder0.on('clear', () => {
+            result0.value = '';
+            checkButtonStatus();
+        });
+    }
+
+    if (addressInputs > 1) {
+        const geocoder1 = new MapboxGeocoder({
+            accessToken: mapboxgl.accessToken,
+            countries: 'fr',
+            bbox: [-5.3173828125, 41.27780646738183, 9.84375, 51.12421275782688],
+            types: 'address',
+            mapboxgl: mapboxgl
+        });
+        geocoder1.addTo('#geocoder1');
+
+        const result1 = document.getElementById('form_address1');
+        geocoder1.on('result', (e) => {
+            result1.value = JSON.stringify(e.result, null, 2);
+            checkButtonStatus();
+        });
+
+        geocoder1.on('clear', () => {
+            result1.value = '';
+            checkButtonStatus();
+        });
+    }
+
+</script>
+{% endblock %}

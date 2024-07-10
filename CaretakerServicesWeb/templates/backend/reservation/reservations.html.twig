@@ -1,0 +1,111 @@
+{% extends 'backend/base.html.twig' %}
+
+{% block stylesheets %}<link rel="stylesheet" href={{ asset('styles/crud.css') }}>{% endblock %}
+
+{% block activeGest %}active{% endblock %}
+{% block activeRese %}active{% endblock %}
+
+{% block title %}Liste des réservations{% endblock %}
+
+{% block body %}
+<script>
+    $(document).ready( function () {
+        $('#crudList').DataTable( {
+            buttons: true,
+            pageLength: 10,
+            layout: {
+                topStart: {
+                    search: {
+                        placeholder: "Rechercher...",
+                        search: ""
+                    }
+                },
+                topEnd: 'buttons',
+                bottomStart: 'paging',
+                bottomEnd: 'info',
+            },
+            language: {
+                search: "",
+                info: "Affichage des entrées _START_ à _END_ sur _TOTAL_ au total",
+            },
+            buttons: [
+                'pdf'
+            ],
+            columnDefs: [
+                {
+                    targets: 4,
+                    className: 'dt-body-left dt-head-left'
+                },
+                {
+                    targets: -1,
+                    orderable: false,
+                },
+            ]
+        } );
+    } );
+</script>
+    <div class="col-10 p-0">
+        <div class="p-3">
+            <div class="btn-create-row">
+                <h1>Liste des réservations</h1>
+                <a href="{{ path('reservationCreate') }}" class="btn btn-create"><div class="btnImage"><img style="height:20px;">Créer +</div></a>
+            </div>
+            </div>
+            <table id="crudList" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">Client</th>
+                        <th scope="col">Service</th>
+                        <th scope="col">Logement</th>
+                        <th scope="col">Dates</th>
+                        <th scope="col">Prix</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for reservation in reservations %}
+                        <tr>
+                            <td {% if reservation['isRequest'] %} style="background-color: #CACACA;"{% endif %}>
+                                <form action="{{ path('userShow') }}" method="post" style="display: inline;">
+                                    <input type="hidden" name="user" value="{{ reservation.user|json_encode }}">
+                                    <button type="submit" class="btn btn-light client" style="height:40px"><p> {{ reservation.user.firstname ~ " " ~ reservation.user.lastname|capitalize }} </p></button>
+                                </form>
+                            </td>
+                                {% if reservation['service'] is defined and reservation['service'] is not empty %}
+                                    <td {% if reservation['isRequest'] %} style="background-color: #CACACA;"{% endif %}> 
+                                        <form action="{{ path('serviceShow') }}" method="post" style="display: inline;">
+                                            <input type="hidden" name="service" value="{{ reservation.service|json_encode }}">
+                                            <button type="submit" class="btn btn-light service" style="height:40px"><p> {{ reservation.service.name|capitalize }} </p></button>
+                                        </form>
+                                    </td>
+                                    <td {% if reservation['isRequest'] %} style="background-color: #CACACA;"{% endif %}>~</td>
+                                    <td {% if reservation['isRequest'] %} style="background-color: #CACACA;"{% endif %}>{{ reservation.startingDate|date('d/m/Y') }}</td>
+                                {% elseif reservation['apartment'] is defined and reservation['apartment'] is not empty %}
+                                    <td {% if reservation['isRequest'] %} style="background-color: #CACACA;"{% endif %}>~</td>
+                                    <td {% if reservation['isRequest'] %} style="background-color: #CACACA;"{% endif %}>
+                                        <form action="{{ path('apartmentShow') }}" method="post" style="display: inline;">
+                                            <input type="hidden" name="apartment" value="{{ reservation.apartment|json_encode }}">
+                                            <button type="submit" class="btn btn-light apartment" style="height:40px"><p> {{ reservation.apartment.name|capitalize }} </p></button>
+                                        </form>
+                                    </td>
+                                    <td {% if reservation['isRequest'] %} style="background-color: #CACACA;"{% endif %}>{{ reservation.startingDate|date('d/m/Y') }} - {{ reservation.endingDate|date('d/m/Y') }}</td>
+                                {% endif %}
+                            <td {% if reservation['isRequest'] %} style="background-color: #CACACA;"{% endif %}>{{ reservation.price }} €</td>
+                            <td {% if reservation['isRequest'] %} style="background-color: #CACACA;"{% endif %} class="action">
+                                <a href="{{ path('reservationDelete', {'id': reservation.id }) }}" class="btn" style="background-color: #EE3939;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/bin.png') }}></div></a>
+                                <form action="{{ path('reservationEdit') }}" method="post" style="display: inline;">
+                                    <input type="hidden" name="reservation" value="{{ reservation|json_encode }}">
+                                    <button type="submit" class="btn" style="background-color: #18A0FB;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/pen.png') }}></div></button>
+                                </form>
+                                <form action="{{ path('reservationShow') }}" method="post" style="display: inline;">
+                                    <input type="hidden" name="reservation" value="{{ reservation|json_encode }}">
+                                    <button type="submit" class="btn" style="background-color: #A594F9;"><div class="btnImage"><img style="height:17px;" src={{ asset('icons/crud/chart.png') }}></div></button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends 'backend/base.html.twig' %}
+
+{% block activeGest %}active{% endblock %}
+{% block activeServ %}active{% endblock %}
+
+{% block title %}Afficher un service{% endblock %}
+
+{% block body %}
+    <div class="col-10 p-0">
+        <div class="p-3">
+            <h1>Afficher un service</h1>
+            <div class="row">
+                <div class="col-6">
+                    <p><strong>Id :</strong> {{ service.id }}</p>
+                    <p><strong>Nom :</strong> {{ service.name }}</p>
+                    <p><strong>Description :</strong> {{ service.description }}</p>
+                    {% if service.price is defined %}<p><strong>Prix :</strong> {{ service.price }}€</p>{% endif %}
+
+                    {% if service['category'] is defined and service['category'] is not empty %}
+                        <p><strong>Catégorie :</strong> {{ service.category.name }}</p>
+                    {% endif %}
+
+                    {% if service['company'] is defined and service['company'] is not empty %}
+                        <div class"container"><strong>Entreprise :</strong>
+                            <form action="{{ path('companyShow') }}" method="post" style="display: inline;">
+                                <input type="hidden" name="company" value="{{ service.company|json_encode }}">
+                                <button type="submit" class="container" style="background-color: #A594F9;">
+                                    <div class="container">
+                                        <p><strong>Nom:</strong> {{ service.company.companyName|capitalize }}</p>
+                                    </div>
+                                </button>
+                            </form>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

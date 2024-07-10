@@ -1,0 +1,16 @@
+{% extends 'frontend/base.html.twig' %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href={{ asset('styles/waiting.css') }}>
+{% endblock %}
+
+{% block body %}
+    <div class="pageContent">
+        <div class="row">
+            <div class="col-12 content">
+                <h1 class="text-center">{{ 'waitingroom'|trans({}, 'waiting') }}</h1>
+                <div class="loader"></div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

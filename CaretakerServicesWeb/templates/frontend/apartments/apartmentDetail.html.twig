@@ -1,0 +1,501 @@
+{% extends 'frontend/base.html.twig' %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href={{ asset('styles/frontend/apartments/apartmentDetail.css') }}>
+    <link href="https://api.mapbox.com/mapbox-gl-js/v3.2.0/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v3.2.0/mapbox-gl.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+{% endblock %}
+
+{% block activeApar %}active{% endblock %}
+
+{% block body %}
+<div class="container-fluid pageContent">
+    {% if stars is not null %}
+        <div class="reviewsFrame">
+            {{ stars }} ★
+        </div>
+    {% endif %}
+    <div class="row">
+        <div class="mainImg p-0">
+            <img src={{ apartment.mainPict }}>
+        </div>
+    </div>
+    <div class="mainInfos">
+        <div class="row">
+            <div class="col-7">
+                <h1>{{ apartment.name }}</h1>
+                <div class="apartDescDiv">
+                    <p class="apartDesc"><b>{{ 'description2'|trans({}, 'apartments') }}</b>{{ apartment.description }}</p>
+                </div>
+                <div class="modal fade" id="exampleModalLive" tabindex="-1" aria-labelledby="exampleModalLiveLabel" style="display: none;" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-scrollable .modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="exampleModalLiveLabel">Description</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p>{{ apartment.description }}</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" class="btn readMoreBtn" data-bs-toggle="modal" data-bs-target="#exampleModalLive">
+                    {{ 'lire'|trans({}, 'apartments') }}
+                </button>
+                <div class="modal fade" id="modalReviews" tabindex="-1" aria-labelledby="exampleModalLiveLabel" style="display: none;" aria-hidden="true">
+                    <div class="modal-dialog modal-lg modal-dialog-scrollable .modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="exampleModalLiveLabel">Commentaires à propos de ce logement</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                            </div>
+                            <div class="modal-body" style="display: flex; flex-direction: column; align-items: center;">
+                                {% for review in apartment.reviews %}
+                                    <div class="review col-11">
+                                        <div class="reviewHeader">
+                                            <div class="reviewText">
+                                                <div class="reviewAuthor">
+                                                    <img class="authorPict" {% if review.author.profilePict is defined %} src={{ asset( review.author.profilePict ) }} {% else %} src={{ asset('icons/profile_pict_default.png') }} {% endif %}>
+                                                    <div class="reviewAuthorContent">
+                                                        <p><span class="authorName">@{{ review.author.firstname|capitalize }} {{ review.author.lastname|capitalize }}</span>  •  <span class="reviewDate">{{ review.postDate | date('d/m/Y') }}</span></p>
+                                                        <div class="reviewRate">
+                                                            {% for i in range(1, review.rate) %}
+                                                                <img src={{ asset('icons/purple_star.png') }} class="stars">
+                                                            {% endfor %}
+                                                            {% if review.rate < 5 %}
+                                                                {% for i in range(1, 5 - review.rate) %}
+                                                                    <img src={{ asset('icons/gray_star.png') }} class="stars">
+                                                                {% endfor %}
+                                                            {% endif %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <p class="reviewContent">{{ review.content }}</p>
+                                            </div>
+                                        </div>
+                                        <hr>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-5 caractColumn align-items-center">
+                <div class="caract">
+                    <h4>{{ 'caractéristiques'|trans({}, 'apartments') }}</h4>
+                    <ul>
+                        <li>{{ 'type3'|trans({}, 'apartments') }}<b>{{ (apartment.isHouse == 1) ? 'Maison' : 'Appartement' }}</b></li>
+                        <li>{{ 'type4'|trans({}, 'apartments') }}<b>{{ (apartment.isFullhouse == 1) ? 'Logement entier' : 'Chambre privée' }}</b></li>
+                        <li>{{ 'nombrechambre'|trans({}, 'apartments') }}<b>{{ apartment.bedrooms }} {{ 'chambres'|trans({}, 'apartments') }}{{ (apartment.bedrooms > 1) ? 's' : ''}}</b></li>
+                        <li>{{ 'nombrevoyageurs'|trans({}, 'apartments') }}<b>{{ apartment.travelersMax }} {{ 'voyageurs3'|trans({}, 'apartments') }}{{ (apartment.travelersMax > 1) ? 's' : ''}}</b></li>
+                        <li>Surface : <b>{{ apartment.area }} m²</b></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-3 lessorTinyProfile">
+                <img src={{ asset('icons/profile_pict_default.png') }}>
+                <div class="textName">
+                    <p><b>{{ 'hote'|trans({}, 'apartments') }}</b> {{ apartment.owner.firstname|capitalize }} {{ apartment.owner.lastname|capitalize }}</p>
+                    {% set current_date = "now"|date('Y-m-d') %}
+                    {% set interval = date(current_date).diff(date(apartment.owner.dateInscription)) %}
+                    {% if interval.y == 0 %}
+                        {% if interval.m == 0 %}
+                            <p class="inscription">{{ 'inscrit'|trans({}, 'apartments') }} {{ interval.d }} {{ 'jours'|trans({}, 'apartments') }}</p>
+                        {% else %}
+                            <p class="inscription">{{ 'inscrit'|trans({}, 'apartments') }} {{ interval.m }} {{ 'mois'|trans({}, 'apartments') }}</p>
+                        {% endif %}
+                    {% else %}
+                        <p class="inscription">{{ 'inscrit'|trans({}, 'apartments') }} {{ interval.y }} {{ 'ans'|trans({}, 'apartments') }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <hr>
+            <ul style="list-style-type: circle; display: flex;">
+                {% for addon in apartment.addons %}
+                    <li style="margin-right: 1.8vw;">{{ addon.name }}</li>
+                {% endfor %}
+            </ul>
+        <hr>
+        <div class="row reservation justify-content-center">
+            <h2>{{ 'réservation'|trans({}, 'apartments') }}</h2>
+            {{form_start(form)}}
+            <div class="row reservationRow">
+                <div class="col-6 leftFormContainer">
+                    <div class="leftForm">
+                        <p class="reservTitle">{{ 'date2'|trans({}, 'apartments') }}</p>
+                        <div style="color: red;">{{ form_errors(form.dates) }}</div>
+                        {{ form_widget(form.dates) }}
+                        <p class="reservTitle mt-4">{{ 'nombrevoyageurs2'|trans({}, 'apartments') }}</p>
+                        <div class="leftFormRow">
+                            <div class="leftFormCol">
+                                <p class="reservSubtitle">{{ 'adultes'|trans({}, 'apartments') }} (18+) :</p>
+                                {{ form_widget(form.adultTravelers) }}
+                            </div>
+                            <div class="leftFormCol">
+                                <p class="reservSubtitle">{{ 'enfants'|trans({}, 'apartments') }} (2+) :</p>
+                                {{ form_widget(form.childTravelers) }}
+                            </div>
+                            <div class="leftFormCol">
+                                <p class="reservSubtitle">{{ 'bébés'|trans({}, 'apartments') }} (0+) :</p>
+                                {{ form_widget(form.babyTravelers) }} 
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="middleForm">
+                        <p class="reservTitle">{{ 'montant'|trans({}, 'apartments') }}</p>
+                        <div class="secondColRow"><p class="">{{ apartment.price }}€ x <span class="nightsNb">0</span> {{ 'nuits'|trans({}, 'apartments') }} {{ (subscription is not null and subscription > 0) ? '(- 5%)' : '' }}</p><p><b><span id="priceForNights">0</span> €</b></p></div>
+                        <div class="secondColRow"><p class="">{{ 'frais'|trans({}, 'apartments') }}</p><p><b><span id="servicesValue">0</span> €</b></p></div>
+                        <div class="secondColRow"><p class="">{{ 'taxes'|trans({}, 'apartments') }} {{ (subscription is not null and subscription == 2) ? '(Offertes)' : '' }}</p><p><b>{{ (subscription is not null and subscription == 2) ? '<s>' : '' }}<span id="taxesValue">0</span>{{ (subscription is not null and subscription == 2) ? '</s>' : '' }} €</b></p></div>
+                        <p class="reservTitle mt-4">{{ 'prestations'|trans({}, 'apartments') }}</p>
+                        <div class="inputDiv vertical-scroll-panel" style="position: relative;">
+                            <div class="select-btn">
+                                <span class="btn-text">{{ 'ajouterservices'|trans({}, 'apartments') }}</span>
+                            </div>
+                            {{ form_widget(form.services) }}
+                            <ul class="list-items" style="z-index: 10;">
+                                {% for service in services %}
+                                    {% if service.price is defined and service.price is not null %}
+                                        <li class="item">
+                                            <span class="checkbox">
+                                                <i class="fa-solid fa-check check-icon"></i>
+                                            </span>
+                                            <span class="item-text">{{ service.name }} - {{ service.price }}€</span>
+                                            <span class="item-price" style="display: none;">{{ service.price }}</span>
+                                            <span class="item-id" style="display: none;">{{ service.id }}</span>
+                                        </li>
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="rightForm">
+                        <p class="reservTitle">{{ 'total'|trans({}, 'apartments') }}</p>
+                        <p class="totalText"><span id="totalValue">0</span>€ {{ 'pour'|trans({}, 'apartments') }} <span class="nightsNb">0</span> {{ 'nuits'|trans({}, 'apartments') }}</p>
+                        <button type="submit" class="reservBtn" id="reservation" disabled>{{ 'réserver'|trans({}, 'apartments') }}</button>
+                    </div>
+                </div>
+            </div>
+            {{form_end(form)}}
+        </div>
+        <hr style="margin-top:3%;">
+        <div class="row photosCaroussel justify-content-center">
+            <h2>{{ 'autres'|trans({}, 'apartments') }}</h2>
+            <div id="carouselExampleIndicators" class="carousel slide">
+                <div class="carousel-indicators">
+                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                    {% if apartment.pictures|length > 1 %}
+                        {% for i in range(1, (apartment.pictures|length)-1) %}
+                            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to={{ i }} aria-label="Slide {{ i + 1 }}"></button>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <img src={{ apartment.pictures[0] }} class="d-block w-100 carouselImg" alt="...">
+                    </div>
+                    {% for img in apartment.pictures[1:] %}
+                        <div class="carousel-item">
+                            <img src={{ img }} class="d-block w-100 carouselImg" alt="...">
+                        </div>
+                    {% endfor %}
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+                    <img src={{ asset('icons/arrow_left.png') }} class="arrow leftAr">
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+                    <img src={{ asset('icons/arrow_right.png') }} class="arrow rightAr">
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+        </div>
+        <hr>
+        <div class="row localisation justify-content-center">
+            <h2>{{ 'localisation'|trans({}, 'apartments') }}</h2>
+            <div id="map"></div>
+        </div>
+        <hr>
+        <div class="row reviews justify-content-center">
+            <h2>{{ 'avis'|trans({}, 'apartments') }}</h2>
+            <div class="reviewsContainer">
+                {% for review in apartment.reviews|slice(-2) %}
+                    <div class="review col-6">
+                        <div class="reviewHeader">
+                            <div class="reviewText">
+                                <div class="reviewAuthor">
+                                    <img class="authorPict" {% if review.author.profilePict is defined %} src={{ asset( review.author.profilePict ) }} {% else %} src={{ asset('icons/profile_pict_default.png') }} {% endif %}>
+                                    <div class="reviewAuthorContent">
+                                        <p><span class="authorName">@{{ review.author.firstname|capitalize }} {{ review.author.lastname|capitalize }}</span>  •  <span class="reviewDate">{{ review.postDate | date('d/m/Y') }}</span></p>
+                                        <div class="reviewRate">
+                                            {% for i in range(1, review.rate) %}
+                                                <img src={{ asset('icons/purple_star.png') }} class="stars">
+                                            {% endfor %}
+                                            {% if review.rate < 5 %}
+                                                {% for i in range(1, 5 - review.rate) %}
+                                                    <img src={{ asset('icons/gray_star.png') }} class="stars">
+                                                {% endfor %}
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                                <p class="reviewContent">{{ review.content }}</p>
+                            </div>
+                        </div>
+                        <hr>
+                    </div>
+                {% endfor %}
+                <button type="button" class="btn commentsBtn" data-bs-toggle="modal" data-bs-target="#modalReviews">
+                    {{ 'lireles'|trans({}, 'apartments') }} {{ apartment.reviews|length }} {{ 'commentaires'|trans({}, 'apartments') }}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+
+<script>
+    {% if subscription is defined and subscription is not null %}
+        var subscription = {{ subscription }};
+    {% else %}
+        var subscription = 0;
+    {% endif %}
+    const selectBtn = document.querySelector(".select-btn")
+    const items = document.querySelectorAll(".item");
+    const servInput = document.querySelector("#form_services");
+    var servValue = Array();
+
+    selectBtn.addEventListener("click", () => {
+        selectBtn.classList.toggle("open");
+    });
+
+    items.forEach(item => {
+        item.addEventListener("click", () => {
+            const price = item.querySelector(".item-price").textContent;
+            const id = item.querySelector(".item-id").textContent;
+            console.log(servValue);
+            if (item.classList.contains("checked")) {
+                servValue = servValue.filter(e => e != id);
+                servInput.value = servValue.toString();
+                $('#servicesValue').text(parseFloat($('#servicesValue').text()) - parseFloat(price));
+                $('#totalValue').text(parseFloat($('#totalValue').text()) - parseFloat(price));
+            } else {
+                servValue.push(id);
+                servInput.value = servValue.toString();
+                $('#servicesValue').text(parseFloat($('#servicesValue').text()) + parseFloat(price));
+                $('#totalValue').text(parseFloat($('#totalValue').text()) + parseFloat(price));
+            }
+            item.classList.toggle("checked");
+            var checked = document.querySelectorAll(".checked"),
+                btnText = document.querySelector(".btn-text");
+                if(checked && checked.length > 0){
+                    const plurial = checked.length > 1 ? "s" : "";
+                    btnText.innerText = `${checked.length} service${plurial} sélectionné${plurial}`;
+                }else{
+                    btnText.innerText = "Ajoutez des services";
+                }
+        });
+    })
+
+    const travelersMax = {{ apartment.travelersMax }};
+    var input1 = document.getElementById("form_adultTravelers");
+    var input2 = document.getElementById("form_childTravelers");
+    var reservBtn = document.getElementById("reservation");
+    var dates = document.getElementById("form_dates");
+
+    input1.addEventListener("change", function() {
+        updateMax(input1, input2);
+        checkButtonStatus();
+    });
+
+    input2.addEventListener("change", function() {
+        updateMax(input2, input1);
+        checkButtonStatus();
+    });
+
+    function checkButtonStatus() {
+        if ((parseInt(input1.value) !== 0 || parseInt(input2.value) !== 0) && dates.value.trim() != "" ) {
+            reservBtn.disabled = false;
+        } else {
+            reservBtn.disabled = true;
+        }
+    }
+
+    function updateMax(input, otherInput) {
+        var otherValue = parseInt(otherInput.value);
+        var total = parseInt(input.value) + otherValue;
+        var maxLimit = travelersMax;
+
+        var newMax = maxLimit - otherValue;
+        input.max = newMax;
+        otherInput.max = maxLimit - parseInt(input.value);
+
+        if (parseInt(input.value) > maxLimit) {
+            input.value = maxLimit;
+            total = parseInt(input.value) + otherValue;
+        }
+        if (total > maxLimit) {
+            otherInput.value = maxLimit - parseInt(input.value);
+        }
+    }
+
+    const rangesTab = {{ datesRangeReservs|json_encode|raw }};
+    const nightPrice = {{ apartment.price }};
+    var priceForNights = 0;
+    var taxesValue = 0;
+    var servicesValue = parseFloat($('#servicesValue').text());
+    var totalValue = servicesValue;
+
+    $("#form_adultTravelers").on('change', function(){
+        var adultTravelers = $(this).val();
+        if (adultTravelers == '' || adultTravelers < 0){
+            $(this).val(0);
+            $(this).text('0');
+        }
+        var travelersTaxes = parseFloat($(this).val()) * (0.005 * priceForNights);
+        $('#taxesValue').text((parseFloat(taxesValue) + travelersTaxes).toFixed(2));
+        if (subscription == 2){
+            $('#totalValue').text(parseFloat($('#totalValue').text()).toFixed(2));        
+        }else{
+            $('#totalValue').text((parseFloat($('#totalValue').text()) + parseFloat(travelersTaxes)).toFixed(2));
+        }
+    })
+    $("#form_childTravelers").on('change', function(){
+        var childTravelers = $(this).val();
+        if (childTravelers == '' || childTravelers < 0){
+            $(this).val(0);
+            $(this).text('0');
+        }
+    })
+    $("#form_babyTravelers").on('change', function(){
+        var babyTravelers = $(this).val();
+        if (babyTravelers == '' || babyTravelers < 0){
+            $(this).val(0);
+            $(this).text('0');
+        }
+    })
+    $(function() {
+        $('input[id="form_dates"]').daterangepicker({
+            autoUpdateInput: false,
+            autoApply: true,
+            locale: {
+                cancelLabel: 'Clear',
+            },
+            isInvalidDate: function(date) {
+                if (date.isBefore(moment(), 'day')) {
+                    return true;
+                }
+                for (var i = 0; i < rangesTab.length; i++) {
+                    var startDate = moment(rangesTab[i][0], 'YYYY-MM-DD');
+                    var endDate = moment(rangesTab[i][1], 'YYYY-MM-DD');
+                    if (date.isBetween(startDate, endDate, null, '[]')) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        }, function(start, end, label) {
+            $(this).val(start.format('YYYY.MM.DD') + " - " + end.format('YYYY.MM.DD'));
+            
+        }).on('apply.daterangepicker', function(ev, picker) {
+            $(this).val('Du ' + picker.startDate.format('DD/MM/YYYY') + ' au ' + picker.endDate.format('DD/MM/YYYY'));
+            checkButtonStatus();
+            var startDate = picker.startDate;
+            var endDate = picker.endDate;
+            var duration = endDate.diff(startDate, 'days');
+            if (duration == 0) {
+                picker.setStartDate(moment());
+                picker.setEndDate(moment());
+                priceForNights = 0;
+                taxesValue = 0;
+                totalValue = servicesValue;
+                $('.nightsNb').text(duration);
+                $(this).val('');
+            } else {
+                if (subscription > 0){
+                    priceForNights = ((duration*nightPrice)*0.95).toFixed(2);
+                }else{
+                    priceForNights = duration*nightPrice;
+                }
+                taxesValue = (priceForNights*0.03).toFixed(2);
+                if (subscription == 2){
+                    totalValue = servicesValue + parseFloat(priceForNights);
+                }else{
+                    totalValue = servicesValue + parseFloat(priceForNights) + parseFloat(taxesValue);
+                }
+                for (var i = 0; i < rangesTab.length; i++) {
+                    var rangeStartDate = moment(rangesTab[i][0], 'YYYY-MM-DD');
+                    var rangeEndDate = moment(rangesTab[i][1], 'YYYY-MM-DD');
+                    if (rangeStartDate.isBetween(startDate, endDate, null, '[]') || rangeEndDate.isBetween(startDate, endDate, null, '[]')) {
+                        picker.setStartDate(moment());
+                        picker.setEndDate(moment());
+                        duration = 0;
+                        priceForNights = 0;
+                        taxesValue = 0;
+                        totalValue = servicesValue;
+                        $('.nightsNb').text(duration);
+                        $(this).val('');
+                        break;
+                    }
+                }
+            }
+            $('.nightsNb').text(duration);
+            $('#priceForNights').text(priceForNights);
+            $('#taxesValue').text(taxesValue);
+            $('#totalValue').text((parseFloat($('#totalValue').text()) + totalValue).toFixed(2));  
+        }).on('cancel.daterangepicker', function(ev, picker) {
+            $(this).val('');
+        });
+    });
+
+
+    const centerGps = {{ apartment.centerGps|json_encode|raw }};
+
+    mapboxgl.accessToken = 'pk.eyJ1IjoibGVvLXVyYWhhcmEiLCJhIjoiY2x2MTJrcHJ4MDIwdzJrdXNhcDhjazF4MSJ9.ZJjs_hvEVTuHKAe2CeDGbQ';
+    const map = new mapboxgl.Map({
+        container: 'map',
+        center: centerGps,
+        zoom: 16
+    });
+
+    const geojson = {
+        type: 'FeatureCollection',
+        features: [{
+            type: 'Feature',
+            geometry: {
+                type: 'Point',
+                coordinates: centerGps
+            }
+        }]
+    };
+
+    geojson.features.forEach(function(marker) {
+        var el = document.createElement('div');
+        el.className = 'marker';
+
+        new mapboxgl.Marker(el)
+            .setLngLat(marker.geometry.coordinates)
+            .addTo(map)
+    });
+</script>
+{% endblock %}

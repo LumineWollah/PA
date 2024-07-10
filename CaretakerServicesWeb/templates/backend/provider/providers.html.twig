@@ -1,0 +1,127 @@
+{% extends 'backend/base.html.twig' %}
+
+{% block stylesheets %}<link rel="stylesheet" href={{ asset('styles/crud.css') }}>{% endblock %}
+
+{% block activeGest %}active{% endblock %}
+{% block activeProv %}active{% endblock %}
+
+{% block title %}Liste des prestataires{% endblock %}
+
+{% block body %}
+<script>
+    $(document).ready( function () {
+        $('#crudList').DataTable( {
+            buttons: true,
+            pageLength: 10,
+            layout: {
+                topStart: {
+                    search: {
+                        placeholder: "Rechercher...",
+                        search: ""
+                    }
+                },
+                topEnd: 'buttons',
+                bottomStart: 'paging',
+                bottomEnd: 'info',
+            },
+            language: {
+                search: "",
+                info: "Affichage des entrées _START_ à _END_ sur _TOTAL_ au total",
+            },
+            buttons: [
+                'pdf'
+            ],
+            columnDefs: [
+                {
+                    targets: 3,
+                    className: 'dt-body-left dt-head-left'
+                },
+                {
+                    targets: -1,
+                    orderable: false,
+                }   
+            ]
+        } );
+    } );
+</script>
+    <div class="col-10 p-0">
+        <div class="p-3">
+            <div class="btn-create-row">
+                <h1>Liste des prestataires</h1>
+                <a href="{{ path('userCreate', {'role':'ROLE_PROVIDER' }) }}" class="btn btn-create"><div class="btnImage"><img style="height:20px;">Créer +</div></a>
+            </div>
+            <h4 class="mt-4">Non validés:</h4>
+            <div class="container m-0 mb-4">
+                <div class="row">
+                {% for provider in unverifiedProviders %}
+                    <div class="col-3 p-0 me-4 mb-4">
+                        <div class="noValidateCard">
+                            <img src={% if provider['profilePict'] is defined and provider['profilePict'] is not empty %}{{ provider.profilePict }}{% else %}{{asset('icons/profile_pict_default.png')}}{% endif %}>                            
+                            <p class="name">{{ provider.firstname|capitalize }} {{ provider.lastname|capitalize }}</p>
+                            <p class="otherData inscription"><b>Inscrit le :</b> {{ provider.dateInscription|date('d/m/Y H:i:s') }}</p>
+                            <p class="otherData"><b>Email :</b> {{ provider.email }}</p>
+                            <p class="otherData"><b>Téléphone :</b> {{ provider.telNumber|split('', 2)|join('.') }}</p>
+                            <form action="{{ path('userShow') }}" method="post" style="display: inline;">
+                                <input type="hidden" name="user" value="{{ provider|json_encode }}">
+                                <button type="submit" class="seeMore" style="background-color: #A594F9;">Voir plus</button>
+                            </form>
+                            <div class="validateBtns">
+                                <a href="{{ path('providerAccept', {'id': provider.id}) }}" class="validateBtn validBtn">Valider</a>
+                                <a href="{{ path('userRefuse', {'id': provider.id, 'origin':'providerList', 'email': provider.email }) }}" class="validateBtn refuseBtn">Refuser</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+                </div>
+              </div> 
+            <h4>Validés:</h4>
+            <table id="crudList" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">Prénom</th>
+                        <th scope="col">Nom</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Téléphone</th>
+                        <th scope="col">Inscrit le</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for provider in verifiedProviders %}
+                        <tr>
+                            <td {% if provider['isBan'] %} style="background-color: #FFB5B5;"{% endif %}>{{ provider.firstname|capitalize }}</td>
+                            <td {% if provider['isBan'] %} style="background-color: #FFB5B5;"{% endif %}>{{ provider.lastname|upper }}</td>
+                            <td {% if provider['isBan'] %} style="background-color: #FFB5B5;"{% endif %}>{{ provider.email }}</td>
+                            <td {% if provider['isBan'] %} style="background-color: #FFB5B5;"{% endif %}>{{ provider.telNumber|split('', 2)|join('.') }}</td>
+                            <td {% if provider['isBan'] %} style="background-color: #FFB5B5;"{% endif %}>{{ provider.dateInscription | date('d/m/Y H:i:s') }}</td>
+                            <td class="action" {% if provider['isBan'] %} style="background-color: #FFB5B5;"{% endif %}>
+                                <a href="{{ path('userDelete', {'id': provider.id, 'origin':'providerList' }) }}" class="btn" style="background-color: #EE3939;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/bin.png') }}></div></a>
+                                <form action="{{ path('providerEdit') }}" method="post" style="display: inline;">
+                                    <input type="hidden" name="provider" value="{{ provider|json_encode }}">
+                                    <button type="submit" class="btn" style="background-color: #18A0FB;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/pen.png') }}></div></button>
+                                </form>
+                                <form action="{{ path('userShow') }}" method="post" style="display: inline;">
+                                    <input type="hidden" name="user" value="{{ provider|json_encode }}">
+                                    <button type="submit" class="btn" style="background-color: #A594F9;"><div class="btnImage"><img style="height:17px;" src={{ asset('icons/crud/chart.png') }}></div></button>
+                                </form>
+                                {% if provider['isBan'] %}
+                                    <form action="{{ path('userUnban') }}" method="post" style="display: inline;">
+                                    <input type="hidden" name="user" value="{{ provider|json_encode }}">
+                                    <input type="hidden" name="origin" value="providerList">
+                                    <button type="submit" class="btn" style="background-color: #29b95f;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/ban.png') }}></div></button>
+                                    </form>
+                                {% else %}
+                                    <form action="{{ path('userBan') }}" method="post" style="display: inline;">
+                                    <input type="hidden" name="user" value="{{ provider|json_encode }}">
+                                    <input type="hidden" name="origin" value="providerList">
+                                    <button type="submit" class="btn" style="background-color: #333333;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/ban.png') }}></div></button>
+                                    </form>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

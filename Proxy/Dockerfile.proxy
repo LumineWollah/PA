@@ -1,0 +1,11 @@
+FROM httpd:2.4
+
+COPY apache/httpd.conf /usr/local/apache2/conf/httpd.conf
+
+RUN mkdir -p /usr/local/apache2/conf/sites/
+
+COPY apache/proxy.conf /usr/local/apache2/conf/sites/caretakerservices.conf
+
+EXPOSE 80 443
+
+CMD ["httpd", "-D", "FOREGROUND"]

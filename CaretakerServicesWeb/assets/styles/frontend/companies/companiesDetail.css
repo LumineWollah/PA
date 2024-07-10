@@ -1,0 +1,154 @@
+.pageContent {
+    position: absolute;
+    top: 8vh;
+    padding: 2%;
+}
+
+.coverImage {
+    width: 22vw;
+    height: 14vw;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.coverImgRow {
+    display: flex;
+    justify-content: end;
+    align-items: center;
+}
+
+h1 {
+    font-family: 'Roboto Condensed', sans-serif;
+    font-weight: bold;
+}
+
+h2 {
+    font-family: 'Antonio', sans-serif;
+    font-weight: bold;
+}
+
+.h2span {
+    color: #A594F9;
+}
+
+.desc {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.desc p {
+    font-family: 'Quicksand', sans-serif;
+    font-size: 1vw;
+    margin-bottom: 1vh;
+}
+
+
+.carousel-control-next, .carousel-control-prev {
+    opacity: 1 !important;
+}
+
+.arrow {
+    height: 6vh;
+}
+
+.cards-wrapper {
+    display: flex;
+    justify-content: center;
+}
+
+.card img {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+#map {
+    margin-top: 2vh;
+    height: 50vh;
+    width: 50vw;
+    margin-bottom: 2vh;
+}
+
+.marker {
+    background-image: url('../../../icons/marker.png');
+    background-size: cover;
+    width: 80px;
+    height: 80px;
+    cursor: pointer;
+}
+
+.address {
+    font-family: 'Quicksand', sans-serif;
+    font-size: 1vw;
+    font-weight: bold;
+}
+
+.btnSend {
+    background-color: #A594F9;
+    color: white;
+    font-family: 'Antonio', sans-serif;
+    font-weight: bold;
+    padding: 1vh 2vw;
+    border-radius: 10px;
+    margin-top: 2vh;
+    border: 2px solid #A594F9;
+    animation: all 0.5s ease-in-out;
+}
+
+.btnSend:hover {
+    background-color: white;
+    color: #A594F9;
+    border: 2px solid #A594F9;
+}
+
+.card {
+    margin: 1vw;
+    box-shadow: 2px 6px 8px 0 rgba(22, 22, 26, 0.18);
+    border: none;
+    border-bottom: 7px solid;
+    border-radius: 10px;
+    text-align: center;
+    height: 60vh;
+    width: 18vw;
+}
+
+.desc {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 5;
+    font-size: 1vw;
+    -webkit-box-orient: vertical;
+}
+
+.contactBtn {
+    background-color: #D9D9D9;
+    border-radius: 0;
+    font-family: 'Antonio';
+    padding: 7px 30px 10px 30px;
+    font-weight: 600;
+    position: absolute; 
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.carousel-inner {
+    padding: 1em;
+}
+
+.carousel-control-prev,
+.carousel-control-next {
+    background-color: #e1e1e1;
+    width: 5vh;
+    height: 5vh;
+    border-radius: 50%;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+@media (min-width: 768px) {
+    .card img {
+        height: 11em;
+    }
+}

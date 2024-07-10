@@ -1,0 +1,31 @@
+{% extends 'frontend/login_register/base.html.twig' %}
+
+{% block stylesheets %}<link href={{ asset('styles/frontend/login_register/register.css') }} rel="stylesheet">{% endblock %}
+
+{% block pageContent %}
+<div class="registerCard">
+    <div class="titleCard">
+        <h2>{{ 'inscription'|trans({}, 'login') }}</h2>
+        <p class="titleDesc">{{ 'choisirStatut'|trans({}, 'login') }}</p>
+    </div>
+    {{form_start(form)}}
+        <div class="inputDivRow mt-3">
+            <div class="inputDiv">
+                {{form_widget(form.traveler)}}
+            </div>
+            <div class="inputDiv"> 
+                {{form_widget(form.provider)}}
+            </div>
+        </div>
+        <div class="inputDivRow mt-3">
+            <div class="inputDiv">
+                {{form_widget(form.lessorPro)}}
+            </div>
+            <div class="inputDiv"> 
+                {{form_widget(form.lessorPerso)}}
+            </div>
+        </div>
+    {{form_end(form)}}
+</div>
+<a href={{ path("login") }} class="noAccount">{{ 'auncompte'|trans({}, 'login') }}<span style="color: #3D2F44;">{{ 'connecter'|trans({}, 'login') }}</span></a>
+{% endblock %}

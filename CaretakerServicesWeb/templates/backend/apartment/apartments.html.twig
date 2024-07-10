@@ -1,0 +1,130 @@
+{% extends 'backend/base.html.twig' %}
+
+{% block stylesheets %}<link rel="stylesheet" href={{ asset('styles/crud.css') }}>{% endblock %}
+
+{% block activeGest %}active{% endblock %}
+{% block activeApar %}active{% endblock %}
+
+{% block title %}Liste des logements{% endblock %}
+
+{% block body %}
+<script>
+    $(document).ready( function () {
+        $('#crudList').DataTable( {
+            buttons: true,
+            pageLength: 10,
+            layout: {
+                topStart: {
+                    search: {
+                        placeholder: "Rechercher...",
+                        search: ""
+                    }
+                },
+                topEnd: 'buttons',
+                bottomStart: 'paging',
+                bottomEnd: 'info',
+            },
+            language: {
+                search: "",
+                info: "Affichage des entrées _START_ à _END_ sur _TOTAL_ au total",
+            },
+            buttons: [
+                'pdf'
+            ],
+            columnDefs: [
+                {
+                    targets: 4,
+                    className: 'dt-body-left dt-head-left'
+                },
+                {
+                    targets: -1,
+                    orderable: false,
+                },
+                {
+                    targets: 0,
+                    orderable: false,
+                }      
+            ]
+        } );
+    } );
+</script>
+    <div class="col-10 p-0">
+        <div class="p-3">
+            <div class="btn-create-row">
+                <h1>Liste des logements</h1>
+                <a href="{{ path('apartmentCreateCrud') }}" class="btn btn-create"><div class="btnImage"><img style="height:20px;">Créer +</div></a>
+            </div>
+            <h4 class="mt-4">Non validés:</h4>
+            <div class="container m-0 mb-4">
+                <div class="row">
+                {% for apartment in unverifiedApartments %}
+                    <div class="col-3 p-0 me-4 mb-4">
+                        <div class="noValidateCard">
+                            <img src={% if apartment['mainPict'] is defined and apartment['mainPict'] is not empty %}{{ apartment.mainPict }}{% endif %}>                            
+                            <p class="name">{{ apartment.name|capitalize }}</p>
+                            <p class="otherData inscription"><b>Créé le :</b> {{ apartment.dateCreation|date('d/m/Y H:i:s') }}</p>
+                            <p class="otherData"><b>Propriétaire :</b> {{ apartment.owner.firstname|capitalize }} {{ apartment.owner.lastname|capitalize }}</p>
+                            <p class="otherData"><b>Prix :</b> {{ apartment.price }}</p>
+                            <p class="otherData"><b>Surface :</b> {{ apartment.area }}</p>
+                            <form action="{{ path('apartmentShow') }}" method="post" style="display: inline;">
+                                <input type="hidden" name="apartment" value="{{ apartment|json_encode }}">
+                                <button type="submit" class="seeMore" style="background-color: #A594F9;">Voir plus</button>
+                            </form>
+                            <div class="validateBtns">
+                                <a href="{{ path('apartmentAccept', {'id': apartment.id}) }}" class="validateBtn validBtn">Valider</a>
+                                <a href="{{ path('apartmentDelete', {'id': apartment.id, 'origin':'apartmentCrud' }) }}" class="validateBtn refuseBtn">Refuser</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+                </div>
+              </div> 
+            <h4>Validés:</h4>
+            <table id="crudList" class="table table-striped tableAps">
+                <thead>
+                    <tr>
+                        <th scope="col"></th>
+                        <th scope="col">Nom</th>
+                        <th scope="col">Propriétaire</th>
+                        <th scope="col">Ville</th>
+                        <th scope="col">Prix</th>
+                        <th scope="col">Date d'ajout</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for apartment in verifiedApartments %}
+                        <tr>
+                            <td class="mainPict"><img src={{apartment.mainPict}}></td>
+                            <td>{{ apartment.name|capitalize }}</td>
+                            <td>
+                                <form action="{{ path('userShow') }}" method="post" style="display: inline;">
+                                    <input type="hidden" name="user" value="{{ apartment.owner|json_encode }}">
+                                    <button type="submit" class="btn btn-light owner" style="height:40px"><p> {{ apartment.owner.firstname ~ " " ~ apartment.owner.lastname|capitalize }} </p></button>
+                                </form>
+                            </td>
+                            <td>{{ apartment.city }}</td>
+                            <td>{{ apartment.price }} €</td>
+                            <td>{{ apartment.dateCreation | date('d/m/Y H:i:s') }}</td>
+                            <td class="action">
+                                <a href="{{ path('apartmentDelete', {'id': apartment.id }) }}" class="btn" style="background-color: #EE3939;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/bin.png') }}></div></a>
+                                <form action="{{ path('apartmentEdit') }}" method="post" style="display: inline;">
+                                    <input type="hidden" name="apartment" value="{{ apartment|json_encode }}">
+                                    <button type="submit" class="btn" style="background-color: #18A0FB;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/pen.png') }}></div></button>
+                                </form>
+                                <form action="{{ path('apartmentShow') }}" method="post" style="display: inline;">
+                                    <input type="hidden" name="apartment" value="{{ apartment|json_encode }}">
+                                    <button type="submit" class="btn" style="background-color: #A594F9;"><div class="btnImage"><img style="height:17px;" src={{ asset('icons/crud/chart.png') }}></div></button>
+                                </form>
+                                <form action="{{ path('apartmentUnavailable') }}" method="post" style="display: inline;">
+                                    <input type="hidden" name="apartment" value="{{ apartment|json_encode }}">
+                                    <button type="submit" class="btn" style="background-color: #18A0FB;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/calendar.png') }}></div></button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

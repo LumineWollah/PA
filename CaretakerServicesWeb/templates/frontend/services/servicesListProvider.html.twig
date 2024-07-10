@@ -1,0 +1,111 @@
+{% extends 'frontend/base.html.twig' %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href={{ asset('styles/frontend/companies/companiesList.css') }}>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+{% endblock %}
+
+{% block activeMyServ %}active{% endblock %}
+
+{% block body %}
+<div class="container-fluid pageContent">
+    <h1>{{ 'vos'|trans({}, 'services') }} <span class="h1span">services</span> {{ 'proposés'|trans({}, 'services') }}</h1>
+
+    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel">{{ 'impossible'|trans({}, 'services') }}</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="content">
+                    {{ 'encours'|trans({}, 'services') }}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">{{ 'compris'|trans({}, 'services') }}</button>
+                </div>
+            </div>
+        </div>
+    </div>   
+    {% if serv|length > 0 %}
+    {% for key, value in serv %}
+        {% set categoryName = key|split('-')[0] %}
+        {% set categoryColor = key|split('-')[1] %}
+        {% set categoryId = key|split('-')[2] %}
+        <div class="row rowServ">
+            <h2 style="color: #{{ categoryColor }};">{{ categoryName|upper }}</h2>
+            <hr class="persHr" style="border-color: #{{ categoryColor }};">
+            {% for i in range(0, (((value|length)/4)|round(0, 'ceil'))-1) %}
+                <div class="row">
+                    {% for j in range(i*4, (i*4)+3) %}
+                        {% if j < value|length %}
+                            <div class="col-3 companyContainer categoryServicesContainer servicesContainerProvider">
+                            <a class="servCase" href={{ path('providersDetail', {'id': value[j].id}) }}>               
+                                {% set stars = 0 %}
+                                {% set revNb = 0 %}
+                                {% for review in value[j].reviews %}
+                                    {% set stars = stars + review.rate %}
+                                    {% set revNb = revNb + 1 %}
+                                {% endfor %}
+                                {% if revNb > 0 %}
+                                    <div class="reviewsFrame">
+                                        {{ stars / revNb }} ★
+                                    </div>
+                                {% endif %}
+                                <div class="imgContainer">
+                                    {% if value[j].coverImage is not defined or value[j].coverImage is null %}
+                                        <img src={{ asset('icons/profile_pict_default_company.png') }}>
+                                    {% else %}
+                                        {% set coverImage = value[j].coverImage %}
+                                        <img src="{{ coverImage }}">
+                                    {% endif %}
+                                </div>
+                                <p class="apartName"><b>{{ value[j].name }}</b></p>
+                                <p class="servDesc">{{ value[j].description }}</p>
+                                <p class="servPlace"><b>{{ 'siège'|trans({}, 'services') }}</b> {{ value[j].company.city }}</p>
+                                <span id="coords" style="display: none;">{{ value[j].company.centerGps|json_encode }}</span>
+                                {% if value[j].price is not defined or value[j].price is null %}
+                                    <p class="apartDesc"><b>{{ 'prix-'|trans({}, 'services') }} €</b></p>
+                                    <span id="price" style="display: none;">{{ null }}</span>
+                                {% else %}
+                                    <p class="apartDesc"><b>{{ 'prix~'|trans({}, 'services') }}{{ value[j].price }} €</b></p>
+                                    <span id="price" style="display: none;">{{ value[j].price }}</span>
+                                {% endif %}
+                            </a>
+                                <div class="apartActions mt-2 d-flex">
+                                    <form action="{{ path('serviceUpdate') }}" method="post" >
+                                        <input type="hidden" name="service" value="{{ value[j]|json_encode }}">
+                                        <button type="submit">{{ 'modifier'|trans({}, 'services') }}</button>
+                                    </form>
+                                    <a href="{{ path('serviceDeleteProvider', {'id': value[j].id}) }}" class="deleteApBtn">{{ 'supprimer'|trans({}, 'services') }}</a>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            {% endfor %}
+        </div>
+    {% endfor %}
+    {% else %}
+        <p class="listevide">{{ 'passervices'|trans({}, 'services') }}</p>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block javascripts %}
+<script type="text/javascript">   
+
+    $(function() {
+
+    var showPopup = {{ showPopup }};
+    if (showPopup == true){
+        var contentPopup = "{{ content }}";
+        var titlePopup = "{{ title }}";
+        $('#content').html(contentPopup);
+        $('#staticBackdropLabel').html(titlePopup);
+        $('#staticBackdrop').modal('show');
+    };
+    });
+
+</script>
+{% endblock %}

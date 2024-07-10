@@ -1,0 +1,101 @@
+form {
+    width: 100%;
+}
+
+.registerCard {
+    margin: auto;
+    display: flex;
+    width: 70%;
+    flex-direction: column;
+    align-items: center;
+}
+
+.inputDivRow {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.inputDiv {
+    height: 6vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-bottom: 20px;
+    position: relative;
+    width: 49%;
+}
+
+.registerBtn {
+    width: 30%;
+    margin-left: 35%;
+}
+
+.choiceBtn {
+    width: 60%;
+    margin-left: 20%;
+}
+
+.registerBtn, .choiceBtn {
+    background-color: #3D2F44;
+    color: #FFFFFF;
+    font-family: 'Antonio';
+    font-weight: 100;
+    height: 6vh;
+    font-size: 120%;
+    outline: none;
+    border: none;
+}
+
+#geocoder {
+    width: 99.5%;
+    margin-left: 0.5%;
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.mapboxgl-ctrl-geocoder, .mapboxgl-ctrl-geocoder input {
+    max-width: 100% !important;
+    width: 100% !important;
+    box-shadow: none !important;
+}
+
+.mapboxgl-ctrl-geocoder input {
+    border: #d2d2d2 solid 1px;
+    border-radius: 5px;
+    width: 100%;
+    height: 6vh;
+    text-indent: 2%;
+    background-color: #F7F7F7;
+}
+
+.mapboxgl-ctrl-geocoder input:focus {
+    outline: black 2px solid;
+}
+
+.mapboxgl-ctrl-geocoder svg {
+    display: none;
+}
+
+.mapboxgl-ctrl-geocoder input::-webkit-input-placeholder {
+    font-family: "Antonio";
+}
+
+.inputDivCenter {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    height: 6vh;
+    flex-direction: column;
+    margin-bottom: 20px;
+    position: relative;
+    align-items: center;
+}
+
+.inputLogoAdress {
+    position: absolute;
+    left: 1.5%;
+    z-index: 10;
+    height: 25px;
+}

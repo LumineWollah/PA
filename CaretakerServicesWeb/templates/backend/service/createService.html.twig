@@ -1,0 +1,52 @@
+{% extends 'backend/base.html.twig' %}
+
+{% block activeGest %}active{% endblock %}
+{% block activeServ %}active{% endblock %}
+
+{% block title %}Créer un service{% endblock %}
+
+{% block body %}
+    <div class="col-10 p-0">
+        <div class="p-3">
+            <h1>Créer un service</h1>
+            {{form_start(form)}}
+                <div class="inputDiv" style="position: relative;">
+                    {{form_widget(form.name)}}
+                </div>
+                <div class="inputDiv" style="position: relative;">
+                    {{form_widget(form.description)}}
+                </div>
+                <div class="inputDiv" style="position: relative;">
+                    {{form_widget(form.price)}}
+                    <div class="errors">{{form_errors(form.price)}}</div>
+                </div>
+                <div class="inputDiv" style="position: relative;">
+                    {{form_widget(form.company)}}
+                </div>
+                <div class="inputDiv" style="position: relative;">
+                    {{form_widget(form.category)}}
+                </div>
+                <div class="inputDiv" style="position: relative;">
+                    {{form_widget(form.coverImage)}}
+                </div>
+                <div class="inputDiv" style="position: relative;">
+                    {{form_widget(form.addressInputs)}}
+                    <div class="errors">{{form_errors(form.addressInputs)}}</div>
+                </div>
+                <div class="inputDiv" style="position: relative;">
+                    {{form_widget(form.daysOfWeek)}}
+                    <div class="errors">{{form_errors(form.daysOfWeek)}}</div>
+                </div>
+                <div class="inputDiv" style="position: relative;">
+                    {{form_widget(form.startTime)}}
+                    <div class="errors">{{form_errors(form.startTime)}}</div>
+                </div>
+                <div class="inputDiv" style="position: relative;">
+                    {{form_widget(form.endTime)}}
+                    <div class="errors">{{form_errors(form.endTime)}}</div>
+                </div>
+                <button type="submit" class="btn">Créer</button>
+            {{form_end(form)}}
+        </div>
+    </div>
+{% endblock %}

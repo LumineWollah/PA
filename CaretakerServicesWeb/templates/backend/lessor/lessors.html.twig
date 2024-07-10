@@ -1,0 +1,127 @@
+{% extends 'backend/base.html.twig' %}
+
+{% block stylesheets %}<link rel="stylesheet" href={{ asset('styles/crud.css') }}>{% endblock %}
+
+{% block activeGest %}active{% endblock %}
+{% block activeLess %}active{% endblock %}
+
+{% block title %}Liste des bailleurs{% endblock %}
+
+{% block body %}
+<script>
+    $(document).ready( function () {
+        $('#crudList').DataTable( {
+            buttons: true,
+            pageLength: 10,
+            layout: {
+                topStart: {
+                    search: {
+                        placeholder: "Rechercher...",
+                        search: ""
+                    }
+                },
+                topEnd: 'buttons',
+                bottomStart: 'paging',
+                bottomEnd: 'info',
+            },
+            language: {
+                search: "",
+                info: "Affichage des entrées _START_ à _END_ sur _TOTAL_ au total",
+            },
+            buttons: [
+                'pdf'
+            ],
+            columnDefs: [
+                {
+                    targets: 3,
+                    className: 'dt-body-left dt-head-left'
+                },
+                {
+                    targets: -1,
+                    orderable: false,
+                }   
+            ]
+        } );
+    } );
+</script>
+    <div class="col-10 p-0">
+        <div class="p-3">
+            <div class="btn-create-row">
+                <h1>Liste des bailleurs</h1>
+                <a href="{{ path('userCreate', {'role':'ROLE_LESSOR' }) }}" class="btn btn-create"><div class="btnImage"><img style="height:20px;">Créer +</div></a>
+            </div>
+            <h4 class="mt-4">Non validés:</h4>
+            <div class="container m-0 mb-4">
+                <div class="row">
+                {% for lessor in unverifiedLessors %}
+                    <div class="col-3 p-0 me-4 mb-4">
+                        <div class="noValidateCard">
+                            <img src={% if lessor['profilePict'] is defined and lessor['profilePict'] is not empty %}{{ lessor.profilePict }}{% else %}{{asset('icons/profile_pict_default.png')}}{% endif %}>                            
+                            <p class="name">{{ lessor.firstname|capitalize }} {{ lessor.lastname|capitalize }}</p>
+                            <p class="otherData inscription"><b>Inscrit le :</b> {{ lessor.dateInscription|date('d/m/Y H:i:s') }}</p>
+                            <p class="otherData"><b>Email :</b> {{ lessor.email }}</p>
+                            <p class="otherData"><b>Téléphone :</b> {{ lessor.telNumber|split('', 2)|join('.') }}</p>
+                            <form action="{{ path('userShow') }}" method="post" style="display: inline;">
+                                <input type="hidden" name="user" value="{{ lessor|json_encode }}">
+                                <button type="submit" class="seeMore" style="background-color: #A594F9;">Voir plus</button>
+                            </form>
+                            <div class="validateBtns">
+                                <a href="{{ path('lessorAccept', {'id': lessor.id}) }}" class="validateBtn validBtn">Valider</a>
+                                <a href="{{ path('userRefuse', {'id': lessor.id, 'origin':'lessorList', 'email': lessor.email }) }}" class="validateBtn refuseBtn">Refuser</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+                </div>
+              </div> 
+            <h4>Validés:</h4>
+            <table id="crudList" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">Prénom</th>
+                        <th scope="col">Nom</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Téléphone</th>
+                        <th scope="col">Inscrit le</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for lessor in verifiedLessors %}
+                        <tr>
+                            <td {% if lessor['isBan'] %} style="background-color: #FFB5B5;"{% endif %}>{{ lessor.firstname|capitalize }}</td>
+                            <td {% if lessor['isBan'] %} style="background-color: #FFB5B5;"{% endif %}>{{ lessor.lastname|upper }}</td>
+                            <td {% if lessor['isBan'] %} style="background-color: #FFB5B5;"{% endif %}>{{ lessor.email }}</td>
+                            <td {% if lessor['isBan'] %} style="background-color: #FFB5B5;"{% endif %}>{{ lessor.telNumber|split('', 2)|join('.') }}</td>
+                            <td {% if lessor['isBan'] %} style="background-color: #FFB5B5;"{% endif %}>{{ lessor.dateInscription|date('d/m/Y H:i:s') }}</td>
+                            <td class="action" {% if lessor['isBan'] %} style="background-color: #FFB5B5;"{% endif %}>
+                                <a href="{{ path('userDelete', {'id': lessor.id, 'origin':'lessorList' }) }}" class="btn" style="background-color: #EE3939;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/bin.png') }}></div></a>
+                                <form action="{{ path('lessorEdit') }}" method="post" style="display: inline;">
+                                    <input type="hidden" name="lessor" value="{{ lessor|json_encode }}">
+                                    <button type="submit" class="btn" style="background-color: #18A0FB;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/pen.png') }}></div></button>
+                                </form>
+                                <form action="{{ path('userShow') }}" method="post" style="display: inline;">
+                                    <input type="hidden" name="user" value="{{ lessor|json_encode }}">
+                                    <button type="submit" class="btn" style="background-color: #A594F9;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/chart.png') }}></div></button>
+                                </form>
+                                {% if lessor['isBan'] %}
+                                    <form action="{{ path('userUnban') }}" method="post" style="display: inline;">
+                                    <input type="hidden" name="user" value="{{ lessor|json_encode }}">
+                                    <input type="hidden" name="origin" value="lessorList">
+                                    <button type="submit" class="btn" style="background-color: #29b95f;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/ban.png') }}></div></button>
+                                    </form>
+                                {% else %}
+                                    <form action="{{ path('userBan') }}" method="post" style="display: inline;">
+                                    <input type="hidden" name="user" value="{{ lessor|json_encode }}">
+                                    <input type="hidden" name="origin" value="lessorList">
+                                    <button type="submit" class="btn" style="background-color: #333333;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/ban.png') }}></div></button>
+                                    </form>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

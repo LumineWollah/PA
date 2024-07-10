@@ -1,0 +1,58 @@
+{% extends 'frontend/login_register/base.html.twig' %}
+
+{% block stylesheets %}<link href={{ asset('styles/frontend/login_register/register.css') }} rel="stylesheet">{% endblock %}
+
+{% block pageContent %}
+<div class="registerCard">
+    <div class="titleCard">
+        <h2>{{ 'inscription'|trans({}, 'login') }}</h2>
+        <p class="titleDesc">{{ 'entrezInfos'|trans({}, 'login') }}</p>
+    </div>
+    {{form_start(formPerso)}}
+        <div class="inputDivRow">
+            <div class="errors">{%if errorMessages %}<ul>{% for errorMessage in errorMessages %}<li>{{errorMessage}}</li>{% endfor %}</ul>{% endif %}{{form_errors(formPerso.firstname)}}</div>
+            <div class="inputDiv">
+                <img src="{{ asset('icons/login/email.png') }}" alt="Firstname" class="inputLogo">
+                {{form_widget(formPerso.firstname)}}
+            </div>
+            <div class="errors">{{form_errors(formPerso.lastname)}}</div>
+            <div class="inputDiv"> 
+                <img src="{{ asset('icons/login/lock.png') }}" alt="Lastname" class="inputLogo">
+                {{form_widget(formPerso.lastname)}}
+            </div>
+        </div>
+        <div class="inputDivRow">
+            <div class="errors">{{form_errors(formPerso.email)}}</div>
+            <div class="inputDiv">
+                <img src="{{ asset('icons/login/email.png') }}" alt="Firstname" class="inputLogo">
+                {{form_widget(formPerso.email)}}
+            </div>
+            <div class="errors">{{form_errors(formPerso.telNumber)}}</div>
+            <div class="inputDiv"> 
+                <img src="{{ asset('icons/login/lock.png') }}" alt="Lastname" class="inputLogo">
+                {{form_widget(formPerso.telNumber)}}
+            </div>
+        </div>
+        <div class="inputDivRow">
+            <div class="errors">{{form_errors(formPerso.password)}}</div>
+            <div class="inputDiv">
+                <img src="{{ asset('icons/login/email.png') }}" alt="Firstname" class="inputLogo">
+                {{form_widget(formPerso.password)}}
+            </div>
+            <div class="errors">{{form_errors(formPerso.confirmation)}}</div>
+            <div class="inputDiv"> 
+                <img src="{{ asset('icons/login/lock.png') }}" alt="Lastname" class="inputLogo">
+                {{form_widget(formPerso.confirmation)}}
+            </div>
+        </div>
+        <div class="inputDivRow">
+            <div class="errors">{{form_errors(formPerso.profilePict)}}</div>
+            <div class="inputDivCenter"> 
+                {{form_widget(formPerso.profilePict)}}
+            </div>
+        </div>
+        <button type="submit" class="btn registerBtn">{{ 'inscrire'|trans({}, 'login') }}</button>
+    {{form_end(formPerso)}}
+</div>
+<a href={{ path("login") }} class="noAccount">{{ 'auncompte'|trans({}, 'login') }} <span style="color: #3D2F44;">{{ 'connectez'|trans({}, 'login') }}</span></a>
+{% endblock %}

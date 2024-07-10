@@ -1,0 +1,43 @@
+{% extends 'backend/base.html.twig' %}
+
+{% block activeGest %}active{% endblock %}
+{% block activeRev %}active{% endblock %}
+
+{% block title %}Créer un avis{% endblock %}
+
+{% block stylesheets %}
+    <link href="https://api.mapbox.com/mapbox-gl-js/v3.2.0/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v3.2.0/mapbox-gl.js"></script>
+
+    <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.min.js"></script>
+    <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.css" type="text/css">
+{% endblock %}
+
+{% block body %}
+    <div class="col-10 p-0">
+        <div class="p-3">
+            <h1>Créer un avis</h1>
+            <div class="errors" style="color:red;">{%if errorMessage is defined %}<p>{{errorMessage}}</p>{% endif %}</div>
+            {{form_start(form)}}
+                <div class="inputDiv" style="position: relative;">
+                    {{form_widget(form.content)}}
+                    <div class="errors">{{form_errors(form.content)}}</div>
+                </div>
+                <div class="inputDiv" style="position: relative;">
+                    {{form_widget(form.rate)}}
+                    <div class="errors">{{form_errors(form.rate)}}</div>
+                </div>
+                <div class="inputDiv" style="position: relative;">
+                    {{form_widget(form.author)}}
+                    <div class="errors">{{form_errors(form.author)}}</div>
+                </div>
+                <div class="inputDiv" style="position: relative;">
+                    {{form_widget(form.reservation)}}
+                    <div class="errors">{{form_errors(form.reservation)}}</div>
+                </div>
+                <button type="submit" class="btn">Créer</button>
+
+            {{form_end(form)}}
+        </div>
+    </div>
+{% endblock %}

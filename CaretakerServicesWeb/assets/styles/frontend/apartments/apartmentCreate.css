@@ -1,0 +1,387 @@
+.pageContent {
+    position: absolute;
+    top: 8vh;
+}
+
+.mainImg {
+    width: 100vw;
+    height: 55vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #919191;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.mainImg img {
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+}
+
+.drop-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    height: 200px;
+    padding: 20px;
+    border: 2px dashed #3D2F44;
+    color: #3D2F44;
+    cursor: pointer;
+    transition: background .2s ease-in-out, border .2s ease-in-out;
+}
+  
+.drop-container:hover {
+    background: #eee;
+}
+
+.drop-title {
+    color: #3D2F44;
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.drop-container.drag-active {
+    background: #eee;
+}
+
+input[type=file] {
+    width: 350px;
+    max-width: 100%;
+    color: #3D2F44;
+    padding: 8px;
+    background-color: #fff;
+    border: 1px solid #3D2F44;
+}
+
+input[type=file]:focus {
+    outline: none;
+}
+
+input[type=file]::file-selector-button {
+    margin-right: 8px;
+    border: none;
+    background: #3D2F44;
+    padding: 8px 12px;
+    color: #fff;
+    cursor: pointer;
+}
+
+input[type=file]::file-selector-button:hover {
+    background: #A594F9;
+}
+  
+.mainInfos {
+    padding: 2%;
+}
+
+.inputs {
+    display: flex;
+    justify-content: space-between;
+    height: 12vh;
+}
+
+.inputName p, .inputDesc p, .inputServ p {
+    margin: 0;
+    font-size: 0.7vw;
+}
+
+h4 {
+    margin: 0;
+    font-family: 'Antonio';
+    font-weight: 600;
+    font-size: 1.4vw;
+}
+
+.input {
+    height: 12vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.inputDesc {
+    height: 28vh;
+}
+
+.inputIndispo {
+    width: 50%;
+}
+ 
+#selectedDates {
+    margin-top: 2vh;
+    background-color: #d0cfcf;
+    border: black 2px solid;
+    border-radius: 5px;
+    width: 80%;
+}
+ 
+#selectedDates span {
+    margin-right: 1%;
+    margin-top: 1%;
+    color: #3D2F44;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+
+#selectedDates button {
+    margin-left: 0.5%;
+    height: 3vh;
+    width: 3vh;
+    padding-top: 0px !important;
+    font-weight: bold;
+    color: white;
+    font-size: 80%;
+    border-radius: 50%;
+    background-color: rgb(201, 32, 32);
+    outline: none;
+    border: 1px solid black;
+}
+
+.pictDiv {
+    background-color: gray;
+    width: 19.5vh;
+    height: 15vh;
+    margin-right: 1vh;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.validBtn {
+    border: none;
+    outline: none;
+    padding: 7px 12px 7px 12px;
+    background-color: #A594F9;
+    color: #3D2F44;
+    border-radius: 10px;
+    font-weight: bold;
+    border: #A594F9 2px solid;
+}
+
+.validBtn:hover {
+    background-color: white;
+}
+
+.pictDiv input[type=file] {
+    display: none;
+}
+  
+.pictDiv label {
+    background: #A594F9;
+    color: #fff;
+    cursor: pointer;
+    width: 25%;
+    height: 30%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+}
+
+.pictDiv label:hover {
+    background: #3D2F44;
+}
+
+textarea {
+    height: 100%;
+    resize: none;
+}
+
+.inputsNb {
+    display: flex;
+    width: 50%;
+    justify-content: space-between;
+}
+
+.inputName, .inputDesc {
+    width: 30%;
+}
+
+.inputNb {
+    width: 12%;
+}
+
+.inputAdr {
+    width: 36%;
+    padding-left: 1%;
+}
+
+.inputs input {
+    border: #d2d2d2 solid 1px;
+    border-radius: 5px;
+    width: 100%;
+    height: 5vh;
+    text-indent: 0.7vw;
+    background-color: #F7F7F7;
+    font-family: "Quicksand";
+}
+
+.inputs input:focus {
+    outline: black solid 2px;
+    box-shadow: none;
+    border: #d2d2d2 solid 1px;
+}
+
+.mapboxgl-ctrl-geocoder {
+    width: 100% !important;
+    margin-top: -2.5vh;
+    box-shadow: none !important;
+}
+
+@media screen and (min-width: 640px) {
+    .mapboxgl-ctrl-geocoder {
+        max-width: none !important;
+    }
+}
+
+.inputAdr input {
+    width: 100%;
+}
+
+input::-webkit-input-placeholder {
+    font-family: "Antonio";
+}
+
+.inputServ {
+    width: 15%;
+}
+
+.inputDescRow {
+    height: 28vh;
+}
+
+#form_daysOfWeek {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+}
+
+#form_daysOfWeek input[type="checkbox"] {
+    display: none;
+}
+
+#form_daysOfWeek label {
+    display: flex;
+    align-items: center;
+    padding: 5px 10px;
+    border: 2px solid #A594F9;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+    font-size: 13px;
+}
+
+#form_daysOfWeek input[type="checkbox"]:checked + label {
+    background-color: #A594F9;
+    color: white;
+}
+
+#form_daysOfWeek input[type="checkbox"] + label:hover {
+    background-color: #3D2F44;
+    color: white;
+}
+
+#form_daysOfWeek label:not(:last-child) {
+    margin-right: 5px; /* Espacement entre les étiquettes */
+}
+
+
+
+
+.select-btn{
+    display: flex;
+    height: 50px;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    background-color: #fff;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+}
+.select-btn .btn-text{
+    font-size: 17px;
+    font-weight: 400;
+    color: #333;
+}
+.select-btn .arrow-dwn{
+    display: flex;
+    height: 21px;
+    width: 21px;
+    color: #fff;
+    font-size: 14px;
+    border-radius: 50%;
+    background: #6e93f7;
+    align-items: center;
+    justify-content: center;
+    transition: 0.3s;
+}
+.select-btn.open .arrow-dwn{
+    transform: rotate(-180deg);
+}
+.list-items{
+    position: relative;
+    margin-top: 15px;
+    border-radius: 8px;
+    padding: 16px;
+    background-color: #fff;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    display: none;
+}
+.select-btn.open ~ .list-items{
+    display: block;
+}
+.list-items .item{
+    display: flex;
+    align-items: center;
+    list-style: none;
+    height: 40px;
+    cursor: pointer;
+    transition: 0.3s;
+    padding: 0 15px;
+    border-radius: 8px;
+}
+.list-items .item:hover{
+    background-color: #e7edfe;
+}
+.item .item-text{
+    font-size: 0.8vw;
+    font-weight: 400;
+    color: #333;
+}
+.item .checkbox{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 14px;
+    width: 14px;
+    border-radius: 4px;
+    margin-right: 12px;
+    border: 1.5px solid #c0c0c0;
+    transition: all 0.3s ease-in-out;
+}
+.item.checked .checkbox{
+    background-color: #4070f4;
+    border-color: #4070f4;
+}
+.checkbox .check-icon{
+    color: #fff;
+    font-size: 11px;
+    transform: scale(0);
+    transition: all 0.2s ease-in-out;
+}
+.item.checked .check-icon{
+    transform: scale(1);
+}

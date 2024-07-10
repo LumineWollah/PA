@@ -1,0 +1,120 @@
+{% extends 'frontend/base.html.twig' %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href={{ asset('styles/frontend/apartments/apartmentList.css') }}>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+{% endblock %}
+
+{% block activeMyApar %}active{% endblock %}
+
+{% block body %}
+<div class="container-fluid pageContent">
+    <h1>{{ 'vos'|trans({}, 'apartments') }} <span class="h1span">{{ 'logements'|trans({}, 'apartments') }}</span> {{ 'enlocation'|trans({}, 'apartments') }}</h1> 
+
+    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel">{{ 'impossible'|trans({}, 'apartments') }}</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="content">
+                    {{ 'pouvezpas'|trans({}, 'apartments') }}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">{{ 'compris'|trans({}, 'apartments') }}</button>
+                </div>
+            </div>
+        </div>
+    </div>   
+    {% if aps|length > 0 %}
+    {% for i in range(0, (((aps|length)/4)|round(0, 'ceil'))-1) %}
+        <div class="row apsRowLessor">
+            {% for j in range(i*4, (i*4)+3) %}
+                {% if j < aps|length %}
+                    <div class="col-3 apartContainer apartContainerLessor">
+                    <a class="apCase" href={{ path('apartmentsDetail', {'id': aps[j].id}) }}>               
+                        {% set stars = 0 %}
+                        {% set revNb = 0 %}
+                        {% for review in aps[j].reviews %}
+                            {% set stars = stars + review.rate %}
+                            {% set revNb = revNb + 1 %}
+                        {% endfor %}
+                        {% if revNb > 0 %}
+                            <div class="reviewsFrame">
+                                {{ stars / revNb }} ★
+                            </div>
+                        {% endif %}
+                        <div class="imgContainer">
+                            <img src={{ aps[j].mainPict }}>
+                        </div>
+                        <p class="apartName"><b>{{ aps[j].name }}</b></p>
+                        <p class="apartInfos">
+                            <span class="medium">{{ aps[j].city }}, {{ aps[j].country }} • {{ aps[j].price }}€</span>
+                            <span class="light">{{ 'nuit'|trans({}, 'apartments') }}</span>
+                        </p>
+                        <div class="apartNumbers">
+                            <img src={{ asset('icons/bed.png') }}> {{ aps[j].bedrooms }} {{ 'chambres'|trans({}, 'apartments') }}
+                            <img style="margin-left: 2%;" src={{ asset('icons/travelers.png') }}> {{ aps[j].travelersMax }} {{ 'voyageursmax'|trans({}, 'apartments') }}
+                        </div>
+                    </a>
+                        <div class="apartActions mt-2 d-flex">
+                            <form action="{{ path('apartmentUpdate') }}" method="post" >
+                                <input type="hidden" name="apartment" value="{{ aps[j]|json_encode }}">
+                                <button type="submit">{{ 'modifier'|trans({}, 'apartments') }}</button>
+                            </form>
+                            <a href="{{ path('apartmentDeleteLessor', {'id': aps[j].id}) }}" class="deleteApBtn">{{ 'supprimer'|trans({}, 'apartments') }}</a>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    {% endfor %}
+    {% else %}
+        <p class="listevide">{{ 'paslogements'|trans({}, 'apartments') }}</p>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block javascripts %}
+<script type="text/javascript">   
+
+    $(function() {
+
+    var showPopup = {{ showPopup }};
+
+    if (showPopup == true){
+        var contentPopup = "{{ content }}";
+        var titlePopup = "{{ title }}";
+        $('#content').html(contentPopup);
+        $('#staticBackdropLabel').html(titlePopup);
+        $('#staticBackdrop').modal('show');
+    };
+
+    $('input[name="datefilter"]').daterangepicker({
+        autoUpdateInput: false,
+        autoApply: true,
+        locale: {
+            cancelLabel: 'Clear',
+            format: 'dd.mm.yyyy',
+            separator: ' - '
+        }
+    }, function(start, end, label) {
+                $(this).val(start.format('YYYY.MM.DD')+ " - " + end.format('YYYY.MM.DD'))
+                console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
+    });
+
+    $('input[name="datefilter"]').on('apply.daterangepicker', function(ev, picker) {
+        $(this).val(picker.startDate.format('DD.MM.YYYY') + ' - ' + picker.endDate.format('DD.MM.YYYY'));
+    });
+
+    $('input[name="datefilter"]').on('cancel.daterangepicker', function(ev, picker) {
+        $(this).val('');
+    });
+
+    });
+</script>
+{% endblock %}

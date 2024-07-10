@@ -1,0 +1,168 @@
+.noValidateCard {
+    border: 1px black solid;
+    border-radius: 20px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.validateBtns {
+    width: 80%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.pageContent {
+    position: absolute;
+    top: 8vh;
+}
+
+.noValidateCard img {
+    width: 5vw;
+    height: 7vh;
+    object-fit: cover;
+    margin-bottom: 5px;
+}
+
+tr {
+    vertical-align: middle;
+}
+
+tr a, tr button, tr div{
+    padding: 0 !important;
+    
+    width: 40px;
+    height: 40px;
+}
+
+.owner{
+    width: auto !important;
+    padding: 5px !important;
+}
+
+.provider{
+    width: auto !important;
+    padding: 5px !important;
+}
+
+.client{
+    width: auto !important;
+    padding: 5px !important;
+}
+
+.service{
+    width: auto !important;
+    padding: 5px !important;
+}
+
+.apartment{
+    width: auto !important;
+    padding: 5px !important;
+}
+
+.btnImage {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+}
+
+.btn-create-row {
+    display:flex;
+    justify-content:space-between;
+}
+
+.btn-create {
+    background-color:#29B95F;
+    color:white;
+    height:100%;
+}
+
+h1, h4, th {
+    font-family: 'Roboto Condensed';
+    font-weight: bold;
+}
+
+th {
+    font-size: 18px;
+}
+
+tr {
+    font-family: 'Quicksand';
+    font-weight: 400;
+} 
+
+.tableAps {
+    max-width: 100%;
+}
+
+.name {
+    font-family: 'Antonio';
+    font-weight: 400;
+    font-size: 24px;
+    margin-bottom: 5px;
+}
+
+.otherData {
+    font-family: 'Quicksand';
+    margin: 0;
+    font-size: 16px;
+    max-width: 85%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.inscription {
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+.seeMore {
+    color: #292929;
+    font-size: 13px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.noValidateCard button {
+    background-color: transparent !important;
+    border: none;
+    outline: none;
+}
+
+.validateBtn {
+    text-decoration: none;
+    width: 40%;
+    height: 4vh;
+    font-family: 'Roboto Condensed';
+    font-weight: 700;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.validBtn {
+    background-color: #A594F9;
+    color: white;
+}
+
+.refuseBtn {
+    border: #A594F9 2px solid;
+    color: #A594F9;
+}
+
+.mainPict {
+    height:12vh;
+    width:10%;
+}
+
+.mainPict img {
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+}

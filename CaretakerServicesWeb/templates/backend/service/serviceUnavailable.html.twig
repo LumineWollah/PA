@@ -1,0 +1,97 @@
+{% extends 'backend/base.html.twig' %}
+
+{% block activeGest %}active{% endblock %}
+{% block activeApar %}active{% endblock %}
+
+{% block title %}Modifier un service{% endblock %}
+
+{% block stylesheets %}
+    <link href="https://api.mapbox.com/mapbox-gl-js/v3.2.0/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v3.2.0/mapbox-gl.js"></script>
+    <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.min.js"></script>
+    <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.css" type="text/css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+{% endblock %}
+
+{% block body %}
+    <div class="col-10 p-0">
+        <div class="p-3">
+            <h1>Modifier un service</h1>
+            <div class="errors">{%if errorMessages is defined %}<ul>{% for errorMessage in errorMessages %}<li>{{errorMessage}}</li>{% endfor %}</ul>{% endif %}</div>
+            {{form_start(form)}}
+                    <div class="col-3"> 
+                    <h4 style="height: 3vh;">Date d'indisponibilité</h4>
+                    <input type="text" name="daterange" value="" class="mt-3 inputIndispo">
+                    <div id="selectedDates" style="height: 200px; overflow-y: scroll;"></div>
+                    {{form_widget(form.indisponibilities)}}
+                </div>
+                <button type="submit" class="btn">Modifier</button>
+            {{form_end(form)}}
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+    $(function() {
+        var selectedDates = [];
+        var indispo = document.getElementById('form_indisponibilities');
+
+        $('input[name="daterange"]').daterangepicker({
+            isInvalidDate: function(date) {
+                if (date.isBefore(moment(), 'day')) {
+                    return true;
+                }
+
+                for (var i = 0; i < selectedDates.length; i++) {
+                    var range = selectedDates[i].split(' à ');
+                    var startDate = moment(range[0], 'DD/MM/YYYY');
+                    var endDate = moment(range[1], 'DD/MM/YYYY');
+                    if (date.isBetween(startDate, endDate, null, '[]')) {
+                        return true;
+                    }
+                }
+                return false;
+            },
+            opens: 'left'
+        }, function(start, end, label) {
+            var selectedDate = start.format('DD/MM/YYYY') + ' à ' + end.format('DD/MM/YYYY');
+            addDateToList(selectedDate); 
+        });
+
+        $('input[name="daterange"]').on('apply.daterangepicker', function(ev, picker) {
+            $(this).val(picker.startDate.format('DD.MM.YYYY') + ' - ' + picker.endDate.format('DD.MM.YYYY'));
+        });
+
+        $('input[name="daterange"]').on('cancel.daterangepicker', function(ev, picker) {
+            $(this).val('');
+        });
+
+        function addDateToList(date) {
+            var $dateSpan = $('<span>', {
+                text: date
+            });
+
+            var $removeButton = $('<button>', {
+                text: 'X',
+                click: function() {
+                    $dateSpan.remove();
+                    var index = selectedDates.indexOf(date);
+                    if (index > -1) {
+                        selectedDates.splice(index, 1);
+                    }
+                }
+            });
+
+            $dateSpan.append($removeButton);
+
+            $('#selectedDates').append($dateSpan);
+            selectedDates.push(date);
+            $('#form_indisponibilities').val(selectedDates.join(','))
+        }
+    });
+</script>
+{% endblock %}

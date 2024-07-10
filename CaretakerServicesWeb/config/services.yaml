@@ -4,13 +4,19 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
+    stripe_key_private: '%env(STRIPE_KEY_PRIVATE)%'
+    api_link: '%env(API_LINK)%'
+    key_cert_file_path: '%env(KEY_CERT_FILE_PATH)%'
 
 services:
     # default configuration for services in *this* file
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
-
+        bind:
+            $stripeKeyPrivate: '%stripe_key_private%'
+            $apiLink: '%api_link%'
+            $keyCertFilePath: '%key_cert_file_path%'
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
     App\:
@@ -20,10 +26,28 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
 
-    # App\Service\ApiHttpClient:
-    #     arguments:
-    #         $bearerToken: '%session.token%'
+    App\Controller\Frontend\reservationsController:
+        arguments:
+            $stripeKeyPrivate: '%stripe_key_private%'
 
+    App\Controller\Frontend\apartmentsController:
+        arguments:
+            $stripeKeyPrivate: '%stripe_key_private%'
+            $keyCertFilePath: '%key_cert_file_path%'
+
+    App\Controller\Frontend\userController:
+        arguments:
+            $stripeKeyPrivate: '%stripe_key_private%'
+
+    App\Controller\Frontend\subscriptionsController:
+        arguments:
+            $stripeKeyPrivate: '%stripe_key_private%'
+
+    App\Service\ApiHttpClient:
+        arguments:
+            $apiLink: '%api_link%'
+
+    # Symfony\Component\HttpFoundation\Session\SessionInterface: '@session'
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

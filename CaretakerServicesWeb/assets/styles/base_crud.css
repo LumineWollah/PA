@@ -1,0 +1,99 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Antonio:wght@100..700&family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap');
+
+nav{
+    background-color: #3D2F44; 
+    height: 8vh; 
+    width: 100vw;
+    position: fixed !important;
+    top: 0;
+    z-index: 1000;
+}
+
+.mainRow {
+    margin: 17px; 
+    margin-top: calc(8vh + 17px);
+}
+
+.btnSite {
+    background-color: #A594F9;
+    color: white;
+    font-family: 'Roboto Condensed';
+    font-size: 1vw;
+    border-radius: 10px;
+}
+
+.btnSite:hover {
+    background-color: white;
+    color: #A594F9;
+}
+
+.sideBar {
+    width: 100%;
+    height: calc(92vh - 65px);
+    border-radius: 10px;
+    background-color: #3D2F44;
+    top:6rem;
+    font-family: 'Roboto Condensed';
+    font-weight: 500;
+    font-size: 22px;
+}
+
+.sideBar button {
+    font-family: 'Roboto Condensed';
+    font-weight: 500;
+    font-size: 22px;
+}
+
+.menuGestion {
+    padding-left: 30px;
+}
+
+hr {
+    color: white;
+    width: 90%;
+}
+
+html {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    overflow-y: scroll;
+}
+
+html::-webkit-scrollbar {
+    display: none;
+}
+
+.gestionUl a {
+    color: white;
+    font-size: 17px;
+}
+
+.gestionBtn {
+    color: white;
+    padding-left: 16px;
+    padding-right: 16px;
+}
+
+.navUl a {
+    color: white;
+}
+
+.navUl a:hover, .sideBar button:hover{
+    color: #A594F9;
+}
+
+.active {
+    color: #A594F9 !important;
+}
+
+.inputDiv {
+    display: flex;
+    flex-direction: row;
+    /* height: 10%; */
+}
+
+.inputDiv input {
+    max-height: 100%;
+}

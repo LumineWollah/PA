@@ -1,0 +1,209 @@
+{% extends 'frontend/base.html.twig' %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href={{ asset('styles/frontend/apartments/apartmentList.css') }}>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+{% endblock %}
+
+{% block activeApar %}active{% endblock %}
+{% block activeApar2 %}active{% endblock %}
+
+{% block body %}
+<div class="container-fluid pageContent">
+    <h1>{{ 'nos'|trans({}, 'apartments') }} <span class="h1span">{{ 'logements'|trans({}, 'apartments') }}</span> {{ 'enlocation'|trans({}, 'apartments') }}</h1>    
+    <div class="bar">
+        <div class="location me-4">
+            <p>Destination</p>
+            <input type="text" id="city">
+        </div>
+        <div class="dates me-4">
+            <p>{{'vosdates'|trans({}, 'apartments') }}</p>
+            <input type="text" name="datefilter" value="" id="datesRange">
+        </div>
+        <div class="price me-4">
+            <p>{{'prix'|trans({}, 'apartments') }}</p>
+            <input type="number" class="min-input" id="priceMin"><span class='t'> - </span><input type="number" class="max-input" id="priceMax">
+        </div>
+        <div class="travelers">
+            <p>{{"voyageursmax"|trans({}, 'apartments') }}</p>
+            <div class="d-flex travelersFlex">
+                <span id="minus">-</span> <p id="travelersNb">0</p> <span id="plus">+</span>
+            </div>
+        </div>
+        <img src="{{ asset('icons/search.png') }}" id="searchBtn">
+    </div>
+    <div id="rowContainer">
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+<script type="text/javascript">
+    $(function() {
+    
+    var first = true;
+
+    $("#minus").click(function() {
+        var nb = parseInt($("#travelersNb").text());
+        if (nb > 0) {
+            $("#travelersNb").text(nb-1);
+        }
+    });
+
+    $("#plus").click(function() {
+        var nb = parseInt($("#travelersNb").text());
+        $("#travelersNb").text(nb+1);
+    });
+
+    function formatDate(date) {
+        const [day, month, year] = date.split(".");
+        return `${year}-${month}-${day}`;
+    }
+
+    function buildUrl(base, params) {
+        return base + '?' + new URLSearchParams(params).toString();
+    }
+
+    function filterData(data) {
+        const travelersNb = $("#travelersNb").text();
+        const priceMin = $("#priceMin").val();
+        const priceMax = $("#priceMax").val();
+        var city = $("#city").val().trim();
+        city = city.substr(0,1).toUpperCase()+city.substr(1).toLowerCase();
+
+        if (travelersNb) {
+
+            data = data.filter(aps => aps.travelersMax >= parseInt(travelersNb));
+        }
+        if (priceMin) {
+            data = data.filter(aps => aps.price >= parseInt(priceMin));
+        }
+        if (priceMax) {
+            data = data.filter(aps => aps.price <= parseInt(priceMax));
+        }
+        if (city) {
+            data = data.filter(aps => aps.city === city);
+        }
+
+        return data;
+    }
+
+    function renderData(data) {
+        $("#rowContainer").empty();
+        if (data.length === 0) {
+            $("#rowContainer").append("<p>Aucun résultat trouvé</p>");
+            return;
+        }
+        for (let i = 0; i < Math.ceil(data.length / 4); i++) {
+            $("#rowContainer").append("<div class='row apsRow'></div>");
+            for (let j = i * 4; j < (i * 4) + 4; j++) {
+                if (j < data.length) {
+                    const apart = data[j];
+
+                    let route = "{{ path('apartmentsDetail', { id: '0000' }) }}";
+                    route = route.replace('0000', apart.id);
+
+                    let asset1 = "{{ asset('icons/bed.png') }}";
+                    let asset2 = "{{ asset('icons/travelers.png') }}";
+
+                    const apartHtml = `
+                        <a class='col-3 apartContainer' href="${route}">            
+                            <div class='imgContainer'>
+                                <img src="${apart.mainPict}">
+                            </div>
+                            <p class='apartName'><b>${apart.name}</b></p>
+                            <p class='apartInfos'><span class='medium'>${apart.city}, ${apart.country} • ${apart.price}€</span><span class='light'> / nuit</span></p>
+                            <div class='apartNumbers'>
+                                <img src="${asset1}"> ${apart.bedrooms} chambres
+                                <img style='margin-left: 2%;' src="${asset2}"> ${apart.travelersMax} voyageurs max.
+                            </div>
+                        </a>
+                    `;
+
+                    $(".apsRow").last().append(apartHtml);
+                }
+            }
+        }
+    }
+
+    function fetchData() {
+        let url = "https://api.caretakerservices.fr/api/cs_apartments?active=1";
+        let ajaxOptions = {
+            type: 'GET',
+            success: function(data) {
+                if (datesRange) {
+                    data = filterData(data);
+                }else{
+                    data = filterData(data['hydra:member']);
+                }
+                renderData(data);
+            }
+        };
+
+        const datesRange = $("#datesRange").val();
+        if (datesRange) {
+            const [startDate, endDate] = datesRange.split(" - ").map(formatDate);
+            const postData = {
+                starting_date: startDate,
+                ending_date: endDate
+            };
+
+            url = "https://api.caretakerservices.fr/api/cs_apartments/availables";
+            ajaxOptions = {
+                ...ajaxOptions,
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(postData)
+            };
+        } else {
+            const city = $("#city").val();
+            if (city) {
+                url = buildUrl(url, { city });
+            }
+        }
+
+        ajaxOptions.url = url;
+        $.ajax(ajaxOptions);
+    }
+
+    $(document).ready(function() {
+        fetchData();
+
+        $('#searchBtn').click(function() {
+            fetchData();
+        });
+    });
+
+    $('input[name="datefilter"]').daterangepicker({
+        autoUpdateInput: false,
+        autoApply: true,
+        locale: {
+            cancelLabel: 'Clear',
+            format: 'dd.mm.yyyy',
+            separator: ' - '
+        },
+        isInvalidDate: function(date) {
+            if (date.isBefore(moment(), 'day')) {
+                return true;
+            }
+            return false;
+        }
+    }, function(start, end, label) {
+                $(this).val(start.format('YYYY.MM.DD')+ " - " + end.format('YYYY.MM.DD'))
+                console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
+    });
+
+    $('input[name="datefilter"]').on('apply.daterangepicker', function(ev, picker) {
+        $(this).val(picker.startDate.format('DD.MM.YYYY') + ' - ' + picker.endDate.format('DD.MM.YYYY'));
+    });
+
+    $('input[name="datefilter"]').on('cancel.daterangepicker', function(ev, picker) {
+        $(this).val('');
+    });
+
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends 'backend/base.html.twig' %}
+
+{% block activeGest %}active{% endblock %}
+{% block activeDocu %}active{% endblock %}
+
+{% block title %}Modifier un document{% endblock %}
+
+{% block body %}
+    <div class="col-10 p-0">
+        <div class="p-3">
+            <h1>Modifier un document</h1>
+            {{form_start(form)}}
+                <div class="inputDiv" style="position: relative;">
+                    {{form_widget(form.name)}}
+                </div>
+                <div class="inputDiv" style="position: relative;">
+                    {{form_widget(form.type)}}
+                </div>
+                <div class="inputDiv" style="position: relative;">
+                    {{form_widget(form.url)}}
+                </div>
+                <div class="inputDiv" style="position: relative;">
+                    {{form_widget(form.owner)}}
+                </div>
+                <div class="inputDiv" style="position: relative;">
+                    {{form_widget(form.attachedReserv)}}
+                </div>
+                <button type="submit" class="btn">Modifier</button>
+            {{form_end(form)}}
+        </div>
+    </div>
+{% endblock %}

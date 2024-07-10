@@ -4,12 +4,17 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
+    stripe_key_private: '%env(STRIPE_KEY_PRIVATE)%'
+    stripe_key_public: '%env(STRIPE_KEY_PUBLIC)%'
 
 services:
     # default configuration for services in *this* file
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+        bind:
+            $stripeKeyPrivate: '%stripe_key_private%'
+            $stripeKeyPublic: '%stripe_key_public%'
 
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
@@ -19,6 +24,23 @@ services:
             - '../src/DependencyInjection/'
             - '../src/Entity/'
             - '../src/Kernel.php'
+
+    App\EventListener\UniqueConstraintViolationListener:
+        tags:
+            - { name: kernel.event_listener, event: kernel.exception }
+
+    App\EventSubscriber\AuthenticationSuccessListener:
+        tags:
+            - { name: kernel.event_subscriber }
+
+    App\EventListener\CORSListener:
+        tags:
+            - { name: kernel.event_subscriber }
+
+    App\Controller\CsStripeController:
+        arguments:
+            $stripeKeyPrivate: '%stripe_key_private%'
+            $stripeKeyPublic: '%stripe_key_public%'
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

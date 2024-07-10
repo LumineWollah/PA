@@ -1,0 +1,83 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Antonio:wght@100..700&family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap');
+
+.inputDiv input {
+    border: #d2d2d2 solid 1px;
+    border-radius: 5px;
+    width: 100%;
+    height: 100%;
+    text-indent: 12%;
+    background-color: #F7F7F7;
+}
+
+.checkboxDiv {
+    display: flex;
+    margin-bottom: 20px;
+}
+
+input::-webkit-input-placeholder {
+    font-family: "Antonio";
+}
+
+.inputLogo {
+    position: absolute;
+    left: 3%;
+    height: 25px;
+}
+
+.otherOptions {
+    display: flex;
+    justify-content: space-between;
+}
+
+.errors {
+    color: red;
+    font-size: 13px;
+}
+
+.mainCol {
+    background-color: #FFFFFF;
+    height: 100vh;
+    display: flex;
+    position: relative;
+}
+
+.logoCol {
+    background-color: #3D2F44;
+    height: 100vh;
+    display: flex;
+}
+
+.logoCol img {
+    margin: auto;
+}
+
+.titleCard {
+    font-family: 'Roboto Condensed';
+}
+
+.titleCard h2 {
+    font-size: 4vw;
+    margin-bottom: 0;
+}
+
+.titleDesc {
+    color: #737373;
+    margin-top: 0px;
+    margin-bottom: 30px;
+}
+
+.noAccount {
+    position: absolute;
+    left: 0;
+    right: 0;
+    margin: auto;
+    text-align: center;
+    bottom: 1.5%;
+    font-family: 'Roboto Condensed';
+    font-weight: bold;
+    color: black;
+    text-decoration: none;
+}
+

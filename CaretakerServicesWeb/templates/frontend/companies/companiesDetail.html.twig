@@ -1,0 +1,154 @@
+{% extends 'frontend/base.html.twig' %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href={{ asset('styles/frontend/companies/companiesDetail.css') }}>
+    <link href="https://api.mapbox.com/mapbox-gl-js/v3.2.0/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v3.2.0/mapbox-gl.js"></script>
+{% endblock %}
+
+{% block activeProv %}active{% endblock %}
+{% block activeProv2 %}active{% endblock %}
+{% block activeProvi %}active{% endblock %}
+
+{% block body %}
+    <div class="container-fluid pageContent">
+
+        <div class="row pt-3">
+            <div class="col-5 coverImgRow">
+                {% if company.coverImage is not defined or company.coverImage is null %}
+                    <img class="coverImage" src={{ asset('icons/profile_pict_default_company.png') }}>
+                {% else %}
+                    {% set coverImage = company.coverImage %}
+                    <img class="coverImage" src="{{ coverImage }}">
+                {% endif %}
+            </div>
+            <div class="col-6 ms-5 desc">
+                <h1>{{ company.companyName }}</h1>
+                <p><strong>{{ 'siret'|trans({}, 'companies') }}</strong> {{ company.siretNumber }}</p>
+                <p><strong>{{ 'email'|trans({}, 'companies') }}</strong> {{ company.companyEmail }}</p>
+                <p><strong>{{ 'téléphone'|trans({}, 'companies') }}</strong> {{ company.companyPhone }}</p>
+                <p><strong>{{ 'responsable'|trans({}, 'companies') }}</strong> TODO</p>
+            </div>
+        </div>
+        <hr class="mt-5">
+        <div class="my-4">
+            <h2><span class="h2span">Services</span> {{ 'proposés'|trans({}, 'companies') }}</h2>
+            <div class="row">
+                <div id="carouselControls" class="carousel slide" data-ride="carousel">
+                    <div class="carousel-inner">
+                        {% if company.services|length < 4 %}
+                            {% set step = company.services|length %}
+                        {% else %}
+                            {% set step = 4 %}
+                        {% endif %}
+                        {% for i in range(0, company.services|length, step) %}
+                            {% if company.services|length > i %}
+                                <div class="carousel-item {% if i == 0 %}active{% endif %}">
+                                    <div class="cards-wrapper">
+                                        {% for j in range(i, i+3) %}
+                                            {% if company.services|length > j %}
+                                                <div class="card {% if j != i %}d-none d-md-block{% endif %}" style="border-color: #{{ company.services[j].category.color }};">
+                                                    <div class="card-header" style="background-color: #{{ company.services[j].category.color }}; color: white; font-weight: bold;">
+                                                        {{ company.services[j].category.name }}
+                                                    </div>
+                                                    {% if company.services[j].coverImage is not defined or company.services[j].coverImage is null %}
+                                                        <img src={{ asset('icons/profile_pict_default_company.png') }}>
+                                                    {% else %}
+                                                        {% set coverImage = company.services[j].coverImage %}
+                                                        <img src="{{ coverImage }}">
+                                                    {% endif %}
+                                                    <div class="card-body">
+                                                        <h5 class="card-title title">{{ company.services[j].name }}</h5>
+                                                        <p class="card-text desc">{{ company.services[j].description }}</p>
+                                                        <a href="{{ path('serviceDetail', {'id':company.services[j].id}) }}" class="btn contactBtn">RÉSERVER</a>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselControls" data-bs-slide="prev">
+                        <img src={{ asset('icons/arrow_left.png') }} class="arrow leftAr">
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carouselControls" data-bs-slide="next">
+                        <img src={{ asset('icons/arrow_right.png') }} class="arrow rightAr">
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <hr class="mt-5">
+        <div class="row localisation justify-content-center">
+            <h2><span class="h2span">{{ 'localisation'|trans({}, 'companies') }}</span></h2>
+            <div id="map"></div>
+            <p class="address text-center">{{ company.address }}, {{ company.postalCode }} {{ company.city }}</p>
+        </div>
+        <hr class="mt-5">
+        <div class="row contactForm justify-content-center">
+            <h2><span class="h2span">{{ 'contact'|trans({}, 'companies') }}</span></h2>
+            <div style="width: 50vw;">
+                {{ form_start(form) }}
+                    <div class="mb-3">
+                        <label for="name" class="form-label">{{ 'nom'|trans({}, 'companies') }}</label>
+                        {% if form_errors(form.name) %}
+                            <div class="error" style="color: red;">{{ form_errors(form.name) }}</div>
+                        {% endif %}
+                        {{ form_widget(form.name) }}
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">{{ 'email2'|trans({}, 'companies') }}</label>
+                        {% if form_errors(form.email) %}
+                            <div class="error" style="color: red;">{{ form_errors(form.email) }}</div>
+                        {% endif %}
+                        {{ form_widget(form.email) }}
+                    </div>
+                    <div class="mb-3">
+                        <label for="message" class="form-label">{{ 'message'|trans({}, 'companies') }}</label>
+                        {% if form_errors(form.message) %}
+                            <div class="error" style="color: red;">{{ form_errors(form.message) }}</div>
+                        {% endif %}
+                        {{ form_widget(form.message) }}
+                    </div>
+                    <button type="submit" class="btn btn-primary btnSend">{{ 'envoyer'|trans({}, 'companies') }}</button>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+    const centerGps = {{ company.centerGps|json_encode|raw }};
+    console.log(centerGps);
+    mapboxgl.accessToken = 'pk.eyJ1IjoibGVvLXVyYWhhcmEiLCJhIjoiY2x2MTJrcHJ4MDIwdzJrdXNhcDhjazF4MSJ9.ZJjs_hvEVTuHKAe2CeDGbQ';
+    const map = new mapboxgl.Map({
+        container: 'map',
+        center: centerGps,
+        zoom: 16
+    });
+
+    const geojson = {
+        type: 'FeatureCollection',
+        features: [{
+            type: 'Feature',
+            geometry: {
+                type: 'Point',
+                coordinates: centerGps
+            }
+        }]
+    };
+
+    geojson.features.forEach(function(marker) {
+        var el = document.createElement('div');
+        el.className = 'marker';
+
+        new mapboxgl.Marker(el)
+            .setLngLat(marker.geometry.coordinates)
+            .addTo(map)
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,92 @@
+{% extends 'frontend/user/base.html.twig' %}
+
+{% block stylesheets %}<link rel="stylesheet" href={{ asset('styles/crud.css') }}>{% endblock %}
+
+{% block activeDoc %}active{% endblock %}
+{% block activeDoc2 %}active{% endblock %}
+
+{% block title %}{{ 'listedocuments'|trans({}, 'user') }}{% endblock %}
+
+{% block body %}
+<script>
+    $(document).ready( function () {
+        $('#crudList').DataTable( {
+            buttons: true,
+            pageLength: 10,
+            layout: {
+                topStart: {
+                    search: {
+                        placeholder: "Rechercher...",
+                        search: ""
+                    }
+                },
+                topEnd: 'buttons',
+                bottomStart: 'paging',
+                bottomEnd: 'info',
+            },
+            language: {
+                search: "",
+                info: "Affichage des entrées _START_ à _END_ sur _TOTAL_ au total",
+            },
+            buttons: [
+                'pdf'
+            ],
+            columnDefs: [
+                {
+                    targets: 3,
+                    className: 'dt-body-left dt-head-left'
+                },
+                {
+                    targets: -1,
+                    orderable: false,
+                },
+            ]
+        } );
+    } );
+</script>
+    <div class="col-10 p-0">
+        <div class="p-3">
+            <div class="btn-create-row">
+                <h1>{{ 'listedocuments'|trans({}, 'user') }}</h1>
+            </div>
+            <table id="crudList" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">{{ 'réservation'|trans({}, 'user') }}</th>
+                        <th scope="col">Type</th>
+                        <th scope="col">{{ 'nom'|trans({}, 'user') }}</th>
+                        <th scope="col">{{ 'dateémission'|trans({}, 'user') }}</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for document in documents %}
+                        <tr>
+                            <td>
+                                {% if document.attachedReserv is not defined or document.attachedReserv is null %}
+                                    <p>-</p>
+                                {% else %}
+                                    {% if document.attachedReserv.apartment is defined and document.attachedReserv.apartment is not null %}
+                                        <form action="{{ path('myReservationDetail') }}" method="post" style="display: inline;">
+                                    {% else %}
+                                        <form action="{{ path('myReservationServDetail') }}" method="post" style="display: inline;">
+                                    {% endif %}
+                                            <input type="hidden" name="reservation" value="{{ document.attachedReserv|json_encode }}">
+                                            <button type="submit" class="btn btn-light apartment" style="height:40px"><p>{{ 'réservation'|trans({}, 'user') }} n°{{ document.attachedReserv.id|capitalize }} </p></button>
+                                        </form>
+                                {% endif %}
+                            </td>
+                            <td>{{ document.type }}</td>
+                            <td>{{ document.name }}</td>
+                            <td>{{ document.dateCreation|date('d/m/Y') }}</td>
+                            <td class="action">
+                                
+                                <a href={{ document.url }} target="blank_" class="btn" style="background-color: #A594F9;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/eye.png') }}></div></a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,437 @@
+.pageContent {
+    position: absolute;
+    top: 8vh;
+}
+
+.mainImg {
+    width: 100vw;
+    height: 55vh;
+}
+
+.mainImg img {
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+}
+
+.mainInfos {
+    padding: 2%;
+}
+
+h1 {
+    font-family: 'Roboto Condensed';
+    font-weight: 800;
+    font-size: 2.7vw;
+}
+
+.apartSheet {
+    width: 55%;
+}
+
+.apartDescDiv {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    max-height: 17vh;
+}
+
+.apartDesc {
+    font-family: 'Quicksand';
+    font-weight: 400;
+    font-size: 1.1vw;
+}
+
+.readMoreBtn {
+    margin-top: 2vh;
+    background-color: #A594F9;
+    color: white;
+    font-family: 'Quicksand';
+    font-weight: 700;
+    width: 6.5vw;
+    font-size: 0.7vw;
+}
+
+.caract {
+    background-color: #3D2F44;
+    width: 70%;
+    color: white;
+    display: flex;
+    padding: 15px;
+    height: fit-content;
+}
+
+.caractColumn {
+    display: flex;
+    justify-content: center;
+}
+
+.caractColumn h4 {
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    transform: rotate(180deg);
+    font-family: 'Antonio';
+    font-weight: 700;
+    margin: 0;
+}
+
+.caractColumn ul {
+    line-height: 200%;
+    margin: 0;
+    margin-left: 7%;
+}
+
+.caractColumn li {
+    font-family: 'Quicksand';
+    font-weight: 400;
+    text-wrap: nowrap;
+    font-size: 1vw;
+}
+
+.lessorTinyProfile {
+    margin-top: 3vh;
+    margin-bottom: 2vh;
+    display: flex;
+    align-items: center;
+    font-family: 'Quicksand';
+}
+
+.lessorTinyProfile img {
+    width: 2.5vw;
+    height: 2.5vw;
+    margin-right: 15px;
+}
+
+.textName {
+    display: flex;
+    flex-direction: column;
+}
+
+.textName p {
+    margin: 0;
+}
+
+.inscription {
+    font-size: 0.7vw;
+}
+
+h2 {
+    font-family: 'Antonio';
+    font-size: 2vw;
+    color: #A594F9;
+}
+
+.reservation {
+    height: 40vh;
+}
+
+.carousel {
+    height: 50vh;
+    width: 50vw;
+    margin-top: 2vh;
+    margin-bottom: 8vh;
+}
+
+.carouselImg {
+    height: 50vh;
+    object-fit: cover;
+}
+
+.carousel-control-next, .carousel-control-prev {
+    opacity: 1 !important;
+}
+
+.arrow {
+    height: 6vh;
+}
+
+.leftAr {
+    position: absolute !important;
+    left: -5vw;
+}
+
+.rightAr {
+    position: absolute !important;
+    right: -5vw;
+}
+
+#map {
+    margin-top: 2vh;
+    height: 50vh;
+    width: 50vw;
+    margin-bottom: 8vh;
+}
+
+.marker {
+    background-image: url('../../../icons/marker.png');
+    background-size: cover;
+    width: 80px;
+    height: 80px;
+    cursor: pointer;
+}
+
+.leftForm input {
+    border: #d2d2d2 solid 1px;
+    border-radius: 5px;
+    width: 100%;
+    height: 5vh;
+    text-indent: 1vw;
+    background-color: #F7F7F7;
+    font-family: "Quicksand";
+}
+
+.reservationRow {
+    margin-top: 2vh;
+    margin-bottom: 8vh;
+}
+
+input::-webkit-input-placeholder {
+    font-family: "Antonio";
+}
+
+.leftForm {
+    width: 60% !important;
+    margin: auto;
+}
+
+.leftFormRow {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.leftFormCol {
+    width: 30%;
+    display: flex;
+    flex-direction: column;
+}
+
+.secondColRow {
+    display: flex;
+    justify-content: space-between;
+}
+
+.addPrestaBtn {
+    outline: none;
+    text-decoration: underline;
+    padding: 0;
+    font-size: 1vw;
+    font-family: 'Quicksand';
+    font-weight: 400;
+    border: none;
+}
+
+.secondColRow p , .totalText {
+    font-family: 'Quicksand';
+    margin-bottom: 3px;
+    font-size: 1vw;
+}
+
+.middleForm, .rightForm {
+    width: 60%;
+}
+
+.reservTitle {
+    font-family: 'Antonio';
+    font-weight: 600;
+    font-size: 1.2vw;
+}
+
+.reservSubtitle {
+    font-family: 'Antonio';
+    font-weight: 100;
+    color: #606060;
+}
+
+.reservBtn {
+    background-color: #A594F9;
+    color: white;
+    font-weight: 700;
+    font-size: 1.5vw;
+    font-family: 'Antonio';
+    border: none;
+    outline: none;
+    border-radius: 5px;
+    width: 80%;
+    height: 8vh;
+    margin-top: 2vh;
+}
+
+.vertical-scroll-panel {
+    display: flex;
+    flex-direction: column;
+}
+
+#form_services {
+    display: flex;
+    flex-direction: column;
+}
+
+.reviewsFrame {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute; 
+    background-color: white;
+    height: 8vh;
+    width: 7vw;
+    font-size: 1.8vw;
+    font-family: 'Roboto Condensed';
+    font-weight: bold;
+    border-radius: 5px;
+    right: 2vh;
+    top: 2vh;
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
+}
+
+
+.select-btn{
+    display: flex;
+    height: 50px;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    background-color: #fff;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+}
+.select-btn .btn-text{
+    font-size: 17px;
+    font-weight: 400;
+    color: #333;
+}
+.select-btn .arrow-dwn{
+    display: flex;
+    height: 21px;
+    width: 21px;
+    color: #fff;
+    font-size: 14px;
+    border-radius: 50%;
+    background: #6e93f7;
+    align-items: center;
+    justify-content: center;
+    transition: 0.3s;
+}
+.select-btn.open .arrow-dwn{
+    transform: rotate(-180deg);
+}
+.list-items{
+    position: relative;
+    margin-top: 15px;
+    border-radius: 8px;
+    padding: 16px;
+    background-color: #fff;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    display: none;
+}
+.select-btn.open ~ .list-items{
+    display: block;
+}
+.list-items .item{
+    display: flex;
+    align-items: center;
+    list-style: none;
+    height: 40px;
+    cursor: pointer;
+    transition: 0.3s;
+    padding: 0 15px;
+    border-radius: 8px;
+}
+.list-items .item:hover{
+    background-color: #e7edfe;
+}
+.item .item-text{
+    font-size: 0.8vw;
+    font-weight: 400;
+    color: #333;
+}
+.item .checkbox{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 14px;
+    width: 14px;
+    border-radius: 4px;
+    margin-right: 12px;
+    border: 1.5px solid #c0c0c0;
+    transition: all 0.3s ease-in-out;
+}
+.item.checked .checkbox{
+    background-color: #4070f4;
+    border-color: #4070f4;
+}
+.checkbox .check-icon{
+    color: #fff;
+    font-size: 11px;
+    transform: scale(0);
+    transition: all 0.2s ease-in-out;
+}
+.item.checked .check-icon{
+    transform: scale(1);
+}
+
+.reviewAuthor {
+    display: flex;
+    align-items: center;
+    height: 10vh;
+}
+
+.authorPict {
+    width: 2.7vw;
+    height: 2.7vw;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: rgba(0,0,0,0.8) 0 0 10px;
+    margin-right: 1vw;
+}
+
+.reviewAuthorContent {
+    display: flex;
+    flex-direction: column;
+}
+
+.reviewAuthorContent p {
+    margin-bottom: 0;
+}
+
+.authorName {
+    font-family: 'Antonio';
+    font-weight: 700;
+    font-size: 1vw;
+}
+
+.reviewDate {
+    font-family: 'Quicksand';
+    font-weight: 300;
+    font-size: 1vw;
+}
+
+.stars {
+    width: 1.5vw;
+}
+
+.reviewContent {
+    margin-left: 3.8vw;
+    font-family: 'Quicksand';
+}
+
+.commentsBtn {
+    border: 3px solid #A594F9;
+    background-color: white;
+    border-radius: 15px;
+    box-shadow: rgba(0,0,0,0.4) 0 0 10px;
+    color: #A594F9;
+    font-family: 'Roboto Condensed';
+    font-weight: bold;
+    font-size: 1vw;
+    margin-top: 1.5vh;
+    transition: all 0.3s ease-in-out;
+}
+
+.commentsBtn:hover {
+    background-color: #A594F9;
+    color: white;
+    border: 3px solid #A594F9;
+}

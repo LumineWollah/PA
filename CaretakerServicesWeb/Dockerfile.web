@@ -1,0 +1,37 @@
+FROM php:8.1-apache AS build
+
+RUN apt-get update && apt-get install -y \
+    libicu-dev \
+    libpq-dev \
+    libzip-dev \
+    unzip \
+    libfreetype6-dev \
+    libjpeg62-turbo-dev \
+    libpng-dev \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install \
+    intl \
+    pdo \
+    pdo_mysql \
+    zip \
+    -j$(nproc) gd
+
+ENV COMPOSER_ALLOW_SUPERUSER 1
+
+COPY apache/vhost.conf /etc/apache2/sites-available/000-default.conf
+RUN a2enmod rewrite
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+FROM build AS dev
+
+WORKDIR /var/www/html
+EXPOSE 80
+CMD ["sh", "-c", "composer install --no-interaction && chmod a+x update.sh && ./update.sh && apache2-foreground"]
+
+FROM build AS prod
+
+COPY . /var/www/html
+WORKDIR /var/www/html
+RUN rm -rf /var/www/html/.env.dev /var/www/html/tests
+EXPOSE 80
+CMD ["sh", "-c", "composer install --no-dev --optimize-autoloader && chmod a+x update.sh && ./update.sh && apache2-foreground"]

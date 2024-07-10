@@ -1,0 +1,42 @@
+{% extends 'backend/base.html.twig' %}
+
+{% block activeGest %}active{% endblock %}
+{% block activeLess %}active{% endblock %}
+
+{% block title %}Modifier un bailleur{% endblock %}
+
+{% block body %}
+    <div class="col-10 p-0">
+        <div class="p-3">
+            <h1>Modifier un bailleur</h1>
+            <div class="errors">{%if errorMessages is defined %}<ul>{% for errorMessage in errorMessages %}<li>{{errorMessage}}</li>{% endfor %}</ul>{% endif %}</div>
+            {{form_start(form)}}
+                <div class="inputDiv" style="position: relative;">
+                    {{form_widget(form.email)}}
+                </div>
+                <div class="inputDiv" style="position: relative;">
+                    {{form_widget(form.firstname)}}
+                    <div class="errors">{{form_errors(form.firstname)}}</div>
+                </div>
+                <div class="inputDiv" style="position: relative;">
+                    {{form_widget(form.lastname)}}
+                    <div class="errors">{{form_errors(form.lastname)}}</div>
+                </div>
+                <div class="inputDiv" style="position: relative;">
+                    {{form_widget(form.telNumber)}}
+                    <div class="errors">{{form_errors(form.telNumber)}}</div>
+                </div>
+                <div class="inputDiv" style="position: relative;">
+                    {{form_widget(form.roles)}}
+                </div>
+                <div class="inputDiv" style="position: relative;">
+                    {{form_widget(form.profilePict)}}
+                </div>
+                <div class="inputDiv" style="position: relative;">
+                    {{form_widget(form.isVerified)}} Vérifié
+                </div>
+                <button type="submit" class="btn">Modifier</button>
+            {{form_end(form)}}
+        </div>
+    </div>
+{% endblock %}

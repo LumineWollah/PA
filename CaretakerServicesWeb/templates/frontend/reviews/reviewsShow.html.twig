@@ -1,0 +1,48 @@
+{% extends 'frontend/base.html.twig' %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href={{ asset('styles/crud.css') }}>
+    <link rel="stylesheet" href={{ asset('styles/frontend/apartments/apartmentList.css') }}>
+    <link rel="stylesheet" href={{ asset('styles/frontend/services/servicesList.css') }}>
+{% endblock %}
+
+{% block title %}{{ 'afficheravis'|trans({}, 'reviews') }}{% endblock %}
+
+{% block body %}
+    <div class="col-10 p-0">
+        <div class="p-3">
+            <h1>{{ 'afficheravis'|trans({}, 'reviews') }}</h1>
+            <div class="row">
+                <div class="col-6">
+                    <p><strong>{{ 'note'|trans({}, 'reviews') }}</strong> {{ review.rate }}/5</p>
+                    <p><strong>{{ 'contenu'|trans({}, 'reviews') }}</strong> {{ review.content }}</p>
+                    <p><strong>{{ 'crééle'|trans({}, 'reviews') }}</strong> {{ review.postDate|date('d/m/Y H:i:s') }}</p>
+                    {% if review['apartment'] is defined and review['apartment'] is not empty %}
+                        <a class="col-3 apartContainer" href={{ path('apartmentsDetail', {'id': review.apartment.id}) }}>               
+                            <div class="imgContainer">
+                                <img src={{ review.apartment.mainPict }}>
+                            </div>
+                            <p class="apartName"><b>{{ review.apartment.name }}</b></p>
+                            <p class="apartInfos"><span class="medium">{{ review.apartment.city }}, {{ review.apartment.country }} • {{ review.apartment.price }}€</span><span class="light">{{ '/nuit'|trans({}, 'reviews') }}</span></b></p>
+                            <div class="apartNumbers">
+                                <img src={{ asset('icons/bed.png') }}> {{ review.apartment.bedrooms }}{{ 'chambres'|trans({}, 'reviews') }}
+                                <img style="margin-left: 2%;" src={{ asset('icons/travelers.png') }}> {{ review.apartment.travelersMax }}{{ 'voyageursmax'|trans({}, 'reviews') }}
+                            </div>
+                        </a>
+                        <a href="{{ path('reviewDeleteFE', {'id': review.id, 'origin': 'reservationsPast' }) }}" class="btn" style="background-color: #EE3939;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/bin.png') }}></div></a>
+                    {% elseif review['service'] is defined and review['service'] is not empty %}
+                        {% if review.service.coverImage is not defined or review.service.coverImage is null %}
+                            <img src={{ asset('icons/profile_pict_default_company.png') }}>
+                        {% else %}
+                        {% set coverImage = review.service.coverImage %}
+                            <img src="{{ coverImage }}">
+                        {% endif %}
+                        <div class="card-body">
+                        <h5 class="card-title title">{{ review.service.name }}</h5>
+                        <p class="card-text desc">{{ review.service.description }}</p>
+                        <a href="{{ path('reviewDeleteFE', {'id': review.id, 'origin': 'servicesPast' }) }}" class="btn" style="background-color: #EE3939;"><div class="btnImage"><img style="height:20px;" src={{ asset('icons/crud/bin.png') }}></div></a>
+            {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
