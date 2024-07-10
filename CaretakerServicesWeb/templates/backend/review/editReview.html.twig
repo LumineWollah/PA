@@ -27,15 +27,12 @@
                 </div>
                 <div class="inputDiv" style="position: relative;">
                     {{form_widget(form.author)}}
-                    <p>{{ defaults.author }}</p>
                 </div>
                 <div class="inputDiv" style="position: relative;">
                     {{form_widget(form.service)}}
-                    {% if defaults.service is defined %}<p>{{ defaults.service }}</p>{% endif %}
                 </div>
                 <div class="inputDiv" style="position: relative;">
                     {{form_widget(form.apartment)}}
-                    {% if defaults.apartment is defined %}<p>{{ defaults.apartment }}</p>{% endif %}
                 </div>
                 <button type="submit" class="btn">Modifier</button>
             {{form_end(form)}}
