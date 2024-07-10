@@ -24,8 +24,9 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 
 FROM build AS dev
 
+WORKDIR /var/www/html
 EXPOSE 80
-CMD ["sh", "-c", "composer install --no-interaction && chmod a+x creation-database-dev.sh && ./creation-database-dev.sh && apache2-foreground"]
+CMD ["sh", "-c", "composer install --no-interaction && chmod a+x update-dev.sh && ./update-dev.sh && apache2-foreground"]
 
 FROM build AS prod
 
@@ -33,4 +34,4 @@ COPY . /var/www/html
 WORKDIR /var/www/html
 RUN rm -rf /var/www/html/.env.dev /var/www/html/tests
 EXPOSE 80
-CMD ["sh", "-c", "composer install --no-dev --optimize-autoloader && chmod a+x creation-database-prod.sh && ./creation-database-prod.sh && apache2-foreground"]
+CMD ["sh", "-c", "composer install --no-dev --optimize-autoloader && chmod a+x update-prod.sh && ./update-prod.sh && apache2-foreground"]
