@@ -311,7 +311,7 @@ class actionUserController extends AbstractController
             $email = (new Email())
                 ->from('ne-pas-repondre@caretakerservices.fr')
                 ->to($emailAdr)
-                ->subject('Votre réservation')
+                ->subject('Votre demande a été refusée')
                 ->html($data['body']);
 
             $mailer->send($email);

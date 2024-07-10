@@ -35,6 +35,9 @@ class travelerController extends AbstractController
     public function travelerList(Request $request)
     {
         if (!$this->checkUserRole($request)) {return $this->redirectToRoute('login');}
+        
+        $request->getSession()->remove('userId');
+        $request->getSession()->remove('travelerId');
 
         $client = $this->apiHttpClient->getClient($request->cookies->get('token'));
 

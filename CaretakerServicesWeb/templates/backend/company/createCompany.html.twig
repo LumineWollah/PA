@@ -25,12 +25,34 @@
                     {{form_widget(form.companyPhone)}}
                     <div class="errors">{{form_errors(form.companyPhone)}}</div>
                 </div>
-                <div class="inputDiv" style="position: relative;">
+                <div id="geocoder" style="position: relative; height: 3vh;"></div>
                     {{form_widget(form.address)}}
-                    <div class="errors">{{form_errors(form.address)}}</div>
-                </div>
+                <div class="errors">{{form_errors(form.address)}}</div>
                 <button type="submit" class="btn">Créer</button>
             {{form_end(form)}}
         </div>
     </div>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+    mapboxgl.accessToken = 'pk.eyJ1IjoibGVvLXVyYWhhcmEiLCJhIjoiY2x2MTJrcHJ4MDIwdzJrdXNhcDhjazF4MSJ9.ZJjs_hvEVTuHKAe2CeDGbQ';
+    const geocoder = new MapboxGeocoder({
+        accessToken: mapboxgl.accessToken,
+        countries: 'fr',
+        bbox: [-5.3173828125, 41.27780646738183, 9.84375, 51.12421275782688],
+        types: 'address',
+        mapboxgl: mapboxgl
+    });
+    geocoder.addTo('#geocoder');
+
+    const results = document.getElementById('form_address');
+    geocoder.on('result', (e) => {
+        results.value = JSON.stringify(e.result, null, 2);
+    });
+
+    geocoder.on('clear', () => {
+        results.value = '';
+    });
+</script>
 {% endblock %}

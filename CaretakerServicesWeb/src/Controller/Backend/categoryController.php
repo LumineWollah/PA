@@ -32,6 +32,8 @@ class categoryController extends AbstractController
     public function categoryList(Request $request)
     {
         if (!$this->checkUserRole($request)) {return $this->redirectToRoute('login');}
+        
+        $request->getSession()->remove('categoryId');
 
         $client = $this->apiHttpClient->getClient($request->cookies->get('token'));
 

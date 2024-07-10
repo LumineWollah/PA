@@ -51,6 +51,8 @@ class apartmentController extends AbstractController
     {
         if (!$this->checkUserRole($request)) {return $this->redirectToRoute('login');}
 
+        $request->getSession()->remove('apartmentId');
+
         $client = $this->apiHttpClient->getClient($request->cookies->get('token'));
 
         $response = $client->request('GET', 'cs_apartments', [
