@@ -63,6 +63,10 @@ class homeController extends AbstractController
             $default['clientEmail'] = $request->cookies->get('email');
         }
 
+        if ($id == null) {
+            return $this->redirectToRoute('login', ['redirect'=>'contact']);
+        }
+
         $form = $this->createFormBuilder($default)
         ->add("name", TextType::class, [
             'constraints'=>[
@@ -111,7 +115,6 @@ class homeController extends AbstractController
             $data['author'] = '/api/cs_users/'.$id;
             $data['priority'] = "Basse";
             
-
             $client = $this->apiHttpClient->getClient($request->cookies->get('token'), 'application/ld+json');
 
             $response = $client->request('POST', 'cs_tickets', [
