@@ -42,5 +42,10 @@ services:
             $stripeKeyPrivate: '%stripe_key_private%'
             $stripeKeyPublic: '%stripe_key_public%'
 
+    App\Filter\AddonFilter:
+        tags: ['api_platform.filter']
+        arguments: [ '@doctrine.orm.entity_manager' ]
+        autowire: false
+
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

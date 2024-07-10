@@ -139,16 +139,24 @@ class apartmentsController extends AbstractController
                     $customers[] = $reserv['user']['email'];
                 }
                 
-                $paymentIntent = \Stripe\PaymentIntent::retrieve($reserv['payementId']);
+                try {
+                    $paymentIntent = \Stripe\PaymentIntent::retrieve($reserv['payementId']);
 
-                $chargeId = $paymentIntent->latest_charge;
+                    $chargeId = $paymentIntent->latest_charge;
 
-                $refund = \Stripe\Refund::create([
-                    'charge' => $chargeId,
-                    'amount' => $reserv['price'] * 100,
-                ]);
-            
-                if ($refund->status == 'succeeded') {
+                    $refund = \Stripe\Refund::create([
+                        'charge' => $chargeId,
+                        'amount' => $reserv['price'] * 100,
+                    ]);
+                
+                    if ($refund->status == 'succeeded') {
+                        $client->request('PATCH', 'cs_reservations/'.$id, [
+                            'json' => [
+                                'active' => false
+                            ]
+                        ]);
+                    }
+                } catch (\Stripe\Exception\InvalidRequestException $e) {
                     $client->request('PATCH', 'cs_reservations/'.$id, [
                         'json' => [
                             'active' => false
@@ -162,7 +170,16 @@ class apartmentsController extends AbstractController
                     ->from('ne-pas-repondre@caretakerservices.fr')
                     ->to($customer)
                     ->subject('Votre réservation')
-                    ->html('<p>Votre réservation pour le #### dans le logement #### a été annulée, car le logement a du être supprimé, vous serez remboursé dans les prochains jours</p>');
+                    ->html("
+                    <p>Madame, Monsieur,</p>
+                    <br>
+                    <p>Votre réservation pour le ". $reserv['startingDate'] ." dans le logement ". $reserv['apartment']['name'] ." a été annulée, car le logement a du être supprimé.</p> 
+                    <p>Vous serez remboursé dans les prochains jours</p>
+                    <br>
+                    <p>L'équipe Caretaker Services vous présente ses sincères excuses.</p>
+                    <br>
+                    <p>Cordialement, Caretaker Services</p>
+                    ");
 
                 $mailer->send($email);
             }
@@ -931,16 +948,14 @@ class apartmentsController extends AbstractController
     #[Route('/apartments', name: 'apartmentsList')]
     public function apartmentList(Request $request)
     { 
-        // $client = $this->apiHttpClient->getClientWithoutBearer();
+        $client = $this->apiHttpClient->getClientWithoutBearer();
 
-        // $responseAparts = $client->request('GET', 'cs_apartments?active=1');
+        $responseAddons = $client->request('GET', 'cs_addonss');
+        $addons = $responseAddons->toArray();
 
-        // $aps = $responseAparts->toArray();
-
-        // return $this->render('frontend/apartments/apartmentList.html.twig', [
-        //     'aps'=>$aps['hydra:member']
-        // ]);
-        return $this->render('frontend/apartments/apartmentList.html.twig');
+        return $this->render('frontend/apartments/apartmentList.html.twig', [
+            'addons'=>$addons['hydra:member']
+        ]);
     }
 
     #[Route('/my-apartments', name: 'myApartmentsList')]
@@ -1038,17 +1053,25 @@ class apartmentsController extends AbstractController
             ->html('<p>Votre réservation pour le logement '.$reserv['apartment']['name'].' a été annulée.</p><p>Vous serez remboursé dans les prochains jours</p>');
 
         $mailer->send($email);
+        
+        try {
+            $paymentIntent = \Stripe\PaymentIntent::retrieve($reserv['payementId']);
 
-        $paymentIntent = \Stripe\PaymentIntent::retrieve($reserv['payementId']);
+            $chargeId = $paymentIntent->latest_charge;
 
-        $chargeId = $paymentIntent->latest_charge;
-
-        $refund = \Stripe\Refund::create([
-            'charge' => $chargeId,
-            'amount' => $reserv['price'] * 100,
-        ]);
-    
-        if ($refund->status == 'succeeded') {
+            $refund = \Stripe\Refund::create([
+                'charge' => $chargeId,
+                'amount' => $reserv['price'] * 100,
+            ]);
+        
+            if ($refund->status == 'succeeded') {
+                $client->request('PATCH', 'cs_reservations/'.$reserv['id'], [
+                    'json' => [
+                        'active' => false
+                    ]
+                ]);
+            }
+        } catch (\Stripe\Exception\InvalidRequestException $e) {
             $client->request('PATCH', 'cs_reservations/'.$reserv['id'], [
                 'json' => [
                     'active' => false

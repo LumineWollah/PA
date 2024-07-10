@@ -12,7 +12,7 @@
 'vosdates': 'Vos dates'
 'prix': 'Prix'
 'novalidimages': 'Certaines images ne correspondent pas à un appartement'
-
+'voyageursmax': 'Voyageurs max.'
 'déposer' : 'Déposer votre fichier ici'
 'ou': 'ou'
 'nom': 'Nom de votre location'
@@ -82,3 +82,4 @@
 'réservationsfutures': 'Réservations futures :'
 'lireles': 'Afficher les'
 'commentaires': 'commentaires'
+'addons': 'Compléments'

@@ -25,10 +25,11 @@
                             <img src={{ asset('icons/checkmark.png') }} alt="Vérifié" class="checkmark">
                         {% endif %}
                     </div>
-                    <p><strong>{{ 'email'|trans({}, 'user') }} </strong>{{ user.email|capitalize }}</p>
+                    <p><strong>{{ 'email'|trans({}, 'user') }} </strong>{{ user.email }}</p>
                     <p><strong>{{ 'téléphone'|trans({}, 'user') }} </strong>{{ user.telNumber }}</p>
 
                     <a href="{{ path('profileEdit', {'user': user|json_encode}) }}" style="color:black;">{{ 'modifierinfos'|trans({}, 'user') }}</a>
+                    <a href="{{ path('profileDelete', {'user': user|json_encode}) }}" style="color:red;">{{ 'supprimercompte'|trans({}, 'user') }}</a>
                 </div>
                 <div class="summaryandrevenue">
                     <div class="summary">

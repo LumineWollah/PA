@@ -30,9 +30,17 @@
 .loginBtn {
     width: 100%;
     background-color: #3D2F44;
+    border: 2px solid #3D2F44;   
     color: #FFFFFF;
     font-family: 'Antonio';
     font-weight: 100;
     height: 6vh;
     font-size: 120%;
+    transition: all 0.3s ease-in-out;
+}
+
+.loginBtn:hover {
+    background-color: #FFFFFF;
+    border: 2px solid #3D2F44;    
+    color: #3D2F44;
 }

@@ -22,6 +22,7 @@ use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use App\Filter\AddonFilter;
 
 #[ApiResource(operations: [
     new Post(
@@ -103,6 +104,7 @@ use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 #[Delete(security: "is_granted('ROLE_ADMIN') or object.getOwner() == user")]
 #[Post(security: "is_granted('ROLE_LESSOR') or is_granted('ROLE_ADMIN')")]
 #[ApiFilter(SearchFilter::class, properties: ['owner' => 'exact', 'city' => 'exact', 'active' => 'exact', 'isVerified' => 'exact'])]
+#[ApiFilter(AddonFilter::class)]
 #[ORM\Entity(repositoryClass: CsApartmentRepository::class)]
 class CsApartment
 {
@@ -197,7 +199,7 @@ class CsApartment
     #[Groups(["getApartments"])]
     private Collection $reservations;
 
-    #[ORM\OneToMany(targetEntity: CsReviews::class, mappedBy: 'apartment')]
+    #[ORM\OneToMany(targetEntity: CsReviews::class, mappedBy: 'apartment', cascade: ['remove'])]
     #[Groups(["getApartments"])]
     private Collection $reviews;
 

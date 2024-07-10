@@ -33,6 +33,25 @@
                 <span id="minus">-</span> <p id="travelersNb">0</p> <span id="plus">+</span>
             </div>
         </div>
+        <div class="addons">
+            <p>{{"addons"|trans({}, 'apartments') }}</p>
+            <div class="select-btn">
+                <span class="btn-text">0 séléctionné</span>
+            </div>
+            <ul class="list-items" style="z-index: 10;">
+                {% for addon in addons %}
+                    {% if addon.apartments is not empty %}
+                        <li class="item">
+                        <span class="checkbox">
+                            <i class="fa-solid fa-check check-icon"></i>
+                        </span>
+                        <span class="item-text">{{ addon.name }}</span>
+                        <span class="item-id" style="display: none;">{{ addon.id }}</span>
+                    </li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
         <img src="{{ asset('icons/search.png') }}" id="searchBtn">
     </div>
     <div id="rowContainer">
@@ -41,9 +60,36 @@
 {% endblock %}
 
 {% block javascripts %}
-<script type="text/javascript">
+<script type="text/javascript"> 
     $(function() {
     
+    const selectBtn = document.querySelector(".select-btn")
+    const items = document.querySelectorAll(".item");
+    var addons = [];
+
+    selectBtn.addEventListener("click", () => {
+        selectBtn.classList.toggle("open");
+    });
+
+    items.forEach(item => {
+        item.addEventListener("click", () => {
+            if (item.classList.contains("checked")) {
+                addons = addons.filter(addon => addon !== item.querySelector(".item-id").innerText);
+            } else {
+                addons.push(item.querySelector(".item-id").innerText);
+            }
+            item.classList.toggle("checked");
+            var checked = document.querySelectorAll(".checked"),
+                btnText = document.querySelector(".btn-text");
+                if(checked && checked.length > 0){
+                    const plurial = checked.length > 1 ? "s" : "";
+                    btnText.innerText = `${checked.length} sélectionné${plurial}`;
+                }else{
+                    btnText.innerText = "0 séléctionné";
+                }
+        });
+    });
+
     var first = true;
 
     $("#minus").click(function() {
@@ -130,7 +176,12 @@
     }
 
     function fetchData() {
-        let url = "https://api.caretakerservices.fr/api/cs_apartments?active=1";
+        let url;
+        if (addons.length > 0) {
+            url = `https://api.caretakerservices.fr/api/cs_apartments?active=1&addons=[${addons.toString()}]`;
+        } else {
+            url = "https://api.caretakerservices.fr/api/cs_apartments?active=1";
+        }
         let ajaxOptions = {
             type: 'GET',
             success: function(data) {

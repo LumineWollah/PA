@@ -1,0 +1,24 @@
+{% extends 'frontend/user/base.html.twig' %}
+
+{% block stylesheets %}<link rel="stylesheet" href={{ asset('styles/crud.css') }}>{% endblock %}
+
+{% block activeAcc %}active{% endblock %}
+
+{% block title %}{{ 'supprimercompte'|trans({}, 'user') }}{% endblock %}
+
+{% block body %}
+    <div class="col-10 p-0">
+        <div class="p-3">
+            <h1>{{ 'supprimercompte'|trans({}, 'user') }}</h1>
+            <p>{{ 'confirmation'|trans({}, 'user') }}</p>
+            <div class="errors">{%if errorMessage is defined %}<p>{{errorMessage}}</p>{% endif %}</div>
+            {{form_start(form)}}
+                <div class="inputDivCenter" style="position: relative;">
+                    {{form_widget(form.confirmation)}}
+                </div>
+                <p style="user-select: none;"><strong>{{ string }}</strong></p>
+                <button type="submit" class="btn">{{ 'supprimer'|trans({}, 'user') }}</button>
+            {{form_end(form)}}
+        </div>
+    </div>
+{% endblock %}
