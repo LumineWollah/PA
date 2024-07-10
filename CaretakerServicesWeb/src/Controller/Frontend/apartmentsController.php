@@ -931,16 +931,14 @@ class apartmentsController extends AbstractController
     #[Route('/apartments', name: 'apartmentsList')]
     public function apartmentList(Request $request)
     { 
-        // $client = $this->apiHttpClient->getClientWithoutBearer();
+        $client = $this->apiHttpClient->getClientWithoutBearer();
 
-        // $responseAparts = $client->request('GET', 'cs_apartments?active=1');
+        $responseAddons = $client->request('GET', 'cs_addonss');
+        $addons = $responseAddons->toArray();
 
-        // $aps = $responseAparts->toArray();
-
-        // return $this->render('frontend/apartments/apartmentList.html.twig', [
-        //     'aps'=>$aps['hydra:member']
-        // ]);
-        return $this->render('frontend/apartments/apartmentList.html.twig');
+        return $this->render('frontend/apartments/apartmentList.html.twig', [
+            'addons'=>$addons['hydra:member']
+        ]);
     }
 
     #[Route('/my-apartments', name: 'myApartmentsList')]

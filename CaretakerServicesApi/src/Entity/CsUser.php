@@ -65,7 +65,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasher;
 #[Get()]
 #[Patch(security: "is_granted('ROLE_ADMIN') or object == user")]
 #[GetCollection()]
-#[Delete(security: "is_granted('ROLE_ADMIN')")]
+#[Delete(security: "is_granted('ROLE_ADMIN') or object == user")]
 #[Post()]
 #[ORM\Entity(repositoryClass: CsUserRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
