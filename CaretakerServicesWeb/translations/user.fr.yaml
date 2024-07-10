@@ -103,3 +103,7 @@
 'etatdeslieuxentree': "État des lieux d'entrée :"
 'etatdeslieuxsortie': "État des lieux de sortie :"
 'facture': 'Facture'
+
+'supprimercompte': 'Supprimer mon compte'
+'confirmation': 'Réécrivez la chaîne de caractères suivante pour confirmer la suppression de votre compte :'
+'supprimer': 'Supprimer'
