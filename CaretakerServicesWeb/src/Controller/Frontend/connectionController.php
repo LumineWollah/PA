@@ -83,6 +83,7 @@ class connectionController extends AbstractController
             $request->getSession()->set('activateAccount', $activateAccount);
         } else {
             $activateAccount = $request->getSession()->get('activateAccount');
+            $request->getSession()->remove('activateAccount');
         }
 
         $form = $this->createFormBuilder()
