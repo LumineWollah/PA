@@ -166,7 +166,7 @@ class connectionController extends AbstractController
             
                 $verifyEmail = $client->request('PATCH', 'cs_users/'.$response['user']['id'], [
                     'json' => [
-                        "emailIsVerified"=>true
+                        "emailIsVerify"=>true
                     ],
                 ]);
                 
