@@ -28,5 +28,5 @@ jobs:
           git fetch origin
           git reset --hard origin/main
 
+          docker compose -f docker-compose-dev.yaml down
           docker compose -f docker-compose-prod.yaml up -d --build
-          docker exec web bash -c "cp -r assets public && php bin/console asset-map:compile && php bin/console c:c && chmod -R 777 var/"
