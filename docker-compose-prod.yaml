@@ -21,6 +21,7 @@ services:
       - symfony
     environment:
       - APP_ENV=prod
+      - APP_DEBUG=0
     restart: always
 
   api:
@@ -38,6 +39,7 @@ services:
       - symfony
     environment:
       - APP_ENV=prod
+      - APP_DEBUG=0
     restart: always
 
   mariadb:
