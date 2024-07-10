@@ -400,24 +400,24 @@ class reservationController extends AbstractController
             </div>
 
             <div style="position: absolute; margin-top: 50px;">
-                <p><b>FACTURÉ À€</b></p><p>'.$customerName.'</p><p>'.$user['telNumber'].'</p><p>'.$this->cropString($user['email'], 20).'</p>
+                <p><b>FACTURÉ À</b></p><p>'.$customerName.'</p><p>'.$user['telNumber'].'</p><p>'.$this->cropString($user['email'], 20).'</p>
             </div>
             <div style="position: absolute; left: 30%; margin-top: 50px;">
-                <p><b>ENVOYÉ À€</b></p><p>'.$customerName.'</p><p>'.$user['telNumber'].'</p><p>'.$this->cropString($user['email'], 20).'</p>
+                <p><b>ENVOYÉ À</b></p><p>'.$customerName.'</p><p>'.$user['telNumber'].'</p><p>'.$this->cropString($user['email'], 20).'</p>
             </div>
             <div style="position: absolute; right: 0; margin-top: 50px;">
                 <p><b>RÉSERVATION N° : </b>'.$reservId.'</p><p><b>FACTURE N° : </b>851</p><p><b>PAYÉ LE : </b>'.date('d/m/Y').'</p><p><b>ENVOYÉ LE : </b>'.date('d/m/Y').'</p>
             </div>
             <span style="display: block; width: 95% height: 2%; background-color: black; margin-top: 190px; "></span>
             <p style="position: absolute; font-size: 42px;">Total de la facture</p>
-            <p style="position: absolute; font-size: 42px; right: 0; ">'.number_format($total, 2).' â‚¬</p>
+            <p style="position: absolute; font-size: 42px; right: 0; ">'.number_format($total, 2).' €</p>
             <span style="display: block; width: 95% height: 1px; background-color: black; margin-top: 84px;"></span>
             <div style="position: absolute; left: 0; margin-top: 25px;">
-                <p><b>QTÃ‰</b></p>
+                <p><b>QTÉ</b></p>
                 <p>1</p>'.$qteArray.'
             </div>
             <div style="position: absolute; left: 20%; margin-top: 25px;">
-                <p><b>DÃ‰SIGNATION</b></p>
+                <p><b>DÉSIGNATION</b></p>
                 <p>'.$obj['name'].'</p>'.$servName.'
             </div>
             <div style="position: absolute; right: 25%; margin-top: 25px; text-align: right;">
