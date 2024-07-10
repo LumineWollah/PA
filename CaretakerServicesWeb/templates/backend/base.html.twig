@@ -34,7 +34,7 @@
                 <div class="d-flex flex-column p-3 sticky-top sideBar">
                     <ul class="nav nav-pills flex-column mb-auto navUl">
                         <li class="nav-item">
-                            <a href={{ path('dashboard') }} class="nav-link {% block activeDash %}{% endblock %}" aria-current="page">
+                            <a href={{ path('dashboard') }} class="nav-link {% block activeDash %}{% endblock %}" id="dashboard" aria-current="page">
                                 Dashboard
                             </a>
                         </li>
@@ -59,6 +59,10 @@
                                 </ul>
                             </div>
                         </li>
+                        <li class="nav-item">
+                            <a href="https://caretakerservices.s3.eu-west-2.amazonaws.com/PCS_Ticketing.zip" class="nav-link" aria-current="page">
+                                Application de ticketing
+                            </a>
                         <hr class="mx-auto opacity-100">
                     </ul>
                 </div>
