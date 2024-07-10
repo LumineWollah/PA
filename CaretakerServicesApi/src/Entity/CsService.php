@@ -106,11 +106,11 @@ class CsService
     #[Groups(["getServices", "getReservations", "getCompanies"])]
     private ?CsCategory $category = null;
 
-    #[ORM\OneToMany(targetEntity: CsReservation::class, mappedBy: 'service')]
+    #[ORM\OneToMany(targetEntity: CsReservation::class, mappedBy: 'service', cascade: ['remove'])]
     #[Groups(["getServices", "getCompanies"])]
     private Collection $reservations;
 
-    #[ORM\OneToMany(targetEntity: CsReviews::class, mappedBy: 'service')]
+    #[ORM\OneToMany(targetEntity: CsReviews::class, mappedBy: 'service', cascade: ['remove'])]
     #[Groups(["getServices"])]
     private Collection $reviews;
 
@@ -123,7 +123,7 @@ class CsService
     /**
      * @var Collection<int, CsReservation>
      */
-    #[ORM\ManyToMany(targetEntity: CsReservation::class, mappedBy: 'services')]
+    #[ORM\ManyToMany(targetEntity: CsReservation::class, mappedBy: 'services', cascade: ['remove'])]
     private Collection $reservationsForApart;
 
     #[ORM\Column(length: 255, nullable: true)]
