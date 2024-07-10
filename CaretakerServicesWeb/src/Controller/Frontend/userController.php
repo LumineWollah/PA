@@ -677,14 +677,15 @@ class userController extends AbstractController
             }
 
             $client = $this->apiHttpClient->getClient($request->cookies->get('token'));
-
+            // dd($storedUser);
+            // dd($request->cookies->get('token'));
             $response = $client->request('DELETE', 'cs_users/'.$storedUser);
 
             $response = json_decode($response->getContent(), true);
             $request->getSession()->remove('userId');
             $request->getSession()->remove('string');
 
-            return $this->redirectToRoute('logout');
+            return $this->redirectToRoute('logoutFunc');
         }      
         return $this->render('frontend/user/deleteProfile.html.twig', [
             'form'=>$form,
