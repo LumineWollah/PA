@@ -26,7 +26,7 @@ FROM build AS dev
 
 WORKDIR /var/www/html
 EXPOSE 80
-CMD ["sh", "-c", "composer install --no-interaction && chmod a+x update.sh && apache2-foreground"]
+CMD ["sh", "-c", "composer install --no-interaction && chmod a+x update.sh && ./update.sh && apache2-foreground"]
 
 FROM build AS prod
 
