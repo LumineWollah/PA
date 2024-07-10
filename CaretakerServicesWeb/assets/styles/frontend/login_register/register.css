@@ -38,6 +38,7 @@ form {
 
 .registerBtn, .choiceBtn {
     background-color: #3D2F44;
+    border: 2px solid #3D2F44;  
     color: #FFFFFF;
     font-family: 'Antonio';
     font-weight: 100;
@@ -45,6 +46,13 @@ form {
     font-size: 120%;
     outline: none;
     border: none;
+    transition: all 0.3s ease-in-out;
+}
+
+.registerBtn:hover, .choiceBtn:hover {
+    background-color: #FFFFFF;
+    border: 2px solid #3D2F44;    
+    color: #3D2F44;
 }
 
 #geocoder {
