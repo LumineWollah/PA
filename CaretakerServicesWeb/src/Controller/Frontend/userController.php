@@ -73,6 +73,17 @@ class userController extends AbstractController
         return $response->toArray();
     }
 
+    private function generateRandomString(): string
+    {
+        $characters = '0123456789abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNOPQRSTUVWXYZ';
+        $charactersLength = strlen($characters);
+        $randomString = '';
+        for ($i = 0; $i < 10; $i++) {
+            $randomString .= $characters[random_int(0, $charactersLength - 1)];
+        }
+        return $randomString;
+    }
+
     #[Route('/profile/me', name: 'myProfile')]
     public function myProfile(Request $request)
     {
@@ -622,6 +633,62 @@ class userController extends AbstractController
         }      
         return $this->render('frontend/user/editProfile.html.twig', [
             'form'=>$form,
+            'errorMessage'=>null
+        ]);
+    }
+
+    #[Route('/profile/delete', name: 'profileDelete')]
+    public function profileDelete(Request $request)
+    {
+        $userData = $request->query->get('user');
+        $user = json_decode($userData, true);
+
+        $storedUser = $request->getSession()->get('user');
+
+        if (!$storedUser) {
+            $request->getSession()->set('user', $user['id']);
+        }
+
+        $string = $request->getSession()->get('string');
+
+        if (!$string) {
+            $request->getSession()->set('string', $this->generateRandomString());
+            $string = $request->getSession()->get('string');
+        }
+
+        $form = $this->createFormBuilder()
+        ->add("confirmation", TextType::class, [])
+        ->getForm()->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()){
+            $data = $form->getData();
+
+            if ($data['confirmation'] != $string) {
+                $errorMessage = "La chaîne de caractère n'est pas correcte. Veuillez réessayer.";
+                
+                $request->getSession()->set('string', $this->generateRandomString());
+                $string = $request->getSession()->get('string');
+
+                return $this->render('frontend/user/deleteProfile.html.twig', [
+                    'form'=>$form,
+                    'string'=>$string,
+                    'errorMessage'=>$errorMessage
+                ]);
+            }
+
+            $client = $this->apiHttpClient->getClient($request->cookies->get('token'));
+
+            $response = $client->request('DELETE', 'cs_users/'.$storedUser);
+
+            $response = json_decode($response->getContent(), true);
+            $request->getSession()->remove('userId');
+            $request->getSession()->remove('string');
+
+            return $this->redirectToRoute('logout');
+        }      
+        return $this->render('frontend/user/deleteProfile.html.twig', [
+            'form'=>$form,
+            'string'=>$string,
             'errorMessage'=>null
         ]);
     }
