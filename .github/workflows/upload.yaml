@@ -29,4 +29,3 @@ jobs:
           git reset --hard origin/dev
 
           docker compose -f docker-compose-dev.yaml up -d --build
-          # docker exec web bash -c "cp -r assets public && php bin/console asset-map:compile && php bin/console c:c && chmod -R 777 var/"
