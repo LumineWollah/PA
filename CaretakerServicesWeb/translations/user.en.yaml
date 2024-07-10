@@ -103,3 +103,7 @@
 'etatdeslieuxentree': 'Entry state of play:'
 'etatdeslieuxsortie': 'Exit state of play:'
 'facture': 'Bill'
+
+'supprimercompte': 'Delete my account'
+'confirmation': 'Re-write this string of characters to confirm the deletion of your account:'
+'supprimer': 'Delete'
