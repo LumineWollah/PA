@@ -170,7 +170,16 @@ class apartmentsController extends AbstractController
                     ->from('ne-pas-repondre@caretakerservices.fr')
                     ->to($customer)
                     ->subject('Votre réservation')
-                    ->html('<p>Votre réservation pour le #### dans le logement #### a été annulée, car le logement a du être supprimé, vous serez remboursé dans les prochains jours</p>');
+                    ->html("
+                    <p>Madame, Monsieur,</p>
+                    <br>
+                    <p>Votre réservation pour le ". $reserv['startingDate'] ." dans le logement ". $reserv['apartment']['name'] ." a été annulée, car le logement a du être supprimé.</p> 
+                    <p>Vous serez remboursé dans les prochains jours</p>
+                    <br>
+                    <p>L'équipe Caretaker Services vous présente ses sincères excuses.</p>
+                    <br>
+                    <p>Cordialement, Caretaker Services</p>
+                    ");
 
                 $mailer->send($email);
             }
