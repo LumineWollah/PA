@@ -223,7 +223,21 @@ class reservationsController extends AbstractController
             ->from('ne-pas-repondre@caretakerservices.fr')
             ->to($emailAdr)
             ->subject('Votre réservation')
-            ->html('<p>Votre réservation pour le #### a bien été validée</p><p><a href="'.$resultS3['link'].'" style="text-decoration: none;">Votre facture ici</a></p>');
+            ->html("<p>Madame, Monsieur,</p>
+            <p>Nous avons le plaisir de vous confirmer votre réservation auprès de Paris Caretaker Services.</p>
+            <p><strong>Nom du client : </strong>".$customerName."</p>
+            <p><strong>Date de la réservation : </strong>".date('d/m/Y')."</p>
+            <br>
+            <p><strong>Détails de la réservation : </strong></p>
+            <p><strong>&nbsp &nbsp &nbsp &nbsp &nbsp Date d'arrivée : </strong>". $data['startingDate'] ."</p>
+            <p><strong>&nbsp &nbsp &nbsp &nbsp &nbsp Date de départ : </strong>". $data['endingDate'] ."</p>
+            <p><strong>&nbsp &nbsp &nbsp &nbsp &nbsp Nombre de voyageurs : </strong>". $data['adultTravelers'] + $data['childTravelers'] + $data['babyTravelers'] ."</p>
+            <br>
+            <p>Nous vous prions de bien vouloir vérifier ces informations et de nous contacter au plus vite si vous constatez une erreur ou si vous avez des questions complémentaires.</p>
+            <p>Nous nous réjouissons de vous accueillir prochainement et restons à votre disposition pour toute information complémentaire.</p>
+            <p><a href='".$resultS3['link']."' style='text-decoration: none;'>Votre facture ici</a></p>
+            <br>
+            Cordialement, Caretaker Services");
 
         $mailer->send($email);
         
